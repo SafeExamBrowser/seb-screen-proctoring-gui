@@ -1,0 +1,91 @@
+.menu {
+  @apply relative;
+  @apply inline-block;
+  @apply text-left;
+  @apply font-normal;
+
+  .menu__toggle {
+    @apply flex;
+    @apply items-center;
+    @apply text-gray-700;
+    @apply hover:text-primary-800;
+  }
+
+  .menu__toggle__icon {
+    @apply h-5;
+    @apply w-5;
+  }
+
+  .menu__content {
+    @apply origin-top-right;
+    @apply absolute;
+    @apply z-10;
+    @apply right-0;
+    @apply -mt-1.5;
+    @apply w-56;
+    @apply rounded-sm;
+    @apply shadow-md;
+    @apply bg-white;
+    @apply ring-1 ring-black ring-opacity-5;
+    @apply divide-y divide-gray-100;
+
+    &.menu__content--right {
+      @apply origin-top-left;
+      @apply right-auto;
+      @apply left-0;
+    }
+
+    &.menu__content--top {
+      @apply origin-bottom-right;
+      @apply bottom-2;
+    }
+  }
+
+  .menu__section {
+    @apply py-1;
+  }
+
+  .menu__item {
+    //todo: change Name
+    //@apply groupTemp;
+    @apply flex;
+    @apply items-center;
+    @apply justify-between;
+    @apply w-full;
+    @apply px-4;
+    @apply py-2;
+    @apply text-sm;
+    @apply text-gray-700;
+
+    &.menu__item--active {
+      @apply bg-primary-50;
+      @apply text-gray-900;
+    }
+
+    &:disabled,
+    &[disabled="true"] {
+      @apply text-gray-300;
+      @apply pointer-events-none;
+
+      .menu__item__icon {
+        @apply text-gray-200;
+      }
+    }
+  }
+
+  .menu__item__label {
+    @apply flex-grow;
+    @apply text-left;
+  }
+
+  .menu__item__icon {
+    @apply mr-3;
+    @apply h-5;
+    @apply w-5;
+    @apply text-gray-400;
+
+    &.menu__item__icon--right {
+      @apply mr-0;
+    }
+  }
+}

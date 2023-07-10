@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@tailwindcss/forms": "^0.5.3",
+    "@vue-hero-icons/solid": "^1.7.2",
     "core-js": "^3.8.3",
     "vue": "^3.2.13",
     "vue-class-component": "^8.0.0-0",
@@ -27,10 +29,15 @@
     "@vue/eslint-config-typescript": "^9.1.0",
     "@vue/test-utils": "^2.0.0-0",
     "@vue/vue3-jest": "^27.0.0-alpha.1",
+    "autoprefixer": "^10.4.14",
     "babel-jest": "^27.0.6",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
     "jest": "^27.0.5",
+    "postcss": "^8.4.25",
+    "sass": "^1.63.6",
+    "sass-loader": "^13.3.2",
+    "tailwindcss": "^3.3.2",
     "ts-jest": "^27.0.4",
     "typescript": "~4.5.5"
   }
