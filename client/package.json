@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.5.3",
-    "@vue-hero-icons/solid": "^1.7.2",
+    "axios": "^1.4.0",
     "core-js": "^3.8.3",
     "vue": "^3.2.13",
     "vue-class-component": "^8.0.0-0",

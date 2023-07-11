@@ -8,7 +8,12 @@ export const authorize = [
 
     (req: Request, res: Response, next: NextFunction) => {
         const errors: Result<ValidationError> = validationResult(req);
+
         if (!errors.isEmpty()){
+
+          console.error("validation errors: ")
+          console.error(errors.array())
+
           return res.status(422).json({errors: errors.array()});
         }
         next();

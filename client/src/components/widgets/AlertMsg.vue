@@ -2,7 +2,8 @@
   <div class="rounded-sm bg-red-50 p-4">
     <div class="flex">
       <div class="flex-shrink-0" aria-hidden="true">
-        <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+        <!-- <v-icon name="md-cancel" /> -->
+        <!-- <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" /> -->
       </div>
       <div class="ml-3">
         <h3 class="text-sm font-medium text-red-800">
@@ -18,21 +19,21 @@
   </div>
 </template>
 
-<script>
-import { XCircleIcon } from "@vue-hero-icons/solid" 
+<script setup lang="ts">
+  //todo: add icon
+  //@ts-ignore: type declarations do not exist for this icon library
+  //import { XCircleIcon } from "@vue-hero-icons/solid"
+  //import { MdCancel } from "oh-vue-icons/icons";
 
-export default {
-  name: "AlertMsg",
-  components: { XCircleIcon },
-  props: {
+  const props = defineProps({
     title: {
       type: String,
-      required: true,
+      required: true
     },
     message: {
       type: String,
-      required: true,
-    },
-  },
-};
+      required: true
+    }
+  });
+
 </script>

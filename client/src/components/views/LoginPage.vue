@@ -18,14 +18,14 @@
             <form class="mt-8 space-y-6" action="#" method="POST" @submit.prevent="handleFormSubmit">
                 <div class="space-y-3">
                     <div>
-                        <label for="user-name" class="sr-only">UserName</label>
-                        <input id="user-name" v-model="userName" name="user-name" type="text" autocomplete="off" required
-                            class="login__input" placeholder="User Name" />
+                        <label for="username" class="sr-only">Username</label>
+                        <input v-model="username" name="username" type="text" autocomplete="off" required
+                            class="login_input" placeholder="Username" />
                     </div>
                     <div>
                         <label for="password" class="sr-only">Password</label>
-                        <input id="password" v-model="password" name="password" type="password" autocomplete="off" required
-                            class="login__input" placeholder="Password" />
+                        <input v-model="password" name="password" type="password" autocomplete="off" required
+                            class="login_input" placeholder="Password" />
                     </div>
                 </div>
                 <ActionButton type="submit" label="Sign In" :full="true"></ActionButton>
@@ -35,45 +35,47 @@
     </main>
 </template>
   
-<script>
-import AlertMsg from "@/components/general/AlertMsg";
-import ActionButton from "@/components/general/ActionButton";
+<script setup lang="ts">
+    import { ref } from 'vue';
+    import AlertMsg from '../widgets/AlertMsg.vue';
+    import ActionButton from '../widgets/ActionButton.vue';
+    import * as authenticationService from "../../services/authenticationService";
 
-export default {
-    name: "LoginPage",
-    components: { ActionButton, AlertMsg },
-    setup() {
-        // const { isAuthenticated, authenticateUser } = useAuth();
 
-        // return {
-        //     isAuthenticated,
-        //     authenticateUser,
-        // };
-    },
+    let username = ref("super-admin");
+    let password = ref("admin");
+    let loginError = ref(false);
 
-    data() {
-        // return {
-        //     userName: undefined,
-        //     password: undefined,
-        //     loginError: false,
-        // };
-    },
+    async function handleFormSubmit(){
 
-    methods: {
-        // async handleFormSubmit() {
-        //     try {
-        //         await this.authenticateUser(this.userName, this.password);
-        //         this.$router.push({ name: "home" });
-        //     } catch (error) {
-        //         this.loginError = true;
-        //     }
-        // },
-    },
-};
+        try{
+            const token: string = await authenticationService.login(username.value, password.value);
+            console.log(token)
+            localStorage.setItem("token", token);
+            console.log(localStorage.getItem("token"));
+
+        }catch(error){
+            //todo: add better error handling
+            loginError.value = true;
+            console.error(error)
+
+
+        }
+
+    }
+
+
 </script>
   
+
+
+
+
+
+
+
 <style lang="scss" scoped>
-.login__input {
+.login_input {
     @apply appearance-none;
     @apply rounded-none;
     @apply relative;
@@ -89,4 +91,4 @@ export default {
     //@apply sm: text-sm;
 }
 </style>
-  
+  ../../services/authenticationService

@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="wrapper">
     <div class="wrapper__inner">
       <template v-if="paging.totalItems.value > 0">
@@ -103,11 +103,11 @@
   </div>
 </template>
 
-<script>
-import { useInstitutions } from "@/composables/institution/useInstitutions";
+<script lang="ts">
+//import { useInstitutions } from "@/composables/institution/useInstitutions";
 import { ChevronLeftIcon, ChevronRightIcon } from "@vue-hero-icons/solid";
 import { ref, watch } from "vue";
-import { focusElement } from "@/utils/focus";
+//import { focusElement } from "@/utils/focus";
 
 export default {
   name: "Paging",
@@ -116,23 +116,23 @@ export default {
     ChevronRightIcon,
   },
   setup() {
-    const { paging } = useInstitutions();
-    const currentPageNode = ref(null);
+    // const { paging } = useInstitutions();
+    // const currentPageNode = ref(null);
 
-    const goToPage = (index) => {
-      const stopWatching = watch(paging.currentPage, () => {
-        focusElement(currentPageNode.value, 300);
-        stopWatching();
-      });
+    // const goToPage = (index) => {
+    //   const stopWatching = watch(paging.currentPage, () => {
+    //     focusElement(currentPageNode.value, 300);
+    //     stopWatching();
+    //   });
 
-      paging.goToPage(index);
-    };
+    //   paging.goToPage(index);
+    // };
 
-    return {
-      paging,
-      goToPage,
-      currentPageNode,
-    };
+    // return {
+    //   paging,
+    //   goToPage,
+    //   currentPageNode,
+    // };
   },
 };
 </script>
@@ -218,4 +218,4 @@ export default {
     @apply px-1;
   }
 }
-</style>
+</style> -->
