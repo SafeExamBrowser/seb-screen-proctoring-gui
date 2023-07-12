@@ -1,7 +1,8 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
+import ContainerLayout from '../components/layout/ContainerLayout.vue'
 import LoginPage from '../components/views/LoginPage.vue'
 import StartPage from '../components/views/StartPage.vue'
-
+import DummyPage from '../components/views/DummyPage.vue'
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -11,10 +12,23 @@ const routes: Array<RouteRecordRaw> = [
     component: LoginPage
   },
   {
-    path: '/start',
-    name: 'StartPage',
-    component: StartPage
-  }
+    path: "/",
+    component: ContainerLayout,
+    children: [
+      {
+        path: '/start',
+        name: 'Start',
+        component: StartPage,
+      },
+      {
+        path: '/dummy',
+        name: 'Dummy',
+        component: DummyPage
+      }
+
+    ]
+  },
+  
 ]
 
 const router = createRouter({

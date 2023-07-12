@@ -37,9 +37,11 @@
   
 <script setup lang="ts">
     import { ref } from 'vue';
+    import { useRouter } from 'vue-router';
     import AlertMsg from '../widgets/AlertMsg.vue';
     import ActionButton from '../widgets/ActionButton.vue';
     import * as authenticationService from "../../services/authenticationService";
+import router from '@/router';
 
 
     let username = ref("super-admin");
@@ -50,9 +52,14 @@
 
         try{
             const token: string = await authenticationService.login(username.value, password.value);
-            console.log(token)
             localStorage.setItem("token", token);
-            console.log(localStorage.getItem("token"));
+
+            console.log("token: " + token)
+
+            router.push({
+                path: "/start"
+            })
+
 
         }catch(error){
             //todo: add better error handling

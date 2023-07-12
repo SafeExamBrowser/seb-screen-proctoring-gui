@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.5.3",
+    "@types/bootstrap": "^5.2.6",
     "axios": "^1.4.0",
+    "bootstrap": "^5.3.0",
     "core-js": "^3.8.3",
     "vue": "^3.2.13",
     "vue-class-component": "^8.0.0-0",

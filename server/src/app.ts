@@ -1,7 +1,6 @@
 import express, {Express, Request, Response} from 'express';
 import dotenv from "dotenv";
 import cors from "cors";
-// import { ExpressValidator } from 'express-validator';
 
 import authorizationRoutes from './routes/authorization.routes';
 import bodyParser from 'body-parser';
