@@ -3,8 +3,7 @@ import ContainerLayout from "../components/layout/ContainerLayout.vue"
 import LoginPage from "../components/views/LoginPage.vue"
 import StartPage from "../components/views/StartPage.vue"
 import GalleryViewPage from "../components/views/GalleryViewPage.vue"
-import DummyPage from "../components/views/DummyPage.vue"
-
+import ExamplePage from "../components/views/ExamplePage.vue"
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -25,9 +24,9 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: "/dummy",
-        name: "Dummy",
-        component: DummyPage
+        path: "/example",
+        name: "Example",
+        component: ExamplePage
       },
       {
         path: "/galleryView/:uuid",

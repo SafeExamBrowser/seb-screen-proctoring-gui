@@ -1,31 +1,25 @@
 <template>
-    <div class="table-container">
+    <!-- @vue-ignore -->
+    <v-data-table v-model:items-per-page="itemsPerPage" :headers="headers" :items="groups" item-value="name" class="elevation-1">
 
-        <table v-if="groups" class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Start-Time</th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
+        <template v-slot:item.name="{item}">
+            <td class="text-decoration-underline text-blue">
+                <div>
+                    <router-link :to="returnGalleryViewLink(item.index)">{{item.columns.name}}</router-link>
+                </div>
+            </td>
+        </template>
 
-                <tr v-for="group in groups" :key="group.id" @dblclick="openGalleryView(group)">
-                    <td>{{ group.name }}</td>
-                    <td>{{ group.description }}</td>
-                    <td>{{ group.creationTime }}</td>
-                </tr>
+    </v-data-table>
 
-            </tbody>
-        </table>
-    </div>
+
 </template>
 
 <script setup lang="ts">
-    import {ref, onBeforeMount} from "vue";
+    import { ref, onBeforeMount } from "vue";
     import * as groupService from "../../services/groupService";
     import router from "@/router";
+    import { VDataTable } from "vuetify/labs/VDataTable"
 
     const groups = ref<Group[]>();
 
@@ -40,10 +34,20 @@
 
     });
 
-    function openGalleryView(group: Group){
-        router.push({
-            path: "/galleryView/" + group.uuid
-        })
+    const headers = ref([
+        {title: "Name", key: "name"},
+        {title: "Description", key: "description"},
+        {title: "Start-Time", key: "creationTime"},
+    ])
+
+    const itemsPerPage = ref<number>(5)
+
+    function returnGalleryViewLink(index: number) {
+        if(groups.value != null){
+            return "/galleryView/" + groups.value[index].uuid;
+        }
+        
+        return "";
     }
 
 
