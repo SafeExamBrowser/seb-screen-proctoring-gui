@@ -36,17 +36,16 @@
 </template>
   
 <script setup lang="ts">
-    import { ref } from 'vue';
-    import { useRouter } from 'vue-router';
-    import AlertMsg from '../widgets/AlertMsg.vue';
-    import ActionButton from '../widgets/ActionButton.vue';
+    import { ref } from "vue";
+    import AlertMsg from "../widgets/AlertMsg.vue";
+    import ActionButton from "../widgets/ActionButton.vue";
     import * as authenticationService from "../../services/authenticationService";
-import router from '@/router';
+    import router from "@/router";
 
 
-    let username = ref("super-admin");
-    let password = ref("admin");
-    let loginError = ref(false);
+    const username = ref("super-admin");
+    const password = ref("admin");
+    const loginError = ref(false);
 
     async function handleFormSubmit(){
 
@@ -65,8 +64,6 @@ import router from '@/router';
             //todo: add better error handling
             loginError.value = true;
             console.error(error)
-
-
         }
 
     }

@@ -10,6 +10,7 @@ export async function authorizeViaScreenProctoringServer(username: string, passw
         
         const encodedCredentials: string = Buffer.from(process.env.USERNAME + ":" + process.env.PASSWORD).toString("base64");
 
+        //todo: check if tokenresponse is necessary
         const {data, status} = await axios.post<TokenResponse>(url, {}, {
             headers: {
                 "Authorization": "Basic " + encodedCredentials

@@ -19,7 +19,8 @@ module.exports = {
       'error',
       {'ts-ignore': 'allow-with-description'},
     ],  
-    'no-useless-catch': 'off'
+    'no-useless-catch': 'off',
+    'no-undef': 'off'
   },
   overrides: [
     {
