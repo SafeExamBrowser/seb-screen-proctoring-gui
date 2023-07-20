@@ -7,7 +7,6 @@ export async function getGroups(token: string, pageNumber?: number, pageSize?: n
         //todo: add env desc to gihub
         const serverAddress: string = process.env.SERVER_URL + ":" + process.env.SERVER_PORT;
         const url: string =  serverAddress + process.env.DEFAULT_URL + proctorControllerUrl + "/group";
-        console.log(url)
 
         const headers = {
             "accept": "application/json",
@@ -15,9 +14,7 @@ export async function getGroups(token: string, pageNumber?: number, pageSize?: n
             "Content-Type": "application/x-www-form-urlencoded"
         };
 
-
         const {data, status} = await axios.get(url, { headers });
-        console.log(data);
 
         // console.log("====================")
         // console.log("http status: " + status)
@@ -36,13 +33,11 @@ export async function getGroups(token: string, pageNumber?: number, pageSize?: n
 }
 
 
-export async function getGroupByUuid(token: string, uuid:string, pageNumber?: number, pageSize?: number, sortBy?: string, sortOrder?: string, filterCriteria?: string): Promise<object>{
+export async function getGroupByUuid(token: string, uuid:string, options?: {}): Promise<object>{
     try{
         //todo: add env desc to gihub
         const serverAddress: string = process.env.SERVER_URL + ":" + process.env.SERVER_PORT;
         const url: string =  serverAddress + process.env.DEFAULT_URL + proctorControllerUrl + "/group/" + uuid;
-
-        console.log("url: " + url)
 
         const headers = {
             "accept": "application/json",
@@ -51,8 +46,7 @@ export async function getGroupByUuid(token: string, uuid:string, pageNumber?: nu
         };
 
 
-        const {data, status} = await axios.get(url, { headers });
-        console.log(data);
+        const {data, status} = await axios.get(url, {headers: headers, params: options});
 
         // console.log("====================")
         // console.log("http status: " + status)

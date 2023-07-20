@@ -25,27 +25,32 @@ export async function getGroups(pageNumber?: number, pageSize?: number, filterCr
   }
 }
 
-export async function getGroupByUuid(uuid: string, pageNumber?: number, pageSize?: number, sortBy?: string, sortOrder?: string, filterCriteria?: string): Promise<GroupUuidResponse[] | any> {
+export async function getGroupByUuid(uuid: string, optionalParamters?: OptionalParGroupByUuid): Promise<GroupUuidResponse[] | any> {
 
-    try {
-      //todo: add env desc to gihub
-  
-      const url: string = import.meta.env.VITE_SERVER_URL + ":" +  import.meta.env.VITE_SERVER_PORT + "/group/" + uuid;
-  
-      const headers = {
-          "accept": "application/json",
-          "Authorization": "Bearer " + localStorage.getItem("token"),
-          "Content-Type": "application/x-www-form-urlencoded"
-      };
-  
-      const {data, status}: AxiosResponse<Group> = await axios.get(url, { headers });
-  
-      if (status === 200) {
-        return data;
-      }
-  
-  
-    } catch (error) {
-      throw error;
+  try {
+    //todo: add env desc to gihub
+    const url: string = import.meta.env.VITE_SERVER_URL + ":" +  import.meta.env.VITE_SERVER_PORT + "/group/" + uuid;
+    
+    const headers = {
+        "accept": "application/json",
+        "Authorization": "Bearer " + localStorage.getItem("token"),
+        "Content-Type": "application/x-www-form-urlencoded"
+    };
+
+    const {data, status}: AxiosResponse<Group> = await axios.get(url, {headers: headers, params: {optionalParamters}});
+
+    if (status === 200) {
+      return data;
     }
+
+
+  } catch (error) {
+    throw error;
   }
+}
+
+function createOptionalParamaterObject(optionalParamters: OptionalParGroupByUuid): OptionalParGroupByUuid{
+  console.log(optionalParamters)
+
+  return {};
+}

@@ -1,61 +1,89 @@
 <template>
 
-    
+    <v-row v-if="!noScreenshotData" v-for="i in GRID_SIZE">
+        <v-col v-for="n in GRID_SIZE">
 
-    <v-row v-for="i in 3">
-        <v-col v-for="n in 3">
-            <v-card>
-                <v-card-title> {{returnClientName((i-1) * 3 + (n-1))}}</v-card-title>
-                <v-img :src="createImageLinkWithToken((i-1) * 3 + (n-1))" max-height="400px"></v-img>
+            <v-card v-if="currentIndexExists(calcIndex(i, n))" max-width="600">
+                <v-card-title> {{returnClientName(calcIndex(i, n))}}</v-card-title>
+                <v-img v-if="screenshots != undefined && screenshots[calcIndex(i, n)].active" :src="createImageLinkWithToken(calcIndex(i, n)) + '&t=' + timestamp"></v-img>
+                <v-img v-else :src="createImageLinkWithToken(calcIndex(i, n))"></v-img>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn rounded="sm" color="primary" variant="outlined" @click="openDialog(calcIndex(i, n))">
+                        Expand
+                    </v-btn>
+                    
+                    <v-btn :to="getProctoringViewLink(calcIndex(i, n))" rounded="sm" color="primary" variant="flat">
+                        Details View
+                    </v-btn>
+                </v-card-actions>
             </v-card>
+
         </v-col>
     </v-row>
 
+    <v-alert v-else color="warning" icon="$warning" title="No data available" :text="getAlertText()"></v-alert>
+
+    <v-dialog v-model="dialog" max-width="1500">
+      <v-card>
+        <v-img :src="openedImageLink"></v-img>
+      </v-card>
+    </v-dialog>
 
 
-    <!-- <div class="gallery-view-container">
-
-        <div class="container">
-            <div class="row">
-
-                <div v-for="screenshot in screenshots" :key="screenshot.uuid" class="col-lg-4 col-md-4 col-sm-12">
-
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ screenshot.clientName }}</h5>
-                        </div>
-                        <img :src=createImageLinkWithToken(screenshot.imageLink) class="card-img-top" alt="Image Title 1">
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
-
-    </div> -->
 
 </template>
 
 
 <script setup lang="ts">
-    import {ref, onBeforeMount} from "vue";
+    import {ref, onBeforeMount, onBeforeUnmount} from "vue";
     import {useRoute} from "vue-router";
     import * as groupService from "../../services/groupService";
+    import {SortOrder} from "../../models/sortOrderEnum";
+    import router from "@/router";
 
+    //todo: configure eslint
 
+    const GRID_SIZE: number = 3;
+    const RELOAD_INTERVAL_IN_S: number = 1 * 1000;
+
+    const dialog = ref(false);
     const screenshots = ref<Screenshot[]>();
+    const noScreenshotData = ref<boolean>(false);
+    const timestamp = ref(Date.now());
 
+    const groupUuid: string = useRoute().params.uuid.toString();
+    let groupName: string = "";
+    let openedImageLink: string = "";
+    let intervalImageUrl: any | null = null;
+    let intervalScreenshots: any | null = null;
 
     onBeforeMount(async () => {
         try {
-            const groupUuidResponse: GroupUuidResponse = await groupService.getGroupByUuid(useRoute().params.uuid.toString());
-            screenshots.value = groupUuidResponse.screenshots;
 
-            // console.log(groupUuidResponse)
+            const groupUuidResponse: GroupUuidResponse = await groupService.getGroupByUuid(groupUuid, {sortOrder: SortOrder.desc});
+            groupName = groupUuidResponse.name;
 
-            // if(groupUuidResponse.screenshots.length != 0){
-            //     const imageLink: string = groupUuidResponse.screenshots[0].latestImageLink + "?access_token=" + localStorage.getItem("token");
-            // }
+            if(groupUuidResponse.screenshots == null || groupUuidResponse.screenshots.length == 0){
+                noScreenshotData.value = true;
+                return;
+            }
+
+            // screenshots.value = groupUuidResponse.screenshots.slice(0, -4);
+            screenshots.value = groupUuidResponse.screenshots.flatMap(f => f ? [f] : []);
+
+            if(screenshots.value.length == 0){
+                noScreenshotData.value = true;
+                return;
+            }
+
+            console.log(screenshots.value)
+
+            intervalImageUrl = setInterval(() => {
+                timestamp.value = Date.now();
+            }, RELOAD_INTERVAL_IN_S);
+
 
         } catch (error) {
             //todo: add better error handling
@@ -63,6 +91,28 @@
         }
 
     });
+
+    onBeforeUnmount(() => {
+        if (intervalImageUrl) {
+            clearInterval(intervalImageUrl);
+        }
+    });
+
+    function getAndAsingScreenshots(){
+        
+    }
+
+    function calcIndex(i: number, n: number): number{
+        return (i - 1) * 3 + (n - 1);
+    }
+
+    function currentIndexExists(index: number): boolean{
+        if(screenshots.value != null && screenshots.value.length > index){
+            return true;
+        }
+
+        return false;
+    }
 
     function returnClientName(index: number): string{
         if(screenshots.value != null){
@@ -74,7 +124,26 @@
 
     function createImageLinkWithToken(index: number): string{
         if(screenshots.value != null){
+            console.log("latestImageLink: " + screenshots.value[index].latestImageLink)
+            console.log("imageLink with token: " + screenshots.value[index].latestImageLink + "?access_token=" + localStorage.getItem("token"))
             return screenshots.value[index].latestImageLink  + "?access_token=" + localStorage.getItem("token");
+        }
+
+        return "";
+    }
+
+    function getAlertText(): string{
+        return "The group: " + groupName + " has no recorded sessions"
+    }
+
+    function openDialog(index: number){
+        openedImageLink = createImageLinkWithToken(index) + "&t=" + timestamp.value;
+        dialog.value = true;
+    }
+
+    function getProctoringViewLink(index: number): string{
+        if(screenshots.value != null){
+            return "/galleryView/" + groupUuid + "/recording/" + screenshots.value[index].uuid;
         }
 
         return "";

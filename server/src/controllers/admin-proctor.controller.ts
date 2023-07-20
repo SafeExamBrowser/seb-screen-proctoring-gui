@@ -18,7 +18,11 @@ export async function getGroups(req: Request, res: Response){
 export async function getGroupByUuid(req: Request, res: Response){
 
     try{
-        const group: object = await adminProctorService.getGroupByUuid(req.headers.authorization, req.params.uuid);
+
+        console.log("params")
+        console.log(req.query.optionalParamters)
+
+        const group: object = await adminProctorService.getGroupByUuid(req.headers.authorization, req.params.uuid, req.query.optionalParamters);
 
         return res.status(200).json(group);
 

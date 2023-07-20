@@ -41,7 +41,10 @@ type GroupUuidResponse = {
 }
   
 type Screenshot = {
+    startTime: number;
     timestamp: number;
+    endTime: number;
+    active: boolean;
     uuid: string;
     clientName: string;
     clientIp: string;
@@ -51,14 +54,11 @@ type Screenshot = {
     imageFormat: string;
     latestImageLink: string;
     imageLink: string;
-    metaData: MetaData;
+    metaData?: MetaData;
 }
 
 type MetaData = {
-    additionalProp1: string,
-    additionalProp2: string,
-    additionalProp3: string
+    additionalProp1: string;
+    additionalProp2: string;
+    additionalProp3: string;
 }
-
-
-  
