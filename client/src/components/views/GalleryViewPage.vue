@@ -45,8 +45,10 @@
 
     //todo: configure eslint
 
-    const GRID_SIZE: number = 3;
-    const RELOAD_INTERVAL_IN_S: number = 1 * 1000;
+    const GRID_SIZE: number = 3
+    const IMG_URL_SCREENSHOTS_RELOAD_INTERVAL_IN_S: number = 5 * 1000;
+    const SCREENSHOTS_RELOAD_INTERVAL_IN_S: number = 1 * 1000;
+
 
     const dialog = ref(false);
     const screenshots = ref<Screenshot[]>();
@@ -56,12 +58,40 @@
     const groupUuid: string = useRoute().params.uuid.toString();
     let groupName: string = "";
     let openedImageLink: string = "";
-    let intervalImageUrl: any | null = null;
     let intervalScreenshots: any | null = null;
+    let intervalImageUrl: any | null = null;
 
     onBeforeMount(async () => {
-        try {
+        await getAndAsingScreenshots();
 
+        //relaod data as long as atleast one item has an active session
+        if(screenshots.value?.some(screenshot => screenshot.active)){
+
+            console.log("teeeeeeest")
+
+            intervalScreenshots = setInterval(async () => {
+                await getAndAsingScreenshots();
+            }, IMG_URL_SCREENSHOTS_RELOAD_INTERVAL_IN_S);
+
+            intervalImageUrl = setInterval(() => {
+                timestamp.value = Date.now();
+            }, SCREENSHOTS_RELOAD_INTERVAL_IN_S);
+        }
+        
+    });
+
+    onBeforeUnmount(() => {
+        if (intervalScreenshots) {
+            clearInterval(intervalScreenshots);
+        }
+
+        if (intervalImageUrl) {
+            clearInterval(intervalImageUrl);
+        }
+    });
+
+    async function getAndAsingScreenshots(){
+        try {
             const groupUuidResponse: GroupUuidResponse = await groupService.getGroupByUuid(groupUuid, {sortOrder: SortOrder.desc});
             groupName = groupUuidResponse.name;
 
@@ -80,26 +110,10 @@
 
             console.log(screenshots.value)
 
-            intervalImageUrl = setInterval(() => {
-                timestamp.value = Date.now();
-            }, RELOAD_INTERVAL_IN_S);
-
-
         } catch (error) {
             //todo: add better error handling
             console.error(error);
         }
-
-    });
-
-    onBeforeUnmount(() => {
-        if (intervalImageUrl) {
-            clearInterval(intervalImageUrl);
-        }
-    });
-
-    function getAndAsingScreenshots(){
-        
     }
 
     function calcIndex(i: number, n: number): number{
@@ -124,8 +138,8 @@
 
     function createImageLinkWithToken(index: number): string{
         if(screenshots.value != null){
-            console.log("latestImageLink: " + screenshots.value[index].latestImageLink)
-            console.log("imageLink with token: " + screenshots.value[index].latestImageLink + "?access_token=" + localStorage.getItem("token"))
+            // console.log("latestImageLink: " + screenshots.value[index].latestImageLink)
+            // console.log("imageLink with token: " + screenshots.value[index].latestImageLink + "?access_token=" + localStorage.getItem("token"))
             return screenshots.value[index].latestImageLink  + "?access_token=" + localStorage.getItem("token");
         }
 
