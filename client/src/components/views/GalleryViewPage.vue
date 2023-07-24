@@ -3,7 +3,7 @@
     <v-row v-if="!noScreenshotData" v-for="i in GRID_SIZE">
         <v-col v-for="n in GRID_SIZE">
 
-            <v-card v-if="currentIndexExists(calcIndex(i, n))" max-width="600">
+            <v-card v-if="currentIndexExists(calcIndex(i, n))">
                 <v-card-title> {{returnClientName(calcIndex(i, n))}}</v-card-title>
                 <v-img v-if="screenshots != undefined && screenshots[calcIndex(i, n)].active" :src="createImageLinkWithToken(calcIndex(i, n)) + '&t=' + timestamp"></v-img>
                 <v-img v-else :src="createImageLinkWithToken(calcIndex(i, n))"></v-img>
@@ -42,32 +42,32 @@
     import * as groupService from "../../services/groupService";
     import {SortOrder} from "../../models/sortOrderEnum";
     import router from "@/router";
+    import { useTitleStore } from "@/store/app";
 
     //todo: configure eslint
 
-    const GRID_SIZE: number = 3
+    const GRID_SIZE: number = 2
     const IMG_URL_SCREENSHOTS_RELOAD_INTERVAL_IN_S: number = 5 * 1000;
     const SCREENSHOTS_RELOAD_INTERVAL_IN_S: number = 1 * 1000;
 
+    const store = useTitleStore();
+    const groupUuid: string = useRoute().params.uuid.toString();
 
     const dialog = ref(false);
     const screenshots = ref<Screenshot[]>();
     const noScreenshotData = ref<boolean>(false);
     const timestamp = ref(Date.now());
 
-    const groupUuid: string = useRoute().params.uuid.toString();
-    let groupName: string = "";
     let openedImageLink: string = "";
     let intervalScreenshots: any | null = null;
     let intervalImageUrl: any | null = null;
+    let groupName: string = "";
 
     onBeforeMount(async () => {
         await getAndAsingScreenshots();
 
         //relaod data as long as atleast one item has an active session
         if(screenshots.value?.some(screenshot => screenshot.active)){
-
-            console.log("teeeeeeest")
 
             intervalScreenshots = setInterval(async () => {
                 await getAndAsingScreenshots();
@@ -94,6 +94,7 @@
         try {
             const groupUuidResponse: GroupUuidResponse = await groupService.getGroupByUuid(groupUuid, {sortOrder: SortOrder.desc});
             groupName = groupUuidResponse.name;
+            store.title = "Gallery View of Group: " + groupName;
 
             if(groupUuidResponse.screenshots == null || groupUuidResponse.screenshots.length == 0){
                 noScreenshotData.value = true;
@@ -116,6 +117,7 @@
         }
     }
 
+    //todo: change to computed prop
     function calcIndex(i: number, n: number): number{
         return (i - 1) * 3 + (n - 1);
     }

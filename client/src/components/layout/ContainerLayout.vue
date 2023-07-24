@@ -31,7 +31,8 @@
             <v-col cols="11">
                 <v-main>
                     <v-app-bar>
-                        <v-app-bar-title>{{ getTitle() }}</v-app-bar-title>
+                        <v-app-bar-title>{{ store.title }}</v-app-bar-title>
+
                         <v-app-bar-nav-icon class="d-none d-sm-flex d-md-none d-flex d-sm-none" variant="text"
                             @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
                     </v-app-bar>
@@ -48,6 +49,7 @@
     import { ref, watch, onUpdated, onBeforeMount } from 'vue'
     import { useDisplay } from 'vuetify';
     import * as groupService from "../../services/groupService";
+    import { useTitleStore } from '@/store/app';
 
 
     const links = [
@@ -55,49 +57,15 @@
         ['Example Page', '/example'],
     ]
 
+    const store = useTitleStore();
     const drawer = ref()
-    let groupName = ref()
+    const groupName = ref()
 
     //todo: remove --> see when display size changes
     const mobile = ref(useDisplay().sm)
     watch(mobile, () => {
         console.log(mobile.value) // false
     })
-
-    onBeforeMount(async () => {
-        getGroupName();
-    });
-
-    onUpdated(async () => {
-        getGroupName();
-    });
-
-    function getTitle(): string{
-        switch(useRoute().name?.toString()){
-            case "StartPage":
-                return "Active SEB Groups";
-            
-            case "ExamplePage":
-                return "Example Page";
-            
-            case "GalleryViewPage":
-                return "Proctoring View of Group: " + groupName.value;
-
-            default:
-                return "";
-        }
-    }
-
-    async function getGroupName(){
-        if(useRoute().name?.toString() == "GalleryViewPage"){
-            try {
-                const groupUuidResponse: GroupUuidResponse = await groupService.getGroupByUuid(useRoute().params.uuid.toString());
-                groupName.value = groupUuidResponse.name
-
-            } catch (error) {
-                return "group not found"
-            }
-        }
-    }
+    //////////
 
 </script>

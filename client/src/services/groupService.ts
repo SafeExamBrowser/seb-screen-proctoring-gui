@@ -48,9 +48,3 @@ export async function getGroupByUuid(uuid: string, optionalParamters?: OptionalP
     throw error;
   }
 }
-
-function createOptionalParamaterObject(optionalParamters: OptionalParGroupByUuid): OptionalParGroupByUuid{
-  console.log(optionalParamters)
-
-  return {};
-}

@@ -20,11 +20,15 @@
     import * as groupService from "../../services/groupService";
     import router from "@/router";
     import { VDataTable } from "vuetify/labs/VDataTable"
+    import { useTitleStore } from "@/store/app";
 
+    const store = useTitleStore();
     const groups = ref<Group[]>();
+
 
     onBeforeMount(async () => {
         try {
+            store.title = "Active SEB Groups"
             groups.value = await groupService.getGroups();
 
         } catch (error) {

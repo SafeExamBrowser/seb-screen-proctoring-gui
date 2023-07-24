@@ -1,11 +1,11 @@
 import {Request, Response} from 'express';
 
-import * as adminProctorService from '../services/admin-proctor.service';
+import * as adminProctorGroupService from '../services/admin-proctor-group.service';
 
 export async function getGroups(req: Request, res: Response){
 
     try{
-        const groups: object = await adminProctorService.getGroups(req.headers.authorization);
+        const groups: object = await adminProctorGroupService.getGroups(req.headers.authorization);
 
         return res.status(200).json(groups);
 
@@ -22,7 +22,7 @@ export async function getGroupByUuid(req: Request, res: Response){
         console.log("params")
         console.log(req.query.optionalParamters)
 
-        const group: object = await adminProctorService.getGroupByUuid(req.headers.authorization, req.params.uuid, req.query.optionalParamters);
+        const group: object = await adminProctorGroupService.getGroupByUuid(req.headers.authorization, req.params.uuid, req.query.optionalParamters);
 
         return res.status(200).json(group);
 
