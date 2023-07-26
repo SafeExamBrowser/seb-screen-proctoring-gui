@@ -151,43 +151,39 @@
     import * as timeUtils from "../../utils/timeUtils";
     import { useTitleStore } from '@/store/app';
     import { computed } from 'vue';
-import { stopCoverage } from 'v8';
 
-    const SCREENSHOTS_RELOAD_INTERVAL_IN_S: number = 1 * 1000;
-    const SCREENSHOTS_RELOAD_INTERVAL_IN_MS: number = 1000;
+    const SLIDER_INTERVAL: number = 1 * 1000;
+    const SESSION_INTERVAL: number = 3 * 1000;
+    const SCREENSHOTS_RELOAD_IN_MS: number = 1000;
 
-    const store = useTitleStore();
+    const titleStore = useTitleStore();
+    const sessionId: string = useRoute().params.sessionId.toString();
 
     const isPlaying = ref<boolean>(false);
+    //todo: cehck if ref can definied null --> ref<string | null>(null)
     const session = ref<Screenshot>();
     const sliderTime = ref<number>();
     const imageLink = ref<string>("");
 
     let intervalScreenshots: any | null = null;
-
-
+    let intervalSession: any | null = null;
 
     onBeforeMount(async () => {
+        await getAndAsignSession();
+        titleStore.title = "Proctoring View of Group: " + session.value?.clientName;
+        sliderTime.value = session.value?.startTime;
 
-        try {
-            const sessionResponse: Screenshot = await sessionService.getSessionBySessionId(useRoute().params.sessionId.toString());
-            console.log(sessionResponse)
-
-            if(sessionResponse != null){
-                session.value = sessionResponse;
-                store.title = "Proctoring View of Group: " + session.value.clientName;
-                sliderTime.value = session.value.startTime;
-            }
-
-        } catch (error) {
-            //todo: add better error handling
-            console.error(error);
+        if(session.value?.active){
+            intervalSession = setInterval(async () => {
+                await getAndAsignSession();
+            }, SESSION_INTERVAL);
         }
         
     });
 
     onBeforeUnmount(() => {
-        stopInterval();
+        stopIntervalScreenshots();
+        stopIntervalSessions();
     });
 
     watch(sliderTime, () => {
@@ -195,6 +191,21 @@ import { stopCoverage } from 'v8';
             imageLink.value = getImageLink(sliderTime.value?.toString());
         }
     })
+
+    async function getAndAsignSession(){
+        try {
+            const sessionResponse: Screenshot = await sessionService.getSessionBySessionId(sessionId);
+            console.log(sessionResponse)
+
+            if(sessionResponse != null){
+                session.value = sessionResponse;
+            }
+
+        } catch (error) {
+            //todo: add better error handling
+            console.error(error);
+        }
+    }
 
     const currentTime = computed(() => {
         if(sliderTime.value != null && session.value != null){
@@ -216,25 +227,31 @@ import { stopCoverage } from 'v8';
 
     function getImageLink(timestamp: string): string{
         if(session.value != null && sliderTime.value == session.value.startTime){
-            return session.value.latestImageLink  + "?access_token=" + localStorage.getItem("token");
+            return session.value.latestImageLink  + "?access_token=" + localStorage.getItem("accessToken");
         }
 
         if(session.value != null){
-            return session.value.latestImageLink + "/" + timestamp + "/" + "?access_token=" + localStorage.getItem("token");
+            return session.value.latestImageLink + "/" + timestamp + "/" + "?access_token=" + localStorage.getItem("accessToken");
         }
 
         return "";
     }
 
-    function stopInterval(){
+    function stopIntervalScreenshots(){
         if (intervalScreenshots) {
             clearInterval(intervalScreenshots);
         }
     }
 
+    function stopIntervalSessions(){
+        if (intervalSession) {
+            clearInterval(intervalSession);
+        }
+    }
+
     function backwards(){
         if(session.value != null && sliderTime.value != null && sliderTime.value != session.value.startTime){
-            sliderTime.value -= SCREENSHOTS_RELOAD_INTERVAL_IN_MS;
+            sliderTime.value -= SCREENSHOTS_RELOAD_IN_MS;
         }
     }
 
@@ -242,7 +259,7 @@ import { stopCoverage } from 'v8';
         if(session.value != null && sliderTime.value != null && timeUtils.toSeconds(sliderTime.value) != timeUtils.toSeconds(session.value?.endTime)){
             console.log("stil gets called")
 
-            sliderTime.value += SCREENSHOTS_RELOAD_INTERVAL_IN_MS;
+            sliderTime.value += SCREENSHOTS_RELOAD_IN_MS;
         }
     }
 
@@ -252,7 +269,7 @@ import { stopCoverage } from 'v8';
         }
 
         if(!isPlaying.value){
-            stopInterval();
+            stopIntervalScreenshots();
             return;
         }
 
@@ -260,15 +277,15 @@ import { stopCoverage } from 'v8';
             intervalScreenshots = setInterval(async () => {
 
                 if(sliderTime.value != null){
-                    sliderTime.value += SCREENSHOTS_RELOAD_INTERVAL_IN_MS;
+                    sliderTime.value += SCREENSHOTS_RELOAD_IN_MS;
                 }
 
                 if(session.value != null && sliderTime.value != null && timeUtils.toSeconds(sliderTime.value) == timeUtils.toSeconds(session.value?.endTime)){
-                    stopInterval();
+                    stopIntervalScreenshots();
                     isPlaying.value = false;
                 }
 
-            }, SCREENSHOTS_RELOAD_INTERVAL_IN_S);
+            }, SLIDER_INTERVAL);
         }
     }
 

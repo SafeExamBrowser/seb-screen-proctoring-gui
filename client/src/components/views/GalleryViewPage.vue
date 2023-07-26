@@ -46,11 +46,11 @@
 
     //todo: configure eslint
 
-    const GRID_SIZE: number = 2
+    const GRID_SIZE: number = 3;
     const IMG_URL_SCREENSHOTS_RELOAD_INTERVAL_IN_S: number = 5 * 1000;
     const SCREENSHOTS_RELOAD_INTERVAL_IN_S: number = 1 * 1000;
 
-    const store = useTitleStore();
+    const titleStore = useTitleStore();
     const groupUuid: string = useRoute().params.uuid.toString();
 
     const dialog = ref(false);
@@ -65,7 +65,8 @@
 
     onBeforeMount(async () => {
         await getAndAsingScreenshots();
-
+        titleStore.title = "Gallery View of Group: " + groupName;
+        
         //relaod data as long as atleast one item has an active session
         if(screenshots.value?.some(screenshot => screenshot.active)){
 
@@ -94,7 +95,6 @@
         try {
             const groupUuidResponse: GroupUuidResponse = await groupService.getGroupByUuid(groupUuid, {sortOrder: SortOrder.desc});
             groupName = groupUuidResponse.name;
-            store.title = "Gallery View of Group: " + groupName;
 
             if(groupUuidResponse.screenshots == null || groupUuidResponse.screenshots.length == 0){
                 noScreenshotData.value = true;
@@ -141,8 +141,8 @@
     function createImageLinkWithToken(index: number): string{
         if(screenshots.value != null){
             // console.log("latestImageLink: " + screenshots.value[index].latestImageLink)
-            // console.log("imageLink with token: " + screenshots.value[index].latestImageLink + "?access_token=" + localStorage.getItem("token"))
-            return screenshots.value[index].latestImageLink  + "?access_token=" + localStorage.getItem("token");
+            // console.log("imageLink with token: " + screenshots.value[index].latestImageLink + "?access_token=" + localStorage.getItem("accessToken"))
+            return screenshots.value[index].latestImageLink  + "?access_token=" + localStorage.getItem("accessToken");
         }
 
         return "";
@@ -170,8 +170,9 @@
 </script>
 
 <style>
-    .gallery-view-container{
+    /* .gallery-view-container{
         width: 60%;
         height: 60%;
-    }
+    } */
+
 </style>

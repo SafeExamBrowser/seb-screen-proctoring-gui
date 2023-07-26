@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosHeaders } from "axios";
 
 const proctorControllerUrl: string = "/proctoring";
 
@@ -24,11 +24,11 @@ export async function getGroups(token: string, pageNumber?: number, pageSize?: n
         return data;
 
     }catch(error){
-        console.log("====================")
+        console.error("====================")
         console.error("error message: " + error.message)
-        console.log("====================")
+        console.error("====================")
 
-        throw Error(error);
+        throw Error(error.response.status);
     }
 }
 
@@ -45,6 +45,9 @@ export async function getGroupByUuid(token: string, uuid:string, options?: {}): 
             "Content-Type": "application/x-www-form-urlencoded"
         };
 
+        console.log(headers)
+        console.log(token)
+        console.log(url)
 
         const {data, status} = await axios.get(url, {headers: headers, params: options});
 
@@ -56,10 +59,10 @@ export async function getGroupByUuid(token: string, uuid:string, options?: {}): 
         return data;
 
     }catch(error){
-        console.log("====================")
+        console.error("====================")
         console.error("error message: " + error.message)
-        console.log("====================")
+        console.error("====================")
 
-        throw Error(error);
+        throw Error(error.response.status);
     }
 }

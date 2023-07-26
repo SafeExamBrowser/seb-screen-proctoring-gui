@@ -1,19 +1,13 @@
 import axios, { AxiosResponse } from 'axios'
+import * as apiService from "./apiService";
 
 export async function getGroups(pageNumber?: number, pageSize?: number, filterCriteria?: string): Promise<Group[] | any> {
 
   try {
-    //todo: add env desc to gihub
 
-    const url: string = import.meta.env.VITE_SERVER_URL + ":" +  import.meta.env.VITE_SERVER_PORT + "/group";
+    const url: string = "/group";
 
-    const headers = {
-        "accept": "application/json",
-        "Authorization": "Bearer " + localStorage.getItem("token"),
-        "Content-Type": "application/x-www-form-urlencoded"
-    };
-
-    const {data, status}: AxiosResponse<GroupResponse> = await axios.get(url, { headers });
+    const {data, status}: AxiosResponse<GroupResponse> = await apiService.api.get(url, {headers: getHeaders()});
 
     if (status === 200) {
       return data.content;
@@ -29,15 +23,9 @@ export async function getGroupByUuid(uuid: string, optionalParamters?: OptionalP
 
   try {
     //todo: add env desc to gihub
-    const url: string = import.meta.env.VITE_SERVER_URL + ":" +  import.meta.env.VITE_SERVER_PORT + "/group/" + uuid;
+    const url: string = "/group/" + uuid;
     
-    const headers = {
-        "accept": "application/json",
-        "Authorization": "Bearer " + localStorage.getItem("token"),
-        "Content-Type": "application/x-www-form-urlencoded"
-    };
-
-    const {data, status}: AxiosResponse<Group> = await axios.get(url, {headers: headers, params: {optionalParamters}});
+    const {data, status}: AxiosResponse<Group> = await apiService.api.get(url, {headers: getHeaders(), params: {optionalParamters}});
 
     if (status === 200) {
       return data;
@@ -47,4 +35,12 @@ export async function getGroupByUuid(uuid: string, optionalParamters?: OptionalP
   } catch (error) {
     throw error;
   }
+}
+
+function getHeaders(): object{
+  return {
+    "accept": "application/json",
+    "Authorization": "Bearer " + localStorage.getItem("accessToken"),
+    "Content-Type": "application/x-www-form-urlencoded"
+  };
 }

@@ -42,7 +42,6 @@
     import * as authenticationService from "../../services/authenticationService";
     import router from "@/router";
 
-
     const username = ref("super-admin");
     const password = ref("admin");
     const loginError = ref(false);
@@ -50,10 +49,12 @@
     async function handleFormSubmit(){
 
         try{
-            const token: string = await authenticationService.login(username.value, password.value);
-            localStorage.setItem("token", token);
+            const tokenObject: Token = await authenticationService.login(username.value, password.value);
 
-            console.log("token: " + token)
+            localStorage.setItem("accessToken", tokenObject.access_token);
+            localStorage.setItem("refreshToken", tokenObject.refresh_token);
+
+            console.log("token: " + localStorage.getItem("accessToken"))
 
             router.push({
                 path: "/start"
@@ -62,8 +63,8 @@
 
         }catch(error){
             //todo: add better error handling
-            loginError.value = true;
             console.error(error)
+            loginError.value = true;
         }
 
     }
@@ -71,12 +72,6 @@
 
 </script>
   
-
-
-
-
-
-
 
 <style lang="scss" scoped>
 .login_input {

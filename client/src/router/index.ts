@@ -21,7 +21,7 @@ const routes: Array<RouteRecordRaw> = [
         name: "StartPage",
         component: StartPage,
         beforeEnter: () => {
-          console.log("before enter")
+          // console.log("before enter")
         }
       },
       {
@@ -39,7 +39,6 @@ const routes: Array<RouteRecordRaw> = [
         name: "ProctoringViewPage",
         component: ProctoringViewPage
       }
-
 
     ]
   },

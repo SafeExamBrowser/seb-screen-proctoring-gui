@@ -5,21 +5,35 @@ export async function login(username: string, password: string): Promise<string 
   try {
     //todo: add env desc to gihub
     const url: string = import.meta.env.VITE_SERVER_URL + ":" +  import.meta.env.VITE_SERVER_PORT + "/authorize";
-    console.log("url: " + url)
 
-    const response: AxiosResponse<Token> = await axios.post(url, {
+    const response = await axios.post(url, {
       username,
       password
     })
 
-    console.log(response)
-
     if (response.status === 200) {
-      return response.data.access_token;
-    }
-
+      return response.data;
+    } 
 
   } catch (error) {
+    throw error;
+  }
+}
+
+export async function refresh(): Promise<string | any>{
+
+  try{
+    const url: string = import.meta.env.VITE_SERVER_URL + ":" +  import.meta.env.VITE_SERVER_PORT + "/refresh";
+
+    const headers = {
+      "Authorization": "Bearer " + localStorage.getItem("refreshToken"),
+    };
+    
+    const response: AxiosResponse<Token> = await axios.post(url, {}, {headers: headers});
+
+    return response.data;
+
+  }catch(error){
     throw error;
   }
 }

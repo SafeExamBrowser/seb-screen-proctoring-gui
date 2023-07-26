@@ -12,8 +12,18 @@ export async function authorize(req: Request, res: Response){
         return res.status(200).json(tokenObject);
 
     }catch(error){
-        return res.status(400).json({status: 400, message: error.message});
+        return res.status(JSON.parse(error.message)).send();
     }
-    
+}
 
+export async function refresh(req: Request, res: Response){
+
+    try{
+        const tokenObject: object = await authorizationService.refreshViaScreenProctoringServer(req.headers.authorization.split(" ")[1]);
+
+        return res.status(200).json(tokenObject);
+
+    }catch(error){
+        return res.status(JSON.parse(error.message)).send();
+    }
 }

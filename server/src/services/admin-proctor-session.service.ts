@@ -16,19 +16,14 @@ export async function getSessionBySessionId(token: string, sessionId: string): P
 
         const {data, status} = await axios.get(url, {headers});
 
-        console.log("====================")
-        console.log("data: ")
-        console.log(data)
-        console.log("====================")
-
         return data;
 
     }catch(error){
-        console.log("====================")
+        console.error("====================")
         console.error("error message: " + error.message)
-        console.log("====================")
+        console.error("====================")
 
-        throw Error(error);
+        throw Error(error.response.status);
     }
 }
 
@@ -56,10 +51,10 @@ export async function getSessionByTimestamp(token: string, sessionId: string, ti
         return data;
 
     }catch(error){
-        console.log("====================")
+        console.error("====================")
         console.error("error message: " + error.message)
-        console.log("====================")
+        console.error("====================")
 
-        throw Error(error);
+        throw Error(error.response.status);
     }
 }

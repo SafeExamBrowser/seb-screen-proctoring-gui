@@ -10,7 +10,7 @@ export async function getGroups(req: Request, res: Response){
         return res.status(200).json(groups);
 
     }catch(error){
-        return res.status(400).json({status: 400, message: error.message});
+        return res.status(JSON.parse(error.message)).send();
     }
 }
 
@@ -18,15 +18,11 @@ export async function getGroups(req: Request, res: Response){
 export async function getGroupByUuid(req: Request, res: Response){
 
     try{
-
-        console.log("params")
-        console.log(req.query.optionalParamters)
-
         const group: object = await adminProctorGroupService.getGroupByUuid(req.headers.authorization, req.params.uuid, req.query.optionalParamters);
 
         return res.status(200).json(group);
 
     }catch(error){
-        return res.status(400).json({status: 400, message: error.message});
+        return res.status(JSON.parse(error.message)).send();
     }
 }

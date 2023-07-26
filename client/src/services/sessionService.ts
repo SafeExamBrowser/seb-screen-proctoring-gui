@@ -1,18 +1,12 @@
 import axios, { AxiosResponse } from 'axios'
+import * as apiService from "./apiService";
 
 export async function getSessionBySessionId(sessionId: string): Promise<Screenshot | any> {
 
   try {
     //todo: add env desc to gihub
-    const url: string = import.meta.env.VITE_SERVER_URL + ":" +  import.meta.env.VITE_SERVER_PORT + "/session/" + sessionId;
-
-    const headers = {
-        "accept": "application/json",
-        "Authorization": "Bearer " + localStorage.getItem("token"),
-        "Content-Type": "application/x-www-form-urlencoded"
-    };
-
-    const {data, status}: AxiosResponse<GroupResponse> = await axios.get(url, {headers});
+    const url: string = "/session/" + sessionId;
+    const {data, status}: AxiosResponse<GroupResponse> = await apiService.api.get(url, {headers: getHeaders()});
 
     if (status === 200) {
       return data;
@@ -28,15 +22,8 @@ export async function getSessionByTimestamp(sessionId: string, timestamp: string
 
   try {
     //todo: add env desc to gihub
-    const url: string = import.meta.env.VITE_SERVER_URL + ":" +  import.meta.env.VITE_SERVER_PORT + "/session/" + sessionId + "/" + timestamp;
-    
-    const headers = {
-        "accept": "application/json",
-        "Authorization": "Bearer " + localStorage.getItem("token"),
-        "Content-Type": "application/x-www-form-urlencoded"
-    };
-
-    const {data, status}: AxiosResponse<Group> = await axios.get(url, {headers: headers});
+    const url: string = "/session/" + sessionId + "/" + timestamp;
+    const {data, status}: AxiosResponse<Group> = await apiService.api.get(url, {headers: getHeaders()});
 
     if (status === 200) {
       return data;
@@ -46,4 +33,12 @@ export async function getSessionByTimestamp(sessionId: string, timestamp: string
   } catch (error) {
     throw error;
   }
+}
+
+function getHeaders(): object{
+  return {
+    "accept": "application/json",
+    "Authorization": "Bearer " + localStorage.getItem("accessToken"),
+    "Content-Type": "application/x-www-form-urlencoded"
+  };
 }
