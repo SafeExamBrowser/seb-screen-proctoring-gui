@@ -28,7 +28,7 @@ type EntityPrivilege = {
     privileges: string;
 }
 
-type GroupUuidResponse = {
+type GroupUuid = {
     uuid: string;
     name: string;
     description: string;

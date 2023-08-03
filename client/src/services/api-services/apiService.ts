@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosStatic } from "axios";
-import * as authenticationService from "./authenticationService";
+import * as authenticationService from "@/services/api-services/authenticationService";
 
 export let api: AxiosInstance;
 
