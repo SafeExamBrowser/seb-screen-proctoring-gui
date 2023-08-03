@@ -15,12 +15,12 @@ jobs:
     - name: Login to DockerHub
       uses: docker/login-action@v2.2.0
       with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: naritter
+          password: ${{ secrets.DOCKERHUB_PASSWORD}}
     
     - name: Build and push Docker image
       uses: docker/build-push-action@v4.1.1
       with:
         context: .
         push: true
-        tags: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/seb-sps-gui:demo-testing
+        tags: docker.io/naritter/seb-sps-gui:demo-testing
