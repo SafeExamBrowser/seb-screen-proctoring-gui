@@ -1,5 +1,7 @@
 # Stage 1: Build the Vue app
 FROM node:18 as client-builder
+ENV VITE_SERVER_URL "http://localhost"
+ENV VITE_SERVER_PORT "3000"
 WORKDIR /app/client
 COPY client/package*.json ./
 RUN npm install
