@@ -1,0 +1,30 @@
+.layout {
+  @apply max-w-screen-xl;
+  @apply md:flex;
+
+  .layout__content {
+    @apply container;
+    @apply mx-auto;
+    @apply md:ml-64;
+    @apply md:px-6;
+  }
+
+  .layout__mainheading {
+    @apply absolute;
+    @apply top-0;
+    @apply w-full;
+    @apply text-lg;
+    @apply sr-only;
+    @apply bg-white;
+
+    @screen md {
+      @apply not-sr-only;
+      @apply sticky;
+      @apply top-0;
+      @apply flex;
+      @apply items-center;
+      @apply h-12;
+      @apply z-20;
+    }
+  }
+}

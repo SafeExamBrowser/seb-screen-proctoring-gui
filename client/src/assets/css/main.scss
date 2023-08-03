@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind utilities;
+@tailwind components;
+
+@import "./focus-follow";
+@import "./layout";
+@import "./panel";
+@import "./menu";
+@import "./link";
+
+body.scroll-lock {
+  overflow-y: hidden;
+}
