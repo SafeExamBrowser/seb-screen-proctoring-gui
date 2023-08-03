@@ -6,7 +6,7 @@ on:
     branches: [ "main", "working-demo-v1" ]
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
