@@ -8,9 +8,9 @@
 
 
 <script setup lang="ts">
-    import { useTitleStore } from '@/store/app';
+    import { useAppBarStore } from '@/store/app';
 
-    const store = useTitleStore();
+    const store = useAppBarStore();
 
     store.title = "Example Page";
 

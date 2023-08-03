@@ -1,15 +1,16 @@
 import axios, { AxiosResponse } from 'axios'
-import * as apiService from "./apiService";
+import * as apiService from "@/services/api-services/apiService";
 
-export async function getSessionBySessionId(sessionId: string): Promise<Screenshot | any> {
+export async function getGroups(pageNumber?: number, pageSize?: number, filterCriteria?: string): Promise<Group[] | any> {
 
   try {
-    //todo: add env desc to gihub
-    const url: string = "/session/" + sessionId;
+
+    const url: string = "/group";
+
     const {data, status}: AxiosResponse<GroupResponse> = await apiService.api.get(url, {headers: getHeaders()});
 
     if (status === 200) {
-      return data;
+      return data.content;
     }
 
 
@@ -18,12 +19,13 @@ export async function getSessionBySessionId(sessionId: string): Promise<Screensh
   }
 }
 
-export async function getSessionByTimestamp(sessionId: string, timestamp: string): Promise<Screenshot | any> {
+export async function getGroupByUuid(uuid: string, optionalParamters?: OptionalParGroupByUuid): Promise<GroupUuid[] | any> {
 
   try {
     //todo: add env desc to gihub
-    const url: string = "/session/" + sessionId + "/" + timestamp;
-    const {data, status}: AxiosResponse<Group> = await apiService.api.get(url, {headers: getHeaders()});
+    const url: string = "/group/" + uuid;
+    
+    const {data, status}: AxiosResponse<Group> = await apiService.api.get(url, {headers: getHeaders(), params: {optionalParamters}});
 
     if (status === 200) {
       return data;

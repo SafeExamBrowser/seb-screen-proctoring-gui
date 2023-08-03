@@ -9,6 +9,13 @@
                 </div>
             </td>
         </template>
+        <template v-slot:item.creationTime="{item}">
+            <td>
+                <div>
+                    {{timeUtils.formatTimestampToFullDate(item.columns.creationTime)}}
+                </div>
+            </td>
+        </template>
 
     </v-data-table>
 
@@ -17,19 +24,20 @@
 
 <script setup lang="ts">
     import { ref, onBeforeMount } from "vue";
-    import * as groupService from "../../services/groupService";
+    import * as groupService from "@/services/api-services/groupService";
     import router from "@/router";
     import { VDataTable } from "vuetify/labs/VDataTable"
-    import { useTitleStore } from "@/store/app";
+    import { useAppBarStore } from "@/store/app";
+    import * as timeUtils from "@/utils/timeUtils";
 
-    const store = useTitleStore();
+    const appBarStore = useAppBarStore();
     const groups = ref<Group[]>();
 
 
     onBeforeMount(async () => {
         try {
-            store.title = "Active SEB Groups"
-            groups.value = await groupService.getGroups();
+            appBarStore.title = "Active SEB Groups"
+            groups.value = await groupService.getGroups(2);
 
         } catch (error) {
             //todo: add better error handling

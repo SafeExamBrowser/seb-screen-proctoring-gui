@@ -9,7 +9,7 @@ import { loadFonts } from './webfontloader'
 import vuetify from './vuetify'
 import pinia from '../store'
 import router from '../router'
-import * as apiService from "../services/apiService";
+import * as apiService from "@/services/api-services/apiService";
 
 // Types
 import type { App } from 'vue'

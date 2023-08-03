@@ -37,14 +37,17 @@
   
 <script setup lang="ts">
     import { ref } from "vue";
-    import AlertMsg from "../widgets/AlertMsg.vue";
-    import ActionButton from "../widgets/ActionButton.vue";
-    import * as authenticationService from "../../services/authenticationService";
+    import AlertMsg from "@/components/widgets/AlertMsg.vue";
+    import ActionButton from "@/components/widgets/ActionButton.vue";
+    import * as authenticationService from "@/services/api-services/authenticationService";
     import router from "@/router";
 
     const username = ref("super-admin");
     const password = ref("admin");
     const loginError = ref(false);
+
+
+    console.log(localStorage.getItem("accessToken"))
 
     async function handleFormSubmit(){
 
@@ -90,4 +93,3 @@
     //@apply sm: text-sm;
 }
 </style>
-  ../../services/authenticationService

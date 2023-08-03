@@ -1,11 +1,15 @@
 // Utilities
 import { defineStore } from 'pinia'
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 
-export const useTitleStore = defineStore('title', () => {
-  const title = ref("Example Title");
+export const useAppBarStore = defineStore('appBar', () => {
+  const title = ref<string>("Example Title");
+  const galleryGridSize = reactive<GridSize>({
+    title: "3x3",
+    value: 3
+  });
 
-  return {title};
+  return {title, galleryGridSize};
 });
 
 // export const useAuthStore = defineStore("auth", () => {
