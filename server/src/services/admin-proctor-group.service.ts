@@ -5,8 +5,8 @@ const proctorControllerUrl: string = "/proctoring";
 export async function getGroups(token: string, pageNumber?: number, pageSize?: number, filterCriteria?: string): Promise<object>{
     try{
         //todo: add env desc to gihub
-        const serverAddress: string = process.env.SERVER_URL + ":" + process.env.SERVER_PORT;
-        const url: string =  serverAddress + process.env.DEFAULT_URL + proctorControllerUrl + "/group";
+        const serverAddress: string = process.env.PROCTOR_SERVER_URL + ":" + process.env.PROCTOR_SERVER_PORT;
+        const url: string =  serverAddress + process.env.PROCTOR_DEFAULT_URL + proctorControllerUrl + "/group";
 
         const headers = {
             "accept": "application/json",
@@ -16,17 +16,16 @@ export async function getGroups(token: string, pageNumber?: number, pageSize?: n
 
         const {data, status} = await axios.get(url, { headers });
 
-        // console.log("====================")
-        // console.log("http status: " + status)
-        // console.log("jwt token: " + data.access_token)
-        // console.log("====================")
-
         return data;
 
     }catch(error){
         console.error("====================")
         console.error("error message: " + error.message)
         console.error("====================")
+
+        if(!error.response){
+            throw Error("server error");
+        }
 
         throw Error(error.response.status);
     }
@@ -36,8 +35,8 @@ export async function getGroups(token: string, pageNumber?: number, pageSize?: n
 export async function getGroupByUuid(token: string, uuid:string, options?: {}): Promise<object>{
     try{
         //todo: add env desc to gihub
-        const serverAddress: string = process.env.SERVER_URL + ":" + process.env.SERVER_PORT;
-        const url: string =  serverAddress + process.env.DEFAULT_URL + proctorControllerUrl + "/group/" + uuid;
+        const serverAddress: string = process.env.PROCTOR_SERVER_URL + ":" + process.env.PROCTOR_SERVER_PORT;
+        const url: string =  serverAddress + process.env.PROCTOR_DEFAULT_URL + proctorControllerUrl + "/group/" + uuid;
 
         const headers = {
             "accept": "application/json",
@@ -45,16 +44,7 @@ export async function getGroupByUuid(token: string, uuid:string, options?: {}): 
             "Content-Type": "application/x-www-form-urlencoded"
         };
 
-        console.log(headers)
-        console.log(token)
-        console.log(url)
-
         const {data, status} = await axios.get(url, {headers: headers, params: options});
-
-        // console.log("====================")
-        // console.log("http status: " + status)
-        // console.log("jwt token: " + data.access_token)
-        // console.log("====================")
 
         return data;
 
@@ -62,6 +52,10 @@ export async function getGroupByUuid(token: string, uuid:string, options?: {}): 
         console.error("====================")
         console.error("error message: " + error.message)
         console.error("====================")
+
+        if(!error.response){
+            throw Error("server error");
+        }
 
         throw Error(error.response.status);
     }
