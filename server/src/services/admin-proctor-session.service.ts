@@ -5,8 +5,8 @@ const proctorControllerUrl: string = "/proctoring";
 export async function getSessionBySessionId(token: string, sessionId: string): Promise<object>{
     try{
         //todo: add env desc to gihub
-        const serverAddress: string = process.env.SERVER_URL + ":" + process.env.SERVER_PORT;
-        const url: string =  serverAddress + process.env.DEFAULT_URL + proctorControllerUrl + "/session/" + sessionId;
+        const serverAddress: string = process.env.PROCTOR_SERVER_URL + ":" + process.env.PROCTOR_SERVER_PORT;
+        const url: string =  serverAddress + process.env.PROCTOR_DEFAULT_URL + proctorControllerUrl + "/session/" + sessionId;
 
         const headers = {
             "accept": "application/json",
@@ -23,6 +23,10 @@ export async function getSessionBySessionId(token: string, sessionId: string): P
         console.error("error message: " + error.message)
         console.error("====================")
 
+        if(!error.response){
+            throw Error("server error");
+        }
+
         throw Error(error.response.status);
     }
 }
@@ -31,8 +35,8 @@ export async function getSessionBySessionId(token: string, sessionId: string): P
 export async function getSessionByTimestamp(token: string, sessionId: string, timestamp: string): Promise<object>{
     try{
         //todo: add env desc to gihub
-        const serverAddress: string = process.env.SERVER_URL + ":" + process.env.SERVER_PORT;
-        const url: string =  serverAddress + process.env.DEFAULT_URL + proctorControllerUrl + "/session/" + sessionId + "/" + timestamp;
+        const serverAddress: string = process.env.PROCTOR_SERVER_URL + ":" + process.env.PROCTOR_SERVER_PORT;
+        const url: string =  serverAddress + process.env.PROCTOR_DEFAULT_URL + proctorControllerUrl + "/session/" + sessionId + "/" + timestamp;
 
         const headers = {
             "accept": "application/json",
@@ -40,13 +44,7 @@ export async function getSessionByTimestamp(token: string, sessionId: string, ti
             "Content-Type": "application/x-www-form-urlencoded"
         };
 
-
         const {data, status} = await axios.get(url, {headers: headers});
-
-        // console.log("====================")
-        // console.log("http status: " + status)
-        // console.log("jwt token: " + data.access_token)
-        // console.log("====================")
 
         return data;
 
@@ -54,6 +52,10 @@ export async function getSessionByTimestamp(token: string, sessionId: string, ti
         console.error("====================")
         console.error("error message: " + error.message)
         console.error("====================")
+
+        if(!error.response){
+            throw Error("server error");
+        }
 
         throw Error(error.response.status);
     }

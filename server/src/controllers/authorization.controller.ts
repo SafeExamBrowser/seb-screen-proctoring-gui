@@ -12,6 +12,10 @@ export async function authorize(req: Request, res: Response){
         return res.status(200).json(tokenObject);
 
     }catch(error){
+        if(isNaN(error.messsage)){
+            return res.status(500).send();
+        }
+
         return res.status(JSON.parse(error.message)).send();
     }
 }
@@ -24,6 +28,10 @@ export async function refresh(req: Request, res: Response){
         return res.status(200).json(tokenObject);
 
     }catch(error){
+        if(isNaN(error.messsage)){
+            return res.status(500).send();
+        }
+
         return res.status(JSON.parse(error.message)).send();
     }
 }
