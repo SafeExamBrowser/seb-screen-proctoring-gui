@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { Buffer } from 'buffer';
+import {Buffer} from 'buffer';
+import {LOG} from '../logging/logger';
 
 
 export async function authorizeViaScreenProctoringServer(username: string, password: string): Promise<object>{
@@ -18,9 +19,9 @@ export async function authorizeViaScreenProctoringServer(username: string, passw
         return data;
 
     }catch(error){
-        console.error("====================")
-        console.error("error message: " + error)
-        console.error("====================")
+        LOG.error("====================")
+        LOG.error("error message: " + error)
+        LOG.error("====================")
 
         if(!error.response){
             throw Error("server error");
@@ -39,7 +40,6 @@ export async function refreshViaScreenProctoringServer(refreshToken: string): Pr
         
         const encodedCredentials: string = Buffer.from(process.env.USERNAME + ":" + process.env.PASSWORD).toString("base64");
 
-        //todo: check if tokenresponse is necessary
         const {data, status} = await axios.post(url, {}, {
             headers: {
                 "Authorization": "Basic " + encodedCredentials
@@ -49,9 +49,9 @@ export async function refreshViaScreenProctoringServer(refreshToken: string): Pr
         return data;
 
     }catch(error){
-        console.error("====================")
-        console.error("error message: " + error.message)
-        console.error("====================")
+        LOG.error("====================")
+        LOG.error("error message: " + error.message)
+        LOG.error("====================")
 
         if(!error.response){
             throw Error("server error");

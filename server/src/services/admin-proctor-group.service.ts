@@ -1,4 +1,6 @@
-import axios, { AxiosHeaders } from "axios";
+import axios, {AxiosHeaders} from "axios";
+import {LOG} from '../logging/logger';
+
 
 const proctorControllerUrl: string = "/proctoring";
 
@@ -19,9 +21,9 @@ export async function getGroups(token: string, pageNumber?: number, pageSize?: n
         return data;
 
     }catch(error){
-        console.error("====================")
-        console.error("error message: " + error.message)
-        console.error("====================")
+        LOG.error("====================")
+        LOG.error("error message: " + error.message)
+        LOG.error("====================")
 
         if(!error.response){
             throw Error("server error");
@@ -49,9 +51,9 @@ export async function getGroupByUuid(token: string, uuid:string, options?: {}): 
         return data;
 
     }catch(error){
-        console.error("====================")
-        console.error("error message: " + error.message)
-        console.error("====================")
+        LOG.error("====================")
+        LOG.error("error message: " + error.message)
+        LOG.error("====================")
 
         if(!error.response){
             throw Error("server error");

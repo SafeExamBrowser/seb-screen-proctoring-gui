@@ -1,4 +1,5 @@
 import axios from "axios";
+import {LOG} from '../logging/logger';
 
 const proctorControllerUrl: string = "/proctoring";
 
@@ -19,9 +20,9 @@ export async function getSessionBySessionId(token: string, sessionId: string): P
         return data;
 
     }catch(error){
-        console.error("====================")
-        console.error("error message: " + error.message)
-        console.error("====================")
+        LOG.error("====================")
+        LOG.error("error message: " + error.message)
+        LOG.error("====================")
 
         if(!error.response){
             throw Error("server error");
@@ -49,9 +50,9 @@ export async function getSessionByTimestamp(token: string, sessionId: string, ti
         return data;
 
     }catch(error){
-        console.error("====================")
-        console.error("error message: " + error.message)
-        console.error("====================")
+        LOG.error("====================")
+        LOG.error("error message: " + error.message)
+        LOG.error("====================")
 
         if(!error.response){
             throw Error("server error");

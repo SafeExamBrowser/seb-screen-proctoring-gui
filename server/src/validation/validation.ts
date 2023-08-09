@@ -1,5 +1,6 @@
 import {Request, Response, NextFunction} from 'express';
 import {Result, ValidationError, body, validationResult} from 'express-validator';
+import {LOG} from '../logging/logger';
 
 export const authorize = [
 
@@ -11,8 +12,8 @@ export const authorize = [
 
         if (!errors.isEmpty()){
 
-          console.error("validation errors: ")
-          console.error(errors.array())
+          LOG.error("validation errors: ")
+          LOG.error(errors.array())
 
           return res.status(422).json({errors: errors.array()});
         }
