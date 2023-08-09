@@ -8,8 +8,9 @@ export const useAppBarStore = defineStore('appBar', () => {
     title: "3x3",
     value: 3
   });
+  const isNameEnabled = ref<boolean>(true);
 
-  return {title, galleryGridSize};
+  return {title, galleryGridSize, isNameEnabled};
 });
 
 // export const useAuthStore = defineStore("auth", () => {

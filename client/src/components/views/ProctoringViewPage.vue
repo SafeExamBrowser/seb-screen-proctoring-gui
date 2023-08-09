@@ -101,14 +101,6 @@
                 {name: "Is Session Active:", data: session.value?.active.toString()}
             );
         }
-        
-        if(sliderTime.value != null){
-            screenshotMetaData.push(
-                {name: "Date:", data: timeUtils.formatTimestmapToDate(sliderTime.value)},
-                {name: "Time:", data: timeUtils.formatTimestmapToTime(sliderTime.value)},
-            )
-        }
-        
 
         if(session.value?.active){
             intervalSession = setInterval(async () => {
@@ -129,7 +121,11 @@
 
             screenshotMetaData.splice(0, screenshotMetaData.length, 
                 {name: "Date:", data: timeUtils.formatTimestmapToDate(sliderTime.value)},
-                {name: "Time:", data: timeUtils.formatTimestmapToTime(sliderTime.value)}
+                {name: "Time:", data: timeUtils.formatTimestmapToTime(sliderTime.value)},
+                //todo: remove temporary hardcoded data
+                {name: "Active Program:", data: "Web-Browser"},
+                {name: "Current URL:", data: "moodle.com"},
+                {name: "Title Website:", data: "Exam xyz"}
             );
         }
     })

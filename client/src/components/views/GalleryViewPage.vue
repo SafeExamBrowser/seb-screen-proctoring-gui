@@ -14,7 +14,7 @@
 
                             <div v-if="isHovering" class="button-container hover-overlay d-flex align-end">
                                 <v-sheet class="d-flex pa-2 button-row">
-                                    <span class="text-h5 title-box">
+                                    <span v-if="appBarStore.isNameEnabled" class="text-h5 title-box">
                                         {{group?.screenshots[galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value)].clientName}}
                                     </span>
                                     <v-spacer></v-spacer>

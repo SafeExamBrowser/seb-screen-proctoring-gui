@@ -28,7 +28,6 @@
         </v-app-bar-nav-icon>
         <v-app-bar-title>{{ appBarStore.title }}</v-app-bar-title>
 
-
         <template v-if="useRoute().name == 'GalleryViewPage'" v-slot:append>
             <v-menu>
                 <template v-slot:activator="{ props }">
@@ -43,6 +42,9 @@
                     </v-list-item>
                 </v-list>
             </v-menu>
+            <div class="switch-container">
+                <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.isNameEnabled"></v-switch>
+            </div>
         </template>
     </v-app-bar>
 
@@ -91,3 +93,14 @@
 
 
 </script>
+
+<style scoped>
+    .switch-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 20px;
+        margin-left: 10px;
+    }
+
+</style>
