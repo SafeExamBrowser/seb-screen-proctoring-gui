@@ -4,7 +4,7 @@ import { ref, reactive } from 'vue';
 
 export const useAppBarStore = defineStore('appBar', () => {
   const title = ref<string>("Example Title");
-  const galleryGridSize = reactive<GridSize>({
+  const galleryGridSize = ref<GridSize>({
     title: "3x3",
     value: 3
   });

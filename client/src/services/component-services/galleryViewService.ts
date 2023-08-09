@@ -7,14 +7,10 @@ export async function getGroup(groupUuid: string, currentWindow: number, pageSiz
         const groupUuidResponse = await groupService.getGroupByUuid(groupUuid, 
             {   
                 sortOrder: SortOrder.desc,
-                pageNumber: (currentWindow == 0) ? 1 : currentWindow, 
+                pageNumber: currentWindow+=1, 
                 pageSize: Math.pow(pageSize, 2)
             }
         );
-
-        console.log("====response====")
-        console.log(groupUuidResponse)
-        console.log("===========")
 
         return groupUuidResponse;
         //todo: add proper error handling
@@ -33,6 +29,10 @@ export function calcIndex(i: number, n: number, gridSize: number): number {
 }
 
 export function currentIndexExists(screenshots: Screenshot[] | undefined, index: number): boolean {
+
+    // console.log("current index: " + index)
+
+
     if (screenshots != null && screenshots.length > index) {
         return true;
     }
@@ -41,13 +41,20 @@ export function currentIndexExists(screenshots: Screenshot[] | undefined, index:
 }
 
 
-//=============image link==================
-export function createImageLinkWithToken(screenshots: Screenshot[] | undefined, index: number): string {
-    if (screenshots != null) {
-        return screenshots[index].latestImageLink + "?access_token=" + localStorage.getItem("accessToken");
+//=============links==================
+export function createImageLinkWithToken(screenshots: Screenshot[] | undefined, index: number, timestamp: number): string {
+
+    if(screenshots == null){
+        return "";
     }
 
-    return "";
+    let screenshotLink: string = screenshots[index].latestImageLink + "?access_token=" + localStorage.getItem("accessToken");
+
+    if(screenshots[index].active){
+        return screenshotLink + '&t=' + timestamp;
+    }
+
+    return screenshotLink;
 }
 
 export function getProctoringViewLink(screenshots: Screenshot[] | undefined, groupUuid: string, index: number): string {

@@ -22,32 +22,32 @@
         </v-list>
     </v-navigation-drawer>
 
+    <v-app-bar>
+        <v-app-bar-nav-icon variant="text"
+            @click.stop="drawer = !drawer">
+        </v-app-bar-nav-icon>
+        <v-app-bar-title>{{ appBarStore.title }}</v-app-bar-title>
+
+
+        <template v-if="useRoute().name == 'GalleryViewPage'" v-slot:append>
+            <v-menu>
+                <template v-slot:activator="{ props }">
+                    <v-btn v-bind="props" rounded="sm" color="primary" variant="flat">
+                        <v-icon start icon="mdi-chevron-down" size="x-large"></v-icon>
+                        Grid Size: {{ appBarStore.galleryGridSize.title }}
+                    </v-btn>
+                </template>
+                <v-list>
+                    <v-list-item class="d-flex justify-center align-center" v-for="(gridSize, index) in gridSizes" :key="index" :value="index" @click="changeGridSize(gridSize)">
+                        <v-list-item-title>{{ gridSize.title }}</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
+        </template>
+    </v-app-bar>
+
     <v-main>
         <v-container fluid>
-            <v-app-bar>
-                <v-app-bar-title>{{ appBarStore.title }}</v-app-bar-title>
-
-                <v-app-bar-nav-icon class="d-none d-sm-flex d-md-none d-flex d-sm-none" variant="text"
-                    @click.stop="drawer = !drawer">
-                </v-app-bar-nav-icon>
-
-                <template v-if="useRoute().name == 'GalleryViewPage'" v-slot:append>
-                    <v-menu>
-                        <template v-slot:activator="{ props }">
-                            <v-btn v-bind="props" rounded="sm" color="primary" variant="flat">
-                                <v-icon start icon="mdi-chevron-down" size="x-large"></v-icon>
-                                Grid Size: {{ appBarStore.galleryGridSize.title }}
-                            </v-btn>
-                        </template>
-                        <v-list>
-                            <v-list-item class="d-flex justify-center align-center" v-for="(gridSize, index) in gridSizes" :key="index" :value="index" @click="changeGridSize(gridSize)">
-                                <v-list-item-title>{{ gridSize.title }}</v-list-item-title>
-                            </v-list-item>
-                        </v-list>
-                    </v-menu>
-                </template>
-
-            </v-app-bar>
             <router-view></router-view>
         </v-container>
     </v-main>
