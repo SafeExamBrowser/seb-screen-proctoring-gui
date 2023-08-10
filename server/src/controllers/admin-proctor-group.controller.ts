@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-
+import {LOG} from '../logging/logger';
 import * as adminProctorGroupService from '../services/admin-proctor-group.service';
 
 export async function getGroups(req: Request, res: Response){
@@ -10,7 +10,7 @@ export async function getGroups(req: Request, res: Response){
         return res.status(200).json(groups);
 
     }catch(error){
-        if(isNaN(error.messsage)){
+        if(isNaN(error.message)){
             return res.status(500).send();
         }
 
@@ -27,7 +27,7 @@ export async function getGroupByUuid(req: Request, res: Response){
         return res.status(200).json(group);
 
     }catch(error){
-        if(isNaN(error.messsage)){
+        if(isNaN(error.message)){
             return res.status(500).send();
         }
 

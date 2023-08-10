@@ -10,7 +10,7 @@ export async function getSessionBySessionId(req: Request, res: Response){
         return res.status(200).json(groups);
 
     }catch(error){
-        if(isNaN(error.messsage)){
+        if(isNaN(error.message)){
             return res.status(500).send();
         }
 
@@ -27,7 +27,7 @@ export async function getSessionByTimestamp(req: Request, res: Response){
         return res.status(200).json(group);
 
     }catch(error){
-        if(isNaN(error.messsage)){
+        if(isNaN(error.message)){
             return res.status(500).send();
         }
 

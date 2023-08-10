@@ -326,8 +326,8 @@
         assignData();
         firstLoad = false;
 
-        // startIntervalGroup();
-        // startIntervalImageUrl();
+        startIntervalGroup();
+        startIntervalImageUrl();
     });
 
     onBeforeUnmount(() => {

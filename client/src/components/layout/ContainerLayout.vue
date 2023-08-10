@@ -3,7 +3,7 @@
     <v-navigation-drawer v-model="drawer" class="d-none d-sm-flex">
         <v-sheet class="pa-4">
             <v-img class="mx-auto h-12 w-auto" src="/img/logo.svg" alt="Logo ETH Zürich"></v-img>
-            <div>SEB Screen Proctoring</div>
+            <div class="app-title">SEB Screen Proctoring</div>
         </v-sheet>
 
         <v-sheet color="grey-lighten-4" class="pa-4">
@@ -95,6 +95,11 @@
 </script>
 
 <style scoped>
+
+    .app-title{
+        text-align: center;
+    }
+
     .switch-container{
         display: flex;
         align-items: center;

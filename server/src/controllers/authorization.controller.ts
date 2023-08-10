@@ -12,7 +12,7 @@ export async function authorize(req: Request, res: Response){
         return res.status(200).json(tokenObject);
 
     }catch(error){
-        if(isNaN(error.messsage)){
+        if(isNaN(error.message)){
             return res.status(500).send();
         }
 
@@ -28,7 +28,7 @@ export async function refresh(req: Request, res: Response){
         return res.status(200).json(tokenObject);
 
     }catch(error){
-        if(isNaN(error.messsage)){
+        if(isNaN(error.message)){
             return res.status(500).send();
         }
 

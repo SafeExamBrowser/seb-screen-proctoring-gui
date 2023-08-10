@@ -1,10 +1,11 @@
 import axios, { AxiosResponse } from 'axios'
+import * as ENV from "@/config/envConfig";
 
 export async function login(username: string, password: string): Promise<string | any> {
 
   try {
     //todo: add env desc to gihub
-    const url: string = import.meta.env.VITE_SERVER_URL + ":" +  import.meta.env.VITE_SERVER_PORT + "/authorize";
+    const url: string = ENV.SERVER_URL + ENV.SERVER_PORT + "/authorize";
 
     const response = await axios.post(url, {
       username,
@@ -23,7 +24,7 @@ export async function login(username: string, password: string): Promise<string 
 export async function refresh(): Promise<string | any>{
 
   try{
-    const url: string = import.meta.env.VITE_SERVER_URL + ":" +  import.meta.env.VITE_SERVER_PORT + "/refresh";
+    const url: string = ENV.SERVER_URL + ENV.SERVER_PORT + "/refresh";
 
     const headers = {
       "Authorization": "Bearer " + localStorage.getItem("refreshToken"),

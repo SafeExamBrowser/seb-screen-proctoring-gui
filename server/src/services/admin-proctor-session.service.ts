@@ -1,13 +1,14 @@
 import axios from "axios";
 import {LOG} from '../logging/logger';
+import * as ENV from "../config/envConfig";
 
 const proctorControllerUrl: string = "/proctoring";
 
 export async function getSessionBySessionId(token: string, sessionId: string): Promise<object>{
     try{
         //todo: add env desc to gihub
-        const serverAddress: string = process.env.PROCTOR_SERVER_URL + ":" + process.env.PROCTOR_SERVER_PORT;
-        const url: string =  serverAddress + process.env.PROCTOR_DEFAULT_URL + proctorControllerUrl + "/session/" + sessionId;
+        const serverAddress: string = ENV.PROCTOR_SERVER_URL + ENV.PROCTOR_SERVER_PORT;
+        const url: string =  serverAddress + ENV.PROCTOR_DEFAULT_URL + proctorControllerUrl + "/session/" + sessionId;
 
         const headers = {
             "accept": "application/json",
@@ -36,8 +37,8 @@ export async function getSessionBySessionId(token: string, sessionId: string): P
 export async function getSessionByTimestamp(token: string, sessionId: string, timestamp: string): Promise<object>{
     try{
         //todo: add env desc to gihub
-        const serverAddress: string = process.env.PROCTOR_SERVER_URL + ":" + process.env.PROCTOR_SERVER_PORT;
-        const url: string =  serverAddress + process.env.PROCTOR_DEFAULT_URL + proctorControllerUrl + "/session/" + sessionId + "/" + timestamp;
+        const serverAddress: string = ENV.PROCTOR_SERVER_URL + ENV.PROCTOR_SERVER_PORT;
+        const url: string =  serverAddress + ENV.PROCTOR_DEFAULT_URL + proctorControllerUrl + "/session/" + sessionId + "/" + timestamp;
 
         const headers = {
             "accept": "application/json",

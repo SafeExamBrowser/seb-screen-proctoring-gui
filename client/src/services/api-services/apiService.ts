@@ -1,14 +1,14 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosStatic } from "axios";
 import * as authenticationService from "@/services/api-services/authenticationService";
+import router from "@/router";
+import * as ENV from "@/config/envConfig";
 
 export let api: AxiosInstance;
 
 export function createApi(){
-
-    console.log("API CREATED")
-
     api = axios.create({
-        baseURL: import.meta.env.VITE_SERVER_URL + ":" + import.meta.env.VITE_SERVER_PORT,
+        //todo: when env not provided
+        baseURL: ENV.SERVER_URL + ENV.SERVER_PORT,
         headers: {
             "accept": "application/json",
             "Authorization": "Bearer " + localStorage.getItem("accessToken"),
@@ -17,37 +17,44 @@ export function createApi(){
     });
 }
 
+export function createApiInterceptor(){
+    api.interceptors.response.use(response => {
+        return response;
+    }, async error => {
+        console.error(error)
+        const originalRequest = error.config;
 
-// api.interceptors.response.use(response => {
-//     console.log("jahahahahhaah")
-//     return response;
-// }, async error => {
-//     console.error(error)
-//     if(error.response.status === 401){
+        if(error.response.status === 401 && !originalRequest._retry){
 
-//         try{
-//             const response: Token = await authenticationService.refresh();
-//             localStorage.setItem("accessToken", response.access_token);
-//             localStorage.setItem("refreshToken", response.refresh_token);
+            try{
+                const response: Token = await authenticationService.refresh();
+                localStorage.setItem("accessToken", response.access_token);
+                localStorage.setItem("refreshToken", response.refresh_token);
 
-//             console.log(localStorage.getItem("accessToken"))
+                console.log(localStorage.getItem("accessToken"))
 
-//             const originalRequest = error.config;
-//             originalRequest._retry = true;
+                originalRequest._retry = true;
 
-//             originalRequest.headers = {
-//                 "accept": "application/json",
-//                 "Authorization": "Bearer " + localStorage.getItem("accessToken"),
-//                 "Content-Type": "application/x-www-form-urlencoded"
-//             }
+                originalRequest.headers = {
+                    "accept": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("accessToken"),
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
 
-//             console.log(api(originalRequest))
+                return api(originalRequest);
 
-//             return api(originalRequest);
+            }catch(error){
+                router.push({
+                    path: "/"
+                });
 
-//         }catch(error){
-//             throw Promise.reject(error);;
-//         }
-        
-//     }
-// })
+                throw Promise.reject(error);
+            }
+            
+        }else{
+            router.push({
+                path: "/"
+            });
+        }
+    });
+}

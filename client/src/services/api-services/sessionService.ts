@@ -4,7 +4,6 @@ import * as apiService from "@/services/api-services/apiService";
 export async function getSessionBySessionId(sessionId: string): Promise<Screenshot | any> {
 
   try {
-    //todo: add env desc to gihub
     const url: string = "/session/" + sessionId;
     const {data, status}: AxiosResponse<GroupResponse> = await apiService.api.get(url, {headers: getHeaders()});
 
@@ -21,7 +20,6 @@ export async function getSessionBySessionId(sessionId: string): Promise<Screensh
 export async function getSessionByTimestamp(sessionId: string, timestamp: string): Promise<Screenshot | any> {
 
   try {
-    //todo: add env desc to gihub
     const url: string = "/session/" + sessionId + "/" + timestamp;
     const {data, status}: AxiosResponse<Group> = await apiService.api.get(url, {headers: getHeaders()});
 
