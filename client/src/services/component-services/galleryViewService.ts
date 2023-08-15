@@ -13,11 +13,8 @@ export async function getGroup(groupUuid: string, currentWindow: number, pageSiz
         );
 
         return groupUuidResponse;
-        //todo: add proper error handling
 
     } catch (error) {
-        //todo: add better error handling
-        console.error(error);
         return null;
     }
 }
@@ -29,9 +26,6 @@ export function calcIndex(i: number, n: number, gridSize: number): number {
 }
 
 export function currentIndexExists(screenshots: Screenshot[] | undefined, index: number): boolean {
-
-    // console.log("current index: " + index)
-
 
     if (screenshots != null && screenshots.length > index) {
         return true;

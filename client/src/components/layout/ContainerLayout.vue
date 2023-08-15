@@ -57,10 +57,13 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, watch} from "vue"
-    import { useDisplay } from "vuetify";
+    import { ref } from "vue"
     import { useAppBarStore } from "@/store/app";
     import { useRoute } from "vue-router";
+
+    const drawer = ref();
+
+    const appBarStore = useAppBarStore();
 
     const links = [
         ["SEB Groups Proctoring", "/start"],
@@ -71,17 +74,9 @@
         {title: "2x2", value: 2},
         {title: "3x3", value: 3},
         {title: "4x4", value: 4},
+        // {title: "5x5", value: 5},
+        // {title: "6x6", value: 6},
     ];
-
-    const appBarStore = useAppBarStore();
-    const drawer = ref()
-
-    //todo: remove --> see when display size changes
-    const mobile = ref(useDisplay().sm)
-    watch(mobile, () => {
-        console.log(mobile.value) // false
-    })
-    //////////
 
     function signOut(){
         localStorage.clear();
@@ -91,11 +86,9 @@
         appBarStore.galleryGridSize = gridSize;
     }
 
-
 </script>
 
-<style scoped>
-
+<style>
     .app-title{
         text-align: center;
     }

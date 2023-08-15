@@ -5,7 +5,7 @@ import * as adminProctorGroupService from '../services/admin-proctor-group.servi
 export async function getGroups(req: Request, res: Response){
 
     try{
-        const groups: object = await adminProctorGroupService.getGroups(req.headers.authorization);
+        const groups: object = await adminProctorGroupService.getGroups(req.headers.authorization, req.query.optionalParamters);
 
         return res.status(200).json(groups);
 

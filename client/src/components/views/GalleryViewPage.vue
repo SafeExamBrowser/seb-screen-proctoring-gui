@@ -2,38 +2,53 @@
     <v-window v-model="currentWindow" @update:model-value="windowChange()" show-arrows>
         <v-window-item v-for="(w , index) in windowsAmount">
 
-            <v-row v-if="!noScreenshotData" v-for="i in appBarStore.galleryGridSize.value" no-gutters>
-                <v-col v-for="n in appBarStore.galleryGridSize.value">
+            <v-row v-if="!noScreenshotData" v-for="i in appBarStore.galleryGridSize.value" align-strech no-gutters>
+                <v-col v-for="n in appBarStore.galleryGridSize.value" class="col-style">
 
-                    <v-hover v-slot="{isHovering, props}">
+                    <v-hover v-slot="{isHovering, props}" >
+                        <!--todo: add max height  -->
                         <v-img
                             v-if="galleryViewService.currentIndexExists(group?.screenshots, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))"
                             v-bind="props"
+                            id="imgElement"
+                            class="img-styling"
+                            :aspect-ratio="16/9"
                             :class="{'on-hover': isHovering}"
                             :src="galleryViewService.createImageLinkWithToken(group?.screenshots, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value), timestamp)">
 
-                            <div v-if="isHovering" class="button-container hover-overlay d-flex align-end">
-                                <v-sheet class="d-flex pa-2 button-row">
-                                    <span v-if="appBarStore.isNameEnabled" class="text-h5 title-box">
-                                        {{group?.screenshots[galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value)].clientName}}
-                                    </span>
-                                    <v-spacer></v-spacer>
-                                    <span>
-                                        <v-btn rounded="sm" color="white" variant="outlined"
-                                            @click="openDialog(galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))">
-                                            Expand
-                                        </v-btn>
+                            <div v-if="isHovering" class="hover-overlay d-flex align-end">
+                                <v-row>
+                                    <v-col align-self="end" >
+                                        <v-sheet class="d-flex pa-2 button-row">
+                                            <span v-if="appBarStore.isNameEnabled" class="text-h6 title-box">
+                                                {{group?.screenshots[galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value)].clientName}}
+                                            </span>
+                                            <v-spacer></v-spacer>
+                                            <span>
+                                                <v-btn rounded="sm" color="white" variant="outlined"
+                                                    @click="openDialog(galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))">
+                                                    Expand
+                                                </v-btn>
 
-                                        <v-btn
-                                            :to="galleryViewService.getProctoringViewLink(group?.screenshots, groupUuid, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))"
-                                            rounded="sm" color="primary" variant="flat" class="ml-2">
-                                            Details View
-                                        </v-btn>
-                                    </span>
-                                </v-sheet>
+                                                <v-btn
+                                                    :to="galleryViewService.getProctoringViewLink(group?.screenshots, groupUuid, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))"
+                                                    rounded="sm" color="primary" variant="flat" class="ml-2">
+                                                    Details View
+                                                </v-btn>
+                                            </span>
+                                        </v-sheet>
+                                    </v-col>
+                                </v-row>
                             </div>
-                            
                         </v-img>
+
+                        <v-img 
+                            v-else 
+                            class="content-filler"
+                            :aspect-ratio="16/9"
+                            :src="galleryViewService.createImageLinkWithToken(group?.screenshots, 0, timestamp)">
+                        </v-img>
+
                     </v-hover>
 
                 </v-col>
@@ -42,9 +57,14 @@
             <v-alert v-else color="warning" icon="$warning" title="No data available"
                 :text="galleryViewService.getAlertText(group?.name)"></v-alert>
 
+
             <v-dialog v-model="dialog" max-width="1500">
                 <v-card>
-                    <v-img :src="openedImageLink"></v-img>
+                    <v-img 
+                        class="img-styling"
+                        :aspect-ratio="16/9"
+                        :src="openedImageLink">
+                    </v-img>
                 </v-card>
             </v-dialog>
 
@@ -53,13 +73,13 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, onBeforeMount, onBeforeUnmount, watch } from "vue";
+    import { ref, onBeforeMount, onBeforeUnmount, watch, computed, onMounted } from "vue";
     import { useRoute } from "vue-router";
     import * as galleryViewService from "@/services/component-services/galleryViewService";
     import { useAppBarStore } from "@/store/app";
     import { storeToRefs } from "pinia";
+    import {useLoading} from 'vue-loading-overlay'
 
-    //todo: configure eslint
     const IMG_URL_SCREENSHOTS_RELOAD_INTERVAL_IN_S: number = 5 * 1000;
     const SCREENSHOTS_RELOAD_INTERVAL_IN_S: number = 1 * 1000;
 
@@ -72,260 +92,26 @@
     const timestamp = ref(Date.now());
     const windowsAmount = ref<number>(1);
     const currentWindow = ref<number>(0);
-    const nextWindowNotVisible = ref(true);
+
     const appBarStoreRef = storeToRefs(appBarStore);
 
     let openedImageLink: string = "";
     let intervalGroup: any | null = null;
     let intervalImageUrl: any | null = null;
-    let firstLoad: boolean = true;
+
+    const $loading = useLoading({
+        color: "#fcba03"
+    });
 
     onBeforeMount(async () => {
+        const loader = $loading.show({
+            // Optional parameters
+        });
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
-
-        // group.value = {
-        //         uuid: "demo2",
-        //         name: "demo2",
-        //         description: "demo2",
-        //         numberOfSessions: 15,
-        //         pageNumber: 1,
-        //         pageSize: 16,
-        //         sortOrder: "DESCENDING",
-        //         sortBy: "",
-        //         screenshots: [
-        //             {
-        //                 "startTime": 1691137360055,
-        //                 "timestamp": 1691137479450,
-        //                 "endTime": 1691137480072,
-        //                 "active": false,
-        //                 "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "clientName": "seb_14",
-        //                 "clientIp": "0.0.0.0",
-        //                 "clientMachineName": "localhost",
-        //                 "clientOsName": "windows",
-        //                 "clientVersion": "0.1-httpBot",
-        //                 "imageFormat": "PNG",
-        //                 "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-        //             },
-        //             {
-        //                 "startTime": 1691137360055,
-        //                 "timestamp": 1691137479450,
-        //                 "endTime": 1691137480072,
-        //                 "active": false,
-        //                 "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "clientName": "seb_14",
-        //                 "clientIp": "0.0.0.0",
-        //                 "clientMachineName": "localhost",
-        //                 "clientOsName": "windows",
-        //                 "clientVersion": "0.1-httpBot",
-        //                 "imageFormat": "PNG",
-        //                 "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-        //             },
-        //             {
-        //                 "startTime": 1691137360055,
-        //                 "timestamp": 1691137479450,
-        //                 "endTime": 1691137480072,
-        //                 "active": false,
-        //                 "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "clientName": "seb_14",
-        //                 "clientIp": "0.0.0.0",
-        //                 "clientMachineName": "localhost",
-        //                 "clientOsName": "windows",
-        //                 "clientVersion": "0.1-httpBot",
-        //                 "imageFormat": "PNG",
-        //                 "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-        //             },
-        //             {
-        //                 "startTime": 1691137360055,
-        //                 "timestamp": 1691137479450,
-        //                 "endTime": 1691137480072,
-        //                 "active": false,
-        //                 "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "clientName": "seb_14",
-        //                 "clientIp": "0.0.0.0",
-        //                 "clientMachineName": "localhost",
-        //                 "clientOsName": "windows",
-        //                 "clientVersion": "0.1-httpBot",
-        //                 "imageFormat": "PNG",
-        //                 "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-        //             },
-        //             {
-        //                 "startTime": 1691137360055,
-        //                 "timestamp": 1691137479450,
-        //                 "endTime": 1691137480072,
-        //                 "active": false,
-        //                 "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "clientName": "seb_14",
-        //                 "clientIp": "0.0.0.0",
-        //                 "clientMachineName": "localhost",
-        //                 "clientOsName": "windows",
-        //                 "clientVersion": "0.1-httpBot",
-        //                 "imageFormat": "PNG",
-        //                 "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-        //             },
-        //             {
-        //                 "startTime": 1691137360055,
-        //                 "timestamp": 1691137479450,
-        //                 "endTime": 1691137480072,
-        //                 "active": false,
-        //                 "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "clientName": "seb_14",
-        //                 "clientIp": "0.0.0.0",
-        //                 "clientMachineName": "localhost",
-        //                 "clientOsName": "windows",
-        //                 "clientVersion": "0.1-httpBot",
-        //                 "imageFormat": "PNG",
-        //                 "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-        //             },
-        //             {
-        //                 "startTime": 1691137360055,
-        //                 "timestamp": 1691137479450,
-        //                 "endTime": 1691137480072,
-        //                 "active": false,
-        //                 "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "clientName": "seb_14",
-        //                 "clientIp": "0.0.0.0",
-        //                 "clientMachineName": "localhost",
-        //                 "clientOsName": "windows",
-        //                 "clientVersion": "0.1-httpBot",
-        //                 "imageFormat": "PNG",
-        //                 "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-        //             },
-        //             {
-        //                 "startTime": 1691137360055,
-        //                 "timestamp": 1691137479450,
-        //                 "endTime": 1691137480072,
-        //                 "active": false,
-        //                 "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "clientName": "seb_14",
-        //                 "clientIp": "0.0.0.0",
-        //                 "clientMachineName": "localhost",
-        //                 "clientOsName": "windows",
-        //                 "clientVersion": "0.1-httpBot",
-        //                 "imageFormat": "PNG",
-        //                 "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-        //             },
-        //             {
-        //                 "startTime": 1691137360055,
-        //                 "timestamp": 1691137479450,
-        //                 "endTime": 1691137480072,
-        //                 "active": false,
-        //                 "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "clientName": "seb_14",
-        //                 "clientIp": "0.0.0.0",
-        //                 "clientMachineName": "localhost",
-        //                 "clientOsName": "windows",
-        //                 "clientVersion": "0.1-httpBot",
-        //                 "imageFormat": "PNG",
-        //                 "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-        //             },
-        //             {
-        //                 "startTime": 1691137360055,
-        //                 "timestamp": 1691137479450,
-        //                 "endTime": 1691137480072,
-        //                 "active": false,
-        //                 "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "clientName": "seb_14",
-        //                 "clientIp": "0.0.0.0",
-        //                 "clientMachineName": "localhost",
-        //                 "clientOsName": "windows",
-        //                 "clientVersion": "0.1-httpBot",
-        //                 "imageFormat": "PNG",
-        //                 "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-        //             },
-        //             {
-        //                 "startTime": 1691137360055,
-        //                 "timestamp": 1691137479450,
-        //                 "endTime": 1691137480072,
-        //                 "active": false,
-        //                 "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "clientName": "seb_14",
-        //                 "clientIp": "0.0.0.0",
-        //                 "clientMachineName": "localhost",
-        //                 "clientOsName": "windows",
-        //                 "clientVersion": "0.1-httpBot",
-        //                 "imageFormat": "PNG",
-        //                 "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-        //             },
-        //             {
-        //                 "startTime": 1691137360055,
-        //                 "timestamp": 1691137479450,
-        //                 "endTime": 1691137480072,
-        //                 "active": false,
-        //                 "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "clientName": "seb_14",
-        //                 "clientIp": "0.0.0.0",
-        //                 "clientMachineName": "localhost",
-        //                 "clientOsName": "windows",
-        //                 "clientVersion": "0.1-httpBot",
-        //                 "imageFormat": "PNG",
-        //                 "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-        //             },
-        //             {
-        //                 "startTime": 1691137360055,
-        //                 "timestamp": 1691137479450,
-        //                 "endTime": 1691137480072,
-        //                 "active": false,
-        //                 "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "clientName": "seb_14",
-        //                 "clientIp": "0.0.0.0",
-        //                 "clientMachineName": "localhost",
-        //                 "clientOsName": "windows",
-        //                 "clientVersion": "0.1-httpBot",
-        //                 "imageFormat": "PNG",
-        //                 "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-        //             },
-        //             {
-        //                 "startTime": 1691137360055,
-        //                 "timestamp": 1691137479450,
-        //                 "endTime": 1691137480072,
-        //                 "active": false,
-        //                 "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "clientName": "seb_14",
-        //                 "clientIp": "0.0.0.0",
-        //                 "clientMachineName": "localhost",
-        //                 "clientOsName": "windows",
-        //                 "clientVersion": "0.1-httpBot",
-        //                 "imageFormat": "PNG",
-        //                 "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-        //             },
-        //             {
-        //                 "startTime": 1691137360055,
-        //                 "timestamp": 1691137479450,
-        //                 "endTime": 1691137480072,
-        //                 "active": false,
-        //                 "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "clientName": "seb_14",
-        //                 "clientIp": "0.0.0.0",
-        //                 "clientMachineName": "localhost",
-        //                 "clientOsName": "windows",
-        //                 "clientVersion": "0.1-httpBot",
-        //                 "imageFormat": "PNG",
-        //                 "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-        //                 "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-        //             }
-        //         ]
-        // }
-
+        loader.hide()
         appBarStore.title = "Gallery View of Group: " + group.value?.name;
 
         assignData();
-        firstLoad = false;
-
         startIntervalGroup();
         startIntervalImageUrl();
     });
@@ -335,17 +121,10 @@
         stopIntervalImageUrl();
     });
 
-    watch(currentWindow, (newVal) => {
-        if (newVal + 1 < windowsAmount.value) {
-            nextWindowNotVisible.value = false;
-        }
-    });
-
     watch(appBarStoreRef.galleryGridSize, async () => {
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
         assignData();
     });
-
 
     function assignData() {
         calcAmountOfWindows();
@@ -389,247 +168,6 @@
     function startIntervalGroup() {
         intervalGroup = setInterval(async () => {
             group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
-
-
-            // group.value = {
-            //     uuid: "demo2",
-            //     name: "demo2",
-            //     description: "demo2",
-            //     numberOfSessions: 15,
-            //     pageNumber: 1,
-            //     pageSize: 9,
-            //     sortOrder: "DESCENDING",
-            //     sortBy: "",
-            //     screenshots: [
-            //         {
-            //             "startTime": 1691137360055,
-            //             "timestamp": 1691137479450,
-            //             "endTime": 1691137480072,
-            //             "active": false,
-            //             "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "clientName": "seb_14",
-            //             "clientIp": "0.0.0.0",
-            //             "clientMachineName": "localhost",
-            //             "clientOsName": "windows",
-            //             "clientVersion": "0.1-httpBot",
-            //             "imageFormat": "PNG",
-            //             "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-            //         },
-            //         {
-            //             "startTime": 1691137360055,
-            //             "timestamp": 1691137479450,
-            //             "endTime": 1691137480072,
-            //             "active": false,
-            //             "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "clientName": "seb_14",
-            //             "clientIp": "0.0.0.0",
-            //             "clientMachineName": "localhost",
-            //             "clientOsName": "windows",
-            //             "clientVersion": "0.1-httpBot",
-            //             "imageFormat": "PNG",
-            //             "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-            //         },
-            //         {
-            //             "startTime": 1691137360055,
-            //             "timestamp": 1691137479450,
-            //             "endTime": 1691137480072,
-            //             "active": false,
-            //             "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "clientName": "seb_14",
-            //             "clientIp": "0.0.0.0",
-            //             "clientMachineName": "localhost",
-            //             "clientOsName": "windows",
-            //             "clientVersion": "0.1-httpBot",
-            //             "imageFormat": "PNG",
-            //             "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-            //         },
-            //         {
-            //             "startTime": 1691137360055,
-            //             "timestamp": 1691137479450,
-            //             "endTime": 1691137480072,
-            //             "active": false,
-            //             "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "clientName": "seb_14",
-            //             "clientIp": "0.0.0.0",
-            //             "clientMachineName": "localhost",
-            //             "clientOsName": "windows",
-            //             "clientVersion": "0.1-httpBot",
-            //             "imageFormat": "PNG",
-            //             "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-            //         },
-            //         {
-            //             "startTime": 1691137360055,
-            //             "timestamp": 1691137479450,
-            //             "endTime": 1691137480072,
-            //             "active": false,
-            //             "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "clientName": "seb_14",
-            //             "clientIp": "0.0.0.0",
-            //             "clientMachineName": "localhost",
-            //             "clientOsName": "windows",
-            //             "clientVersion": "0.1-httpBot",
-            //             "imageFormat": "PNG",
-            //             "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-            //         },
-            //         {
-            //             "startTime": 1691137360055,
-            //             "timestamp": 1691137479450,
-            //             "endTime": 1691137480072,
-            //             "active": false,
-            //             "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "clientName": "seb_14",
-            //             "clientIp": "0.0.0.0",
-            //             "clientMachineName": "localhost",
-            //             "clientOsName": "windows",
-            //             "clientVersion": "0.1-httpBot",
-            //             "imageFormat": "PNG",
-            //             "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-            //         },
-            //         {
-            //             "startTime": 1691137360055,
-            //             "timestamp": 1691137479450,
-            //             "endTime": 1691137480072,
-            //             "active": false,
-            //             "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "clientName": "seb_14",
-            //             "clientIp": "0.0.0.0",
-            //             "clientMachineName": "localhost",
-            //             "clientOsName": "windows",
-            //             "clientVersion": "0.1-httpBot",
-            //             "imageFormat": "PNG",
-            //             "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-            //         },
-            //         {
-            //             "startTime": 1691137360055,
-            //             "timestamp": 1691137479450,
-            //             "endTime": 1691137480072,
-            //             "active": false,
-            //             "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "clientName": "seb_14",
-            //             "clientIp": "0.0.0.0",
-            //             "clientMachineName": "localhost",
-            //             "clientOsName": "windows",
-            //             "clientVersion": "0.1-httpBot",
-            //             "imageFormat": "PNG",
-            //             "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-            //         },
-            //         {
-            //             "startTime": 1691137360055,
-            //             "timestamp": 1691137479450,
-            //             "endTime": 1691137480072,
-            //             "active": false,
-            //             "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "clientName": "seb_14",
-            //             "clientIp": "0.0.0.0",
-            //             "clientMachineName": "localhost",
-            //             "clientOsName": "windows",
-            //             "clientVersion": "0.1-httpBot",
-            //             "imageFormat": "PNG",
-            //             "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-            //         },
-            //         {
-            //             "startTime": 1691137360055,
-            //             "timestamp": 1691137479450,
-            //             "endTime": 1691137480072,
-            //             "active": false,
-            //             "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "clientName": "seb_14",
-            //             "clientIp": "0.0.0.0",
-            //             "clientMachineName": "localhost",
-            //             "clientOsName": "windows",
-            //             "clientVersion": "0.1-httpBot",
-            //             "imageFormat": "PNG",
-            //             "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-            //         },
-            //         {
-            //             "startTime": 1691137360055,
-            //             "timestamp": 1691137479450,
-            //             "endTime": 1691137480072,
-            //             "active": false,
-            //             "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "clientName": "seb_14",
-            //             "clientIp": "0.0.0.0",
-            //             "clientMachineName": "localhost",
-            //             "clientOsName": "windows",
-            //             "clientVersion": "0.1-httpBot",
-            //             "imageFormat": "PNG",
-            //             "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-            //         },
-            //         {
-            //             "startTime": 1691137360055,
-            //             "timestamp": 1691137479450,
-            //             "endTime": 1691137480072,
-            //             "active": false,
-            //             "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "clientName": "seb_14",
-            //             "clientIp": "0.0.0.0",
-            //             "clientMachineName": "localhost",
-            //             "clientOsName": "windows",
-            //             "clientVersion": "0.1-httpBot",
-            //             "imageFormat": "PNG",
-            //             "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-            //         },
-            //         {
-            //             "startTime": 1691137360055,
-            //             "timestamp": 1691137479450,
-            //             "endTime": 1691137480072,
-            //             "active": false,
-            //             "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "clientName": "seb_14",
-            //             "clientIp": "0.0.0.0",
-            //             "clientMachineName": "localhost",
-            //             "clientOsName": "windows",
-            //             "clientVersion": "0.1-httpBot",
-            //             "imageFormat": "PNG",
-            //             "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-            //         },
-            //         {
-            //             "startTime": 1691137360055,
-            //             "timestamp": 1691137479450,
-            //             "endTime": 1691137480072,
-            //             "active": false,
-            //             "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "clientName": "seb_14",
-            //             "clientIp": "0.0.0.0",
-            //             "clientMachineName": "localhost",
-            //             "clientOsName": "windows",
-            //             "clientVersion": "0.1-httpBot",
-            //             "imageFormat": "PNG",
-            //             "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-            //         },
-            //         {
-            //             "startTime": 1691137360055,
-            //             "timestamp": 1691137479450,
-            //             "endTime": 1691137480072,
-            //             "active": false,
-            //             "uuid": "23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "clientName": "seb_14",
-            //             "clientIp": "0.0.0.0",
-            //             "clientMachineName": "localhost",
-            //             "clientOsName": "windows",
-            //             "clientVersion": "0.1-httpBot",
-            //             "imageFormat": "PNG",
-            //             "latestImageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8",
-            //             "imageLink": "http://localhost:8090/admin-api/v1/proctoring/screenshot/23da1ef6-a0d3-41d8-a927-2a7e026181d8/1691486907433",
-            //         }
-            //     ]
-            // }
-
-
             assignData();
 
         }, IMG_URL_SCREENSHOTS_RELOAD_INTERVAL_IN_S);
@@ -659,11 +197,17 @@
 
 <style scoped>
 
-    .v-img {
-        border: 2px solid black;
+    .content{
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
-    
-    .v-img .hover-overlay {
+
+    .img-styling{
+        background-color: black;
+    }
+
+    .img-styling .hover-overlay {
         position: absolute;
         top: 0;
         right: 0;
@@ -671,13 +215,6 @@
         left: 0;
         z-index: 0;
         background-color: rgba(255, 255, 255, 0.3);
-    }
-
-    .button-container {
-        position: relative;
-        z-index: 1;
-        width: 100%;
-        height: 100%;
     }
 
     .button-row {
@@ -689,8 +226,8 @@
         color: white;
     }
 
-    .hidden-window {
-        display: none;
+    .content-filler{
+        visibility: hidden;
     }
 
 </style>

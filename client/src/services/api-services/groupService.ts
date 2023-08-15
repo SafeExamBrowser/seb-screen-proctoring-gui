@@ -1,11 +1,11 @@
 import axios, { AxiosResponse } from 'axios'
 import * as apiService from "@/services/api-services/apiService";
 
-export async function getGroups(pageNumber?: number, pageSize?: number, filterCriteria?: string): Promise<Group[] | any> {
+export async function getGroups(optionalParamters?: OptionalParGroup): Promise<Group[] | any> {
 
   try {
     const url: string = "/group";
-    const {data, status}: AxiosResponse<GroupResponse> = await apiService.api.get(url, {headers: getHeaders()});
+    const {data, status}: AxiosResponse<GroupResponse> = await apiService.api.get(url, {headers: getHeaders(), params: {optionalParamters}});
 
     if (status === 200) {
       return data.content;
