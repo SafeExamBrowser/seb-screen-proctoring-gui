@@ -4,7 +4,7 @@ import * as ENV from "../config/envConfig";
 
 const proctorControllerUrl: string = "/proctoring";
 
-export async function getGroups(token: string, pageNumber?: number, pageSize?: number, filterCriteria?: string): Promise<object>{
+export async function getGroups(token: string, options?: {}): Promise<object>{
     try{
         //todo: add env desc to gihub
         const serverAddress: string = ENV.PROCTOR_SERVER_URL + ENV.PROCTOR_SERVER_PORT;
@@ -16,7 +16,7 @@ export async function getGroups(token: string, pageNumber?: number, pageSize?: n
             "Content-Type": "application/x-www-form-urlencoded"
         };
 
-        const {data, status} = await axios.get(url, { headers });
+        const {data, status} = await axios.get(url, {headers: headers, params: options});
 
         return data;
 
@@ -34,7 +34,7 @@ export async function getGroups(token: string, pageNumber?: number, pageSize?: n
 }
 
 
-export async function getGroupByUuid(token: string, uuid:string, options?: {}): Promise<object>{
+export async function getGroupByUuid(token: string, uuid: string, options?: {}): Promise<object>{
     try{
         //todo: add env desc to gihub
         const serverAddress: string = ENV.PROCTOR_SERVER_URL + ENV.PROCTOR_SERVER_PORT;

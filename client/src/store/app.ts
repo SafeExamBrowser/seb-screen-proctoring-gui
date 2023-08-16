@@ -13,6 +13,12 @@ export const useAppBarStore = defineStore('appBar', () => {
   return {title, galleryGridSize, isNameEnabled};
 });
 
+export const useLoadingStore = defineStore("loading", () => {
+  const isLoading = ref<boolean>(false);
+
+  return {isLoading};
+});
+
 // export const useAuthStore = defineStore("auth", () => {
 
 //   const accessToken = ref<string | null>();

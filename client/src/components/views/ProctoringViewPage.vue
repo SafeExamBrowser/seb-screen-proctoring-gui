@@ -2,7 +2,10 @@
     <v-row>
         <v-col cols="9">
 
-            <v-img :src="imageLink">
+            <v-img 
+                class="img-styling"
+                :src="imageLink" 
+                :aspect-ratio="16/9">
                 <template v-slot:error>
                     no img available
                 </template>
@@ -61,11 +64,10 @@
 
 <script setup lang="ts">
     import { useRoute } from 'vue-router';
-    import { ref, onBeforeMount, onBeforeUnmount, watch, reactive } from "vue";
+    import { ref, onBeforeMount, onBeforeUnmount, watch, reactive, computed } from "vue";
     import * as sessionService from "@/services/api-services/sessionService";
     import * as timeUtils from "@/utils/timeUtils";
     import { useAppBarStore } from '@/store/app';
-    import { computed } from 'vue';
 
     const SLIDER_INTERVAL: number = 1 * 1000;
     const SESSION_INTERVAL: number = 3 * 1000;
@@ -84,7 +86,6 @@
 
     let intervalScreenshots: any | null = null;
     let intervalSession: any | null = null;
-
 
     onBeforeMount(async () => {
         await getAndassignSession();
@@ -165,7 +166,7 @@
 
     function getImageLink(timestamp: string): string{
         if(session.value != null && sliderTime.value == session.value.startTime){
-            return session.value.latestImageLink  + "?access_token=" + localStorage.getItem("accessToken");
+            return session.value.latestImageLink + "?access_token=" + localStorage.getItem("accessToken");
         }
 
         if(session.value != null){
@@ -211,7 +212,9 @@
 
         if(isPlaying){
             intervalScreenshots = setInterval(async () => {
-                if(sliderTime.value != null) sliderTime.value += SCREENSHOTS_RELOAD_IN_MS;
+                if(sliderTime.value != null) {
+                    sliderTime.value += SCREENSHOTS_RELOAD_IN_MS;
+                }
 
                 if(session.value != null && sliderTime.value != null && timeUtils.toSeconds(sliderTime.value) == timeUtils.toSeconds(session.value?.endTime)){
                     stopIntervalScreenshots();
@@ -224,3 +227,16 @@
 
 
 </script>
+
+<style scoped>
+    .img-styling{
+        background-color: black;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .temp-img-container{
+        width: 500px
+    }
+
+
+</style>
