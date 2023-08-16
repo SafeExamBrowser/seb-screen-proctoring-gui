@@ -1,5 +1,5 @@
 <template>
-
+<v-text-field label="Label"></v-text-field>
     <div class="table-container">
         <div class="table d-flex align-center">
             <v-data-table 
