@@ -42,10 +42,10 @@
     import * as authenticationService from "@/services/api-services/authenticationService";
     import router from "@/router";
 
-    // const username = ref("super-admin");
-    // const password = ref("admin");
-    const username = ref("");
-    const password = ref("");
+    const username = ref("super-admin");
+    const password = ref("admin");
+    // const username = ref("");
+    // const password = ref("");
     const loginError = ref(false);
 
     async function handleFormSubmit(){

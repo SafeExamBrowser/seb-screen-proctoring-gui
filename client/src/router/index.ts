@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router"
 import ContainerLayout from "@/components/layout/ContainerLayout.vue"
 import LoginPage from "@/components/views/LoginPage.vue"
 import StartPage from "@/components/views/StartPage.vue"
+import SearchPage from "@/components/views/SearchPage.vue"
 import GalleryViewPage from "@/components/views/GalleryViewPage.vue"
 import ProctoringViewPage from "@/components/views/ProctoringViewPage.vue"
 import ExamplePage from "@/components/views/ExamplePage.vue"
@@ -28,6 +29,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/example",
         name: "ExamplePage",
         component: ExamplePage
+      },
+      {
+        path: "/search",
+        name: "Search",
+        component: SearchPage
       },
       {
         path: "/galleryView/:uuid",

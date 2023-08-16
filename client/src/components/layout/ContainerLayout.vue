@@ -67,6 +67,7 @@
 
     const links = [
         ["SEB Groups Proctoring", "/start"],
+        ["Search", "/search"],
         ["Example Page", "/example"],
     ];
 
