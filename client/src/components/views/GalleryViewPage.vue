@@ -78,7 +78,6 @@
     import * as galleryViewService from "@/services/component-services/galleryViewService";
     import { useAppBarStore } from "@/store/app";
     import { storeToRefs } from "pinia";
-    import {useLoading} from 'vue-loading-overlay'
 
     const IMG_URL_SCREENSHOTS_RELOAD_INTERVAL_IN_S: number = 5 * 1000;
     const SCREENSHOTS_RELOAD_INTERVAL_IN_S: number = 1 * 1000;
@@ -99,16 +98,8 @@
     let intervalGroup: any | null = null;
     let intervalImageUrl: any | null = null;
 
-    const $loading = useLoading({
-        color: "#fcba03"
-    });
-
     onBeforeMount(async () => {
-        const loader = $loading.show({
-            // Optional parameters
-        });
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
-        loader.hide()
         appBarStore.title = "Gallery View of Group: " + group.value?.name;
 
         assignData();

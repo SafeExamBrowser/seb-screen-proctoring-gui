@@ -13,10 +13,10 @@ export const useAppBarStore = defineStore('appBar', () => {
   return {title, galleryGridSize, isNameEnabled};
 });
 
-export const useSizeStore = defineStore("size", () => {
-  const mainHeight = ref<string>();
+export const useLoadingStore = defineStore("loading", () => {
+  const isLoading = ref<boolean>(false);
 
-  return {mainHeight};
+  return {isLoading};
 });
 
 // export const useAuthStore = defineStore("auth", () => {
