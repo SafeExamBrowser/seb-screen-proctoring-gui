@@ -122,7 +122,7 @@
     }
 
     function calculateItemsPerPage(): {value: number, title: string}[]{ 
-        if(groups == null || groups.value == null || groups.value.length == 0){
+        if(groups.value == null || groups.value == null || groups.value.length == 0){
             return [{value: 0, title: "0"}];
         }
 

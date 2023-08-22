@@ -1,9 +1,9 @@
 <template>
   <v-app>
-    <!-- <loading 
+    <loading 
       color="#215CAF"
       :width=100
-      :active="loadingStore.isLoading" /> -->
+      :active="loadingStore.isLoading" />
     <router-view />
   </v-app>
 </template>

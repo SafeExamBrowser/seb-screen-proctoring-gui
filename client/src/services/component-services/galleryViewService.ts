@@ -15,9 +15,11 @@ export async function getGroup(groupUuid: string, currentWindow: number, pageSiz
         return groupUuidResponse;
 
     } catch (error) {
+        console.error(error);
         return null;
     }
 }
+//==============================
 
 
 //=============index==================
@@ -33,6 +35,7 @@ export function currentIndexExists(screenshots: Screenshot[] | undefined, index:
 
     return false;
 }
+//==============================
 
 
 //=============links==================
@@ -42,7 +45,7 @@ export function createImageLinkWithToken(screenshots: Screenshot[] | undefined, 
         return "";
     }
 
-    let screenshotLink: string = screenshots[index].latestImageLink + "?access_token=" + localStorage.getItem("accessToken");
+    const screenshotLink: string = screenshots[index].latestImageLink + "?access_token=" + localStorage.getItem("accessToken");
 
     if(screenshots[index].active){
         return screenshotLink + '&t=' + timestamp;
@@ -53,11 +56,13 @@ export function createImageLinkWithToken(screenshots: Screenshot[] | undefined, 
 
 export function getProctoringViewLink(screenshots: Screenshot[] | undefined, groupUuid: string, index: number): string {
     if (screenshots != null) {
-        return "/galleryView/" + groupUuid + "/recording/" + screenshots[index].uuid;
+        return "/recording/" + screenshots[index].uuid;
     }
 
     return "";
 }
+//==============================
+
 
 //=============error handling==================
 export function getAlertText(groupName: string | undefined): string {

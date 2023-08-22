@@ -41,9 +41,9 @@ const routes: Array<RouteRecordRaw> = [
         component: GalleryViewPage
       },
       {
-        path: "/galleryView/:uuid/recording/:sessionId",
+        path: "/recording/:sessionId",
         name: "ProctoringViewPage",
-        component: ProctoringViewPage
+        component: ProctoringViewPage,
       }
 
     ]

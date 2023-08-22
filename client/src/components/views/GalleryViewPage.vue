@@ -1,58 +1,60 @@
 <template>
     <v-window v-model="currentWindow" @update:model-value="windowChange()" show-arrows>
-        <v-window-item v-for="(w , index) in windowsAmount">
+        <v-window-item v-for="(w , index) in windowsAmount" :key="index">
 
-            <v-row v-if="!noScreenshotData" v-for="i in appBarStore.galleryGridSize.value" align-strech no-gutters>
-                <v-col v-for="n in appBarStore.galleryGridSize.value" class="col-style">
+            <template v-if="!noScreenshotData">
+                <v-row  v-for="i in appBarStore.galleryGridSize.value" :key="i" align-strech no-gutters>
+                    <v-col v-for="n in appBarStore.galleryGridSize.value" :key="n" class="col-style">
 
-                    <v-hover v-slot="{isHovering, props}" >
-                        <!--todo: add max height  -->
-                        <v-img
-                            v-if="galleryViewService.currentIndexExists(group?.screenshots, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))"
-                            v-bind="props"
-                            id="imgElement"
-                            class="img-styling"
-                            :aspect-ratio="16/9"
-                            :class="{'on-hover': isHovering}"
-                            :src="galleryViewService.createImageLinkWithToken(group?.screenshots, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value), timestamp)">
+                        <v-hover v-slot="{isHovering, props}" >
+                            <!--todo: add max height  -->
+                            <v-img
+                                v-if="galleryViewService.currentIndexExists(group?.screenshots, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))"
+                                v-bind="props"
+                                id="imgElement"
+                                class="img-styling"
+                                :aspect-ratio="16/9"
+                                :class="{'on-hover': isHovering}"
+                                :src="galleryViewService.createImageLinkWithToken(group?.screenshots, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value), timestamp)">
 
-                            <div v-if="isHovering" class="hover-overlay d-flex align-end">
-                                <v-row>
-                                    <v-col align-self="end" >
-                                        <v-sheet class="d-flex pa-2 button-row">
-                                            <span v-if="appBarStore.isNameEnabled" class="text-h6 title-box">
-                                                {{group?.screenshots[galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value)].clientName}}
-                                            </span>
-                                            <v-spacer></v-spacer>
-                                            <span>
-                                                <v-btn rounded="sm" color="white" variant="outlined"
-                                                    @click="openDialog(galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))">
-                                                    Expand
-                                                </v-btn>
+                                <div v-if="isHovering" class="hover-overlay d-flex align-end">
+                                    <v-row>
+                                        <v-col align-self="end" >
+                                            <v-sheet class="d-flex pa-2 button-row">
+                                                <span v-if="appBarStore.isNameEnabled" class="text-h6 title-box">
+                                                    {{group?.screenshots[galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value)].clientName}}
+                                                </span>
+                                                <v-spacer></v-spacer>
+                                                <span>
+                                                    <v-btn rounded="sm" color="white" variant="outlined"
+                                                        @click="openDialog(galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))">
+                                                        Expand
+                                                    </v-btn>
 
-                                                <v-btn
-                                                    :to="galleryViewService.getProctoringViewLink(group?.screenshots, groupUuid, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))"
-                                                    rounded="sm" color="primary" variant="flat" class="ml-2">
-                                                    Details View
-                                                </v-btn>
-                                            </span>
-                                        </v-sheet>
-                                    </v-col>
-                                </v-row>
-                            </div>
-                        </v-img>
+                                                    <v-btn
+                                                        :to="galleryViewService.getProctoringViewLink(group?.screenshots, groupUuid, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))"
+                                                        rounded="sm" color="primary" variant="flat" class="ml-2">
+                                                        Details View
+                                                    </v-btn>
+                                                </span>
+                                            </v-sheet>
+                                        </v-col>
+                                    </v-row>
+                                </div>
+                            </v-img>
 
-                        <v-img 
-                            v-else 
-                            class="content-filler"
-                            :aspect-ratio="16/9"
-                            :src="galleryViewService.createImageLinkWithToken(group?.screenshots, 0, timestamp)">
-                        </v-img>
+                            <v-img 
+                                v-else 
+                                class="content-filler"
+                                :aspect-ratio="16/9"
+                                :src="galleryViewService.createImageLinkWithToken(group?.screenshots, 0, timestamp)">
+                            </v-img>
 
-                    </v-hover>
+                        </v-hover>
 
-                </v-col>
-            </v-row>
+                    </v-col>
+                </v-row>
+            </template>
 
             <v-alert v-else color="warning" icon="$warning" title="No data available"
                 :text="galleryViewService.getAlertText(group?.name)"></v-alert>
@@ -73,18 +75,14 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, onBeforeMount, onBeforeUnmount, watch, computed, onMounted } from "vue";
+    import { ref, onBeforeMount, onBeforeUnmount, watch } from "vue";
     import { useRoute } from "vue-router";
     import * as galleryViewService from "@/services/component-services/galleryViewService";
-    import { useAppBarStore } from "@/store/app";
+    import { useAppBarStore, useLoadingStore } from "@/store/app";
     import { storeToRefs } from "pinia";
 
-    const IMG_URL_SCREENSHOTS_RELOAD_INTERVAL_IN_S: number = 5 * 1000;
-    const SCREENSHOTS_RELOAD_INTERVAL_IN_S: number = 1 * 1000;
 
-    const appBarStore = useAppBarStore();
-    const groupUuid: string = useRoute().params.uuid.toString();
-
+    //reactive variables
     const dialog = ref(false);
     const group = ref<GroupUuid | null>();
     const noScreenshotData = ref<boolean>(false);
@@ -92,13 +90,25 @@
     const windowsAmount = ref<number>(1);
     const currentWindow = ref<number>(0);
 
+    //time constants
+    const GROUP_INTERVAL: number = 5 * 1000;
+    const SCREENSHOT_INTERVAL: number = 1 * 1000;
+
+    //store
+    const appBarStore = useAppBarStore();
     const appBarStoreRef = storeToRefs(appBarStore);
+    const loadingStore = useLoadingStore();
 
-    let openedImageLink: string = "";
-    let intervalGroup: any | null = null;
-    let intervalImageUrl: any | null = null;
+    //remaining
+    const groupUuid: string = useRoute().params.uuid.toString();
+    let openedImageLink = "";
+    let intervalGroup: NodeJS.Timer | null = null;
+    let intervalImageUrl: NodeJS.Timer | null = null;
 
+
+    //=============lifecycle and watchers==================
     onBeforeMount(async () => {
+        //todo: add error handling
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
         appBarStore.title = "Gallery View of Group: " + group.value?.name;
 
@@ -133,6 +143,8 @@
             noScreenshotData.value = true;
         }
     }
+    //==============================
+
 
     //=====window functions======
     function calcAmountOfWindows() {
@@ -145,7 +157,9 @@
     }
 
     async function windowChange() {
+        loadingStore.isLoading = true;
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
+        loadingStore.isLoading = false;
         assignData();
     }
 
@@ -155,21 +169,14 @@
     }
     //==============================
 
+
     //=============interval==================
     function startIntervalGroup() {
         intervalGroup = setInterval(async () => {
             group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
             assignData();
 
-        }, IMG_URL_SCREENSHOTS_RELOAD_INTERVAL_IN_S);
-    }
-
-    function startIntervalImageUrl() {
-        intervalImageUrl = setInterval(() => {
-            timestamp.value = Date.now();
-
-        }, SCREENSHOTS_RELOAD_INTERVAL_IN_S);
-
+        }, GROUP_INTERVAL);
     }
 
     function stopIntervalGroup() {
@@ -178,11 +185,21 @@
         }
     }
 
+    function startIntervalImageUrl() {
+        intervalImageUrl = setInterval(() => {
+            timestamp.value = Date.now();
+
+        }, SCREENSHOT_INTERVAL);
+
+    }
+
     function stopIntervalImageUrl() {
         if (intervalImageUrl) {
             clearInterval(intervalImageUrl);
         }
     }
+    //==============================
+    
 
 </script>
 
@@ -211,6 +228,7 @@
     .button-row {
         background-color: #404040;
         width: 100%;
+        /* height: 100px; */
     }
 
     .title-box{

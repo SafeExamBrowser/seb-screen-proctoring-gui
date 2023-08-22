@@ -9,4 +9,4 @@ function getServerPort(){
     }
     //@ts-ignore
     return ":" + window.VITE_SERVER_PORT;
-};
+}

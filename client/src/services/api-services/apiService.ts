@@ -1,8 +1,8 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosStatic } from "axios";
+import axios, { AxiosInstance } from "axios";
 import * as authenticationService from "@/services/api-services/authenticationService";
 import router from "@/router";
 import * as ENV from "@/config/envConfig";
-import { useLoadingStore } from "@/store/app";
+// import { useLoadingStore } from "@/store/app";
  
 export let api: AxiosInstance;
 
@@ -20,23 +20,23 @@ export function createApi(){
 
 
 export function createApiInterceptor(){
-    const loadingStore = useLoadingStore();
+    // const loadingStore = useLoadingStore();
 
-    api.interceptors.request.use(
-        (config) => {
-            loadingStore.isLoading = true;
-            return config;
-        }
-    )
+    // api.interceptors.request.use(
+    //     (config) => {
+    //         loadingStore.isLoading = true;
+    //         return config;
+    //     }
+    // )
 
 
     api.interceptors.response.use(response => {
-        loadingStore.isLoading = false;
+        // loadingStore.isLoading = false;
         return response;
 
     }, async error => {
         console.error(error)
-        loadingStore.isLoading = false;
+        // loadingStore.isLoading = false;
         const originalRequest = error.config;
 
         if(error.response.status === 401 && !originalRequest._retry){
@@ -66,10 +66,11 @@ export function createApiInterceptor(){
                 throw Promise.reject(error);
             }
             
-        }else{
-            router.push({
-                path: "/"
-            });
         }
+        // else{
+        //     router.push({
+        //         path: "/"
+        //     });
+        // }
     });
 }
