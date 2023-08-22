@@ -65,7 +65,7 @@
                     <v-img 
                         class="img-styling"
                         :aspect-ratio="16/9"
-                        :src="openedImageLink">
+                        :src="expandedScreenshotLink">
                     </v-img>
                 </v-card>
             </v-dialog>
@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, onBeforeMount, onBeforeUnmount, watch } from "vue";
+    import { ref, onBeforeMount, onBeforeUnmount, watch, computed } from "vue";
     import { useRoute } from "vue-router";
     import * as galleryViewService from "@/services/component-services/galleryViewService";
     import { useAppBarStore, useLoadingStore } from "@/store/app";
@@ -88,7 +88,8 @@
     const noScreenshotData = ref<boolean>(false);
     const timestamp = ref(Date.now());
     const windowsAmount = ref<number>(1);
-    const currentWindow = ref<number>(0);
+    const currentWindow = ref<number>(0);   
+    const expandedScreenshotIndex = ref<number>(0);
 
     //time constants
     const GROUP_INTERVAL: number = 5 * 1000;
@@ -101,7 +102,6 @@
 
     //remaining
     const groupUuid: string = useRoute().params.uuid.toString();
-    let openedImageLink = "";
     let intervalGroup: NodeJS.Timer | null = null;
     let intervalImageUrl: NodeJS.Timer | null = null;
 
@@ -147,6 +147,13 @@
 
 
     //=====window functions======
+    async function windowChange() {
+        loadingStore.isLoading = true;
+        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
+        loadingStore.isLoading = false;
+        assignData();
+    }
+
     function calcAmountOfWindows() {
         if (group.value?.numberOfSessions == null || group.value?.numberOfSessions == 0) {
             windowsAmount.value = 1;
@@ -156,17 +163,14 @@
         windowsAmount.value = Math.ceil(group.value?.numberOfSessions / Math.pow(appBarStore.galleryGridSize.value, 2));
     }
 
-    async function windowChange() {
-        loadingStore.isLoading = true;
-        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
-        loadingStore.isLoading = false;
-        assignData();
-    }
-
     function openDialog(index: number) {
-        openedImageLink = galleryViewService.createImageLinkWithToken(group.value?.screenshots, index, timestamp.value);
+        expandedScreenshotIndex.value = index;
         dialog.value = true;
     }
+
+    const expandedScreenshotLink = computed<string>(() => {
+        return galleryViewService.createImageLinkWithToken(group.value?.screenshots, expandedScreenshotIndex.value, timestamp.value);
+    });
     //==============================
 
 

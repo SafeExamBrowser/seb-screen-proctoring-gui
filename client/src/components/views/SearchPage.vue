@@ -146,8 +146,6 @@
     import { useAppBarStore } from "@/store/app";
     import * as searchService from "@/services/api-services/searchService";
     import router from "@/router";
-import { time } from "console";
-
 
     //form fields
     const searchString = ref<string>();
