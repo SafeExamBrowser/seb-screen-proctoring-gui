@@ -28,24 +28,32 @@
         </v-app-bar-nav-icon>
         <v-app-bar-title>{{ appBarStore.title }}</v-app-bar-title>
 
-        <template v-if="useRoute().name == 'GalleryViewPage'" v-slot:append>
-            <v-menu>
-                <template v-slot:activator="{ props }">
-                    <v-btn v-bind="props" rounded="sm" color="primary" variant="flat">
-                        <v-icon start icon="mdi-chevron-down" size="x-large"></v-icon>
-                        Grid Size: {{ appBarStore.galleryGridSize.title }}
-                    </v-btn>
-                </template>
-                <v-list>
-                    <v-list-item class="d-flex justify-center align-center" v-for="(gridSize, index) in gridSizes" :key="index" :value="index" @click="changeGridSize(gridSize)">
-                        <v-list-item-title>{{ gridSize.title }}</v-list-item-title>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
-            <div class="switch-container">
-                <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.isNameEnabled"></v-switch>
-            </div>
+        <template v-slot:append>
+            <template v-if="useRoute().name == 'GalleryViewPage'">
+                <v-menu>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" rounded="sm" color="primary" variant="flat">
+                            <v-icon start icon="mdi-chevron-down" size="x-large"></v-icon>
+                            Grid Size: {{ appBarStore.galleryGridSize.title }}
+                        </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-item class="d-flex justify-center align-center" v-for="(gridSize, index) in gridSizes" :key="index" :value="index" @click="changeGridSize(gridSize)">
+                            <v-list-item-title>{{ gridSize.title }}</v-list-item-title>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
+                <div class="switch-container">
+                    <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.isNameEnabled"></v-switch>
+                </div>
+            </template>
+            <!-- <div class="switch-container">
+                <v-switch class="mx-auto" label="theme test" color="primary" v-model="useLigtTheme"></v-switch>
+            </div> -->
         </template>
+
+
+
     </v-app-bar>
 
     <v-main>
@@ -57,13 +65,16 @@
 </template>
 
 <script setup lang="ts">
-    import { ref } from "vue"
+    import { ref, watch } from "vue"
     import { useAppBarStore } from "@/store/app";
     import { useRoute } from "vue-router";
+    import { useTheme } from 'vuetify'
 
     const drawer = ref();
+    const useLigtTheme = ref<boolean>(true);
 
     const appBarStore = useAppBarStore();
+    const theme = useTheme();
 
     const links = [
         ["SEB Groups Proctoring", "/start"],
@@ -78,6 +89,14 @@
         // {title: "5x5", value: 5},
         // {title: "6x6", value: 6},
     ];
+
+
+
+    watch(useLigtTheme, () => {
+        theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+    });
+
+
 
     function signOut(){
         localStorage.clear();

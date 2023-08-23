@@ -10,6 +10,7 @@
   "dependencies": {
     "@mdi/font": "7.0.96",
     "@tailwindcss/forms": "^0.5.4",
+    "@vuepic/vue-datepicker": "^6.0.1",
     "axios": "^1.4.0",
     "install": "^0.13.0",
     "npm": "^9.8.1",
@@ -18,7 +19,7 @@
     "vue": "^3.2.0",
     "vue-loading-overlay": "^6.0.3",
     "vue-router": "^4.0.0",
-    "vuetify": "^3.0.0",
+    "vuetify": "^v3.3.13",
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {

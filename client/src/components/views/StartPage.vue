@@ -56,17 +56,19 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, onBeforeMount } from "vue";
+    import { ref, onBeforeMount, onMounted } from "vue";
     import * as groupService from "@/services/api-services/groupService";
     import { VDataTable } from "vuetify/labs/VDataTable"
-    import { useAppBarStore } from "@/store/app";
+    import { useAppBarStore, useLoadingStore } from "@/store/app";
     import * as timeUtils from "@/utils/timeUtils";
     import router from "@/router";
 
-    const appBarStore = useAppBarStore();
     const groups = ref<Group[]>();
     const defaultItemsPerPage = ref<number>(0)
     const headerRefs = ref<any[]>();
+
+    const appBarStore = useAppBarStore();
+    const loadingStore = useLoadingStore();
 
     const headers = ref([
         {title: "Name", key: "name"},
@@ -77,14 +79,20 @@
     onBeforeMount(async () => {
         try {
             appBarStore.title = "Active SEB Groups"
+            loadingStore.isLoading = true;
             groups.value = await groupService.getGroups({pageSize: 500});
-
-            // groups.value = groups.value + groups.value + groups.value
+            loadingStore.isLoading = false;
 
         } catch (error) {
             //todo: add better error handling
             console.error(error);
         }
+    });
+
+    onMounted(() => {
+        //sort by start-time desc
+        sortTable(2);
+        sortTable(2);
     });
 
 
@@ -100,6 +108,7 @@
         if (event.key == 'Enter' || event.key == ' ') {
 
             if(action == "sort"){
+                console.log(key)
                 sortTable(key)
             }
 

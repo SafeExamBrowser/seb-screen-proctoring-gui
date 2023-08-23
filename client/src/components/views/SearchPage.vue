@@ -6,12 +6,50 @@
             title="Search">
             <v-form>
                 <v-card-text>
+
+                    <div class="date-time-selection-container">
+                        <v-radio-group>
+                            <v-row class="fill-height" align="center">
+                                <v-col>
+                                    <v-radio label="Period:" value="1"></v-radio>
+                                </v-col>
+                                <v-col>
+                                    <VueDatePicker v-model="date" range :teleport="true"></VueDatePicker>
+                                </v-col>
+                            </v-row>
+                            <v-row class="fill-height" align="center">
+                                <v-col>
+                                    <v-radio label="Between:" value="2"></v-radio>
+                                </v-col>
+                                <v-col>
+                                    <VueDatePicker v-model="date" range :teleport="true"></VueDatePicker>
+                                </v-col>
+                            </v-row>
+                        </v-radio-group>
+                    </div>
+
+
+
+
+
+
+
                     <v-row class="fill-height" align="center">
                         <v-col cols="2">
                             Search for:
                         </v-col>
                         <v-col cols="4">
-                                <input v-model="searchString" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline">
+                            <v-text-field
+                                density="compact"
+                                variant="solo"
+                                label="Search templates"
+                                single-line
+                                hide-details
+                            ></v-text-field>
+
+                            <!-- <v-text-field label="Label"></v-text-field> -->
+
+                                <!-- <input v-model="searchString" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"> -->
                         </v-col>
 
                         <v-col cols="2">
@@ -28,7 +66,7 @@
                         </v-col>
                     </v-row>
 
-                    <v-row>
+                    <!-- <v-row>
                         <v-col>
                             <v-expansion-panels>
                                 <v-expansion-panel title="Time filters">
@@ -55,7 +93,7 @@
                                 </v-expansion-panel>
                             </v-expansion-panels>
                         </v-col>
-                    </v-row>
+                    </v-row> -->
 
                     <v-row>
                         <v-col align="right">
@@ -144,11 +182,17 @@
 <script setup lang="ts">
     import { ref, onBeforeMount } from "vue";
     import { useAppBarStore } from "@/store/app";
+    import VueDatePicker from '@vuepic/vue-datepicker';
+    import '@vuepic/vue-datepicker/dist/main.css'
     import * as searchService from "@/services/api-services/searchService";
     import router from "@/router";
 
     //form fields
     const searchString = ref<string>();
+    const date = ref();
+
+
+
 
     const searchResultAvailable = ref<boolean>(false);
     const searchResults = ref<SearchResult[]>([]);
@@ -168,6 +212,7 @@
 
     async function search(){
         console.log("search string: " + searchString.value)
+        console.log("date: " + date.value)
 
         const searchResult: string = await searchService.search();
         searchResultAvailable.value = true;
@@ -285,7 +330,11 @@
     }
 
     .search-container, .search-result-container{
-        width: 75%;
+        width: 60%;
+    }
+
+    .date-time-selection-container{
+        width: 50%;
     }
 
 

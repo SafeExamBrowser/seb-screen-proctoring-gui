@@ -92,7 +92,7 @@
     const expandedScreenshotIndex = ref<number>(0);
 
     //time constants
-    const GROUP_INTERVAL: number = 5 * 1000;
+    const GROUP_INTERVAL: number = 3 * 1000;
     const SCREENSHOT_INTERVAL: number = 1 * 1000;
 
     //store
@@ -110,6 +110,7 @@
     onBeforeMount(async () => {
         //todo: add error handling
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
+        console.log(group.value)
         appBarStore.title = "Gallery View of Group: " + group.value?.name;
 
         assignData();
