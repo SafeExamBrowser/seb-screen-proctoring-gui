@@ -1,100 +1,92 @@
 <template>
 
     <div class="search-parent-container">
-        <v-card 
+        <v-sheet 
+            elevation="4"
             class="search-container"
             title="Search">
             <v-form>
-                <v-card-text>
-
-                    <div class="date-time-selection-container">
-                        <v-radio-group>
-                            <v-row class="fill-height" align="center">
-                                <v-col>
-                                    <v-radio label="Period:" value="1"></v-radio>
-                                </v-col>
-                                <v-col>
-                                    <VueDatePicker v-model="date" range :teleport="true"></VueDatePicker>
-                                </v-col>
-                            </v-row>
-                            <v-row class="fill-height" align="center">
-                                <v-col>
-                                    <v-radio label="Between:" value="2"></v-radio>
-                                </v-col>
-                                <v-col>
-                                    <VueDatePicker v-model="date" range :teleport="true"></VueDatePicker>
-                                </v-col>
-                            </v-row>
-                        </v-radio-group>
-                    </div>
-
-
-
-
-
-
-
+                <div class="form-container">
+                    <!------------Group Name------------->
                     <v-row class="fill-height" align="center">
-                        <v-col cols="2">
-                            Search for:
-                        </v-col>
                         <v-col cols="4">
+                            Group Name:
+                        </v-col>
+                        <v-col cols="8">
                             <v-text-field
                                 density="compact"
                                 variant="solo"
-                                label="Search templates"
                                 single-line
                                 hide-details
                             ></v-text-field>
-
-                            <!-- <v-text-field label="Label"></v-text-field> -->
-
-                                <!-- <input v-model="searchString" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"> -->
-                        </v-col>
-
-                        <v-col cols="2">
-                            <div>
-                                Filters:
-                            </div>
-                        </v-col>
-                        <v-col cols="4">
-                            <select id="countries" class="border text-sm rounded-lg block w-full p-2.5">
-                                <option value="US">Windows Title</option>
-                                <option value="DE">Application Name</option>
-                                <option value="DE">URL</option>
-                            </select>
                         </v-col>
                     </v-row>
+                    <!----------------------------------->
 
-                    <!-- <v-row>
-                        <v-col>
-                            <v-expansion-panels>
-                                <v-expansion-panel title="Time filters">
-                                    <v-expansion-panel-text>
 
-                                        <v-row class="fill-height" align="center">
-                                            <v-col cols="4">
-                                                Last:
-                                            </v-col>
-                                            <v-col cols="4">
-                                                <input class="shadow appearance-none border  rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline" value="5">
-                                            </v-col>
-
-                                            <v-col cols="4">
-                                                <select id="countries" class="border text-sm rounded-lg block w-full p-2.5">
-                                                    <option value="US">Days</option>
-                                                    <option value="DE">Moths</option>
-                                                    <option value="DE">Years</option>
-                                                </select>
-                                            </v-col>
-                                        </v-row>
-
-                                    </v-expansion-panel-text>
-                                </v-expansion-panel>
-                            </v-expansion-panels>
+                    <!------------Login Name------------->
+                    <v-row class="fill-height" align="center">
+                        <v-col cols="4">
+                            Login Name:
                         </v-col>
-                    </v-row> -->
+                        <v-col cols="8">
+                            <v-text-field
+                                density="compact"
+                                variant="solo"
+                                single-line
+                                hide-details
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <!----------------------------------->
 
+
+                    <!------------Time Period------------->
+                        <v-row class="fill-height" align="center">
+                            <v-col cols="4">
+                                Period:
+                            </v-col>
+                            <v-col cols="1">
+                                <v-radio value="1"></v-radio>
+                            </v-col>
+                            <v-col cols="2">
+                                <v-text-field
+                                    density="compact"
+                                    variant="solo"
+                                    single-line
+                                    hide-details> 
+                                </v-text-field> 
+                            </v-col>
+                            <v-col cols="5">
+                                <v-select
+                                    hide-details
+                                    label="Select"
+                                    variant="outlined"
+                                    :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']">
+                                </v-select>
+                            </v-col>
+                        </v-row>
+                        <!----------------------------------->
+
+
+                        <!------------Time Selection------------->
+                        <v-row class="fill-height" align="center">
+                            <v-col cols="4">
+                                Between:
+                            </v-col>
+                            <v-col cols="1">
+                                <v-radio 
+                                    value="2">
+                                </v-radio>
+                            </v-col>
+                            <v-col cols="7">
+                                <VueDatePicker v-model="date" range :teleport="true"></VueDatePicker>
+                            </v-col>
+                        </v-row>
+                    <!----------------------------------->
+
+
+                    <!------------Buttons------------->
                     <v-row>
                         <v-col align="right">
                             <v-btn rounded="sm" color="black" variant="outlined">
@@ -106,189 +98,172 @@
                                 color="primary" 
                                 variant="flat" 
                                 class="ml-2"
-                                @click="search()">
+                                @click="searchSessions()">
                                 Search
                             </v-btn>
 
                         </v-col>
                     </v-row>
-                </v-card-text>
-                
+                    <!----------------------------------->
+                </div>
             </v-form>
-        </v-card>
+        </v-sheet>
     </div>
 
     <div v-if="searchResultAvailable" class="search-result-parent-container">
-        <v-card 
+        <v-sheet 
+            elevation="4"
             class="search-result-container"
             title="Search results">
 
-            <v-card-text>
-                <v-expansion-panels>
+            <v-data-table
+                item-value="sessionUUID"
+                show-expand
+                class="elevation-1"
+                :headers="sessionTableHeaders"
+                :items="sessionSearchResults?.content">
 
-                    <v-expansion-panel v-for="sessionResult in searchResults" :key="sessionResult.sessionId">
+                <template v-slot:item.startTime="{item}">
+                    <td>
+                        <div>
+                            {{timeUtils.formatTimestampToFullDate(item.columns.startTime)}}
+                        </div>
+                    </td>
+                </template>
 
-                        <template v-slot:title>
-                            {{ sessionResult.date }} 
-                            |
-                            {{ sessionResult.name }} 
-                            |
-                            {{ sessionResult.group }}
-                            |
-                            <v-btn @click.stop="openProctoringView(sessionResult.sessionId)" variant="text" icon="mdi-video"></v-btn>
-                        </template>
+                <template v-slot:item.proctoringViewLink="{item}">
+                    <v-btn @click="openProctoringView(item.raw.sessionUUID)" variant="text" icon="mdi-video"></v-btn>
+                </template>
 
+                <template v-slot:item.data-table-expand="{item, isExpanded, toggleExpand}">
+                    <v-icon 
+                        tabindex="0" 
+                        variant="text" 
+                        @click="searchScreenshots(item, isExpanded, toggleExpand)"
+                        :icon="isExpanded(item) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
+                    </v-icon>
+                </template>
 
-                        <v-expansion-panel-text>
-                            <v-table>
-                                <thead>
-                                    <tr>
-                                        <th>Date & Time</th>
-                                        <th>Application</th>
-                                        <th>URL</th>
-                                        <th>Recording</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="searchResult in sessionResult.results" :key="searchResult.timestamp">
-                                        <td>
-                                            {{ searchResult.timestamp }}   
-                                        </td>
-                                        <td>
-                                            {{ searchResult.application }}   
-                                        </td>
-                                        <td>
-                                            {{ searchResult.url }}   
-                                        </td>
-                                        <td>
-                                            <v-btn @click="openProctoringView(sessionResult.sessionId, searchResult.timestamp)" variant="text" icon="mdi-video"></v-btn>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </v-table>
+                <template v-slot:expanded-row="{ columns, item }">
+                    <tr>
+                        <td :colspan="columns.length">
+                            <v-data-table
+                                item-value="sessionUUID"
+                                class="elevation-1"
+                                theme="tableTheme"
+                                :headers="screenshotTableHeaders"
+                                :items="screenshotSearchResults.find(i => i.content[0].sessionUUID == item.raw.sessionUUID)?.content">
 
-                        </v-expansion-panel-text>
+                                <template v-slot:item.imageTimestamp="{item}">
+                                    <td>
+                                        <div>
+                                            {{timeUtils.formatTimestmapToTime(item.columns.imageTimestamp)}}
+                                        </div>
+                                    </td>
+                                </template>
 
-                    </v-expansion-panel>
+                                <template v-slot:item.proctoringViewLink="{item}">
+                                    <v-btn @click="openProctoringView(item.raw.sessionUUID, item.raw.imageTimestamp)" variant="text" icon="mdi-video"></v-btn>
+                                </template>
 
-                </v-expansion-panels>
-            </v-card-text>
-        </v-card>
+                            </v-data-table>
+                        </td>
+                    </tr>
+                </template>
+
+            </v-data-table>
+        </v-sheet>
     </div>
 
 </template>
 
 
 <script setup lang="ts">
-    import { ref, onBeforeMount } from "vue";
+    import { ref, onBeforeMount, computed } from "vue";
     import { useAppBarStore } from "@/store/app";
     import VueDatePicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css'
-    import * as searchService from "@/services/api-services/searchService";
+    import * as searchViewService from "@/services/component-services/searchViewService";
     import router from "@/router";
+    import { VDataTable } from "vuetify/labs/VDataTable"
+    import * as timeUtils from "@/utils/timeUtils";
+
 
     //form fields
     const searchString = ref<string>();
     const date = ref();
 
-
-
-
+    //reactive variables
     const searchResultAvailable = ref<boolean>(false);
-    const searchResults = ref<SearchResult[]>([]);
+    const sessionSearchResults = ref<SearchSessions>();
+    const screenshotSearchResults = ref<SearchScreenshots[]>([]);
 
-
+    //remaining
     const appBarStore = useAppBarStore();
+
+    //table
+    const sessionTableHeaders = ref([
+        {title: "Start-Time", key: "startTime"},
+        {title: "Login Name", key: "clientName"},
+        {title: "Group Name", key: "groupName"},
+        {title: "Slides", key: "nrOfScreenshots"},
+        {title: "Video", key: "proctoringViewLink"},
+    ]);
+
+    const screenshotTableHeaders = ref([
+        {title: "Time", key: "imageTimestamp"},
+        {title: "User-Action", key: "metaData.screenProctoringMetadataUserAction"},
+        {title: "URL", key: "metaData.screenProctoringMetadataURL"},
+        {title: "Video", key: "proctoringViewLink"},
+    ]);
 
 
     onBeforeMount(async () => {
         try {
             appBarStore.title = "Search"
+            await searchSessions();
 
         } catch (error) {
             console.error(error);
         }
     });
 
-    async function search(){
+    async function searchSessions(){
         console.log("search string: " + searchString.value)
         console.log("date: " + date.value)
 
-        const searchResult: string = await searchService.search();
+        const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions({pageSize: 20});
+        if(sessionSearchResponse == null){
+            //todo: show error to user
+            return;
+        }
+
+        sessionSearchResults.value = sessionSearchResponse;
         searchResultAvailable.value = true;
+    }
 
-        searchResults.value = [
-            {   
-                name: "seb0",
-                sessionId: "89c68efd-cdd5-4a84-8481-38ba99b9e5f4",
-                date: "21.08.2023",
-                group: "demo1",
-                results: [
-                    {
-                        application: "Web-Browser",
-                        url: "moodle.com/examXyz",
-                        timestamp: "1691136444234" 
-                    },
-                    {
-                        application: "Web-Browser",
-                        url: "moodle.com/examXyz/question100",
-                        timestamp: "1691136444234" 
-                    },
-                    {
-                        application: "Windows Calculator",
-                        url: "",
-                        timestamp: "1691136444234" 
-                    }
-                ]
-            },
-            {
-                name: "seb4",
-                sessionId: "7f812da0-39dc-42f5-8233-72836e72cae2",
-                date: "12.08.2023",
-                group: "newTimeTest",
-                results: [
-                    {
-                        application: "Web-Browser",
-                        url: "moodle.com/examXyz",
-                        timestamp: "1691069879564" 
-                    },
-                    {
-                        application: "Web-Browser",
-                        url: "moodle.com/examXyz/question100",
-                        timestamp: "1691069879564" 
-                    },
-                    {
-                        application: "Windows Calculator",
-                        url: "",
-                        timestamp: "1691069879564" 
-                    }
-                ]
-            },
-            {
-                name: "Peter Muster",
-                sessionId: "3387f32a-b651-49a3-a66a-9cb32347f765",
-                date: "12.12.2021",
-                group: "group12",
-                results: [
-                    {
-                        application: "Web-Browser",
-                        url: "moodle.com/examXyz",
-                        timestamp: "1691069879564" 
-                    },
-                    {
-                        application: "Web-Browser",
-                        url: "moodle.com/examXyz/question100",
-                        timestamp: "1691069879564" 
-                    },
-                    {
-                        application: "Windows Calculator",
-                        url: "",
-                        timestamp: "1691069879564" 
-                    }
-                ]
+    async function searchScreenshots(item: any, isExpanded: any, toggleExpand: any){
+
+        if(isExpanded(item)){
+            toggleExpand(item);
+            const index: number = screenshotSearchResults.value.findIndex(i => i.content[0].sessionUUID == item.raw.sessionUUID);
+
+            if (index !== -1) {
+                screenshotSearchResults.value.splice(index, 1);
             }
-        ];
+            return;
+        }
 
+        const screenshotSearchResponse: SearchScreenshots | null = await searchViewService.searchScreenshots({sessionUUID: item.raw.sessionUUID, pageSize: 500});
+        if(screenshotSearchResponse == null){
+            //todo: show error to user
+            return null;
+        }
+
+        console.log(screenshotSearchResponse)
+
+        screenshotSearchResults.value.push(screenshotSearchResponse);
+        toggleExpand(item);
     }
 
     function openProctoringView(sessionId: string, timestamp?: string){
@@ -299,7 +274,6 @@
 
             return;
         }
-
 
         router.push({
             name: "ProctoringViewPage",
@@ -317,7 +291,7 @@
 
 </script>
 
-<style scoped>
+<style>
 
     .search-parent-container, .search-result-parent-container{
         display: flex;
@@ -331,11 +305,15 @@
 
     .search-container, .search-result-container{
         width: 60%;
+        padding: 20px;
+        /* display: flex;
+        justify-content: center;
+        align-items: center;  */
     }
 
-    .date-time-selection-container{
-        width: 50%;
+    .form-container{
+        padding-left: 20%;
+        padding-right: 20%;
     }
-
 
 </style>

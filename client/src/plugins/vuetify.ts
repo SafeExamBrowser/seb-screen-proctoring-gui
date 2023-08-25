@@ -11,7 +11,13 @@ export default createVuetify({
           secondary: '#5CBBF6',
         },
       },
-      dark: {}
+      dark: {},
+      tableTheme: {
+        dark: false,
+        colors: {
+          surface: "#F5F5F5",
+        },
+      }
     },
   },
 })

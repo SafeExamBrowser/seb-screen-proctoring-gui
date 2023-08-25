@@ -12,3 +12,36 @@ type OptionalParGroupByUuid = {
     sortOrder?: string; 
     filterCriteria?: string;
 }
+
+type OptionalParSearchSessions = {
+    groupUUID?: string,
+    groupName?: string,
+    sessionUUID?: string,
+    fromTime?: string,
+    toTime?: string,
+    clientName?: string,
+    clientMachineName?: string,
+    clientOsName?: string,
+    clientVersion?: string,
+    pageNumber?: number,
+    pageSize?: number,
+    sort?: string
+}
+
+type OptionalParSearchScreenshots = {
+    groupUUID?: string,
+    groupName?: string,
+    sessionUUID?: string,
+    fromTime?: string,
+    toTime?: string,
+    clientName?: string,
+    clientMachineName?: string,
+    clientOsName?: string,
+    clientVersion?: string,
+    screenProctoringMetadataURL?: string,
+    screenProctoringMetadataWindowTitle?: string,
+    screenProctoringMetadataUserAction?: string,
+    pageNumber?: number,
+    pageSize?: number,
+    sort?: string
+}

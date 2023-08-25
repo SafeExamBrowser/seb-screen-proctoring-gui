@@ -1,16 +1,15 @@
-import axios, { AxiosResponse } from 'axios'
+import { AxiosResponse } from 'axios'
 import * as apiService from "@/services/api-services/apiService";
 
 export async function getGroups(optionalParamters?: OptionalParGroup): Promise<Group[] | any> {
 
   try {
-    const url = "/group";
+    const url: string = "/group";
     const {data, status}: AxiosResponse<GroupResponse> = await apiService.api.get(url, {headers: getHeaders(), params: {optionalParamters}});
 
     if (status === 200) {
       return data.content;
     }
-
 
   } catch (error) {
     throw error;
