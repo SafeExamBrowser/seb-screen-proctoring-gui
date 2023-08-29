@@ -1,5 +1,6 @@
 import * as groupService from "@/services/api-services/groupService";
 import { SortOrder } from "@/models/sortOrderEnum";
+import router from "@/router";
 
 //=============api==================
 export async function getGroup(groupUuid: string, currentWindow: number, pageSize: number): Promise<GroupUuid | null>{
@@ -54,13 +55,14 @@ export function createImageLinkWithToken(screenshots: Screenshot[] | undefined, 
     return screenshotLink;
 }
 
-export function getProctoringViewLink(screenshots: Screenshot[] | undefined, groupUuid: string, index: number): string {
+export function navigateToProctoringView(screenshots: Screenshot[] | undefined, groupUuid: string, index: number) {
     if (screenshots != null) {
-        return "/recording/" + screenshots[index].uuid;
+        router.push({
+            path: "/recording/" + screenshots[index].uuid
+        });
     }
-
-    return "";
 }
+
 //==============================
 
 

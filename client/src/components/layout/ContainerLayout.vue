@@ -30,12 +30,44 @@
 
         <template v-slot:append>
             <template v-if="useRoute().name == 'GalleryViewPage'">
+
+                <div>
+                    <v-chip class="session-info-item">
+                        Number of Sessions: {{ appBarStore.gallerNumberOfSessions }}
+                    </v-chip>
+                    <v-chip class="session-info-item">
+                        Description: {{ appBarStore.galleryDescription }}
+                    </v-chip>
+                </div>
+
+                <div class="grid-size-container">
+                    <v-menu>
+                        <template v-slot:activator="{ props }">
+                            <v-btn v-bind="props" rounded="sm" color="primary" variant="flat">
+                                <v-icon start icon="mdi-chevron-down" size="x-large"></v-icon>
+                                Grid Size: {{ appBarStore.galleryGridSize.title }}
+                            </v-btn>
+                        </template>
+                        <v-list>
+                            <v-list-item class="d-flex justify-center align-center" v-for="(gridSize, index) in gridSizes" :key="index" :value="index" @click="changeGridSize(gridSize)">
+                                <v-list-item-title>{{ gridSize.title }}</v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
+                </div>
+
+                <div class="switch-container">
+                    <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.galleryIsNameEnabled"></v-switch>
+                </div>
+
+            </template>
+            <!-- <div class="switch-container">
+                <v-switch class="mx-auto" label="theme test" color="primary" v-model="useLigtTheme"></v-switch>
+            </div> -->
+            <!-- <div class="profile-icon-container">
                 <v-menu>
                     <template v-slot:activator="{ props }">
-                        <v-btn v-bind="props" rounded="sm" color="primary" variant="flat">
-                            <v-icon start icon="mdi-chevron-down" size="x-large"></v-icon>
-                            Grid Size: {{ appBarStore.galleryGridSize.title }}
-                        </v-btn>
+                        <v-btn v-bind="props" color="primary" icon="mdi-account-circle" size="x-large"></v-btn>
                     </template>
                     <v-list>
                         <v-list-item class="d-flex justify-center align-center" v-for="(gridSize, index) in gridSizes" :key="index" :value="index" @click="changeGridSize(gridSize)">
@@ -43,12 +75,6 @@
                         </v-list-item>
                     </v-list>
                 </v-menu>
-                <div class="switch-container">
-                    <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.isNameEnabled"></v-switch>
-                </div>
-            </template>
-            <!-- <div class="switch-container">
-                <v-switch class="mx-auto" label="theme test" color="primary" v-model="useLigtTheme"></v-switch>
             </div> -->
         </template>
 
@@ -113,12 +139,20 @@
         text-align: center;
     }
 
+    .session-info-item{
+        margin-right: 10px;
+    }
+
+    .grid-size-container{
+        margin-right: 10px;
+    }
+
     .switch-container{
         display: flex;
         align-items: center;
         justify-content: center;
         margin-top: 20px;
-        margin-left: 10px;
+        margin-right: 10px;
     }
 
 </style>

@@ -60,7 +60,7 @@
 
             router.push({
                 path: "/start"
-            })
+            });
 
 
         }catch(error){

@@ -5,8 +5,8 @@
             <v-data-table 
                 item-value="name" 
                 class="elevation-1"
-                :items-per-page="defaultItemsPerPage" 
-                :items-per-page-options="calculateItemsPerPage()"
+                :items-per-page="tableUtils.calcDefaultItemsPerPage(groups)" 
+                :items-per-page-options="tableUtils.calcItemsPerPage(groups)"
                 :headers="headers" 
                 :items="groups">
 
@@ -61,15 +61,18 @@
     import { VDataTable } from "vuetify/labs/VDataTable"
     import { useAppBarStore, useLoadingStore } from "@/store/app";
     import * as timeUtils from "@/utils/timeUtils";
+    import * as tableUtils from "@/utils/tableUtils";
     import router from "@/router";
 
+    //reactive variables
     const groups = ref<Group[]>();
-    const defaultItemsPerPage = ref<number>(0)
     const headerRefs = ref<any[]>();
 
+    //stores
     const appBarStore = useAppBarStore();
     const loadingStore = useLoadingStore();
 
+    //table
     const headers = ref([
         {title: "Name", key: "name"},
         {title: "Description", key: "description"},
@@ -80,7 +83,9 @@
         try {
             appBarStore.title = "Active SEB Groups"
             loadingStore.isLoading = true;
+
             groups.value = await groupService.getGroups({pageSize: 500});
+
             loadingStore.isLoading = false;
 
         } catch (error) {
@@ -108,7 +113,6 @@
         if (event.key == 'Enter' || event.key == ' ') {
 
             if(action == "sort"){
-                console.log(key)
                 sortTable(key)
             }
 
@@ -129,47 +133,6 @@
             headerRefs.value[key].click();
         }
     }
-
-    function calculateItemsPerPage(): {value: number, title: string}[]{ 
-        if(groups.value == null || groups.value == null || groups.value.length == 0){
-            return [{value: 0, title: "0"}];
-        }
-
-
-        if (groups.value.length < 5){
-            defaultItemsPerPage.value = groups.value.length;
-            return [
-                {value: groups.value.length, title: 'All'},
-            ]
-        }
-
-        if (groups.value.length < 10){
-            defaultItemsPerPage.value = 5;
-            return [
-                {value: 5, title: '5'},
-                {value: groups.value.length, title: 'All'},
-            ]
-        }
-
-        if (groups.value.length < 15){
-            defaultItemsPerPage.value = 10;
-            return [
-                {value: 5, title: '5'},
-                {value: 10, title: '10'},
-                {value: groups.value.length, title: 'All'},
-            ]
-        }
-
-        defaultItemsPerPage.value = 15;
-
-        return [
-            {value: 5, title: '5'},
-            {value: 10, title: '10'},
-            {value: 15, title: '15'},
-            {value: groups.value.length, title: 'All'},
-        ];
-    }
-
 </script>
 
 <style>

@@ -17,23 +17,31 @@
                                 :class="{'on-hover': isHovering}"
                                 :src="galleryViewService.createImageLinkWithToken(group?.screenshots, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value), timestamp)">
 
-                                <div v-if="isHovering" class="hover-overlay d-flex align-end">
+                                <!-- <div v-if="isHovering" class="hover-overlay d-flex align-end"> -->
+                                <div class="hover-overlay d-flex align-end">
                                     <v-row>
                                         <v-col align-self="end" >
                                             <v-sheet class="d-flex pa-2 button-row">
-                                                <span v-if="appBarStore.isNameEnabled" class="text-h6 title-box">
-                                                    {{group?.screenshots[galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value)].clientName}}
+                                                <span v-if="appBarStore.galleryIsNameEnabled" class="text-h6 title-box">
+                                                    {{group?.screenshots[galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value)].clientName.substring(0, 8)}}
                                                 </span>
                                                 <v-spacer></v-spacer>
                                                 <span>
-                                                    <v-btn rounded="sm" color="white" variant="outlined"
+                                                    <v-btn 
+                                                        rounded="sm" 
+                                                        color="white" 
+                                                        variant="outlined" 
                                                         @click="openDialog(galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))">
                                                         Expand
                                                     </v-btn>
 
                                                     <v-btn
-                                                        :to="galleryViewService.getProctoringViewLink(group?.screenshots, groupUuid, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))"
-                                                        rounded="sm" color="primary" variant="flat" class="ml-2">
+                                                        rounded="sm" 
+                                                        color="primary" 
+                                                        variant="flat" 
+                                                        class="ml-2"
+                                                        tabindex="0"
+                                                        @click="galleryViewService.navigateToProctoringView(group?.screenshots, groupUuid, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))">
                                                         Details View
                                                     </v-btn>
                                                 </span>
@@ -111,7 +119,12 @@
         //todo: add error handling
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
         console.log(group.value)
-        appBarStore.title = "Gallery View of Group: " + group.value?.name;
+
+        if(group.value){
+            appBarStore.title = "Gallery View of Group: " + group.value.name;
+            appBarStore.gallerNumberOfSessions = group.value.numberOfSessions;
+            appBarStore.galleryDescription = group.value.description;
+        }
 
         assignData();
         startIntervalGroup();

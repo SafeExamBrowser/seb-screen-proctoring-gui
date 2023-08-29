@@ -6,7 +6,7 @@ export function formatTimestampToFullDate(timestamp: string): string{
   const date = new Date(timestamp);
 
   const day = ("0" + date.getDate()).slice(-2);
-  const month = ("0" + (date.getMonth() + 1)).slice(-2); // January is 0!
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
   const year = date.getFullYear();
 
   const hours = ("0" + date.getHours()).slice(-2);
@@ -24,7 +24,7 @@ export function formatTimestmapToDate(timestamp: number): string{
   const date = new Date(timestamp);
 
   const day = ("0" + date.getDate()).slice(-2);
-  const month = ("0" + (date.getMonth() + 1)).slice(-2); // January is 0!
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
   const year = date.getFullYear();
 
   return day + "." + month + "." + year; 

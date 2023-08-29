@@ -1,127 +1,43 @@
 <template>
 
     <div class="search-parent-container">
-        <v-sheet 
-            elevation="4"
-            class="search-container"
-            title="Search">
-            <v-form>
-                <div class="form-container">
-                    <!------------Group Name------------->
-                    <v-row class="fill-height" align="center">
-                        <v-col cols="4">
-                            Group Name:
-                        </v-col>
-                        <v-col cols="8">
-                            <v-text-field
-                                density="compact"
-                                variant="solo"
-                                single-line
-                                hide-details
-                            ></v-text-field>
-                        </v-col>
-                    </v-row>
-                    <!----------------------------------->
-
-
-                    <!------------Login Name------------->
-                    <v-row class="fill-height" align="center">
-                        <v-col cols="4">
-                            Login Name:
-                        </v-col>
-                        <v-col cols="8">
-                            <v-text-field
-                                density="compact"
-                                variant="solo"
-                                single-line
-                                hide-details
-                            ></v-text-field>
-                        </v-col>
-                    </v-row>
-                    <!----------------------------------->
-
-
-                    <!------------Time Period------------->
-                        <v-row class="fill-height" align="center">
-                            <v-col cols="4">
-                                Period:
-                            </v-col>
-                            <v-col cols="1">
-                                <v-radio value="1"></v-radio>
-                            </v-col>
-                            <v-col cols="2">
-                                <v-text-field
-                                    density="compact"
-                                    variant="solo"
-                                    single-line
-                                    hide-details> 
-                                </v-text-field> 
-                            </v-col>
-                            <v-col cols="5">
-                                <v-select
-                                    hide-details
-                                    label="Select"
-                                    variant="outlined"
-                                    :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']">
-                                </v-select>
-                            </v-col>
-                        </v-row>
-                        <!----------------------------------->
-
-
-                        <!------------Time Selection------------->
-                        <v-row class="fill-height" align="center">
-                            <v-col cols="4">
-                                Between:
-                            </v-col>
-                            <v-col cols="1">
-                                <v-radio 
-                                    value="2">
-                                </v-radio>
-                            </v-col>
-                            <v-col cols="7">
-                                <VueDatePicker v-model="date" range :teleport="true"></VueDatePicker>
-                            </v-col>
-                        </v-row>
-                    <!----------------------------------->
-
-
-                    <!------------Buttons------------->
-                    <v-row>
-                        <v-col align="right">
-                            <v-btn rounded="sm" color="black" variant="outlined">
-                                Cancel
-                            </v-btn>
-
-                            <v-btn 
-                                rounded="sm" 
-                                color="primary" 
-                                variant="flat" 
-                                class="ml-2"
-                                @click="searchSessions()">
-                                Search
-                            </v-btn>
-
-                        </v-col>
-                    </v-row>
-                    <!----------------------------------->
-                </div>
-            </v-form>
-        </v-sheet>
+        <SearchForm @searchSessions="searchSessions"></SearchForm>
     </div>
 
     <div v-if="searchResultAvailable" class="search-result-parent-container">
         <v-sheet 
             elevation="4"
-            class="search-result-container"
+            class="search-result-container rounded-lg"
             title="Search results">
 
             <v-data-table
                 item-value="sessionUUID"
                 show-expand
                 class="elevation-1"
+                :items-per-page="tableUtils.calcDefaultItemsPerPage(sessionSearchResults?.content)" 
+                :items-per-page-options="tableUtils.calcItemsPerPage(sessionSearchResults?.content)"
                 :headers="sessionTableHeaders"
                 :items="sessionSearchResults?.content">
+
+                <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
+                    <tr>
+                        <template v-for="(column, index) in columns">
+                        <td>
+                            <span 
+                                ref="headerRefsSessions"
+                                tabindex="0" 
+                                class="mr-2 cursor-pointer" 
+                                role="button" 
+                                @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
+                                @click="() => toggleSort(column)">{{ column.title }}
+                            </span>
+                            <template v-if="isSorted(column)">
+                                <v-icon :icon="getSortIcon(column)"></v-icon>
+                            </template>
+                        </td>
+                        </template>
+                    </tr>
+                </template>
 
                 <template v-slot:item.startTime="{item}">
                     <td>
@@ -151,8 +67,30 @@
                                 item-value="sessionUUID"
                                 class="elevation-1"
                                 theme="tableTheme"
+                                :items-per-page="tableUtils.calcDefaultItemsPerPage(screenshotSearchResults.find(i => i.content[0].sessionUUID == item.raw.sessionUUID)?.content)" 
+                                :items-per-page-options="tableUtils.calcItemsPerPage(screenshotSearchResults.find(i => i.content[0].sessionUUID == item.raw.sessionUUID)?.content)"
                                 :headers="screenshotTableHeaders"
                                 :items="screenshotSearchResults.find(i => i.content[0].sessionUUID == item.raw.sessionUUID)?.content">
+
+                                <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
+                                    <tr>
+                                        <template v-for="(column, index) in columns">
+                                        <td>
+                                            <span 
+                                                ref="headerRefsScreenshots"
+                                                tabindex="0" 
+                                                class="mr-2 cursor-pointer" 
+                                                role="button" 
+                                                @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
+                                                @click="() => toggleSort(column)">{{ column.title }}
+                                            </span>
+                                            <template v-if="isSorted(column)">
+                                                <v-icon :icon="getSortIcon(column)"></v-icon>
+                                            </template>
+                                        </td>
+                                        </template>
+                                    </tr>
+                                </template>
 
                                 <template v-slot:item.imageTimestamp="{item}">
                                     <td>
@@ -179,19 +117,16 @@
 
 
 <script setup lang="ts">
-    import { ref, onBeforeMount, computed } from "vue";
+    import { ref, onBeforeMount, watch } from "vue";
     import { useAppBarStore } from "@/store/app";
-    import VueDatePicker from '@vuepic/vue-datepicker';
-    import '@vuepic/vue-datepicker/dist/main.css'
     import * as searchViewService from "@/services/component-services/searchViewService";
     import router from "@/router";
     import { VDataTable } from "vuetify/labs/VDataTable"
     import * as timeUtils from "@/utils/timeUtils";
+    import * as tableUtils from "@/utils/tableUtils";
+    import { LoginOptionSelect } from "@/models/loginOptionSelectEnum";
+    import SearchForm from "./SearchForm.vue";
 
-
-    //form fields
-    const searchString = ref<string>();
-    const date = ref();
 
     //reactive variables
     const searchResultAvailable = ref<boolean>(false);
@@ -202,6 +137,7 @@
     const appBarStore = useAppBarStore();
 
     //table
+    const headerRefsSessions = ref<any[]>();
     const sessionTableHeaders = ref([
         {title: "Start-Time", key: "startTime"},
         {title: "Login Name", key: "clientName"},
@@ -210,9 +146,11 @@
         {title: "Video", key: "proctoringViewLink"},
     ]);
 
+    const headerRefsScreenshots = ref<any[]>();
     const screenshotTableHeaders = ref([
         {title: "Time", key: "imageTimestamp"},
         {title: "User-Action", key: "metaData.screenProctoringMetadataUserAction"},
+        {title: "Window Title", key: "metaData.screenProctoringMetadataWindowTitle"},
         {title: "URL", key: "metaData.screenProctoringMetadataURL"},
         {title: "Video", key: "proctoringViewLink"},
     ]);
@@ -221,18 +159,36 @@
     onBeforeMount(async () => {
         try {
             appBarStore.title = "Search"
-            await searchSessions();
-
         } catch (error) {
             console.error(error);
         }
     });
 
-    async function searchSessions(){
-        console.log("search string: " + searchString.value)
-        console.log("date: " + date.value)
 
-        const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions({pageSize: 20});
+    async function searchSessions(groupName: string, loginOption: string, loginOptionSelected: LoginOptionSelect, fromTime: string, toTime: string){
+
+        // console.log("groupName: " + groupName)
+        // console.log("loginName: " + loginName)
+        // console.log("fromTime: " + fromTime)
+        // console.log("toTime: " + toTime)
+
+        let clientName: string = "";
+        let clientMachineName: string = "";
+
+        if(loginOptionSelected == LoginOptionSelect.login) clientName = loginOption;
+        if(loginOptionSelected == LoginOptionSelect.machine) clientMachineName = loginOption;
+
+        const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(
+            {
+                groupName: groupName,
+                clientName: clientName,
+                clientMachineName: clientMachineName,
+                fromTime: fromTime,
+                toTime: toTime,
+                pageSize: 500
+            }
+        );
+        
         if(sessionSearchResponse == null){
             //todo: show error to user
             return;
@@ -268,30 +224,56 @@
 
     function openProctoringView(sessionId: string, timestamp?: string){
         if(!timestamp){
-            router.push({
-                path: "/recording/" + sessionId,
-            });
+
+            // router.push({
+            //     path: "/recording/" + sessionId,
+            // });
+            
+            const url: string = "/recording/" + sessionId;
+            //@ts-ignore
+            window.open("", "_blank").location.href = router.resolve(url).href;
 
             return;
         }
 
-        router.push({
-            name: "ProctoringViewPage",
-            params: {
-                sessionId: sessionId
-            },
-            query: {
-                searchTimestamp: timestamp
-            }
-        });
+        //recording/b11bf31d-12f1-49a0-a160-6f229115d7fd?searchTimestamp=1692861314291
+
+        const url: string = "/recording/" + sessionId + "?searchTimestamp=" + timestamp;
+        //@ts-ignore
+        window.open("", "_blank").location.href = router.resolve(url).href;
+
+        // router.push({
+        //     name: "ProctoringViewPage",
+        //     params: {
+        //         sessionId: sessionId
+        //     },
+        //     query: {
+        //         searchTimestamp: timestamp
+        //     }
+        // });
     }
 
+    function handleTabKeyEvent(event: any, action: string, index: number, key: number){
+        if (event.key == 'Enter' || event.key == ' ') {
+            if(action == "sort"){
+                sortTable(key)
+            }
+        }
+    }
 
+    function sortTable(key: number){
+        if(headerRefsSessions.value != null){
+            headerRefsSessions.value[key].click();
+        }
 
+        if(headerRefsScreenshots.value != null){
+            headerRefsScreenshots.value[key].click();
+        }
+    }
 
 </script>
 
-<style>
+<style scoped>
 
     .search-parent-container, .search-result-parent-container{
         display: flex;
@@ -304,11 +286,8 @@
     }
 
     .search-container, .search-result-container{
-        width: 60%;
+        width: 70%;
         padding: 20px;
-        /* display: flex;
-        justify-content: center;
-        align-items: center;  */
     }
 
     .form-container{
