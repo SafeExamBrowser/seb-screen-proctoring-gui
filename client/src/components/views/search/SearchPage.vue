@@ -124,7 +124,6 @@
     import { VDataTable } from "vuetify/labs/VDataTable"
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/tableUtils";
-    import { LoginOptionSelect } from "@/models/loginOptionSelectEnum";
     import SearchForm from "./SearchForm.vue";
 
 
@@ -135,6 +134,10 @@
 
     //remaining
     const appBarStore = useAppBarStore();
+
+    let metadataSearchUrl: string | null;
+    let metadataSearchWindowTitle: string | null;
+    let metadataSearchAction: string | null;
 
     //table
     const headerRefsSessions = ref<any[]>();
@@ -149,9 +152,9 @@
     const headerRefsScreenshots = ref<any[]>();
     const screenshotTableHeaders = ref([
         {title: "Time", key: "imageTimestamp"},
-        {title: "User-Action", key: "metaData.screenProctoringMetadataUserAction"},
-        {title: "Window Title", key: "metaData.screenProctoringMetadataWindowTitle"},
         {title: "URL", key: "metaData.screenProctoringMetadataURL"},
+        {title: "Window Title", key: "metaData.screenProctoringMetadataWindowTitle"},
+        {title: "User-Action", key: "metaData.screenProctoringMetadataUserAction"},
         {title: "Video", key: "proctoringViewLink"},
     ]);
 
@@ -164,25 +167,32 @@
         }
     });
 
+    async function searchSessions(
+        groupName: string, 
+        loginName: string, 
+        machineName: string, 
+        metadataUrl: string, 
+        metadataWindowTitle: string, 
+        metadataUserAction: string, 
+        fromTime: string, 
+        toTime: string
+    ){
 
-    async function searchSessions(groupName: string, loginOption: string, loginOptionSelected: LoginOptionSelect, fromTime: string, toTime: string){
+        //todo: fold all rows on new search
 
-        // console.log("groupName: " + groupName)
-        // console.log("loginName: " + loginName)
-        // console.log("fromTime: " + fromTime)
-        // console.log("toTime: " + toTime)
-
-        let clientName: string = "";
-        let clientMachineName: string = "";
-
-        if(loginOptionSelected == LoginOptionSelect.login) clientName = loginOption;
-        if(loginOptionSelected == LoginOptionSelect.machine) clientMachineName = loginOption;
+        metadataSearchUrl = metadataUrl == "" ? null : metadataUrl;
+        metadataSearchWindowTitle = metadataWindowTitle == "" ? null : metadataWindowTitle;
+        metadataSearchAction = metadataUserAction == "" ? null : metadataUserAction;
 
         const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(
-            {
+            {   
+                //todo: add exam name
                 groupName: groupName,
-                clientName: clientName,
-                clientMachineName: clientMachineName,
+                clientName: loginName,
+                clientMachineName: machineName,
+                screenProctoringMetadataURL: metadataSearchUrl,
+                screenProctoringMetadataWindowTitle: metadataSearchWindowTitle,
+                screenProctoringMetadataUserAction: metadataSearchAction,
                 fromTime: fromTime,
                 toTime: toTime,
                 pageSize: 500
@@ -196,6 +206,8 @@
 
         sessionSearchResults.value = sessionSearchResponse;
         searchResultAvailable.value = true;
+
+        console.log(sessionSearchResults.value)
     }
 
     async function searchScreenshots(item: any, isExpanded: any, toggleExpand: any){
@@ -210,7 +222,16 @@
             return;
         }
 
-        const screenshotSearchResponse: SearchScreenshots | null = await searchViewService.searchScreenshots({sessionUUID: item.raw.sessionUUID, pageSize: 500});
+        const screenshotSearchResponse: SearchScreenshots | null = await searchViewService.searchScreenshots(
+            {
+                sessionUUID: item.raw.sessionUUID, 
+                screenProctoringMetadataURL: metadataSearchUrl,
+                screenProctoringMetadataWindowTitle: metadataSearchWindowTitle,
+                screenProctoringMetadataUserAction: metadataSearchAction,
+                pageSize: 500
+            }
+        );
+
         if(screenshotSearchResponse == null){
             //todo: show error to user
             return null;

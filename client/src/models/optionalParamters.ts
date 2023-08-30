@@ -23,6 +23,9 @@ type OptionalParSearchSessions = {
     clientMachineName?: string,
     clientOsName?: string,
     clientVersion?: string,
+    screenProctoringMetadataURL?: string | null,
+    screenProctoringMetadataWindowTitle?: string | null,
+    screenProctoringMetadataUserAction?: string | null,
     pageNumber?: number,
     pageSize?: number,
     sort?: string
@@ -38,9 +41,9 @@ type OptionalParSearchScreenshots = {
     clientMachineName?: string,
     clientOsName?: string,
     clientVersion?: string,
-    screenProctoringMetadataURL?: string,
-    screenProctoringMetadataWindowTitle?: string,
-    screenProctoringMetadataUserAction?: string,
+    screenProctoringMetadataURL?: string | null,
+    screenProctoringMetadataWindowTitle?: string | null,
+    screenProctoringMetadataUserAction?: string | null,
     pageNumber?: number,
     pageSize?: number,
     sort?: string

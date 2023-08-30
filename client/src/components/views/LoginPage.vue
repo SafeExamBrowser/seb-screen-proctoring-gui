@@ -12,8 +12,8 @@
                 </p>
             </div>
 
-            <AlertMsg v-if="loginError" title="Login failed"
-                message="Please provide a correct pair of user name and password."></AlertMsg>
+            <AlertMsgOld v-if="loginError" title="Login failed"
+                message="Please provide a correct pair of user name and password."></AlertMsgOld>
 
             <form class="mt-8 space-y-6" action="#" method="POST" @submit.prevent="handleFormSubmit">
                 <div class="space-y-3">
@@ -37,7 +37,7 @@
   
 <script setup lang="ts">
     import { ref } from "vue";
-    import AlertMsg from "@/components/widgets/AlertMsg.vue";
+    import AlertMsgOld from "@/components/widgets/AlertMsgOld.vue";
     import ActionButton from "@/components/widgets/ActionButton.vue";
     import * as authenticationService from "@/services/api-services/authenticationService";
     import router from "@/router";

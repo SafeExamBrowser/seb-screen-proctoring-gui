@@ -14,9 +14,11 @@ type Screenshot = {
     imageFormat: string;
     latestImageLink: string;
     imageLink: string;
-    metaData?: MetaData;
+    metaData: MetaData;
 }
 
 type MetaData = {
-    data: string;
+    screenProctoringMetadataURL?: string;
+    screenProctoringMetadataWindowTitle?: string,
+    screenProctoringMetadataUserAction?: string
 }

@@ -22,17 +22,14 @@ export async function getSessionByTimestamp(sessionId: string, timestamp: string
 }
 //==============================
 
-
 //=============metadata==================
-export function getScreenshotMetadata(sliderTime: number, currentScreenshotMetadata: string): object{
+export function getScreenshotMetadata(sliderTime: number, currentScreenshotMetadata: MetaData | null): object{
     return {
-        "Date": timeUtils.formatTimestmapToDate(sliderTime),
+        "Date:": timeUtils.formatTimestmapToDate(sliderTime),
         "Time:": timeUtils.formatTimestmapToTime(sliderTime),
-        //todo: remove temporary hardcoded data
-        "Active Program:": "Web-Browser",
-        "Current URL:":" moodle.com",
-        "Title Website:": "Exam xyz",
-        "remaing metadata:": currentScreenshotMetadata
+        "Url:": currentScreenshotMetadata?.screenProctoringMetadataURL,
+        "Window Title:": currentScreenshotMetadata?.screenProctoringMetadataWindowTitle,
+        "User-Action:": currentScreenshotMetadata?.screenProctoringMetadataUserAction
     };
 }
 
@@ -50,11 +47,3 @@ export function getSessionInfodata(session: Screenshot | null): object{
         "Is Session Active:": session.active.toString()
     };
 }
-
-
-//=============index==================
-
-
-//=============links==================
-
-//=============error handling==================

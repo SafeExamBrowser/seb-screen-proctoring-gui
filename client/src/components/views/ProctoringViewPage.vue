@@ -1,6 +1,6 @@
 <template>
 
-    <v-row>
+    <v-row v-if="!showError">
         <v-col cols="9">
 
             <v-img 
@@ -61,6 +61,15 @@
 
         </v-col>
     </v-row>
+
+    <AlertMsg 
+        v-else
+        :alertProps="{
+            title: 'No data avilable',
+            color: 'warning',
+        }">
+    </AlertMsg>
+
 </template>
 
 <script setup lang="ts">
@@ -79,6 +88,7 @@
     const firstScreenshotTime = ref<number>();
     const lastScreenshotTime = ref<number>();
     const imageLink = ref<string>("");
+    const showError = ref<boolean>(false);
 
     //time constants
     const SLIDER_INTERVAL: number = 1 * 1000;
@@ -101,7 +111,7 @@
         setStartingSliderTime();
         startIntervalSession();
 
-        appBarStore.title = "Proctoring View of Group: " + session.value?.clientName;
+        appBarStore.title = "Proctoring View of Session: " + session.value?.clientName;
     });
 
     onBeforeUnmount(() => {
@@ -119,7 +129,7 @@
         const sessionResponse: Screenshot | null = await proctoringViewService.getSessionBySessionId(sessionId);
 
         if(sessionResponse == null){
-            //todo: show error to user
+            showError.value = true;
             return;
         }
 
@@ -136,10 +146,8 @@
             specificSessionResponse = await proctoringViewService.getSessionByTimestamp(sessionId, session.value?.startTime.toString());
         }
 
-        if(specificSessionResponse == null){
-            //show error to user
-            return;
-        }
+        //error does not have to be shown here - if the slider moves too fast, some screenshots cannot be shown
+        if(specificSessionResponse == null) return;
 
         const imageLinkSplitted: string[] = specificSessionResponse.imageLink.split("/");
         firstScreenshotTime.value = parseInt(imageLinkSplitted[imageLinkSplitted.length-1]);
@@ -148,16 +156,11 @@
     async function getCurrentScreenshot(timestamp: string){
         const specificSessionResponse: Screenshot | null = await proctoringViewService.getSessionByTimestamp(sessionId, timestamp);
 
-        if(specificSessionResponse == null){
-            //todo: show image error to user
-            return;
-        }
+        //error does not have to be shown here - if the slider moves too fast, some screenshots cannot be shown
+        if(specificSessionResponse == null) return;
 
         currentScreenshot.value = specificSessionResponse;
-        //todo: remove temp metadata value
-        (currentScreenshot.value && currentScreenshot.value.metaData) ? currentScreenshot.value.metaData.data = timestamp : "No metadata available";
         imageLink.value = currentScreenshot.value.latestImageLink + "/" + timestamp + "/" + "?access_token=" + localStorage.getItem("accessToken");
-
     }
 
     const currentTimeString = computed<string>(() => {
@@ -178,7 +181,11 @@
     });
 
     const screenshotMetadata = computed<object>(() => {
-        return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, currentScreenshot.value?.metaData?.data || "No metadata available");
+        if(currentScreenshot.value){
+            return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, currentScreenshot.value.metaData);
+        }
+
+        return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, null);
     });
 
     const sessionInfodata = computed<object>(() => {

@@ -11,7 +11,7 @@ export async function searchSessions(optionalParamters?: OptionalParSearchSessio
     }
 }
 
-export async function searchScreenshots(optionalParamters?: OptionalParSearchSessions): Promise<SearchScreenshots | null>{
+export async function searchScreenshots(optionalParamters?: OptionalParSearchScreenshots): Promise<SearchScreenshots | null>{
     try{
         return await searchService.searchScreenshots(optionalParamters);        
     }catch(error){

@@ -40,17 +40,10 @@
                 <!----------------------------------->
 
 
-                <!------------Login / Machine Name------------->
+                <!------------Login Name------------->
                 <v-row align="center">
                     <v-col cols="4">
-                        <div class="login-option-select-container">
-                            <v-select
-                                hide-details
-                                variant="outlined"
-                                v-model="loginOptionSelect"
-                                :items="loginOptionsSelectValues">
-                            </v-select>
-                        </div>
+                        Login Name:
                     </v-col>
                     <v-col cols="8">
                         <v-text-field
@@ -58,67 +51,27 @@
                             hide-details
                             density="compact"
                             variant="solo"
-                            v-model="loginOptionField">
+                            v-model="loginNameField">
                         </v-text-field>
                     </v-col>
                 </v-row>
                 <!----------------------------------->
 
-
-                <!------------Time Period------------->
-                    <v-row align="center">
-                        <v-col cols="4">
-                            Period:
-                        </v-col>
-                        <v-col cols="1">
-                            <v-radio v-model="timePeriodRadio" @click="radioButtonEvent('period')"></v-radio>
-                        </v-col>
-                        <v-col cols="1">
-                            Last
-                        </v-col>
-                        <v-col cols="2">
-                            <v-text-field
-                                hide-details    
-                                single-line
-                                type="number"
-                                density="compact"
-                                variant="solo"
-                                v-model="timePeriodField"
-                                :disabled="!timePeriodRadio"> 
-                            </v-text-field> 
-                        </v-col>
-                        <v-col cols="4">
-                            <v-select
-                                hide-details
-                                variant="outlined"
-                                v-model="timePeriodSelect"
-                                :items="timePeriodSelectValues"
-                                :disabled="!timePeriodRadio">
-                            </v-select>
-                        </v-col>
-                    </v-row>
-                    <!----------------------------------->
-
-
-                    <!------------Time Selection------------->
-                    <v-row align="center">
-                        <v-col cols="4">
-                            Between:
-                        </v-col>
-                        <v-col cols="1">
-                            <v-radio v-model="timeSelectionRadio" @click="radioButtonEvent('selection')">
-                            </v-radio>
-                        </v-col>
-                        <v-col cols="7">
-                            <VueDatePicker 
-                                range
-                                format="dd.MM.yyyy HH:mm"
-                                v-model="timeSelectionPicker"  
-                                :teleport="true"
-                                :disabled="!timeSelectionRadio">
-                            </VueDatePicker>
-                        </v-col>
-                    </v-row>
+                <!------------Machine Name------------->
+                <v-row align="center">
+                    <v-col cols="4">
+                        Machine Name:
+                    </v-col>
+                    <v-col cols="8">
+                        <v-text-field
+                            single-line
+                            hide-details
+                            density="compact"
+                            variant="solo"
+                            v-model="machineNameField">
+                        </v-text-field>
+                    </v-col>
+                </v-row>
                 <!----------------------------------->
 
                 <!------------Metadata------------->
@@ -187,6 +140,62 @@
                 </v-row>
                 <!----------------------------------->
 
+                <!------------Time Period------------->
+                <v-row align="center">
+                        <v-col cols="4">
+                            Period:
+                        </v-col>
+                        <v-col cols="1">
+                            <v-radio v-model="timePeriodRadio" @click="radioButtonEvent('period')"></v-radio>
+                        </v-col>
+                        <v-col cols="1">
+                            Last
+                        </v-col>
+                        <v-col cols="2">
+                            <v-text-field
+                                hide-details    
+                                single-line
+                                type="number"
+                                density="compact"
+                                variant="solo"
+                                v-model="timePeriodField"
+                                :disabled="!timePeriodRadio"> 
+                            </v-text-field> 
+                        </v-col>
+                        <v-col cols="4">
+                            <v-select
+                                hide-details
+                                variant="outlined"
+                                v-model="timePeriodSelect"
+                                :items="timePeriodSelectValues"
+                                :disabled="!timePeriodRadio">
+                            </v-select>
+                        </v-col>
+                    </v-row>
+                    <!----------------------------------->
+
+
+                    <!------------Time Selection------------->
+                    <v-row align="center">
+                        <v-col cols="4">
+                            Between:
+                        </v-col>
+                        <v-col cols="1">
+                            <v-radio v-model="timeSelectionRadio" @click="radioButtonEvent('selection')">
+                            </v-radio>
+                        </v-col>
+                        <v-col cols="7">
+                            <VueDatePicker 
+                                range
+                                format="dd.MM.yyyy HH:mm"
+                                v-model="timeSelectionPicker"  
+                                :teleport="true"
+                                :disabled="!timeSelectionRadio">
+                            </VueDatePicker>
+                        </v-col>
+                    </v-row>
+                <!----------------------------------->
+
                 <!------------Buttons------------->
                 <v-row>
                     <v-col align="right">
@@ -219,32 +228,33 @@
     import VueDatePicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css'
     import { TimePeriod } from "@/models/timePeriodEnum";
-    import { LoginOptionSelect } from "@/models/loginOptionSelectEnum";
     import * as timePeriodUtils from "@/utils/timePeriodUtils";
 
     //emits (parent functions)
     const emit = defineEmits<{
         searchSessions: [
+            //todo: add exam name
             groupName: string, 
             loginName: string,
-            loginOptionSelected: LoginOptionSelect,
+            machineName: string,
+            metadataUrl: string,
+            metadataWindowTitle: string,
+            metadataUserAction: string,
             fromTime: string,
             toTime: string
         ]
     }>();
 
     //---------form fields-------------
-    // const groupNameField = ref<string>("new-data-2");
-    // const loginNameField = ref<string>("seb_6a74317a-ed41-4c78-b820-5842f295a9bd_296");
+    const groupNameField = ref<string>("new-test-group");
+    // const groupNameField = ref<string>("");
     const examNameField = ref<string>("");
-    const groupNameField = ref<string>("");
+    const loginNameField = ref<string>("");
+    const machineNameField = ref<string>("");
 
-    const loginOptionField = ref<string>("");
-    const loginOptionSelect = ref<number>(1);
-    const loginOptionsSelectValues: {title: string, value: number}[] = [
-        {title: LoginOptionSelect.login, value: 1},
-        {title: LoginOptionSelect.machine, value: 2}
-    ];
+    const metadataUrlField = ref<string>("");
+    const metadataWindowTitleField = ref<string>("");
+    const metadataUserActionField = ref<string>("");
 
     const timePeriodField = ref<number>(5);
     const timePeriodRadio = ref<boolean>(false);
@@ -258,10 +268,6 @@
 
     const timeSelectionRadio = ref<boolean>(true);
     const timeSelectionPicker = ref();
-
-    const metadataUrlField = ref<string>("");
-    const metadataWindowTitleField = ref<string>("");
-    const metadataUserActionField = ref<string>("");
     //--------------------------------
 
 
@@ -276,12 +282,18 @@
         if(timePeriodRadio.value) [fromTime, toTime] = calcTimePeriod();
         if(timeSelectionRadio.value) [fromTime, toTime] = calcTimeSelection();
 
-        let loginOptionSelected: LoginOptionSelect = LoginOptionSelect.login;
-        if(loginOptionSelect.value == 1) loginOptionSelected = LoginOptionSelect.login;
-        if(loginOptionSelect.value == 2) loginOptionSelected = LoginOptionSelect.machine;
-    
 
-        emit("searchSessions", groupNameField.value, loginOptionField.value, loginOptionSelected, fromTime, toTime);
+        emit(
+        "searchSessions", 
+            groupNameField.value, 
+            loginNameField.value, 
+            machineNameField.value, 
+            metadataUrlField.value, 
+            metadataWindowTitleField.value, 
+            metadataUserActionField.value, 
+            fromTime, 
+            toTime
+        );
     }
 
     function calcTimePeriod(): [string, string]{
@@ -319,10 +331,6 @@
     .form-container{
         padding-left: 20%;
         padding-right: 20%;
-    }
-
-    .login-option-select-container{
-        /* max-width: 75%; */
     }
 
 </style>

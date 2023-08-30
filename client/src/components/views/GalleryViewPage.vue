@@ -17,8 +17,8 @@
                                 :class="{'on-hover': isHovering}"
                                 :src="galleryViewService.createImageLinkWithToken(group?.screenshots, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value), timestamp)">
 
-                                <!-- <div v-if="isHovering" class="hover-overlay d-flex align-end"> -->
-                                <div class="hover-overlay d-flex align-end">
+                                <div v-if="isHovering" class="hover-overlay d-flex align-end">
+                                <!-- <div class="hover-overlay d-flex align-end"> -->
                                     <v-row>
                                         <v-col align-self="end" >
                                             <v-sheet class="d-flex pa-2 button-row">
@@ -31,8 +31,8 @@
                                                         rounded="sm" 
                                                         color="white" 
                                                         variant="outlined" 
+                                                        icon="mdi-arrow-expand"
                                                         @click="openDialog(galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))">
-                                                        Expand
                                                     </v-btn>
 
                                                     <v-btn
@@ -40,9 +40,8 @@
                                                         color="primary" 
                                                         variant="flat" 
                                                         class="ml-2"
-                                                        tabindex="0"
+                                                        icon="mdi-video"
                                                         @click="galleryViewService.navigateToProctoringView(group?.screenshots, groupUuid, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))">
-                                                        Details View
                                                     </v-btn>
                                                 </span>
                                             </v-sheet>
@@ -64,8 +63,14 @@
                 </v-row>
             </template>
 
-            <v-alert v-else color="warning" icon="$warning" title="No data available"
-                :text="galleryViewService.getAlertText(group?.name)"></v-alert>
+            <AlertMsg 
+                v-else 
+                :alertProps="{
+                    title: 'No data avilable',
+                    text: galleryViewService.getAlertText(group?.name),
+                    color: 'warning',
+                }">
+            </AlertMsg>
 
 
             <v-dialog v-model="dialog" max-width="1500">

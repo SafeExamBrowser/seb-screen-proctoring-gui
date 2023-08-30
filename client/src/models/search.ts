@@ -43,7 +43,7 @@ type SearchScreenshots = {
             imageId: number,
             imageTimestamp: number,
             imageFormat: string,
-            metaData: object
+            metaData: MetaData
         }
     ]
 
