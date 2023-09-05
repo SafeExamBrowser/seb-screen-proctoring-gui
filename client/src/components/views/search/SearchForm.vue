@@ -39,37 +39,51 @@
                 </v-row>
                 <!----------------------------------->
 
+                <!------------Login- / Machinename"------------->
+                <v-row>
+                    <v-col>
+                        <v-expansion-panels>
+                            <v-expansion-panel
+                                title="Login- / Machinename">
+                                <v-expansion-panel-text>
 
-                <!------------Login Name------------->
-                <v-row align="center">
-                    <v-col cols="4">
-                        Login Name:
-                    </v-col>
-                    <v-col cols="8">
-                        <v-text-field
-                            single-line
-                            hide-details
-                            density="compact"
-                            variant="solo"
-                            v-model="loginNameField">
-                        </v-text-field>
-                    </v-col>
-                </v-row>
-                <!----------------------------------->
+                                    <!------------Login Name------------->
+                                    <v-row align="center">
+                                        <v-col cols="4">
+                                            Login Name:
+                                        </v-col>
+                                        <v-col cols="8">
+                                            <v-text-field
+                                                single-line
+                                                hide-details
+                                                density="compact"
+                                                variant="solo"
+                                                v-model="loginNameField">
+                                            </v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <!----------------------------------->
 
-                <!------------Machine Name------------->
-                <v-row align="center">
-                    <v-col cols="4">
-                        Machine Name:
-                    </v-col>
-                    <v-col cols="8">
-                        <v-text-field
-                            single-line
-                            hide-details
-                            density="compact"
-                            variant="solo"
-                            v-model="machineNameField">
-                        </v-text-field>
+                                    <!------------Machine Name------------->
+                                    <v-row align="center">
+                                        <v-col cols="4">
+                                            Machine Name:
+                                        </v-col>
+                                        <v-col cols="8">
+                                            <v-text-field
+                                                single-line
+                                                hide-details
+                                                density="compact"
+                                                variant="solo"
+                                                v-model="machineNameField">
+                                            </v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <!----------------------------------->
+
+                                </v-expansion-panel-text>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
                     </v-col>
                 </v-row>
                 <!----------------------------------->
@@ -245,10 +259,11 @@
         ]
     }>();
 
-    //---------form fields-------------
+    //form fields
     const groupNameField = ref<string>("new-test-group");
     // const groupNameField = ref<string>("");
     const examNameField = ref<string>("");
+
     const loginNameField = ref<string>("");
     const machineNameField = ref<string>("");
 
@@ -268,7 +283,6 @@
 
     const timeSelectionRadio = ref<boolean>(true);
     const timeSelectionPicker = ref();
-    //--------------------------------
 
 
     onBeforeMount(async () => {
@@ -281,7 +295,6 @@
         let toTime: string = "";
         if(timePeriodRadio.value) [fromTime, toTime] = calcTimePeriod();
         if(timeSelectionRadio.value) [fromTime, toTime] = calcTimeSelection();
-
 
         emit(
         "searchSessions", 

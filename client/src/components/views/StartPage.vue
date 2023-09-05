@@ -59,7 +59,7 @@
     import { ref, onBeforeMount, onMounted } from "vue";
     import * as groupService from "@/services/api-services/groupService";
     import { VDataTable } from "vuetify/labs/VDataTable"
-    import { useAppBarStore, useLoadingStore } from "@/store/app";
+    import { useAppBarStore } from "@/store/app";
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/tableUtils";
     import router from "@/router";
@@ -70,7 +70,6 @@
 
     //stores
     const appBarStore = useAppBarStore();
-    const loadingStore = useLoadingStore();
 
     //table
     const headers = ref([
@@ -82,11 +81,7 @@
     onBeforeMount(async () => {
         try {
             appBarStore.title = "Active SEB Groups"
-            loadingStore.isLoading = true;
-
             groups.value = await groupService.getGroups({pageSize: 500});
-
-            loadingStore.isLoading = false;
 
         } catch (error) {
             //todo: add better error handling

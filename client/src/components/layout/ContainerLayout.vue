@@ -3,13 +3,13 @@
     <v-navigation-drawer v-model="drawer" class="d-none d-sm-flex">
         <v-sheet class="pa-4">
             <v-img class="mx-auto h-12 w-auto" src="/img/logo.svg" alt="Logo ETH Zürich"></v-img>
-            <div class="app-title">SEB Screen Proctoring</div>
+            <div class="app-title">{{ $t("navigation.title") }}</div>
         </v-sheet>
 
         <v-sheet color="grey-lighten-4" class="pa-4">
-            <div>sebserver-admin</div>
+            <div>{{ $t("navigation.current-user") }}</div>
             <div class="text-decoration-underline text-blue">
-                <router-link @click="signOut()" to="/">Sign out</router-link>
+                <router-link @click="signOut()" to="/">{{ $t("navigation.sign-out") }}</router-link>
             </div>
         </v-sheet>
 

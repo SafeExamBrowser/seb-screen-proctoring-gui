@@ -122,6 +122,8 @@
     //=============lifecycle and watchers==================
     onBeforeMount(async () => {
         //todo: add error handling
+
+        loadingStore.skipLoading = true;
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
         console.log(group.value)
 
@@ -142,6 +144,7 @@
     });
 
     watch(appBarStoreRef.galleryGridSize, async () => {
+        loadingStore.skipLoading = true;
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
         assignData();
     });
@@ -167,9 +170,7 @@
 
     //=====window functions======
     async function windowChange() {
-        loadingStore.isLoading = true;
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
-        loadingStore.isLoading = false;
         assignData();
     }
 
@@ -196,6 +197,7 @@
     //=============interval==================
     function startIntervalGroup() {
         intervalGroup = setInterval(async () => {
+            loadingStore.skipLoading = true;
             group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
             assignData();
 

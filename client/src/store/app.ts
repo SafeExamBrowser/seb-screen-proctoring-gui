@@ -17,9 +17,10 @@ export const useAppBarStore = defineStore('appBar', () => {
 });
 
 export const useLoadingStore = defineStore("loading", () => {
+  const skipLoading = ref<boolean>(false);
   const isLoading = ref<boolean>(false);
 
-  return {isLoading};
+  return {skipLoading, isLoading};
 });
 
 // export const useAuthStore = defineStore("auth", () => {

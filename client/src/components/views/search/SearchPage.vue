@@ -10,6 +10,7 @@
             class="search-result-container rounded-lg"
             title="Search results">
 
+            <!------------session table------------->
             <v-data-table
                 item-value="sessionUUID"
                 show-expand
@@ -24,7 +25,7 @@
                         <template v-for="(column, index) in columns">
                         <td>
                             <span 
-                                ref="headerRefsSessions"
+                                ref="sessionTableHeadersRef"
                                 tabindex="0" 
                                 class="mr-2 cursor-pointer" 
                                 role="button" 
@@ -63,53 +64,14 @@
                 <template v-slot:expanded-row="{ columns, item }">
                     <tr>
                         <td :colspan="columns.length">
-                            <v-data-table
-                                item-value="sessionUUID"
-                                class="elevation-1"
-                                theme="tableTheme"
-                                :items-per-page="tableUtils.calcDefaultItemsPerPage(screenshotSearchResults.find(i => i.content[0].sessionUUID == item.raw.sessionUUID)?.content)" 
-                                :items-per-page-options="tableUtils.calcItemsPerPage(screenshotSearchResults.find(i => i.content[0].sessionUUID == item.raw.sessionUUID)?.content)"
-                                :headers="screenshotTableHeaders"
-                                :items="screenshotSearchResults.find(i => i.content[0].sessionUUID == item.raw.sessionUUID)?.content">
-
-                                <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
-                                    <tr>
-                                        <template v-for="(column, index) in columns">
-                                        <td>
-                                            <span 
-                                                ref="headerRefsScreenshots"
-                                                tabindex="0" 
-                                                class="mr-2 cursor-pointer" 
-                                                role="button" 
-                                                @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
-                                                @click="() => toggleSort(column)">{{ column.title }}
-                                            </span>
-                                            <template v-if="isSorted(column)">
-                                                <v-icon :icon="getSortIcon(column)"></v-icon>
-                                            </template>
-                                        </td>
-                                        </template>
-                                    </tr>
-                                </template>
-
-                                <template v-slot:item.imageTimestamp="{item}">
-                                    <td>
-                                        <div>
-                                            {{timeUtils.formatTimestmapToTime(item.columns.imageTimestamp)}}
-                                        </div>
-                                    </td>
-                                </template>
-
-                                <template v-slot:item.proctoringViewLink="{item}">
-                                    <v-btn @click="openProctoringView(item.raw.sessionUUID, item.raw.imageTimestamp)" variant="text" icon="mdi-video"></v-btn>
-                                </template>
-
-                            </v-data-table>
+                              <!-- @vue-ignore -->
+                            <SearchScreenshotsTable :screenshotSearchResult="screenshotSearchResults.find(i => i.content[0].sessionUUID == item.raw.sessionUUID)"></SearchScreenshotsTable>
                         </td>
                     </tr>
                 </template>
 
             </v-data-table>
+            <!----------------------------------->
         </v-sheet>
     </div>
 
@@ -117,20 +79,23 @@
 
 
 <script setup lang="ts">
-    import { ref, onBeforeMount, watch } from "vue";
-    import { useAppBarStore } from "@/store/app";
+    import { ref, onBeforeMount, watch, computed, reactive } from "vue";
+    import { useAppBarStore, useLoadingStore } from "@/store/app";
     import * as searchViewService from "@/services/component-services/searchViewService";
     import router from "@/router";
     import { VDataTable } from "vuetify/labs/VDataTable"
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/tableUtils";
     import SearchForm from "./SearchForm.vue";
+    import SearchScreenshotsTable from "./SearchScreenshotsTable.vue"
 
 
     //reactive variables
     const searchResultAvailable = ref<boolean>(false);
     const sessionSearchResults = ref<SearchSessions>();
     const screenshotSearchResults = ref<SearchScreenshots[]>([]);
+    const screenshotSearchResult = ref<SearchScreenshots>();
+
 
     //remaining
     const appBarStore = useAppBarStore();
@@ -138,25 +103,22 @@
     let metadataSearchUrl: string | null;
     let metadataSearchWindowTitle: string | null;
     let metadataSearchAction: string | null;
+    let loginNameSearch: string | null;
+    let machineNameSearch: string | null;
 
     //table
-    const headerRefsSessions = ref<any[]>();
+    const sessionTableHeadersRef = ref<any[]>();
     const sessionTableHeaders = ref([
         {title: "Start-Time", key: "startTime"},
         {title: "Login Name", key: "clientName"},
+        {title: "Machine Name", key: "clientMachineName"},
         {title: "Group Name", key: "groupName"},
         {title: "Slides", key: "nrOfScreenshots"},
         {title: "Video", key: "proctoringViewLink"},
     ]);
 
-    const headerRefsScreenshots = ref<any[]>();
-    const screenshotTableHeaders = ref([
-        {title: "Time", key: "imageTimestamp"},
-        {title: "URL", key: "metaData.screenProctoringMetadataURL"},
-        {title: "Window Title", key: "metaData.screenProctoringMetadataWindowTitle"},
-        {title: "User-Action", key: "metaData.screenProctoringMetadataUserAction"},
-        {title: "Video", key: "proctoringViewLink"},
-    ]);
+    //store
+    const loadingStore = useLoadingStore();
 
 
     onBeforeMount(async () => {
@@ -166,6 +128,8 @@
             console.error(error);
         }
     });
+
+
 
     async function searchSessions(
         groupName: string, 
@@ -183,17 +147,22 @@
         metadataSearchUrl = metadataUrl == "" ? null : metadataUrl;
         metadataSearchWindowTitle = metadataWindowTitle == "" ? null : metadataWindowTitle;
         metadataSearchAction = metadataUserAction == "" ? null : metadataUserAction;
+        loginNameSearch = loginName == "" ? null : loginName;
+        machineNameSearch = machineName == "" ? null : machineName;
+
+        console.log("in search page loginNameSearch: " + loginNameSearch)
+        console.log("in search page machineNameSearch: " + machineNameSearch)
 
         const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(
             {   
                 //todo: add exam name
                 groupName: groupName,
-                clientName: loginName,
-                clientMachineName: machineName,
+                clientName: loginNameSearch,
+                clientMachineName: machineNameSearch,
                 screenProctoringMetadataURL: metadataSearchUrl,
                 screenProctoringMetadataWindowTitle: metadataSearchWindowTitle,
                 screenProctoringMetadataUserAction: metadataSearchAction,
-                fromTime: fromTime,
+                fromTime: fromTime, 
                 toTime: toTime,
                 pageSize: 500
             }
@@ -207,18 +176,13 @@
         sessionSearchResults.value = sessionSearchResponse;
         searchResultAvailable.value = true;
 
-        console.log(sessionSearchResults.value)
+        // console.log(sessionSearchResults.value)
     }
 
-    async function searchScreenshots(item: any, isExpanded: any, toggleExpand: any){
 
-        if(isExpanded(item)){
-            toggleExpand(item);
-            const index: number = screenshotSearchResults.value.findIndex(i => i.content[0].sessionUUID == item.raw.sessionUUID);
+    async function searchScreenshots(item: any, isExpanded: Function, toggleExpand: Function){
 
-            if (index !== -1) {
-                screenshotSearchResults.value.splice(index, 1);
-            }
+        if(removeTableItemFromRefs(item, isExpanded, toggleExpand)){
             return;
         }
 
@@ -233,45 +197,27 @@
         );
 
         if(screenshotSearchResponse == null){
-            //todo: show error to user
-            return null;
+            return;
         }
 
+
+        screenshotSearchResult.value = screenshotSearchResponse;
         console.log(screenshotSearchResponse)
 
-        screenshotSearchResults.value.push(screenshotSearchResponse);
-        toggleExpand(item);
+        addTableItemToRefs(screenshotSearchResponse, toggleExpand, item);
     }
 
     function openProctoringView(sessionId: string, timestamp?: string){
         if(!timestamp){
-
-            // router.push({
-            //     path: "/recording/" + sessionId,
-            // });
-            
             const url: string = "/recording/" + sessionId;
             //@ts-ignore
             window.open("", "_blank").location.href = router.resolve(url).href;
-
             return;
         }
-
-        //recording/b11bf31d-12f1-49a0-a160-6f229115d7fd?searchTimestamp=1692861314291
 
         const url: string = "/recording/" + sessionId + "?searchTimestamp=" + timestamp;
         //@ts-ignore
         window.open("", "_blank").location.href = router.resolve(url).href;
-
-        // router.push({
-        //     name: "ProctoringViewPage",
-        //     params: {
-        //         sessionId: sessionId
-        //     },
-        //     query: {
-        //         searchTimestamp: timestamp
-        //     }
-        // });
     }
 
     function handleTabKeyEvent(event: any, action: string, index: number, key: number){
@@ -283,13 +229,32 @@
     }
 
     function sortTable(key: number){
-        if(headerRefsSessions.value != null){
-            headerRefsSessions.value[key].click();
+        if(sessionTableHeadersRef.value != null){
+            sessionTableHeadersRef.value[key].click();
+        }
+    }
+
+
+    function addTableItemToRefs(screenshotSearchResponse: SearchScreenshots, toggleExpand: Function, item: any){
+        screenshotSearchResults.value.push(screenshotSearchResponse);
+        toggleExpand(item);
+    }
+
+
+    function removeTableItemFromRefs(item: any, isExpanded: Function, toggleExpand: Function): boolean{
+        
+        if(isExpanded(item)){
+            toggleExpand(item);
+            const index: number = screenshotSearchResults.value.findIndex(i => i.content[0].sessionUUID == item.raw.sessionUUID);
+
+            if (index !== -1) {
+                screenshotSearchResults.value.splice(index, 1);
+            }
+            return true;
         }
 
-        if(headerRefsScreenshots.value != null){
-            headerRefsScreenshots.value[key].click();
-        }
+        return false;
+
     }
 
 </script>
@@ -307,7 +272,7 @@
     }
 
     .search-container, .search-result-container{
-        width: 70%;
+        width: 80%;
         padding: 20px;
     }
 
