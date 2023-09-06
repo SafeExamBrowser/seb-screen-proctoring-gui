@@ -65,8 +65,9 @@
     <AlertMsg 
         v-else
         :alertProps="{
-            title: 'No data avilable',
             color: 'warning',
+            type: 'alert',
+            textKey: 'no-data'
         }">
     </AlertMsg>
 

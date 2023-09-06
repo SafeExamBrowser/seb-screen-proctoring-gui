@@ -75,6 +75,15 @@
         </v-sheet>
     </div>
 
+    <AlertMsg 
+        v-if="errorAvailable"
+        :alertProps="{
+            color: 'error',
+            type: 'snackbar',
+            textKey: 'api-error'
+        }">
+    </AlertMsg>
+
 </template>
 
 
@@ -95,7 +104,7 @@
     const sessionSearchResults = ref<SearchSessions>();
     const screenshotSearchResults = ref<SearchScreenshots[]>([]);
     const screenshotSearchResult = ref<SearchScreenshots>();
-
+    const errorAvailable = ref<boolean>();
 
     //remaining
     const appBarStore = useAppBarStore();
@@ -143,6 +152,7 @@
     ){
 
         //todo: fold all rows on new search
+        errorAvailable.value = false;
 
         metadataSearchUrl = metadataUrl == "" ? null : metadataUrl;
         metadataSearchWindowTitle = metadataWindowTitle == "" ? null : metadataWindowTitle;
@@ -169,7 +179,7 @@
         );
         
         if(sessionSearchResponse == null){
-            //todo: show error to user
+            errorAvailable.value = true;
             return;
         }
 

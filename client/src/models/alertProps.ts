@@ -1,5 +1,6 @@
 type AlertProps = {
     title: string,
-    text: string,
+    textKey: string,
     color: string,
+    type: string
 }

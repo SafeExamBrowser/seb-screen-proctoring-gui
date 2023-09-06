@@ -66,9 +66,9 @@
             <AlertMsg 
                 v-else 
                 :alertProps="{
-                    title: 'No data avilable',
-                    text: galleryViewService.getAlertText(group?.name),
+                    textKey: 'no-data',
                     color: 'warning',
+                    type: 'alert',
                 }">
             </AlertMsg>
 

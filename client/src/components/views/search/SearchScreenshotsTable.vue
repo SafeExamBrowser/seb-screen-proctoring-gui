@@ -1,7 +1,5 @@
 <template>
-    <!------------screenshot table------------->
-
-    <v-tabs v-model="temp" bg-color="transparent" color="primary" grow>
+    <v-tabs v-model="temp" bg-color="primary" grow>
         <v-tab v-for="item in screenshotTableTabsItems" :key="item" :value="item">
             {{ item }}
         </v-tab>
@@ -61,7 +59,6 @@
         </v-window-item>
 
     </v-window>
-<!----------------------------------->
 </template>
 
 <script setup lang="ts">
@@ -74,12 +71,6 @@
     const props = defineProps<{
         screenshotSearchResult: SearchScreenshots
     }>();
-
-
-
-
-    // const screenshotSearchResult = ref<SearchScreenshots>();
-
 
     //table
     const screenshotTableHeadersRef = ref<any[]>();

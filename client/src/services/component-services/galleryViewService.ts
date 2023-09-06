@@ -64,9 +64,3 @@ export function navigateToProctoringView(screenshots: Screenshot[] | undefined, 
 }
 
 //==============================
-
-
-//=============error handling==================
-export function getAlertText(groupName: string | undefined): string {
-    return "The group: " + groupName + " has no recorded sessions"
-}
