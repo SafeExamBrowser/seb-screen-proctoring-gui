@@ -4,23 +4,44 @@
 
             <template v-if="!noScreenshotData">
                 <v-row  v-for="i in appBarStore.galleryGridSize.value" :key="i" align-strech no-gutters>
-                    <v-col v-for="n in appBarStore.galleryGridSize.value" :key="n" class="col-style">
+                    <v-col v-for="n in appBarStore.galleryGridSize.value" :key="n">
 
                         <v-hover v-slot="{isHovering, props}" >
                             <!--todo: add max height  -->
                             <v-img
                                 v-if="galleryViewService.currentIndexExists(group?.screenshots, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))"
                                 v-bind="props"
-                                id="imgElement"
                                 class="img-styling"
                                 :aspect-ratio="16/9"
                                 :class="{'on-hover': isHovering}"
                                 :src="galleryViewService.createImageLinkWithToken(group?.screenshots, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value), timestamp)">
 
-                                <div v-if="isHovering" class="hover-overlay d-flex align-end">
-                                <!-- <div class="hover-overlay d-flex align-end"> -->
+                                <div v-if="isHovering" class="hover-overlay d-flex">
+                                <!-- <div class="hover-overlay d-flex"> -->
                                     <v-row>
-                                        <v-col align-self="end" >
+                                        <v-col >
+                                            <div v-if="appBarStore.galleryIsMetadataEnabled">
+                                                <v-expansion-panels color="#404040">
+                                                    <v-expansion-panel
+                                                        title="Metadata">
+                                                        <v-expansion-panel-text>
+                                                            <v-row v-for="(value, key) in galleryViewService.getScreenshotMetadata(group?.screenshots[galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value)].metaData)" :key="key">
+                                                                <v-col>
+                                                                    {{key}}
+                                                                </v-col>
+                                                                <v-col>
+                                                                    {{value}}
+                                                                </v-col>
+                                                            </v-row>
+                                                        </v-expansion-panel-text>
+                                                    </v-expansion-panel>
+                                                </v-expansion-panels>
+                                            </div>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-row align="end">
+                                        <v-col>
                                             <v-sheet class="d-flex pa-2 button-row">
                                                 <div v-if="appBarStore.galleryIsNameEnabled" class="text-body-1 title-box">
                                                     {{group?.screenshots[galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value)].clientName.substring(0, 8)}}
@@ -214,9 +235,8 @@
     }
 
     function startIntervalImageUrl() {
-        intervalImageUrl = setInterval(() => {
+        intervalImageUrl = setInterval(async () => {
             timestamp.value = Date.now();
-
         }, SCREENSHOT_INTERVAL);
 
     }
@@ -227,8 +247,6 @@
         }
     }
     //==============================
-    
-
 </script>
 
 <style scoped>
@@ -251,15 +269,14 @@
         left: 0;
         z-index: 0;
         background-color: rgba(255, 255, 255, 0.3);
+        flex-direction: column;
+        justify-content: space-between;
     }
 
     .button-row {
         background-color: #404040;
-        width: 100%;
-        display: flex;
         align-items: center;
         justify-content: center;
-        height: 100%;
     }
 
     .title-box{
@@ -269,5 +286,4 @@
     .content-filler{
         visibility: hidden;
     }
-
 </style>

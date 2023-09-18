@@ -56,10 +56,23 @@
                     </v-menu>
                 </div>
 
-                <div class="switch-container">
-                    <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.galleryIsNameEnabled"></v-switch>
+                <div>
+                    <v-menu :close-on-content-click="false">
+                        <template v-slot:activator="{ props }">
+                            <v-btn 
+                                icon="mdi-cog" 
+                                v-bind="props"
+                                color="primary">
+                            </v-btn>
+                        </template>
+                        <v-list>
+                            <v-list-item>
+                                <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.galleryIsNameEnabled" hide-details></v-switch>
+                                <v-switch class="mx-auto" label="Show Metadata" color="primary" v-model="appBarStore.galleryIsMetadataEnabled" hide-details></v-switch>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
                 </div>
-
             </template>
             <!-- <div class="switch-container">
                 <v-switch class="mx-auto" label="theme test" color="primary" v-model="useLigtTheme"></v-switch>
