@@ -1,13 +1,13 @@
 <template>
-    <v-tabs v-model="temp" bg-color="primary" grow>
+    <!-- <v-tabs v-model="temp" bg-color="primary" grow>
         <v-tab v-for="item in screenshotTableTabsItems" :key="item" :value="item">
             {{ item }}
         </v-tab>
-    </v-tabs>
+    </v-tabs> -->
 
-    <v-window v-model="temp">
+    <!-- <v-window v-model="temp">
 
-        <v-window-item value="Timeline">
+        <v-window-item value="Timeline"> -->
             <v-data-table
                 item-value="sessionUUID"
                 class="elevation-1"
@@ -50,7 +50,7 @@
                 </template>
 
             </v-data-table>
-        </v-window-item>
+        <!-- </v-window-item>
 
         <v-window-item value="Summary">
 
@@ -58,7 +58,7 @@
 
         </v-window-item>
 
-    </v-window>
+    </v-window> -->
 </template>
 
 <script setup lang="ts">
@@ -66,11 +66,14 @@
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/tableUtils";
     import { VDataTable } from "vuetify/labs/VDataTable"
+    import router from "@/router";
 
 
     const props = defineProps<{
         screenshotSearchResult: SearchScreenshots
     }>();
+
+    console.log(props.screenshotSearchResult)
 
     //table
     const screenshotTableHeadersRef = ref<any[]>();
@@ -91,13 +94,6 @@
 
 
     function openProctoringView(sessionId: string, timestamp?: string){
-        if(!timestamp){
-            const url: string = "/recording/" + sessionId;
-            //@ts-ignore
-            window.open("", "_blank").location.href = router.resolve(url).href;
-            return;
-        }
-
         const url: string = "/recording/" + sessionId + "?searchTimestamp=" + timestamp;
         //@ts-ignore
         window.open("", "_blank").location.href = router.resolve(url).href;

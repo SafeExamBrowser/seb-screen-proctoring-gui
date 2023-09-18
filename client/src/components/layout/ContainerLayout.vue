@@ -2,8 +2,8 @@
 
     <v-navigation-drawer v-model="drawer" class="d-none d-sm-flex">
         <v-sheet class="pa-4">
-            <v-img class="mx-auto h-12 w-auto" src="/img/logo.svg" alt="Logo ETH Zürich"></v-img>
-            <div class="app-title">{{ $t("navigation.title") }}</div>
+            <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Logo ETH Zürich"></v-img>
+            <div class="app-title text-h6">{{ $t("navigation.title") }}</div>
         </v-sheet>
 
         <v-sheet color="grey-lighten-4" class="pa-4">
@@ -134,7 +134,8 @@
 
 </script>
 
-<style>
+<style scoped>
+
     .app-title{
         text-align: center;
     }

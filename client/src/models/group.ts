@@ -17,6 +17,7 @@ type Group = {
     terminationTime: number;
     entityPrivileges: EntityPrivilege[];
     active: boolean;
+    exam: ExamView;
 }
 
 
@@ -38,4 +39,5 @@ type GroupUuid = {
     sortBy: string;
     sortOrder: string;
     screenshots: Screenshot[];
+    exam: ExamView;
 }

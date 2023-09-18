@@ -73,6 +73,7 @@
 
     //table
     const headers = ref([
+        {title: "Exam", key: "exam.name"},
         {title: "Name", key: "name"},
         {title: "Description", key: "description"},
         {title: "Start-Time", key: "creationTime"},
@@ -82,6 +83,9 @@
         try {
             appBarStore.title = "Active SEB Groups"
             groups.value = await groupService.getGroups({pageSize: 500});
+
+            console.log(groups.value)
+
 
         } catch (error) {
             //todo: add better error handling

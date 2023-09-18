@@ -22,9 +22,9 @@
                                     <v-row>
                                         <v-col align-self="end" >
                                             <v-sheet class="d-flex pa-2 button-row">
-                                                <span v-if="appBarStore.galleryIsNameEnabled" class="text-h6 title-box">
+                                                <div v-if="appBarStore.galleryIsNameEnabled" class="text-body-1 title-box">
                                                     {{group?.screenshots[galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value)].clientName.substring(0, 8)}}
-                                                </span>
+                                                </div>
                                                 <v-spacer></v-spacer>
                                                 <span>
                                                     <v-btn 
@@ -32,6 +32,7 @@
                                                         color="white" 
                                                         variant="outlined" 
                                                         icon="mdi-arrow-expand"
+                                                        size="small"
                                                         @click="openDialog(galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))">
                                                     </v-btn>
 
@@ -41,6 +42,7 @@
                                                         variant="flat" 
                                                         class="ml-2"
                                                         icon="mdi-video"
+                                                        size="small"
                                                         @click="galleryViewService.navigateToProctoringView(group?.screenshots, groupUuid, galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value))">
                                                     </v-btn>
                                                 </span>
@@ -115,8 +117,8 @@
 
     //remaining
     const groupUuid: string = useRoute().params.uuid.toString();
-    let intervalGroup: NodeJS.Timer | null = null;
-    let intervalImageUrl: NodeJS.Timer | null = null;
+    let intervalGroup: any | null = null;
+    let intervalImageUrl: any | null = null;
 
 
     //=============lifecycle and watchers==================
@@ -170,6 +172,7 @@
 
     //=====window functions======
     async function windowChange() {
+        console.log("window was changed")
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
         assignData();
     }
@@ -253,7 +256,10 @@
     .button-row {
         background-color: #404040;
         width: 100%;
-        /* height: 100px; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
     }
 
     .title-box{

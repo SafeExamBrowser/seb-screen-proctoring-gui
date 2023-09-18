@@ -217,15 +217,8 @@
         addTableItemToRefs(screenshotSearchResponse, toggleExpand, item);
     }
 
-    function openProctoringView(sessionId: string, timestamp?: string){
-        if(!timestamp){
-            const url: string = "/recording/" + sessionId;
-            //@ts-ignore
-            window.open("", "_blank").location.href = router.resolve(url).href;
-            return;
-        }
-
-        const url: string = "/recording/" + sessionId + "?searchTimestamp=" + timestamp;
+    function openProctoringView(sessionId: string){
+        const url: string = "/recording/" + sessionId;
         //@ts-ignore
         window.open("", "_blank").location.href = router.resolve(url).href;
     }

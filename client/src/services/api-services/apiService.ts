@@ -33,7 +33,7 @@ export function createApiInterceptor(){
 
             if(!loadingStore.skipLoading){
                 loadingTimeout = setTimeout(() => {
-                    loadingStore.isLoading = true;
+                    // loadingStore.isLoading = true;
                 }, 1000);
             }
 
