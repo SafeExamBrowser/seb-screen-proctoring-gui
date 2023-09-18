@@ -1,22 +1,26 @@
 // Utilities
 import { defineStore } from 'pinia'
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
 
 export const useAppBarStore = defineStore('appBar', () => {
   const title = ref<string>("Example Title");
+
   const galleryGridSize = ref<GridSize>({
     title: "3x3",
     value: 3
   });
-  const isNameEnabled = ref<boolean>(true);
+  const galleryIsNameEnabled = ref<boolean>(true);
+  const gallerNumberOfSessions = ref<number>(0);
+  const galleryDescription = ref<string>("");
 
-  return {title, galleryGridSize, isNameEnabled};
+  return {title, galleryGridSize, galleryIsNameEnabled, gallerNumberOfSessions, galleryDescription};
 });
 
 export const useLoadingStore = defineStore("loading", () => {
+  const skipLoading = ref<boolean>(false);
   const isLoading = ref<boolean>(false);
 
-  return {isLoading};
+  return {skipLoading, isLoading};
 });
 
 // export const useAuthStore = defineStore("auth", () => {

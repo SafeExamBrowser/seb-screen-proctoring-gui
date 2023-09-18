@@ -1,25 +1,24 @@
 import { AxiosResponse } from 'axios'
 import * as apiService from "@/services/api-services/apiService";
 
-export async function getGroups(optionalParamters?: OptionalParGroup): Promise<Group[] | any> {
-
+export async function searchSessions(optionalParamters?: OptionalParSearchSessions): Promise<SearchSessions | any> {
   try {
-    const url: string = "/group";
+    const url: string = "/search/sessions";
     const {data, status}: AxiosResponse<GroupResponse> = await apiService.api.get(url, {headers: getHeaders(), params: {optionalParamters}});
 
     if (status === 200) {
-      return data.content;
+      return data;
     }
+
 
   } catch (error) {
     throw error;
   }
 }
 
-export async function getGroupByUuid(uuid: string, optionalParamters?: OptionalParGroupByUuid): Promise<GroupUuid[] | any> {
-
+export async function searchScreenshots(optionalParamters?: OptionalParSearchScreenshots): Promise<SearchScreenshots | any> {
   try {
-    const url: string = "/group/" + uuid;
+    const url: string = "/search/screenshots"
     const {data, status}: AxiosResponse<Group> = await apiService.api.get(url, {headers: getHeaders(), params: {optionalParamters}});
 
     if (status === 200) {

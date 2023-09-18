@@ -2,14 +2,14 @@
 
     <v-navigation-drawer v-model="drawer" class="d-none d-sm-flex">
         <v-sheet class="pa-4">
-            <v-img class="mx-auto h-12 w-auto" src="/img/logo.svg" alt="Logo ETH Zürich"></v-img>
-            <div class="app-title">SEB Screen Proctoring</div>
+            <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Logo ETH Zürich"></v-img>
+            <div class="app-title text-h6">{{ $t("navigation.title") }}</div>
         </v-sheet>
 
         <v-sheet color="grey-lighten-4" class="pa-4">
-            <div>sebserver-admin</div>
+            <div>{{ $t("navigation.current-user") }}</div>
             <div class="text-decoration-underline text-blue">
-                <router-link @click="signOut()" to="/">Sign out</router-link>
+                <router-link @click="signOut()" to="/">{{ $t("navigation.sign-out") }}</router-link>
             </div>
         </v-sheet>
 
@@ -28,24 +28,58 @@
         </v-app-bar-nav-icon>
         <v-app-bar-title>{{ appBarStore.title }}</v-app-bar-title>
 
-        <template v-if="useRoute().name == 'GalleryViewPage'" v-slot:append>
-            <v-menu>
-                <template v-slot:activator="{ props }">
-                    <v-btn v-bind="props" rounded="sm" color="primary" variant="flat">
-                        <v-icon start icon="mdi-chevron-down" size="x-large"></v-icon>
-                        Grid Size: {{ appBarStore.galleryGridSize.title }}
-                    </v-btn>
-                </template>
-                <v-list>
-                    <v-list-item class="d-flex justify-center align-center" v-for="(gridSize, index) in gridSizes" :key="index" :value="index" @click="changeGridSize(gridSize)">
-                        <v-list-item-title>{{ gridSize.title }}</v-list-item-title>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
-            <div class="switch-container">
-                <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.isNameEnabled"></v-switch>
-            </div>
+        <template v-slot:append>
+            <template v-if="useRoute().name == 'GalleryViewPage'">
+
+                <div>
+                    <v-chip class="session-info-item">
+                        Number of Sessions: {{ appBarStore.gallerNumberOfSessions }}
+                    </v-chip>
+                    <v-chip class="session-info-item">
+                        Description: {{ appBarStore.galleryDescription }}
+                    </v-chip>
+                </div>
+
+                <div class="grid-size-container">
+                    <v-menu>
+                        <template v-slot:activator="{ props }">
+                            <v-btn v-bind="props" rounded="sm" color="primary" variant="flat">
+                                <v-icon start icon="mdi-chevron-down" size="x-large"></v-icon>
+                                Grid Size: {{ appBarStore.galleryGridSize.title }}
+                            </v-btn>
+                        </template>
+                        <v-list>
+                            <v-list-item class="d-flex justify-center align-center" v-for="(gridSize, index) in gridSizes" :key="index" :value="index" @click="changeGridSize(gridSize)">
+                                <v-list-item-title>{{ gridSize.title }}</v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
+                </div>
+
+                <div class="switch-container">
+                    <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.galleryIsNameEnabled"></v-switch>
+                </div>
+
+            </template>
+            <!-- <div class="switch-container">
+                <v-switch class="mx-auto" label="theme test" color="primary" v-model="useLigtTheme"></v-switch>
+            </div> -->
+            <!-- <div class="profile-icon-container">
+                <v-menu>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" color="primary" icon="mdi-account-circle" size="x-large"></v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-item class="d-flex justify-center align-center" v-for="(gridSize, index) in gridSizes" :key="index" :value="index" @click="changeGridSize(gridSize)">
+                            <v-list-item-title>{{ gridSize.title }}</v-list-item-title>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
+            </div> -->
         </template>
+
+
+
     </v-app-bar>
 
     <v-main>
@@ -57,16 +91,20 @@
 </template>
 
 <script setup lang="ts">
-    import { ref } from "vue"
+    import { ref, watch } from "vue"
     import { useAppBarStore } from "@/store/app";
     import { useRoute } from "vue-router";
+    import { useTheme } from 'vuetify'
 
     const drawer = ref();
+    const useLigtTheme = ref<boolean>(true);
 
     const appBarStore = useAppBarStore();
+    const theme = useTheme();
 
     const links = [
         ["SEB Groups Proctoring", "/start"],
+        ["Search", "/search"],
         ["Example Page", "/example"],
     ];
 
@@ -78,6 +116,14 @@
         // {title: "6x6", value: 6},
     ];
 
+
+
+    watch(useLigtTheme, () => {
+        theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+    });
+
+
+
     function signOut(){
         localStorage.clear();
     }
@@ -88,9 +134,18 @@
 
 </script>
 
-<style>
+<style scoped>
+
     .app-title{
         text-align: center;
+    }
+
+    .session-info-item{
+        margin-right: 10px;
+    }
+
+    .grid-size-container{
+        margin-right: 10px;
     }
 
     .switch-container{
@@ -98,7 +153,7 @@
         align-items: center;
         justify-content: center;
         margin-top: 20px;
-        margin-left: 10px;
+        margin-right: 10px;
     }
 
 </style>

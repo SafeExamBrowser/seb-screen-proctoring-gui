@@ -6,7 +6,7 @@ export function formatTimestampToFullDate(timestamp: string): string{
   const date = new Date(timestamp);
 
   const day = ("0" + date.getDate()).slice(-2);
-  const month = ("0" + (date.getMonth() + 1)).slice(-2); // January is 0!
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
   const year = date.getFullYear();
 
   const hours = ("0" + date.getHours()).slice(-2);
@@ -24,7 +24,7 @@ export function formatTimestmapToDate(timestamp: number): string{
   const date = new Date(timestamp);
 
   const day = ("0" + date.getDate()).slice(-2);
-  const month = ("0" + (date.getMonth() + 1)).slice(-2); // January is 0!
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
   const year = date.getFullYear();
 
   return day + "." + month + "." + year; 
@@ -61,4 +61,17 @@ export function toTimeString(milliseconds: number): string {
 
 export function toSeconds(milliseconds: number): number {
   return Math.floor(milliseconds / 1000);
+}
+
+export function secondsToTimeString(seconds: number): string{
+    const hours = Math.floor(seconds / 3600);
+    seconds %= 3600;
+    const minutes = Math.floor(seconds / 60);
+    seconds %= 60;
+
+    const hoursStr = String(hours).padStart(2, '0');
+    const minutesStr = String(minutes).padStart(2, '0');
+    const secondsStr = String(seconds).padStart(2, '0');
+
+    return `${hoursStr}:${minutesStr}:${secondsStr}`;
 }

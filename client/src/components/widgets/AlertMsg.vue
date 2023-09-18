@@ -1,39 +1,47 @@
 <template>
-  <div class="rounded-sm bg-red-50 p-4">
-    <div class="flex">
-      <div class="flex-shrink-0" aria-hidden="true">
-        <!-- <v-icon name="md-cancel" /> -->
-        <!-- <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" /> -->
-      </div>
-      <div class="ml-3">
-        <h3 class="text-sm font-medium text-red-800">
-          {{ title }}
-        </h3>
-        <div class="mt-2 text-sm text-red-700">
-          <p>
-            {{ message }}
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
+    <v-alert 
+        v-if="props.alertProps.type == 'alert'"
+        :title=props.alertProps.title
+        :text="messages.find(item => item.key == props.alertProps.textKey)?.value"
+        :color=props.alertProps.color 
+        :icon=getIcon()>
+    </v-alert>
+
+    <v-snackbar 
+        v-if="props.alertProps.type == 'snackbar'" 
+        v-model="snackbar"
+        :color="props.alertProps.color">
+
+        {{ messages.find(item => item.key == props.alertProps.textKey)?.value}}
+
+        <template v-slot:actions>
+            <v-btn variant="text" @click="snackbar = false"> Close </v-btn>
+        </template>
+    </v-snackbar>
 </template>
 
 <script setup lang="ts">
-  //todo: add icon
-  //@ts-ignore: type declarations do not exist for this icon library
-  //import { XCircleIcon } from "@vue-hero-icons/solid"
-  //import { MdCancel } from "oh-vue-icons/icons";
+    import { ref } from "vue";  
 
-  const props = defineProps({
-    title: {
-      type: String,
-      required: true
-    },
-    message: {
-      type: String,
-      required: true
+    const snackbar = ref<boolean>(true);
+
+    const props = defineProps<{
+        alertProps: AlertProps
+    }>();
+
+    const messages: {key: string, value: string}[] = [
+        {
+            key: "no-data",
+            value: "No data available"
+        },
+        {
+            key: "api-error",
+            value: "Something went wrong, please try again"
+        }
+    ];
+
+    function getIcon(): string{
+        return "$" + props.alertProps.color
     }
-  });
 
 </script>

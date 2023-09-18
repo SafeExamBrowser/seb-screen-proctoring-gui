@@ -1,5 +1,6 @@
 <template>
-    <v-row>
+
+    <v-row v-if="!showError">
         <v-col cols="9">
 
             <v-img 
@@ -11,9 +12,9 @@
                 </template>
             </v-img>
 
-            <v-slider class="mt-4" :min="session?.startTime" :max="session?.endTime" :step="1000" v-model="sliderTime" thumb-label>
+            <v-slider class="mt-4" :min="firstScreenshotTime" :max="lastScreenshotTime" :step="1000" v-model="sliderTime" thumb-label>
                 <template v-slot:thumb-label>
-                    {{currentTime}}
+                    {{currentTimeString}}
                 </template>
                 <template v-slot:prepend>
                     <v-btn @click="backwards()" size="small" variant="text" icon="mdi-step-backward"></v-btn>
@@ -22,7 +23,7 @@
                 </template>
                 <template v-slot:append>
                     <v-chip variant="outlined">
-                        {{ currentTime }} / {{ endTime }}
+                        {{ currentTimeString }} / {{ endTimeString }}
                     </v-chip>
                 </template>
             </v-slider>
@@ -33,26 +34,26 @@
             <v-card>
                 <v-card-title>SEB Session Info:</v-card-title>
                 <v-card-text>
-                    <v-row v-for="info in sessionInfoData">
+                    <v-row v-for="(value, key) in sessionInfodata" :key="key">
                         <v-col>
-                            {{info.name}}
+                            {{key}}
                         </v-col>
                         <v-col>
-                            {{info.data}}
+                            {{value}}
                         </v-col>
                     </v-row>
                 </v-card-text>
-            </v-card>
+            </v-card>   
 
             <v-card class="mt-4">
-                <v-card-title>Screenshot Metadata:</v-card-title>
+                <v-card-title>Screenshot Metadata</v-card-title>
                 <v-card-text>
-                    <v-row v-for="info in screenshotMetaData">
+                    <v-row v-for="(value, key) in screenshotMetadata" :key="key">
                         <v-col>
-                            {{info.name}}
+                            {{key}}
                         </v-col>
                         <v-col>
-                            {{info.data}}
+                            {{value}}
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -60,125 +61,146 @@
 
         </v-col>
     </v-row>
+
+    <AlertMsg 
+        v-else
+        :alertProps="{
+            color: 'warning',
+            type: 'alert',
+            textKey: 'no-data'
+        }">
+    </AlertMsg>
+
 </template>
 
 <script setup lang="ts">
     import { useRoute } from 'vue-router';
-    import { ref, onBeforeMount, onBeforeUnmount, watch, reactive, computed } from "vue";
-    import * as sessionService from "@/services/api-services/sessionService";
+    import { ref, onBeforeMount, onBeforeUnmount, watch, computed } from "vue";
+    import * as proctoringViewService from "@/services/component-services/proctoringViewService";
     import * as timeUtils from "@/utils/timeUtils";
     import { useAppBarStore } from '@/store/app';
 
+
+    //reactive variables
+    const isPlaying = ref<boolean>(false);
+    const session = ref<Screenshot>();
+    const currentScreenshot = ref<Screenshot>();
+    const sliderTime = ref<number>();
+    const firstScreenshotTime = ref<number>();
+    const lastScreenshotTime = ref<number>();
+    const imageLink = ref<string>("");
+    const showError = ref<boolean>(false);
+
+    //time constants
     const SLIDER_INTERVAL: number = 1 * 1000;
     const SESSION_INTERVAL: number = 3 * 1000;
-    const SCREENSHOTS_RELOAD_IN_MS: number = 1000;
 
-    const appBarStore = useAppBarStore();
-    const sessionId: string = useRoute().params.sessionId.toString();
-
-    const isPlaying = ref<boolean>(false);
-    //todo: cehck if ref can definied null --> ref<string | null>(null)
-    const session = ref<Screenshot>();
-    const sliderTime = ref<number>();
-    const imageLink = ref<string>("");
-    const sessionInfoData = reactive<{name: string, data: string}[]>([]);
-    const screenshotMetaData = reactive<{name: string, data: any}[]>([]);
-
+    //intervals
     let intervalScreenshots: any | null = null;
     let intervalSession: any | null = null;
 
+    //remaining
+    const appBarStore = useAppBarStore();
+    const sessionId: string = useRoute().params.sessionId.toString();
+    const searchTimestamp: string | undefined = useRoute().query.searchTimestamp?.toString();
+
+
+    //=============lifecycle and watchers==================
     onBeforeMount(async () => {
-        await getAndassignSession();
-        appBarStore.title = "Proctoring View of Group: " + session.value?.clientName;
-        sliderTime.value = session.value?.startTime;
+        await getAndAssignSession();
+        await getFirstScreenshotTime();
+        setStartingSliderTime();
+        startIntervalSession();
 
-        if(session.value != null){
-            sessionInfoData.push(
-                {name: "Client Name:", data: session.value?.clientName},
-                {name: "Client IP:", data: session.value?.clientIp},
-                {name: "Client Version:", data: session.value?.clientVersion},
-                {name: "Client Machine Name:", data: session.value?.clientMachineName},
-                {name: "Client OS:", data: session.value?.clientOsName},
-                {name: "Is Session Active:", data: session.value?.active.toString()}
-            );
-        }
-
-        if(session.value?.active){
-            intervalSession = setInterval(async () => {
-                await getAndassignSession();
-            }, SESSION_INTERVAL);
-        }
-        
+        appBarStore.title = "Proctoring View of Session: " + session.value?.clientName;
     });
 
     onBeforeUnmount(() => {
-        stopIntervalScreenshots();
+        stopIntervalScreenshots();  
         stopIntervalSessions();
     });
 
-    watch(sliderTime, () => {
+    watch(sliderTime, async () => {
         if(sliderTime.value != null){
-            imageLink.value = getImageLink(sliderTime.value?.toString());
-
-            screenshotMetaData.splice(0, screenshotMetaData.length, 
-                {name: "Date:", data: timeUtils.formatTimestmapToDate(sliderTime.value)},
-                {name: "Time:", data: timeUtils.formatTimestmapToTime(sliderTime.value)},
-                //todo: remove temporary hardcoded data
-                {name: "Active Program:", data: "Web-Browser"},
-                {name: "Current URL:", data: "moodle.com"},
-                {name: "Title Website:", data: "Exam xyz"}
-            );
+            await getCurrentScreenshot(sliderTime.value?.toString());
         }
     })
 
-    async function getAndassignSession(){
-        try {
-            const sessionResponse: Screenshot = await sessionService.getSessionBySessionId(sessionId);
-            console.log(sessionResponse)
+    async function getAndAssignSession(){
+        const sessionResponse: Screenshot | null = await proctoringViewService.getSessionBySessionId(sessionId);
 
-            if(sessionResponse != null){
-                session.value = sessionResponse;
-            }
-
-        } catch (error) {
-            //todo: add better error handling
-            console.error(error);
+        if(sessionResponse == null){
+            showError.value = true;
+            return;
         }
+
+        session.value = sessionResponse;
+        lastScreenshotTime.value = session.value.timestamp;
+    }
+    //==============================
+
+
+    //=============screenshot logic==================
+    async function getFirstScreenshotTime(){
+        let specificSessionResponse: Screenshot | null = null;
+        if(session.value != null){
+            specificSessionResponse = await proctoringViewService.getSessionByTimestamp(sessionId, session.value?.startTime.toString());
+        }
+
+        //error does not have to be shown here - if the slider moves too fast, some screenshots cannot be shown
+        if(specificSessionResponse == null) return;
+
+        const imageLinkSplitted: string[] = specificSessionResponse.imageLink.split("/");
+        firstScreenshotTime.value = parseInt(imageLinkSplitted[imageLinkSplitted.length-1]);
     }
 
-    const currentTime = computed(() => {
-        if(sliderTime.value != null && session.value != null){
-            const currentTime: number = sliderTime.value - session.value.startTime;
+    async function getCurrentScreenshot(timestamp: string){
+        const specificSessionResponse: Screenshot | null = await proctoringViewService.getSessionByTimestamp(sessionId, timestamp);
 
+        //error does not have to be shown here - if the slider moves too fast, some screenshots cannot be shown
+        if(specificSessionResponse == null) return;
+
+        currentScreenshot.value = specificSessionResponse;
+        imageLink.value = currentScreenshot.value.latestImageLink + "/" + timestamp + "/" + "?access_token=" + localStorage.getItem("accessToken");
+    }
+
+    const currentTimeString = computed<string>(() => {
+        if(sliderTime.value != null && firstScreenshotTime.value != null){
+            const currentTime: number = sliderTime.value - firstScreenshotTime.value;
             return timeUtils.toTimeString(currentTime);
         }
 
         return "";
     });
 
-    const endTime = computed(() => {
-        if(session.value != null){
-            return timeUtils.toTimeString(session.value.endTime - session.value.startTime);
+    const endTimeString = computed<string>(() => {
+        if(session.value != null && firstScreenshotTime.value != null){
+            return timeUtils.toTimeString(session.value.endTime - firstScreenshotTime.value);
         }
 
         return "";
     });
 
-    function getImageLink(timestamp: string): string{
-        if(session.value != null && sliderTime.value == session.value.startTime){
-            return session.value.latestImageLink + "?access_token=" + localStorage.getItem("accessToken");
+    const screenshotMetadata = computed<object>(() => {
+        if(currentScreenshot.value){
+            return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, currentScreenshot.value.metaData);
         }
 
-        if(session.value != null){
-            return session.value.latestImageLink + "/" + timestamp + "/" + "?access_token=" + localStorage.getItem("accessToken");
-        }
+        return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, null);
+    });
 
-        return "";
-    }
+    const sessionInfodata = computed<object>(() => {
+        return proctoringViewService.getSessionInfodata(session.value || null);
+    });
+    //==============================
 
-    function stopIntervalScreenshots(){
-        if (intervalScreenshots) {
-            clearInterval(intervalScreenshots);
+
+    //=============interval==================
+    function startIntervalSession(){
+        if(session.value?.active){
+            intervalSession = setInterval(async () => {
+                await getAndAssignSession();
+            }, SESSION_INTERVAL);
         }
     }
 
@@ -188,15 +210,46 @@
         }
     }
 
+    function startIntervalScreenshots(){
+        intervalScreenshots = setInterval(async () => {
+            if(sliderTime.value != null) {
+                sliderTime.value += SLIDER_INTERVAL;
+            }
+
+            if(session.value != null && sliderTime.value != null && timeUtils.toSeconds(sliderTime.value) == timeUtils.toSeconds(session.value?.endTime)){
+                stopIntervalScreenshots();
+                isPlaying.value = false;
+            }
+
+        }, SLIDER_INTERVAL);
+    }
+
+    function stopIntervalScreenshots(){
+        if (intervalScreenshots) {
+            clearInterval(intervalScreenshots);
+        }
+    }
+    //==============================
+
+    
+    //=============video intercation==================
+    function setStartingSliderTime(){
+        if(searchTimestamp){
+            sliderTime.value = parseInt(searchTimestamp);
+        }else{
+            sliderTime.value = firstScreenshotTime.value;
+        }
+    }
+
     function backwards(){
         if(session.value != null && sliderTime.value != null && sliderTime.value != session.value.startTime){
-            sliderTime.value -= SCREENSHOTS_RELOAD_IN_MS;
+            sliderTime.value -= SLIDER_INTERVAL;
         }
     }
 
     function forwards(){
         if(session.value != null && sliderTime.value != null && timeUtils.toSeconds(sliderTime.value) != timeUtils.toSeconds(session.value?.endTime)){
-            sliderTime.value += SCREENSHOTS_RELOAD_IN_MS;
+            sliderTime.value += SLIDER_INTERVAL;
         }
     }
 
@@ -210,20 +263,11 @@
             return;
         }
 
-        if(isPlaying){
-            intervalScreenshots = setInterval(async () => {
-                if(sliderTime.value != null) {
-                    sliderTime.value += SCREENSHOTS_RELOAD_IN_MS;
-                }
-
-                if(session.value != null && sliderTime.value != null && timeUtils.toSeconds(sliderTime.value) == timeUtils.toSeconds(session.value?.endTime)){
-                    stopIntervalScreenshots();
-                    isPlaying.value = false;
-                }
-
-            }, SLIDER_INTERVAL);
+        if(isPlaying.value){
+            startIntervalScreenshots();
         }
     }
+    //==============================
 
 
 </script>

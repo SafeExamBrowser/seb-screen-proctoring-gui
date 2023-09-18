@@ -1,25 +1,25 @@
-[tabindex]:not([tabindex="-1"]),
-a,
-button,
-input,
-select,
-textarea {
-  outline-width: 2px !important;
-  outline-style: dotted !important;
-  outline-color: transparent !important;
-  outline-offset: 4px;
-  transition: outline-offset 0.1s ease;
-}
+// [tabindex]:not([tabindex="-1"]),
+// a,
+// button,
+// input,
+// select,
+// textarea {
+//   outline-width: 2px !important;
+//   outline-style: dotted !important;
+//   outline-color: transparent !important;
+//   outline-offset: 4px;
+//   transition: outline-offset 0.1s ease;
+// }
 
-*:focus {
-  outline-color: theme('colors.gray.800') !important;
-  outline-offset: 1px;
-}
+// *:focus {
+//   outline-color: theme('colors.gray.800') !important;
+//   outline-offset: 1px;
+// }
 
 input:focus {
   box-shadow: none !important;
 }
 
-[tabindex="-1"] {
-  outline: 0 !important;
-}
+// [tabindex="-1"] {
+//   outline: 0 !important;
+// }
