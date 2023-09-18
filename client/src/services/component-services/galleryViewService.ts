@@ -24,11 +24,6 @@ export async function getGroup(groupUuid: string, currentWindow: number, pageSiz
 
 export async function getLatestScreenshotData(sessionUuid: string, timestamp: number): Promise<Screenshot | null>{
     try{
-
-
-        // console.log(await sessionService.getSessionByTimestamp(sessionUuid, timestamp.toString()))
-
-
         return await sessionService.getSessionByTimestamp(sessionUuid, timestamp.toString());        
     }catch(error){
         console.error(error);
