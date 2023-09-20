@@ -1,4 +1,5 @@
 import * as groupService from "@/services/api-services/groupService";
+import * as sessionService from "@/services/api-services/sessionService";
 import { SortOrder } from "@/models/sortOrderEnum";
 import router from "@/router";
 
@@ -16,6 +17,15 @@ export async function getGroup(groupUuid: string, currentWindow: number, pageSiz
         return groupUuidResponse;
 
     } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export async function getLatestScreenshotData(sessionUuid: string, timestamp: number): Promise<Screenshot | null>{
+    try{
+        return await sessionService.getSessionByTimestamp(sessionUuid, timestamp.toString());        
+    }catch(error){
         console.error(error);
         return null;
     }
@@ -62,5 +72,14 @@ export function navigateToProctoringView(screenshots: Screenshot[] | undefined, 
         });
     }
 }
+//==============================
 
+//=============metadata==================
+export function getScreenshotMetadata(currentScreenshotMetadata: MetaData | null | undefined): object{
+    return {
+        "Url:": currentScreenshotMetadata?.screenProctoringMetadataURL,
+        "Window Title:": currentScreenshotMetadata?.screenProctoringMetadataWindowTitle,
+        "User-Action:": currentScreenshotMetadata?.screenProctoringMetadataUserAction
+    };
+}
 //==============================

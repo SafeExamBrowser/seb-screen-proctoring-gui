@@ -10,10 +10,11 @@ export const useAppBarStore = defineStore('appBar', () => {
     value: 3
   });
   const galleryIsNameEnabled = ref<boolean>(true);
+  const galleryIsMetadataEnabled = ref<boolean>(false);
   const gallerNumberOfSessions = ref<number>(0);
   const galleryDescription = ref<string>("");
 
-  return {title, galleryGridSize, galleryIsNameEnabled, gallerNumberOfSessions, galleryDescription};
+  return {title, galleryGridSize, galleryIsNameEnabled, galleryIsMetadataEnabled, gallerNumberOfSessions, galleryDescription};
 });
 
 export const useLoadingStore = defineStore("loading", () => {

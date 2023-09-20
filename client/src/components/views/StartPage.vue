@@ -95,8 +95,8 @@
 
     onMounted(() => {
         //sort by start-time desc
-        sortTable(2);
-        sortTable(2);
+        sortTable(3);
+        sortTable(3);
     });
 
 
