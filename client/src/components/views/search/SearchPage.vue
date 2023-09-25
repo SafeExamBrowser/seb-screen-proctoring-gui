@@ -12,8 +12,8 @@
 
             <!------------session table------------->
             <v-data-table
-                item-value="sessionUUID"
                 show-expand
+                item-value="sessionUUID"
                 class="elevation-1"
                 :items-per-page="tableUtils.calcDefaultItemsPerPage(sessionSearchResults?.content)" 
                 :items-per-page-options="tableUtils.calcItemsPerPage(sessionSearchResults?.content)"
@@ -53,10 +53,17 @@
                 </template>
 
                 <template v-slot:item.data-table-expand="{item, isExpanded, toggleExpand}">
-                    <v-icon 
+                    <!-- <v-icon 
                         tabindex="0" 
                         variant="text" 
                         @click="searchScreenshots(item, isExpanded, toggleExpand)"
+                        :icon="isExpanded(item) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
+                    </v-icon> -->
+
+                    <v-icon 
+                        tabindex="0" 
+                        variant="text" 
+                        @click="searchTimeline(item, isExpanded, toggleExpand)"
                         :icon="isExpanded(item) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
                     </v-icon>
                 </template>
@@ -64,8 +71,8 @@
                 <template v-slot:expanded-row="{ columns, item }">
                     <tr>
                         <td :colspan="columns.length">
-                              <!-- @vue-ignore -->
-                            <SearchScreenshotsTable :screenshotSearchResult="screenshotSearchResults.find(i => i.content[0].sessionUUID == item.raw.sessionUUID)"></SearchScreenshotsTable>
+                            <!-- @vue-ignore -->
+                            <SearchScreenshotsTable :timelineSearchResult="timelineSearchResults.find(i => i.sessionUUID == item.raw.sessionUUID)"></SearchScreenshotsTable>
                         </td>
                     </tr>
                 </template>
@@ -102,8 +109,14 @@
     //reactive variables
     const searchResultAvailable = ref<boolean>(false);
     const sessionSearchResults = ref<SearchSessions>();
-    const screenshotSearchResults = ref<SearchScreenshots[]>([]);
-    const screenshotSearchResult = ref<SearchScreenshots>();
+
+    // const screenshotSearchResults = ref<SearchScreenshots[]>([]);
+    // const screenshotSearchResult = ref<SearchScreenshots>();
+
+    const timelineSearchResults = ref<SearchTimeline[]>([]);
+    const timelineSearchResult = ref<SearchTimeline>();
+
+
     const errorAvailable = ref<boolean>();
 
     //remaining
@@ -190,32 +203,55 @@
     }
 
 
-    async function searchScreenshots(item: any, isExpanded: Function, toggleExpand: Function){
+    // async function searchScreenshots(item: any, isExpanded: Function, toggleExpand: Function){
+
+    //     if(removeTableItemFromRefs(item, isExpanded, toggleExpand)){
+    //         return;
+    //     }
+
+    //     const screenshotSearchResponse: SearchScreenshots | null = await searchViewService.searchScreenshots(
+    //         {
+    //             sessionUUID: item.raw.sessionUUID, 
+    //             screenProctoringMetadataURL: metadataSearchUrl,
+    //             screenProctoringMetadataWindowTitle: metadataSearchWindowTitle,
+    //             screenProctoringMetadataUserAction: metadataSearchAction,
+    //             pageSize: 500
+    //         }
+    //     );
+
+    //     if(screenshotSearchResponse == null){
+    //         return;
+    //     }
+
+
+    //     screenshotSearchResult.value = screenshotSearchResponse;
+    //     console.log(screenshotSearchResponse)
+
+    //     addTableItemToRefs(screenshotSearchResponse, toggleExpand, item);
+    // }
+
+
+    async function searchTimeline(item: any, isExpanded: Function, toggleExpand: Function){
 
         if(removeTableItemFromRefs(item, isExpanded, toggleExpand)){
             return;
         }
 
-        const screenshotSearchResponse: SearchScreenshots | null = await searchViewService.searchScreenshots(
-            {
-                sessionUUID: item.raw.sessionUUID, 
-                screenProctoringMetadataURL: metadataSearchUrl,
-                screenProctoringMetadataWindowTitle: metadataSearchWindowTitle,
-                screenProctoringMetadataUserAction: metadataSearchAction,
-                pageSize: 500
-            }
-        );
+        const timelineSearchResponse: SearchTimeline | null = await searchViewService.searchTimeline(item.raw.sessionUUID);
+        console.log(timelineSearchResponse?.timelineGroupDataList[0].groupName)
 
-        if(screenshotSearchResponse == null){
+        if(timelineSearchResponse == null){
             return;
         }
 
 
-        screenshotSearchResult.value = screenshotSearchResponse;
-        console.log(screenshotSearchResponse)
+        timelineSearchResult.value = timelineSearchResponse;
+        console.log(timelineSearchResponse)
 
-        addTableItemToRefs(screenshotSearchResponse, toggleExpand, item);
+        addTableItemToRefs(timelineSearchResponse, toggleExpand, item);
     }
+
+
 
     function openProctoringView(sessionId: string){
         const url: string = "/recording/" + sessionId;
@@ -238,8 +274,8 @@
     }
 
 
-    function addTableItemToRefs(screenshotSearchResponse: SearchScreenshots, toggleExpand: Function, item: any){
-        screenshotSearchResults.value.push(screenshotSearchResponse);
+    function addTableItemToRefs(timelineSearchResponse: SearchTimeline, toggleExpand: Function, item: any){
+        timelineSearchResults.value.push(timelineSearchResponse);
         toggleExpand(item);
     }
 
@@ -248,10 +284,10 @@
         
         if(isExpanded(item)){
             toggleExpand(item);
-            const index: number = screenshotSearchResults.value.findIndex(i => i.content[0].sessionUUID == item.raw.sessionUUID);
+            const index: number = timelineSearchResults.value.findIndex(i => i.sessionUUID == item.raw.sessionUUID);
 
             if (index !== -1) {
-                screenshotSearchResults.value.splice(index, 1);
+                timelineSearchResults.value.splice(index, 1);
             }
             return true;
         }

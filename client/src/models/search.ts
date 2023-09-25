@@ -46,5 +46,31 @@ type SearchScreenshots = {
             metaData: MetaData
         }
     ]
+}
 
+type SearchTimeline = {
+    sessionUUID: string,
+    timelineGroupDataList: [
+        {
+            groupOrder: number,
+            groupName: string,
+
+            timelineScreenshotDataList: [
+                ScreenshotGroupList
+            ]
+        }
+    ]
+
+}
+
+type ScreenshotsGrouped = {
+    groupName: string,
+    timelineScreenshotDataList: [
+        ScreenshotGroupList
+    ]
+}
+
+type ScreenshotGroupList = {   
+    timestamp: number,
+    metaData: MetaData
 }

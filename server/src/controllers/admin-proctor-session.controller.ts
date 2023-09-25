@@ -5,9 +5,9 @@ import * as adminProctorSessionService from '../services/admin-proctor-session.s
 export async function getSessionBySessionId(req: Request, res: Response){
 
     try{
-        const groups: object = await adminProctorSessionService.getSessionBySessionId(req.headers.authorization, req.params.sessionId);
+        const session: object = await adminProctorSessionService.getSessionBySessionId(req.headers.authorization, req.params.sessionId);
 
-        return res.status(200).json(groups);
+        return res.status(200).json(session);
 
     }catch(error){
         if(isNaN(error.message)){
@@ -22,9 +22,9 @@ export async function getSessionBySessionId(req: Request, res: Response){
 export async function getSessionByTimestamp(req: Request, res: Response){
 
     try{
-        const group: object = await adminProctorSessionService.getSessionByTimestamp(req.headers.authorization, req.params.sessionId, req.params.timestamp);
+        const session: object = await adminProctorSessionService.getSessionByTimestamp(req.headers.authorization, req.params.sessionId, req.params.timestamp);
 
-        return res.status(200).json(group);
+        return res.status(200).json(session);
 
     }catch(error){
         if(isNaN(error.message)){

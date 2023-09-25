@@ -12,6 +12,7 @@ export async function getSessionBySessionId(token: string, sessionId: string): P
         return data;
 
     }catch(error){
+        console.error(error)
         apiService.handleGenericApiError(error);
     }
 }
@@ -21,7 +22,7 @@ export async function getSessionByTimestamp(token: string, sessionId: string, ti
     try{
         //todo: add env desc to gihub
         const url: string =  sessionUrl + sessionId + "/" + timestamp;
-        const {data, status} = await axios.get(url, {headers: apiService.getHeaders(token)});
+        const {data, status} = await apiService.api.get(url, {headers: apiService.getHeaders(token)});
 
         return data;
 

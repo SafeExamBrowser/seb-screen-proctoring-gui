@@ -260,8 +260,8 @@
     }>();
 
     //form fields
-    const groupNameField = ref<string>("new-test-group");
-    // const groupNameField = ref<string>("");
+    // const groupNameField = ref<string>("new-test-group");
+    const groupNameField = ref<string>("");
     const examNameField = ref<string>("");
 
     const loginNameField = ref<string>("");

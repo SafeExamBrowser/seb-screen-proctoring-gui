@@ -48,3 +48,9 @@ type OptionalParSearchScreenshots = {
     pageSize?: number,
     sort?: string
 }
+
+type OptionalParSearchTimeline = {
+    screenProctoringMetadataURL?: string | null,
+    screenProctoringMetadataWindowTitle?: string | null,
+    screenProctoringMetadataUserAction?: string | null,
+}

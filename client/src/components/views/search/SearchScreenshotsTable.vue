@@ -8,15 +8,22 @@
     <!-- <v-window v-model="temp">
 
         <v-window-item value="Timeline"> -->
+
+            <!-- @vue-ignore -->
+            <!--:group-by="groupTest"-->
+            
             <v-data-table
-                item-value="sessionUUID"
+                show-expand
+                item-value="timelineScreenshotDataList[0].timestamp"
                 class="elevation-1"
                 theme="tableTheme"
-                :items-per-page="tableUtils.calcDefaultItemsPerPage(screenshotSearchResult?.content)" 
-                :items-per-page-options="tableUtils.calcItemsPerPage(screenshotSearchResult?.content)"
-                :headers="screenshotTableHeaders"
-                :items="screenshotSearchResult?.content">
+                :expanded="expandedItems"
+                :items-per-page="tableUtils.calcDefaultItemsPerPage(timelineSearchResult?.timelineGroupDataList)" 
+                :items-per-page-options="tableUtils.calcItemsPerPage(timelineSearchResult?.timelineGroupDataList)"
+                :headers="screenshotTableHeaders" 
+                :items="timelineSearchResult?.timelineGroupDataList">
 
+                <!------------headers------------>
                 <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
                     <tr>
                         <template v-for="(column, index) in columns">
@@ -27,7 +34,8 @@
                                 class="mr-2 cursor-pointer" 
                                 role="button" 
                                 @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
-                                @click="() => toggleSort(column)">{{ column.title }}
+                                @click="() => toggleSort(column)">
+                                {{ column.title }}
                             </span>
                             <template v-if="isSorted(column)">
                                 <v-icon :icon="getSortIcon(column)"></v-icon>
@@ -37,17 +45,72 @@
                     </tr>
                 </template>
 
-                <template v-slot:item.imageTimestamp="{item}">
+                <template v-slot:item.timestamp="{item}">
                     <td>
                         <div>
-                            {{timeUtils.formatTimestmapToTime(item.columns.imageTimestamp)}}
+                            {{timeUtils.formatTimestmapToTime(item.columns.timestamp)}}
+                        </div>
+                    </td>
+                </template>
+
+                <template v-slot:item.groupName="{item}">
+                    <td>
+                        <div>
+                            {{item.columns.groupName}} ({{ item.raw.timelineScreenshotDataList.length }})
                         </div>
                     </td>
                 </template>
 
                 <template v-slot:item.proctoringViewLink="{item}">
-                    <v-btn @click="openProctoringView(item.raw.sessionUUID, item.raw.imageTimestamp)" variant="text" icon="mdi-video"></v-btn>
+                    <v-btn @click="openProctoringView(timelineSearchResult.sessionUUID, item.columns.timestamp)" variant="text" icon="mdi-video"></v-btn>
                 </template>
+                <!-------------------------------->
+
+
+                <!------------content------------>
+                <template v-slot:item.data-table-expand="{item, isExpanded, toggleExpand}">
+                    <v-icon 
+                        tabindex="0" 
+                        variant="text" 
+                        @click="toggleExpand(item)"
+                        :icon="isExpanded(item) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
+                    </v-icon>
+                </template>
+
+                <template v-slot:expanded-row="{ columns, item, index }">
+                    <tr>
+                        <td :colspan="columns.length">
+
+                            <!-- <v-row>
+                                <v-col class="font-weight-bold">
+                                    Time
+                                </v-col>
+                            </v-row> -->
+                            <!-- {{ tempPrintResults(item.raw.timelineScreenshotDataList) }} -->
+                            <!-- <v-row v-for="screenshot in item.raw.timelineScreenshotDataList" :key="screenshot">
+                                <v-col>
+                                    {{timeUtils.formatTimestmapToTime(screenshot.timestamp)}}
+                                </v-col>
+                                <v-col>
+                                    {{ screenshot.metaData.screenProctoringMetadataUserAction }}
+                                </v-col>
+                            </v-row> -->
+
+
+
+                            <v-row v-for="screenshot in searchViewService.groupScreenshotsByMetadata(item.raw.timelineScreenshotDataList)">
+                                <v-col>
+                                    {{ timeUtils.formatTimestmapToTime(screenshot.timelineScreenshotDataList[0].timestamp)}}
+                                </v-col>
+                                <v-col>
+                                    {{ screenshot.groupName }} ({{ screenshot.timelineScreenshotDataList.length }})
+                                </v-col>
+                            </v-row>
+
+                        </td>
+                    </tr>
+                </template>
+                <!-------------------------------->
 
             </v-data-table>
         <!-- </v-window-item>
@@ -62,35 +125,80 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, reactive } from "vue";
+    import { ref, watch, onBeforeMount } from "vue";
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/tableUtils";
     import { VDataTable } from "vuetify/labs/VDataTable"
     import router from "@/router";
+    import * as searchViewService from "@/services/component-services/searchViewService";
 
 
     const props = defineProps<{
-        screenshotSearchResult: SearchScreenshots
+        timelineSearchResult: SearchTimeline
     }>();
 
-    console.log(props.screenshotSearchResult)
+    const timelineSearchResult = ref<SearchTimeline>();
+
+    console.log(props.timelineSearchResult)
 
     //table
+    const expandedItems = ref<string[]>([]);
     const screenshotTableHeadersRef = ref<any[]>();
     const screenshotTableHeaders = ref([
-        {title: "Time", key: "imageTimestamp"},
-        {title: "URL", key: "metaData.screenProctoringMetadataURL"},
-        {title: "Window Title", key: "metaData.screenProctoringMetadataWindowTitle"},
-        {title: "User-Action", key: "metaData.screenProctoringMetadataUserAction"},
-        {title: "Video", key: "proctoringViewLink"},
+        {title: "Start-Time", key: "timestamp", value: "timelineScreenshotDataList[0].timestamp"},
+        {title: "Application / Website", key: "groupName"},
+        {title: "", key: "proctoringViewLink"}
     ]);
 
+    onBeforeMount(() => {
+        timelineSearchResult.value = props.timelineSearchResult;
+
+
+        // console.log(searchViewService.groupScreenshotsByMetadata(timelineSearchResult.value.timelineGroupDataList[0].timelineScreenshotDataList))
+
+        // for(var i = 0; i < timelineSearchResult.value.timelineGroupDataList.length; i++){
+        //     console.log(searchViewService.groupScreenshotsByMetadata(timelineSearchResult.value.timelineGroupDataList[i].timelineScreenshotDataList))
+        // }
+
+
+
+    });
+
+    function tempPrintResults(timelineScreenshotDataList: [ScreenshotGroupList]): string{
+
+        console.log(searchViewService.groupScreenshotsByMetadata(timelineScreenshotDataList))
+
+
+
+        return "temp"
+    }
+
+    watch(timelineSearchResult, (newList) => {
+        if(newList == null){
+            return;
+        }
+
+        expandedItems.value = newList?.timelineGroupDataList.map(item => item.timelineScreenshotDataList[0].timestamp.toString());
+    });
+
+
+
+    // const screenshotTableHeaders = ref([
+    //     {title: "Time", key: "timestamp"},
+    //     {title: "URL", key: "metaData.screenProctoringMetadataURL"},
+    //     {title: "Window Title", key: "metaData.screenProctoringMetadataWindowTitle"},
+    //     {title: "User-Action", key: "metaData.screenProctoringMetadataUserAction"},
+    //     {title: "Video", key: "proctoringViewLink"},
+    // ]);
+
     // const screenshotTableTabsRefs = reactive<{index: string, tabs: any[]}[]>([]);
-    const temp = ref();
-    const screenshotTableTabsItems: string[] = [
-        "Timeline",
-        "Summary"
-    ];
+    // const temp = ref();
+    // const screenshotTableTabsItems: string[] = [
+    //     "Timeline",
+    //     "Summary"
+    // ];
+
+
 
 
     function openProctoringView(sessionId: string, timestamp?: string){
@@ -112,7 +220,6 @@
             screenshotTableHeadersRef.value[key].click();
         }
     }
-
 
 
 </script>
