@@ -17,6 +17,22 @@ type Screenshot = {
     metaData: MetaData;
 }
 
+type Session = {
+    groupUUID: string,
+    groupName: string,
+    groupCreationTime: number,
+    sessionUUID: string,
+    startTime: number,
+    endTime: number,
+    clientName: string,
+    clientIp: string,
+    clientMachineName: string,
+    clientOsName: string,
+    clientVersion: string,
+    imageFormat: string,
+    nrOfScreenshots: number
+}
+
 type MetaData = {
     screenProctoringMetadataURL?: string;
     screenProctoringMetadataWindowTitle?: string,
