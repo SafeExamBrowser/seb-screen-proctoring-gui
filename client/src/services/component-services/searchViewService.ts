@@ -30,6 +30,7 @@ export async function searchTimeline(sessionId: string, optionalParamters?: Opti
 }
 //==============================
 
+//todo: improve this function
 export function groupScreenshotsByMetadata(screenshotGroupList: ScreenshotGroupList[]): ScreenshotsGrouped[] | null{
 
     //todo: extract metadata from par

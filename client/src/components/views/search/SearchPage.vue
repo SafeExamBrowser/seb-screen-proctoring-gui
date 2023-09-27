@@ -53,13 +53,6 @@
                 </template>
 
                 <template v-slot:item.data-table-expand="{item, isExpanded, toggleExpand}">
-                    <!-- <v-icon 
-                        tabindex="0" 
-                        variant="text" 
-                        @click="searchScreenshots(item, isExpanded, toggleExpand)"
-                        :icon="isExpanded(item) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
-                    </v-icon> -->
-
                     <v-icon 
                         tabindex="0" 
                         variant="text" 
@@ -110,12 +103,8 @@
     const searchResultAvailable = ref<boolean>(false);
     const sessionSearchResults = ref<SearchSessions>();
 
-    // const screenshotSearchResults = ref<SearchScreenshots[]>([]);
-    // const screenshotSearchResult = ref<SearchScreenshots>();
-
     const timelineSearchResults = ref<SearchTimeline[]>([]);
     const timelineSearchResult = ref<SearchTimeline>();
-
 
     const errorAvailable = ref<boolean>();
 
@@ -201,35 +190,6 @@
 
         // console.log(sessionSearchResults.value)
     }
-
-
-    // async function searchScreenshots(item: any, isExpanded: Function, toggleExpand: Function){
-
-    //     if(removeTableItemFromRefs(item, isExpanded, toggleExpand)){
-    //         return;
-    //     }
-
-    //     const screenshotSearchResponse: SearchScreenshots | null = await searchViewService.searchScreenshots(
-    //         {
-    //             sessionUUID: item.raw.sessionUUID, 
-    //             screenProctoringMetadataURL: metadataSearchUrl,
-    //             screenProctoringMetadataWindowTitle: metadataSearchWindowTitle,
-    //             screenProctoringMetadataUserAction: metadataSearchAction,
-    //             pageSize: 500
-    //         }
-    //     );
-
-    //     if(screenshotSearchResponse == null){
-    //         return;
-    //     }
-
-
-    //     screenshotSearchResult.value = screenshotSearchResponse;
-    //     console.log(screenshotSearchResponse)
-
-    //     addTableItemToRefs(screenshotSearchResponse, toggleExpand, item);
-    // }
-
 
     async function searchTimeline(item: any, isExpanded: Function, toggleExpand: Function){
 
