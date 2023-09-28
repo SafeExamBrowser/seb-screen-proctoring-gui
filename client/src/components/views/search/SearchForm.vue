@@ -213,7 +213,10 @@
                 <!------------Buttons------------->
                 <v-row>
                     <v-col align="right">
-                        <v-btn rounded="sm" color="black" variant="outlined">
+                        <v-btn 
+                            rounded="sm" 
+                            color="black" 
+                            variant="outlined">
                             Cancel
                         </v-btn>
 

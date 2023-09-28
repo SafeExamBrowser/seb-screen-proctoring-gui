@@ -1,73 +1,71 @@
 <template>
 
     <v-data-table
-                show-expand
-                item-value="sessionUUID"
-                class="elevation-1"
-                :items-per-page="tableUtils.calcDefaultItemsPerPage(sessions)" 
-                :items-per-page-options="tableUtils.calcItemsPerPage(sessions)"
-                :headers="sessionTableHeaders"
-                :items="sessions">
+        show-expand
+        item-value="sessionUUID"
+        class="elevation-1"
+        :items-per-page="tableUtils.calcDefaultItemsPerPage(sessions)" 
+        :items-per-page-options="tableUtils.calcItemsPerPage(sessions)"
+        :headers="sessionTableHeaders"
+        :items="sessions">
 
-                <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
-                    <tr>
-                        <template v-for="(column, index) in columns">
-                        <td>
-                            <span 
-                                ref="sessionTableHeadersRef"
-                                tabindex="0" 
-                                class="mr-2 cursor-pointer" 
-                                role="button" 
-                                @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
-                                @click="() => toggleSort(column)">{{ column.title }}
-                            </span>
-                            <template v-if="isSorted(column)">
-                                <v-icon :icon="getSortIcon(column)"></v-icon>
-                            </template>
-                        </td>
-                        </template>
-                    </tr>
+        <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
+            <tr>
+                <template v-for="(column, index) in columns">
+                <td>
+                    <span 
+                        ref="sessionTableHeadersRef"
+                        tabindex="0"
+                        class="mr-2 cursor-pointer font-weight-bold" 
+                        role="button" 
+                        @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
+                        @click="() => toggleSort(column)">
+                        {{ column.title }}
+                    </span>
+                    <template v-if="isSorted(column)">
+                        <v-icon :icon="getSortIcon(column)"></v-icon>
+                    </template>
+                </td>
                 </template>
+            </tr>
+        </template>
 
-                <template v-slot:item.startTime="{item}">
-                    <td>
-                        <div>
-                            {{timeUtils.formatTimestampToFullDate(item.columns.startTime)}}
-                        </div>
-                    </td>
-                </template>
+        <template v-slot:item.startTime="{item}">
+            <td>
+                <div>
+                    {{timeUtils.formatTimestmapToTime(item.columns.startTime)}}
+                </div>
+            </td>
+        </template>
 
-                <template v-slot:item.proctoringViewLink="{item}">
-                    <v-btn @click="openProctoringView(item.raw.sessionUUID)" variant="text" icon="mdi-video"></v-btn>
-                </template>
+        <template v-slot:item.proctoringViewLink="{item}">
+            <v-btn @click="openProctoringView(item.raw.sessionUUID)" variant="text" icon="mdi-video"></v-btn>
+        </template>
 
-                <template v-slot:item.data-table-expand="{item, isExpanded, toggleExpand}">
-                    <v-icon 
-                        tabindex="0" 
-                        variant="text" 
-                        @click="searchTimeline(item, isExpanded, toggleExpand)"
-                        :icon="isExpanded(item) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
-                    </v-icon>
-                </template>
+        <template v-slot:item.data-table-expand="{item, isExpanded, toggleExpand}">
+            <v-icon 
+                tabindex="0" 
+                variant="text" 
+                @click="searchTimeline(item, isExpanded, toggleExpand)"
+                :icon="isExpanded(item) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
+            </v-icon>
+        </template>
 
-                <template v-slot:expanded-row="{ columns, item }">
-                    <tr>
-                        <td :colspan="columns.length">
-                            <!--@vue-ignore-->
-                            <SearchScreenshotsTable :timelineSearchResult="timelineSearchResults.find(i => i.sessionUUID == item.raw.sessionUUID)"></SearchScreenshotsTable>
-                        </td>
-                    </tr>
-                </template>
+        <template v-slot:expanded-row="{ columns, item }">
+            <tr>
+                <td :colspan="columns.length">
+                    <!--@vue-ignore-->
+                    <SearchScreenshotsTable :timelineSearchResult="timelineSearchResults.find(i => i.sessionUUID == item.raw.sessionUUID)"></SearchScreenshotsTable>
+                </td>
+            </tr>
+        </template>
 
-            </v-data-table>
-
-
-
+    </v-data-table>
 </template>
 
 
 <script setup lang="ts">
-    import { ref, onBeforeMount, watch, computed, reactive } from "vue";
+    import { ref } from "vue";
     import { VDataTable } from "vuetify/labs/VDataTable"
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/tableUtils"
@@ -104,12 +102,10 @@
         }
 
         const timelineSearchResponse: SearchTimeline | null = await searchViewService.searchTimeline(item.raw.sessionUUID);
-        console.log(timelineSearchResponse?.timelineGroupDataList[0].groupName)
 
         if(timelineSearchResponse == null){
             return;
         }
-
 
         timelineSearchResult.value = timelineSearchResponse;
         console.log(timelineSearchResponse)

@@ -38,10 +38,7 @@ type SearchTimeline = {
         {
             groupOrder: number,
             groupName: string,
-
-            timelineScreenshotDataList: [
-                ScreenshotGroupList
-            ]
+            timelineScreenshotDataList: ScreenshotGroup []
         }
     ]
 
@@ -49,12 +46,10 @@ type SearchTimeline = {
 
 type ScreenshotsGrouped = {
     groupName: string,
-    timelineScreenshotDataList: [
-        ScreenshotGroupList
-    ]
+    timelineScreenshotDataList: ScreenshotGroup []
 }
 
-type ScreenshotGroupList = {   
+type ScreenshotGroup = {   
     timestamp: number,
     metaData: MetaData
 }

@@ -10,19 +10,45 @@
             class="search-result-container rounded-lg"
             title="Search results">
 
-            <!-- <v-row>
+            <v-row>
+                <v-col align="left" class="text-h6">
+                    Search Results
+                </v-col>
+                <v-col align="right" class="mb-2">
+                    <v-btn 
+                        rounded="sm" 
+                        color="black" 
+                        variant="outlined" 
+                        icon="mdi-arrow-collapse-vertical"
+                        :disabled=closeAllPanelsDisabled
+                        @click="closeAllPanels()">
+                    </v-btn>
+                    <v-btn 
+                        rounded="sm" 
+                        color="primary" 
+                        variant="flat" 
+                        icon="mdi-arrow-expand-vertical"
+                        class="ml-2"
+                        :disabled=openeAllPanelsDisabled
+                        @click="openAllPanels()">
+                    </v-btn>
+                </v-col>
+            </v-row>
 
-            </v-row> -->
-
-
-            <v-expansion-panels variant="inset" multiple>
+            <v-expansion-panels v-model="sessionPanels" multiple>
                 <v-expansion-panel
                     v-for="session in sessionsGrouped?.content"
                     :key="session.day"
-                    :title="session.day">
+                    :value="'sessionPanel' + session.day">
+
+                    <v-expansion-panel-title class="font-weight-bold">
+                        {{ session.day }}
+                    </v-expansion-panel-title>
+                    
                     <v-expansion-panel-text>
                         <SearchSessionTable :sessions="session.sessions"></SearchSessionTable>
                     </v-expansion-panel-text>
+
                 </v-expansion-panel>
             </v-expansion-panels>
 
@@ -43,19 +69,21 @@
 
 
 <script setup lang="ts">
-    import { ref, onBeforeMount, watch, computed, reactive } from "vue";
+    import { ref, onBeforeMount, watch, computed, reactive, onMounted } from "vue";
     import { useAppBarStore, useLoadingStore } from "@/store/app";
     import * as searchViewService from "@/services/component-services/searchViewService";
-    import router from "@/router";
     import SearchForm from "./SearchForm.vue";
     import SearchSessionTable from "./SearchSessionTable.vue";
-
 
 
     //reactive variables
     const searchResultAvailable = ref<boolean>(false);
     const sessionSearchResults = ref<SearchSessions>();
     const sessionsGrouped = ref<SessionsGrouped>();
+
+    const sessionPanels = ref<string[]>([]);
+    const closeAllPanelsDisabled = ref<boolean>(false);
+    const openeAllPanelsDisabled = ref<boolean>(true);
 
     const errorAvailable = ref<boolean>();
 
@@ -80,7 +108,22 @@
         }
     });
 
+    watch(sessionPanels, () => {
+        if(sessionPanels.value.length == 0){
+            closeAllPanelsDisabled.value = true;
+            openeAllPanelsDisabled.value = false;
+            return;
+        }
 
+        if(sessionPanels.value.length == sessionsGrouped.value?.content.length){
+            closeAllPanelsDisabled.value = false;
+            openeAllPanelsDisabled.value = true;
+            return;
+        }
+
+        closeAllPanelsDisabled.value = false;
+        openeAllPanelsDisabled.value = false;
+    });
 
     async function searchSessions(
         groupName: string, 
@@ -101,9 +144,6 @@
         metadataSearchAction = metadataUserAction == "" ? null : metadataUserAction;
         loginNameSearch = loginName == "" ? null : loginName;
         machineNameSearch = machineName == "" ? null : machineName;
-
-        console.log("in search page loginNameSearch: " + loginNameSearch)
-        console.log("in search page machineNameSearch: " + machineNameSearch)
 
         const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(
             {   
@@ -127,10 +167,17 @@
 
         sessionSearchResults.value = sessionSearchResponse;
         sessionsGrouped.value = searchViewService.groupSessionsByDay(sessionSearchResults.value);
+        openAllPanels()
 
         searchResultAvailable.value = true;
+    }
 
+    function closeAllPanels(){
+        sessionPanels.value = [];
+    }
 
+    function openAllPanels(){
+        sessionPanels.value = sessionsGrouped.value?.content.map((item) => "sessionPanel" + item.day)!;
     }
 
 </script>

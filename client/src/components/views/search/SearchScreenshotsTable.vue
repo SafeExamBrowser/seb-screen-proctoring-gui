@@ -1,8 +1,12 @@
 <template>
+    <div class="text-h6 my-7">
+        Screenshots
+    </div>
+
     <v-data-table
         show-expand
         item-value="timelineScreenshotDataList[0].timestamp"
-        class="elevation-1"
+        class="elevation-5 mb-7"
         theme="tableTheme"
         :expanded="expandedItems"
         :items-per-page="tableUtils.calcDefaultItemsPerPage(timelineSearchResult?.timelineGroupDataList)" 
@@ -18,7 +22,7 @@
                     <span 
                         ref="screenshotTableHeadersRef"
                         tabindex="0" 
-                        class="mr-2 cursor-pointer" 
+                        class="mr-2 cursor-pointer font-weight-bold" 
                         role="button" 
                         @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
                         @click="() => toggleSort(column)">
@@ -57,6 +61,7 @@
         <!------------content------------>
         <template v-slot:item.data-table-expand="{item, isExpanded, toggleExpand}">
             <v-icon 
+                v-if="item.raw.timelineScreenshotDataList.length > 1"
                 tabindex="0" 
                 variant="text" 
                 @click="toggleExpand(item)"
@@ -67,32 +72,7 @@
         <template v-slot:expanded-row="{ columns, item, index }">
             <tr>
                 <td :colspan="columns.length">
-
-
-                    <!-- <v-row v-for="screenshot in searchViewService.groupScreenshotsByMetadata(item.raw.timelineScreenshotDataList)"> -->
-                    <v-row v-for="screenshot in searchViewService.groupScreenshotsByMetadata(item.raw.timelineScreenshotDataList)?.slice(1, searchViewService.groupScreenshotsByMetadata(item.raw.timelineScreenshotDataList)?.length)">
-
-                        <v-col>
-                            {{ timeUtils.formatTimestmapToTime(screenshot.timelineScreenshotDataList[0].timestamp)}}
-                        </v-col>
-                        <v-col>
-                        </v-col>
-                        <v-col>
-                        </v-col>
-                        <v-col>
-                            {{ screenshot.groupName }} ({{ screenshot.timelineScreenshotDataList.length }})
-                        </v-col>
-                        <v-col>
-                            <v-btn 
-                                @click="openProctoringView(timelineSearchResult.sessionUUID, screenshot.timelineScreenshotDataList[0].timestamp.toString())" 
-                                variant="text" 
-                                icon="mdi-video"
-                                density="compact"
-                            >
-                            </v-btn>
-                        </v-col>
-                    </v-row>
-
+                    <SearchScreenshotsList :session-uuid="timelineSearchResult.sessionUUID" :timeline-screenshot-data-list="item.raw.timelineScreenshotDataList" ></SearchScreenshotsList>
                 </td>
             </tr>
         </template>
@@ -102,12 +82,12 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, watch, onBeforeMount, computed } from "vue";
+    import { ref, watch, onBeforeMount } from "vue";
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/tableUtils";
-    import { VDataTable } from "vuetify/labs/VDataTable"
+    import { VDataTable } from "vuetify/labs/VDataTable";
+    import SearchScreenshotsList from "./SearchScreenshotsList.vue";
     import router from "@/router";
-    import * as searchViewService from "@/services/component-services/searchViewService";
 
 
     const props = defineProps<{
@@ -116,27 +96,18 @@
 
     const timelineSearchResult = ref<SearchTimeline>();
 
-    console.log(props.timelineSearchResult)
-
     //table
     const expandedItems = ref<string[]>([]);
     const screenshotTableHeadersRef = ref<any[]>();
     const screenshotTableHeaders = ref([
-        {title: "Start-Time", key: "timestamp", value: "timelineScreenshotDataList[0].timestamp"},
+        {title: "Capture-Time", key: "timestamp", value: "timelineScreenshotDataList[0].timestamp"},
         {title: "Application / Website", key: "groupName"},
         {title: "Activity Details", key: "activityDetails", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataUserAction"},
-        {title: "", key: "proctoringViewLink"}
+        {title: "Video", key: "proctoringViewLink"}
     ]);
 
     onBeforeMount(() => {
         timelineSearchResult.value = props.timelineSearchResult;
-
-
-        // console.log(searchViewService.groupScreenshotsByMetadata(timelineSearchResult.value.timelineGroupDataList[0].timelineScreenshotDataList))
-
-        // for(var i = 0; i < timelineSearchResult.value.timelineGroupDataList.length; i++){
-        //     console.log(searchViewService.groupScreenshotsByMetadata(timelineSearchResult.value.timelineGroupDataList[i].timelineScreenshotDataList))
-        // }
     });
 
     watch(timelineSearchResult, (newList) => {
@@ -147,30 +118,6 @@
         expandedItems.value = newList?.timelineGroupDataList.map(item => item.timelineScreenshotDataList[0].timestamp.toString());
     });
 
-
-    // const screenshotTableHeaders = ref([
-    //     {title: "Time", key: "timestamp"},
-    //     {title: "URL", key: "metaData.screenProctoringMetadataURL"},
-    //     {title: "Window Title", key: "metaData.screenProctoringMetadataWindowTitle"},
-    //     {title: "User-Action", key: "metaData.screenProctoringMetadataUserAction"},
-    //     {title: "Video", key: "proctoringViewLink"},
-    // ]);
-
-    // const screenshotTableTabsRefs = reactive<{index: string, tabs: any[]}[]>([]);
-    // const temp = ref();
-    // const screenshotTableTabsItems: string[] = [
-    //     "Timeline",
-    //     "Summary"
-    // ];
-
-
-
-
-    function openProctoringView(sessionId: string, timestamp?: string){
-        const url: string = "/recording/" + sessionId + "?searchTimestamp=" + timestamp;
-        //@ts-ignore
-        window.open("", "_blank").location.href = router.resolve(url).href;
-    }
 
     function handleTabKeyEvent(event: any, action: string, index: number, key: number){
         if (event.key == 'Enter' || event.key == ' ') {
@@ -186,5 +133,23 @@
         }
     }
 
+    function openProctoringView(sessionId: string, timestamp?: string){
+        const url: string = "/recording/" + sessionId + "?searchTimestamp=" + timestamp;
+        //@ts-ignore
+        window.open("", "_blank").location.href = router.resolve(url).href;
+    }
+
 
 </script>
+
+<style scoped>
+    /* ::v-deep v-data-table__expanded {
+        border-bottom: none !important;
+    } */
+
+    .v-table .v-table__wrapper > table > tbody > tr:not(:last-child) > td, .v-table .v-table__wrapper > table > tbody > tr:not(:last-child) > th {
+        /* border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity)); */
+        border-bottom: none !important;
+
+    }
+</style>

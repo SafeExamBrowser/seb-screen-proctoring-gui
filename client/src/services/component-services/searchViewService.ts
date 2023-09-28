@@ -79,7 +79,7 @@ export function groupSessionsByDay(sessionSearchResults: SearchSessions): Sessio
 
 
 //todo: improve this function
-export function groupScreenshotsByMetadata(screenshotGroupList: ScreenshotGroupList[]): ScreenshotsGrouped[] | null{
+export function groupScreenshotsByMetadata(screenshotGroupList: ScreenshotGroup[]): ScreenshotsGrouped[] | null{
 
     //todo: extract metadata from par
     // const metadataGroupPar: string = "screenProctoringMetadataUserAction"
