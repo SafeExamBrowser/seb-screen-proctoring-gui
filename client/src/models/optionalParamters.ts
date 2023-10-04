@@ -14,6 +14,7 @@ type OptionalParGroupByUuid = {
 }
 
 type OptionalParSearchSessions = {
+    examName?: string,
     groupUUID?: string,
     groupName?: string,
     sessionUUID?: string,

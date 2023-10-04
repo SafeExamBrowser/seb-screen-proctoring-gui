@@ -13,8 +13,6 @@
             </div>
         </v-sheet>
 
-        <v-divider></v-divider>
-
         <v-list>
             <v-list-item v-for="[title, link] in links" :key="title" :to="link" link>
                 <v-list-item-title>{{ title }}</v-list-item-title>

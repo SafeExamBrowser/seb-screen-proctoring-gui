@@ -250,7 +250,7 @@
     //emits (parent functions)
     const emit = defineEmits<{
         searchSessions: [
-            //todo: add exam name
+            examName: string,
             groupName: string, 
             loginName: string,
             machineName: string,
@@ -301,6 +301,7 @@
 
         emit(
         "searchSessions", 
+            examNameField.value,
             groupNameField.value, 
             loginNameField.value, 
             machineNameField.value, 

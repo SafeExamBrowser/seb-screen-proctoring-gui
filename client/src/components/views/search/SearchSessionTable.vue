@@ -39,7 +39,7 @@
         </template>
 
         <template v-slot:item.proctoringViewLink="{item}">
-            <v-btn @click="openProctoringView(item.raw.sessionUUID)" variant="text" icon="mdi-video"></v-btn>
+            <v-btn @click="searchViewService.openProctoringView(item.raw.sessionUUID)" variant="text" icon="mdi-video"></v-btn>
         </template>
 
         <template v-slot:item.data-table-expand="{item, isExpanded, toggleExpand}">
@@ -86,10 +86,11 @@
     //table
     const sessionTableHeadersRef = ref<any[]>();
     const sessionTableHeaders = ref([
-        {title: "Start-Time", key: "startTime"},
-        {title: "Login Name", key: "clientName"},
-        {title: "Machine Name", key: "clientMachineName"},
-        {title: "Group Name", key: "groupName"},
+        {title: "Start-Time", key: "startTime", width: "10%"},
+        {title: "Login Name", key: "clientName", width: "30%"},
+        {title: "Machine Name", key: "clientMachineName", width: "20%"},
+        {title: "Group Name", key: "groupName", width: "20%"},
+        {title: "Exam Name", key: "exam.name", width: "20%"},
         {title: "Slides", key: "nrOfScreenshots"},
         {title: "Video", key: "proctoringViewLink"},
     ]);                 
@@ -111,13 +112,6 @@
         console.log(timelineSearchResponse)
 
         addTableItemToRefs(timelineSearchResponse, toggleExpand, item);
-    }
-
-
-    function openProctoringView(sessionId: string){
-        const url: string = "/recording/" + sessionId;
-        //@ts-ignore
-        window.open("", "_blank").location.href = router.resolve(url).href;
     }
 
     function handleTabKeyEvent(event: any, action: string, index: number, key: number){

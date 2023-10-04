@@ -74,6 +74,7 @@
     import * as searchViewService from "@/services/component-services/searchViewService";
     import SearchForm from "./SearchForm.vue";
     import SearchSessionTable from "./SearchSessionTable.vue";
+import { stringLiteral } from "@babel/types";
 
 
     //reactive variables
@@ -126,6 +127,7 @@
     });
 
     async function searchSessions(
+        examName: string,
         groupName: string, 
         loginName: string, 
         machineName: string, 
@@ -147,7 +149,7 @@
 
         const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(
             {   
-                //todo: add exam name
+                examName: examName,
                 groupName: groupName,
                 clientName: loginNameSearch,
                 clientMachineName: machineNameSearch,

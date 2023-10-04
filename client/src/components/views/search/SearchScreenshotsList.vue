@@ -1,42 +1,37 @@
 <template>
-    <div class="mb-10">
-        <v-row v-for="screenshot in screenshotsGrouped">
-            <v-col>
+    <table class="table">
+        <tr v-for="screenshot in screenshotsGrouped">
+
+            <td class="col-time">
                 {{ timeUtils.formatTimestmapToTime(screenshot.timelineScreenshotDataList[0].timestamp)}}
-            </v-col>
-            <v-col>
+            </td>
 
-            </v-col>
-            <v-col>
+            <td class="col-empty">
+            </td>
 
-            </v-col>
-            <v-col>
-
-            </v-col>
-
-            <v-col>
+            <td class="col-group-name">
                 {{ screenshot.groupName }} ({{ screenshot.timelineScreenshotDataList.length }})
-            </v-col>
+            </td>
 
-            <v-col>
+            <td class="col-video-icon">
                 <v-btn 
-                    @click="openProctoringView(sessionUuid, screenshot.timelineScreenshotDataList[0].timestamp.toString())" 
+                    @click="searchViewService.openProctoringView(sessionUuid, screenshot.timelineScreenshotDataList[0].timestamp.toString())" 
                     variant="text" 
-                    icon="mdi-video"
-                    density="compact"
-                >
+                    icon="mdi-video">
                 </v-btn>
-            </v-col>
-        </v-row>
-    </div>
+            </td>
 
+            <td class="col-empty2">
+            </td>
+
+        </tr>
+    </table>
 </template>
 
 <script setup lang="ts">
     import { ref, onBeforeMount } from "vue";
     import * as searchViewService from "@/services/component-services/searchViewService";
     import * as timeUtils from "@/utils/timeUtils";
-
 
     const props = defineProps<{
         sessionUuid: string,
@@ -50,14 +45,32 @@
         screenshotsGrouped.value = searchViewService.groupScreenshotsByMetadata(props.timelineScreenshotDataList)!;
         screenshotsGrouped.value.shift();
     });
+</script>
 
+<style scoped>
 
-    function openProctoringView(sessionId: string, timestamp?: string){
-        const url: string = "/recording/" + sessionId + "?searchTimestamp=" + timestamp;
-        //@ts-ignore
-        window.open("", "_blank").location.href = router.resolve(url).href;
+    .table{
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 20px;
     }
 
+    .col-time{
+        width: 150px;
+    }
 
+    .col-empty{
+        width: 300px;
+    }
 
-</script>
+    .col-group-name{
+        width: 800px;
+    }
+
+    .col-video-icon{
+    }
+
+    .col-empty2{
+    }
+
+</style>

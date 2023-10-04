@@ -30,7 +30,8 @@ type Session = {
     clientOsName: string,
     clientVersion: string,
     imageFormat: string,
-    nrOfScreenshots: number
+    nrOfScreenshots: number,
+    exam: ExamView;
 }
 
 type MetaData = {

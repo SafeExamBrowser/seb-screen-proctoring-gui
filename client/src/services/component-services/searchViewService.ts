@@ -1,5 +1,6 @@
 import * as searchService from "@/services/api-services/searchService";
 import * as timeUtils from "@/utils/timeUtils";
+import router from "@/router";
 
 
 //=============api==================
@@ -30,6 +31,22 @@ export async function searchTimeline(sessionId: string, optionalParamters?: Opti
     }
 }
 //==============================
+
+//=============window==================
+export function openProctoringView(sessionId: string, timestamp?: string){
+    var url: string = "/recording/" + sessionId;
+    
+    if(timestamp){
+        url = "/recording/" + sessionId + "?searchTimestamp=" + timestamp;
+    }
+
+    //@ts-ignore
+    window.open("", "_blank").location.href = router.resolve(url).href;
+}
+//==============================
+
+
+
 
 //=============grouping==================
 export function groupSessionsByDay(sessionSearchResults: SearchSessions): SessionsGrouped{

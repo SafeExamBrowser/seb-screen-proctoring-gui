@@ -18,20 +18,20 @@
         <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
             <tr>
                 <template v-for="(column, index) in columns">
-                <td>
-                    <span 
-                        ref="screenshotTableHeadersRef"
-                        tabindex="0" 
-                        class="mr-2 cursor-pointer font-weight-bold" 
-                        role="button" 
-                        @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
-                        @click="() => toggleSort(column)">
-                        {{ column.title }}
-                    </span>
-                    <template v-if="isSorted(column)">
-                        <v-icon :icon="getSortIcon(column)"></v-icon>
-                    </template>
-                </td>
+                    <td>
+                        <span 
+                            ref="screenshotTableHeadersRef"
+                            tabindex="0" 
+                            class="mr-2 cursor-pointer font-weight-bold" 
+                            role="button" 
+                            @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
+                            @click="() => toggleSort(column)">
+                            {{ column.title }}
+                        </span>
+                        <template v-if="isSorted(column)">
+                            <v-icon :icon="getSortIcon(column)"></v-icon>
+                        </template>
+                    </td>
                 </template>
             </tr>
         </template>
@@ -53,7 +53,11 @@
         </template>
 
         <template v-slot:item.proctoringViewLink="{item}">
-            <v-btn @click="openProctoringView(timelineSearchResult.sessionUUID, item.columns.timestamp)" variant="text" icon="mdi-video"></v-btn>
+            <v-btn 
+                @click="searchViewService.openProctoringView(timelineSearchResult.sessionUUID, item.columns.timestamp)" 
+                variant="text" 
+                icon="mdi-video">
+            </v-btn>
         </template>
         <!-------------------------------->
 
@@ -87,7 +91,7 @@
     import * as tableUtils from "@/utils/tableUtils";
     import { VDataTable } from "vuetify/labs/VDataTable";
     import SearchScreenshotsList from "./SearchScreenshotsList.vue";
-    import router from "@/router";
+    import * as searchViewService from "@/services/component-services/searchViewService";
 
 
     const props = defineProps<{
@@ -100,10 +104,11 @@
     const expandedItems = ref<string[]>([]);
     const screenshotTableHeadersRef = ref<any[]>();
     const screenshotTableHeaders = ref([
-        {title: "Capture-Time", key: "timestamp", value: "timelineScreenshotDataList[0].timestamp"},
-        {title: "Application / Website", key: "groupName"},
-        {title: "Activity Details", key: "activityDetails", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataUserAction"},
-        {title: "Video", key: "proctoringViewLink"}
+        {title: "Capture-Time", key: "timestamp", value: "timelineScreenshotDataList[0].timestamp", width: "150px"},
+        {title: "Application / Website", key: "groupName", width: "300px"},
+        {title: "Activity Details", key: "activityDetails", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataUserAction", width: "800px"},
+        {title: "Video", key: "proctoringViewLink"},
+        {title: "", key: "data-table-expand"}
     ]);
 
     onBeforeMount(() => {
@@ -132,24 +137,10 @@
             screenshotTableHeadersRef.value[key].click();
         }
     }
-
-    function openProctoringView(sessionId: string, timestamp?: string){
-        const url: string = "/recording/" + sessionId + "?searchTimestamp=" + timestamp;
-        //@ts-ignore
-        window.open("", "_blank").location.href = router.resolve(url).href;
-    }
-
-
 </script>
 
 <style scoped>
-    /* ::v-deep v-data-table__expanded {
+    /* .v-table .v-table__wrapper > table > tbody > tr:not(:last-child) > td, .v-table .v-table__wrapper > table > tbody > tr:not(:last-child) > th {
         border-bottom: none !important;
     } */
-
-    .v-table .v-table__wrapper > table > tbody > tr:not(:last-child) > td, .v-table .v-table__wrapper > table > tbody > tr:not(:last-child) > th {
-        /* border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity)); */
-        border-bottom: none !important;
-
-    }
 </style>
