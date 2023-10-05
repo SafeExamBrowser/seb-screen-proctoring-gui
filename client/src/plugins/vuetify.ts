@@ -17,7 +17,9 @@ export default createVuetify({
       tableTheme: {
         dark: false,
         colors: {
-          surface: "#F5F5F5",
+          surface: "#e2ecf7",
+          // surface: "#215CAF",
+
         },
       }
     },

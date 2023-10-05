@@ -5,7 +5,7 @@ export async function getGroups(optionalParamters?: OptionalParGroup): Promise<G
 
   try {
     const url: string = "/group";
-    const {data, status}: AxiosResponse<GroupResponse> = await apiService.api.get(url, {headers: getHeaders(), params: {optionalParamters}});
+    const {data, status}: AxiosResponse = await apiService.api.get(url, {headers: getHeaders(), params: {optionalParamters}});
 
     if (status === 200) {
       return data.content;
@@ -20,7 +20,7 @@ export async function getGroupByUuid(uuid: string, optionalParamters?: OptionalP
 
   try {
     const url: string = "/group/" + uuid;
-    const {data, status}: AxiosResponse<Group> = await apiService.api.get(url, {headers: getHeaders(), params: {optionalParamters}});
+    const {data, status}: AxiosResponse = await apiService.api.get(url, {headers: getHeaders(), params: {optionalParamters}});
 
     if (status === 200) {
       return data;

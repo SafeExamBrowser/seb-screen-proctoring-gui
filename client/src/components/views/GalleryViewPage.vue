@@ -3,7 +3,7 @@
         <v-window-item v-for="(w , index) in windowsAmount" :key="index">
 
             <template v-if="!noScreenshotData">
-                <v-row  v-for="i in appBarStore.galleryGridSize.value" :key="i" align-strech no-gutters>
+                <v-row v-for="i in appBarStore.galleryGridSize.value" :key="i" align-strech no-gutters>
                     <v-col v-for="n in appBarStore.galleryGridSize.value" :key="n">
 
                         <v-hover v-slot="{isHovering, props}" >

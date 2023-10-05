@@ -213,7 +213,10 @@
                 <!------------Buttons------------->
                 <v-row>
                     <v-col align="right">
-                        <v-btn rounded="sm" color="black" variant="outlined">
+                        <v-btn 
+                            rounded="sm" 
+                            color="black" 
+                            variant="outlined">
                             Cancel
                         </v-btn>
 
@@ -247,7 +250,7 @@
     //emits (parent functions)
     const emit = defineEmits<{
         searchSessions: [
-            //todo: add exam name
+            examName: string,
             groupName: string, 
             loginName: string,
             machineName: string,
@@ -260,8 +263,8 @@
     }>();
 
     //form fields
-    const groupNameField = ref<string>("new-test-group");
-    // const groupNameField = ref<string>("");
+    // const groupNameField = ref<string>("new-test-group");
+    const groupNameField = ref<string>("");
     const examNameField = ref<string>("");
 
     const loginNameField = ref<string>("");
@@ -298,6 +301,7 @@
 
         emit(
         "searchSessions", 
+            examNameField.value,
             groupNameField.value, 
             loginNameField.value, 
             machineNameField.value, 

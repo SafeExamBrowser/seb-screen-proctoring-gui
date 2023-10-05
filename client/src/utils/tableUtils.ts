@@ -1,5 +1,5 @@
 export function calcDefaultItemsPerPage(itemList: any): number {
-    if (itemList == null || itemList == null || itemList.length == 0) {
+    if (itemList == null || itemList.length == 0) {
         return 0;
     }
 
@@ -11,7 +11,7 @@ export function calcDefaultItemsPerPage(itemList: any): number {
 }
 
 export function calcItemsPerPage(itemList: any): { value: number, title: string }[] {
-    if (itemList == null || itemList == null || itemList.length == 0) {
+    if (itemList == null || itemList.length == 0) {
         return [
             { value: 0, title: "0" }
         ];

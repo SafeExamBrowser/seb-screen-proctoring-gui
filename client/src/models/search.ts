@@ -3,23 +3,7 @@ type SearchSessions = {
     pageNumber: number,
     pageSize: number,
     sort: string,
-    content: [
-        {
-            groupUUID: string,
-            groupName: string,
-            groupCreationTime: number,
-            sessionUUID: string,
-            startTime: number,
-            endTime: number,
-            clientName: string,
-            clientIp: string,
-            clientMachineName: string,
-            clientOsName: string,
-            clientVersion: string,
-            imageFormat: string,
-            nrOfScreenshots: number
-        }
-    ]
+    content: Session[]
 }
 
 type SearchScreenshots = {
@@ -46,5 +30,39 @@ type SearchScreenshots = {
             metaData: MetaData
         }
     ]
+}
 
+type SearchTimeline = {
+    sessionUUID: string,
+    timelineGroupDataList: [
+        {
+            groupOrder: number,
+            groupName: string,
+            timelineScreenshotDataList: ScreenshotGroup []
+        }
+    ]
+
+}
+
+type ScreenshotsGrouped = {
+    groupName: string,
+    timelineScreenshotDataList: ScreenshotGroup []
+}
+
+type ScreenshotGroup = {   
+    timestamp: number,
+    metaData: MetaData
+}
+
+type SessionsGrouped = {
+    numberOfPages: number,
+    pageNumber: number,
+    pageSize: number,
+    sort: string,
+    content: [
+        {
+            day: string,
+            sessions: Session[]
+        }
+    ]
 }

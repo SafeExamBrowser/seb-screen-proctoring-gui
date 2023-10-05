@@ -14,8 +14,9 @@ type OptionalParGroupByUuid = {
 }
 
 type OptionalParSearchSessions = {
+    examName?: string | null,
     groupUUID?: string,
-    groupName?: string,
+    groupName?: string | null,
     sessionUUID?: string,
     fromTime?: string,
     toTime?: string,
@@ -47,4 +48,10 @@ type OptionalParSearchScreenshots = {
     pageNumber?: number,
     pageSize?: number,
     sort?: string
+}
+
+type OptionalParSearchTimeline = {
+    screenProctoringMetadataURL?: string | null,
+    screenProctoringMetadataWindowTitle?: string | null,
+    screenProctoringMetadataUserAction?: string | null,
 }

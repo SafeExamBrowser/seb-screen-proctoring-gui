@@ -1,35 +1,20 @@
-import axios from "axios";
-import {LOG} from '../logging/logger';
-import * as ENV from "../config/envConfig";
+import * as apiService from "../services/api.service";
 
-const proctorControllerUrl: string = "/proctoring";
+const searchUrl: string = "/proctoring/search";
 
 export async function searchSessions(token: string, options?: {}): Promise<object>{
     try{
         //todo: add env desc to gihub
-        const serverAddress: string = ENV.PROCTOR_SERVER_URL + ENV.PROCTOR_SERVER_PORT;
-        const url: string =  serverAddress + ENV.PROCTOR_DEFAULT_URL + proctorControllerUrl + "/search/sessions";
+        const url: string = searchUrl + "/sessions";
+        const {data, status} = await apiService.api.get(url, {headers: apiService.getHeaders(token), params: options});
 
-        const headers = {
-            "accept": "application/json",
-            "Authorization": token,
-            "Content-Type": "application/x-www-form-urlencoded"
-        };
-
-        const {data, status} = await axios.get(url, {headers: headers, params: options});
+        console.log(url)
+        console.log(options)
 
         return data;
 
     }catch(error){
-        LOG.error("====================")
-        LOG.error("error message: " + error.message)
-        LOG.error("====================")
-
-        if(!error.response){
-            throw Error("server error");
-        }
-
-        throw Error(error.response.status);
+        apiService.handleGenericApiError(error);
     }
 }
 
@@ -37,28 +22,26 @@ export async function searchSessions(token: string, options?: {}): Promise<objec
 export async function searchScreenshots(token: string, options?: {}): Promise<object>{
     try{
         //todo: add env desc to gihub
-        const serverAddress: string = ENV.PROCTOR_SERVER_URL + ENV.PROCTOR_SERVER_PORT;
-        const url: string =  serverAddress + ENV.PROCTOR_DEFAULT_URL + proctorControllerUrl + "/search/screenshots";
-
-        const headers = {
-            "accept": "application/json",
-            "Authorization": token,
-            "Content-Type": "application/x-www-form-urlencoded"
-        };
-
-        const {data, status} = await axios.get(url, {headers: headers, params: options});
+        const url: string = searchUrl + "/screenshots";
+        const {data, status} = await apiService.api.get(url, {headers: apiService.getHeaders(token), params: options});
 
         return data;
 
     }catch(error){
-        LOG.error("====================")
-        LOG.error("error message: " + error.message)
-        LOG.error("====================")
+        apiService.handleGenericApiError(error);
+    }
+}
 
-        if(!error.response){
-            throw Error("server error");
-        }
+export async function searchTimeline(token: string, uuid: string, options?: {}): Promise<object>{
+    try{
+        //todo: add env desc to gihub
+        console.log("uuid: " + uuid)
+        const url: string =  searchUrl + "/timeline/" + uuid;
+        const {data, status} = await apiService.api.get(url, {headers: apiService.getHeaders(token), params: options});
 
-        throw Error(error.response.status);
+        return data;
+
+    }catch(error){
+        apiService.handleGenericApiError(error);
     }
 }

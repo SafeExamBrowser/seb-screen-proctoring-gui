@@ -20,7 +20,9 @@
                                 class="mr-2 cursor-pointer" 
                                 role="button" 
                                 @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
-                                @click="() => toggleSort(column)">{{ column.title }}
+                                @click="() => toggleSort(column)"
+                            >
+                                {{ column.title }}
                             </span>
                             <template v-if="isSorted(column)">
                                 <v-icon :icon="getSortIcon(column)"></v-icon>

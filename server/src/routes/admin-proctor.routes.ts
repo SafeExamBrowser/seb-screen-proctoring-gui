@@ -16,6 +16,6 @@ router.get("/session/:sessionId", adminProctorSessionController.getSessionBySess
 router.get("/session/:sessionId/:timestamp", adminProctorSessionController.getSessionByTimestamp);
 router.get("/search/sessions", adminProctorSearchController.searchSessions);
 router.get("/search/screenshots", adminProctorSearchController.searchScreenshots);
-
+router.get("/search/timeline/:sessionId", adminProctorSearchController.searchTimeline);
 
 export default router;

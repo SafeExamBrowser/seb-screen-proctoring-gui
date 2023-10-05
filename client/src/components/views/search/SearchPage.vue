@@ -10,68 +10,49 @@
             class="search-result-container rounded-lg"
             title="Search results">
 
-            <!------------session table------------->
-            <v-data-table
-                item-value="sessionUUID"
-                show-expand
-                class="elevation-1"
-                :items-per-page="tableUtils.calcDefaultItemsPerPage(sessionSearchResults?.content)" 
-                :items-per-page-options="tableUtils.calcItemsPerPage(sessionSearchResults?.content)"
-                :headers="sessionTableHeaders"
-                :items="sessionSearchResults?.content">
+            <v-row>
+                <v-col align="left" class="text-h6">
+                    Search Results
+                </v-col>
+                <v-col align="right" class="mb-2">
+                    <v-btn 
+                        rounded="sm" 
+                        color="black" 
+                        variant="outlined" 
+                        icon="mdi-arrow-collapse-vertical"
+                        :disabled=closeAllPanelsDisabled
+                        @click="closeAllPanels()">
+                    </v-btn>
+                    <v-btn 
+                        rounded="sm" 
+                        color="primary" 
+                        variant="flat" 
+                        icon="mdi-arrow-expand-vertical"
+                        class="ml-2"
+                        :disabled=openeAllPanelsDisabled
+                        @click="openAllPanels()">
+                    </v-btn>
+                </v-col>
+            </v-row>
 
-                <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
-                    <tr>
-                        <template v-for="(column, index) in columns">
-                        <td>
-                            <span 
-                                ref="sessionTableHeadersRef"
-                                tabindex="0" 
-                                class="mr-2 cursor-pointer" 
-                                role="button" 
-                                @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
-                                @click="() => toggleSort(column)">{{ column.title }}
-                            </span>
-                            <template v-if="isSorted(column)">
-                                <v-icon :icon="getSortIcon(column)"></v-icon>
-                            </template>
-                        </td>
-                        </template>
-                    </tr>
-                </template>
+            <v-expansion-panels v-model="sessionPanels" multiple>
+                <v-expansion-panel
+                    v-for="session in sessionsGrouped?.content"
+                    :key="session.day"
+                    :value="'sessionPanel' + session.day">
 
-                <template v-slot:item.startTime="{item}">
-                    <td>
-                        <div>
-                            {{timeUtils.formatTimestampToFullDate(item.columns.startTime)}}
-                        </div>
-                    </td>
-                </template>
+                    <v-expansion-panel-title class="font-weight-bold">
+                        {{ session.day }}
+                    </v-expansion-panel-title>
+                    
+                    <v-expansion-panel-text>
+                        <SearchSessionTable :sessions="session.sessions"></SearchSessionTable>
+                    </v-expansion-panel-text>
 
-                <template v-slot:item.proctoringViewLink="{item}">
-                    <v-btn @click="openProctoringView(item.raw.sessionUUID)" variant="text" icon="mdi-video"></v-btn>
-                </template>
+                </v-expansion-panel>
+            </v-expansion-panels>
 
-                <template v-slot:item.data-table-expand="{item, isExpanded, toggleExpand}">
-                    <v-icon 
-                        tabindex="0" 
-                        variant="text" 
-                        @click="searchScreenshots(item, isExpanded, toggleExpand)"
-                        :icon="isExpanded(item) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
-                    </v-icon>
-                </template>
 
-                <template v-slot:expanded-row="{ columns, item }">
-                    <tr>
-                        <td :colspan="columns.length">
-                              <!-- @vue-ignore -->
-                            <SearchScreenshotsTable :screenshotSearchResult="screenshotSearchResults.find(i => i.content[0].sessionUUID == item.raw.sessionUUID)"></SearchScreenshotsTable>
-                        </td>
-                    </tr>
-                </template>
-
-            </v-data-table>
-            <!----------------------------------->
         </v-sheet>
     </div>
 
@@ -88,43 +69,35 @@
 
 
 <script setup lang="ts">
-    import { ref, onBeforeMount, watch, computed, reactive } from "vue";
+    import { ref, onBeforeMount, watch, computed, reactive, onMounted } from "vue";
     import { useAppBarStore, useLoadingStore } from "@/store/app";
     import * as searchViewService from "@/services/component-services/searchViewService";
-    import router from "@/router";
-    import { VDataTable } from "vuetify/labs/VDataTable"
-    import * as timeUtils from "@/utils/timeUtils";
-    import * as tableUtils from "@/utils/tableUtils";
     import SearchForm from "./SearchForm.vue";
-    import SearchScreenshotsTable from "./SearchScreenshotsTable.vue"
+    import SearchSessionTable from "./SearchSessionTable.vue";
+import { stringLiteral } from "@babel/types";
 
 
     //reactive variables
     const searchResultAvailable = ref<boolean>(false);
     const sessionSearchResults = ref<SearchSessions>();
-    const screenshotSearchResults = ref<SearchScreenshots[]>([]);
-    const screenshotSearchResult = ref<SearchScreenshots>();
+    const sessionsGrouped = ref<SessionsGrouped>();
+
+    const sessionPanels = ref<string[]>([]);
+    const closeAllPanelsDisabled = ref<boolean>(false);
+    const openeAllPanelsDisabled = ref<boolean>(true);
+
     const errorAvailable = ref<boolean>();
 
     //remaining
     const appBarStore = useAppBarStore();
 
+    let examNameSearch: string | null;
+    let groupNameSearch: string | null;
     let metadataSearchUrl: string | null;
     let metadataSearchWindowTitle: string | null;
     let metadataSearchAction: string | null;
     let loginNameSearch: string | null;
     let machineNameSearch: string | null;
-
-    //table
-    const sessionTableHeadersRef = ref<any[]>();
-    const sessionTableHeaders = ref([
-        {title: "Start-Time", key: "startTime"},
-        {title: "Login Name", key: "clientName"},
-        {title: "Machine Name", key: "clientMachineName"},
-        {title: "Group Name", key: "groupName"},
-        {title: "Slides", key: "nrOfScreenshots"},
-        {title: "Video", key: "proctoringViewLink"},
-    ]);
 
     //store
     const loadingStore = useLoadingStore();
@@ -138,9 +111,25 @@
         }
     });
 
+    watch(sessionPanels, () => {
+        if(sessionPanels.value.length == 0){
+            closeAllPanelsDisabled.value = true;
+            openeAllPanelsDisabled.value = false;
+            return;
+        }
 
+        if(sessionPanels.value.length == sessionsGrouped.value?.content.length){
+            closeAllPanelsDisabled.value = false;
+            openeAllPanelsDisabled.value = true;
+            return;
+        }
+
+        closeAllPanelsDisabled.value = false;
+        openeAllPanelsDisabled.value = false;
+    });
 
     async function searchSessions(
+        examName: string,
         groupName: string, 
         loginName: string, 
         machineName: string, 
@@ -154,19 +143,19 @@
         //todo: fold all rows on new search
         errorAvailable.value = false;
 
+        examNameSearch = examName == "" ? null : examName;
+        groupNameSearch = groupName == "" ? null : groupName;
+        metadataSearchUrl = metadataUrl == "" ? null : metadataUrl;
         metadataSearchUrl = metadataUrl == "" ? null : metadataUrl;
         metadataSearchWindowTitle = metadataWindowTitle == "" ? null : metadataWindowTitle;
         metadataSearchAction = metadataUserAction == "" ? null : metadataUserAction;
         loginNameSearch = loginName == "" ? null : loginName;
         machineNameSearch = machineName == "" ? null : machineName;
 
-        console.log("in search page loginNameSearch: " + loginNameSearch)
-        console.log("in search page machineNameSearch: " + machineNameSearch)
-
         const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(
             {   
-                //todo: add exam name
-                groupName: groupName,
+                examName: examNameSearch,
+                groupName: groupNameSearch,
                 clientName: loginNameSearch,
                 clientMachineName: machineNameSearch,
                 screenProctoringMetadataURL: metadataSearchUrl,
@@ -184,80 +173,21 @@
         }
 
         sessionSearchResults.value = sessionSearchResponse;
+
+        console.log(sessionSearchResults.value)
+
+        sessionsGrouped.value = searchViewService.groupSessionsByDay(sessionSearchResults.value);
+        openAllPanels()
+
         searchResultAvailable.value = true;
-
-        // console.log(sessionSearchResults.value)
     }
 
-
-    async function searchScreenshots(item: any, isExpanded: Function, toggleExpand: Function){
-
-        if(removeTableItemFromRefs(item, isExpanded, toggleExpand)){
-            return;
-        }
-
-        const screenshotSearchResponse: SearchScreenshots | null = await searchViewService.searchScreenshots(
-            {
-                sessionUUID: item.raw.sessionUUID, 
-                screenProctoringMetadataURL: metadataSearchUrl,
-                screenProctoringMetadataWindowTitle: metadataSearchWindowTitle,
-                screenProctoringMetadataUserAction: metadataSearchAction,
-                pageSize: 500
-            }
-        );
-
-        if(screenshotSearchResponse == null){
-            return;
-        }
-
-
-        screenshotSearchResult.value = screenshotSearchResponse;
-        console.log(screenshotSearchResponse)
-
-        addTableItemToRefs(screenshotSearchResponse, toggleExpand, item);
+    function closeAllPanels(){
+        sessionPanels.value = [];
     }
 
-    function openProctoringView(sessionId: string){
-        const url: string = "/recording/" + sessionId;
-        //@ts-ignore
-        window.open("", "_blank").location.href = router.resolve(url).href;
-    }
-
-    function handleTabKeyEvent(event: any, action: string, index: number, key: number){
-        if (event.key == 'Enter' || event.key == ' ') {
-            if(action == "sort"){
-                sortTable(key)
-            }
-        }
-    }
-
-    function sortTable(key: number){
-        if(sessionTableHeadersRef.value != null){
-            sessionTableHeadersRef.value[key].click();
-        }
-    }
-
-
-    function addTableItemToRefs(screenshotSearchResponse: SearchScreenshots, toggleExpand: Function, item: any){
-        screenshotSearchResults.value.push(screenshotSearchResponse);
-        toggleExpand(item);
-    }
-
-
-    function removeTableItemFromRefs(item: any, isExpanded: Function, toggleExpand: Function): boolean{
-        
-        if(isExpanded(item)){
-            toggleExpand(item);
-            const index: number = screenshotSearchResults.value.findIndex(i => i.content[0].sessionUUID == item.raw.sessionUUID);
-
-            if (index !== -1) {
-                screenshotSearchResults.value.splice(index, 1);
-            }
-            return true;
-        }
-
-        return false;
-
+    function openAllPanels(){
+        sessionPanels.value = sessionsGrouped.value?.content.map((item) => "sessionPanel" + item.day)!;
     }
 
 </script>
