@@ -91,6 +91,8 @@ import { stringLiteral } from "@babel/types";
     //remaining
     const appBarStore = useAppBarStore();
 
+    let examNameSearch: string | null;
+    let groupNameSearch: string | null;
     let metadataSearchUrl: string | null;
     let metadataSearchWindowTitle: string | null;
     let metadataSearchAction: string | null;
@@ -141,6 +143,9 @@ import { stringLiteral } from "@babel/types";
         //todo: fold all rows on new search
         errorAvailable.value = false;
 
+        examNameSearch = examName == "" ? null : examName;
+        groupNameSearch = groupName == "" ? null : groupName;
+        metadataSearchUrl = metadataUrl == "" ? null : metadataUrl;
         metadataSearchUrl = metadataUrl == "" ? null : metadataUrl;
         metadataSearchWindowTitle = metadataWindowTitle == "" ? null : metadataWindowTitle;
         metadataSearchAction = metadataUserAction == "" ? null : metadataUserAction;
@@ -149,8 +154,8 @@ import { stringLiteral } from "@babel/types";
 
         const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(
             {   
-                examName: examName,
-                groupName: groupName,
+                examName: examNameSearch,
+                groupName: groupNameSearch,
                 clientName: loginNameSearch,
                 clientMachineName: machineNameSearch,
                 screenProctoringMetadataURL: metadataSearchUrl,
@@ -168,6 +173,9 @@ import { stringLiteral } from "@babel/types";
         }
 
         sessionSearchResults.value = sessionSearchResponse;
+
+        console.log(sessionSearchResults.value)
+
         sessionsGrouped.value = searchViewService.groupSessionsByDay(sessionSearchResults.value);
         openAllPanels()
 

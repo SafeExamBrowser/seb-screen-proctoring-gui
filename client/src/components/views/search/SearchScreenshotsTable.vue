@@ -74,11 +74,35 @@
         </template>
 
         <template v-slot:expanded-row="{ columns, item, index }">
-            <tr>
-                <td :colspan="columns.length">
-                    <SearchScreenshotsList :session-uuid="timelineSearchResult.sessionUUID" :timeline-screenshot-data-list="item.raw.timelineScreenshotDataList" ></SearchScreenshotsList>
-                </td>
-            </tr>
+
+            <template v-for="screenshot in searchViewService.groupScreenshotsByMetadata(item.raw.timelineScreenshotDataList)!">
+                <tr>
+                    <td>
+                        {{ timeUtils.formatTimestmapToTime(screenshot.timelineScreenshotDataList[0].timestamp)}}
+                    </td>
+
+                    <td>
+                    </td>
+
+                    <td>
+                        {{ screenshot.groupName }} ({{ screenshot.timelineScreenshotDataList.length }})
+                    </td>
+
+                    <td>
+                        <v-btn 
+                            @click="searchViewService.openProctoringView(timelineSearchResult.sessionUUID, screenshot.timelineScreenshotDataList[0].timestamp.toString())" 
+                            variant="text" 
+                            icon="mdi-video">
+                        </v-btn>
+                    </td>
+
+                    <td>
+                    </td>
+                </tr>
+
+            </template>
+            <tr class="last-border"></tr>
+
         </template>
         <!-------------------------------->
 
@@ -90,7 +114,6 @@
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/tableUtils";
     import { VDataTable } from "vuetify/labs/VDataTable";
-    import SearchScreenshotsList from "./SearchScreenshotsList.vue";
     import * as searchViewService from "@/services/component-services/searchViewService";
 
 
@@ -104,10 +127,10 @@
     const expandedItems = ref<string[]>([]);
     const screenshotTableHeadersRef = ref<any[]>();
     const screenshotTableHeaders = ref([
-        {title: "Capture-Time", key: "timestamp", value: "timelineScreenshotDataList[0].timestamp", width: "150px"},
-        {title: "Application / Website", key: "groupName", width: "300px"},
-        {title: "Activity Details", key: "activityDetails", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataUserAction", width: "800px"},
-        {title: "Video", key: "proctoringViewLink"},
+        {title: "Capture-Time", key: "timestamp", value: "timelineScreenshotDataList[0].timestamp", width: "10%"},
+        {title: "Application / Website", key: "groupName", width: "20%"},
+        {title: "Activity Details", key: "activityDetails", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataUserAction"},
+        {title: "Video", key: "proctoringViewLink", width: "1%"},
         {title: "", key: "data-table-expand"}
     ]);
 
@@ -143,4 +166,12 @@
     /* .v-table .v-table__wrapper > table > tbody > tr:not(:last-child) > td, .v-table .v-table__wrapper > table > tbody > tr:not(:last-child) > th {
         border-bottom: none !important;
     } */
+
+    .v-table .v-table__wrapper > table > tbody > tr:not(:last-child) > td {
+        border-bottom: none !important;
+    }
+
+    .last-border{
+        border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity));
+    } 
 </style>

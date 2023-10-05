@@ -8,6 +8,9 @@ export async function searchSessions(token: string, options?: {}): Promise<objec
         const url: string = searchUrl + "/sessions";
         const {data, status} = await apiService.api.get(url, {headers: apiService.getHeaders(token), params: options});
 
+        console.log(url)
+        console.log(options)
+
         return data;
 
     }catch(error){

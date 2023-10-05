@@ -14,9 +14,9 @@ type OptionalParGroupByUuid = {
 }
 
 type OptionalParSearchSessions = {
-    examName?: string,
+    examName?: string | null,
     groupUUID?: string,
-    groupName?: string,
+    groupName?: string | null,
     sessionUUID?: string,
     fromTime?: string,
     toTime?: string,

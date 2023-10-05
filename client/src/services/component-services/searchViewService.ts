@@ -145,6 +145,9 @@ export function groupScreenshotsByMetadata(screenshotGroupList: ScreenshotGroup[
         groups.push(currentGroup);
     }
 
+    //remove first element, because first item is already shown in group header
+    groups.shift();
+
     return groups;
 }
 //==============================
