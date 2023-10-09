@@ -74,8 +74,7 @@
     import * as searchViewService from "@/services/component-services/searchViewService";
     import SearchForm from "./SearchForm.vue";
     import SearchSessionTable from "./SearchSessionTable.vue";
-import { stringLiteral } from "@babel/types";
-
+    import * as groupingUtils from "@/utils/groupingUtils";
 
     //reactive variables
     const searchResultAvailable = ref<boolean>(false);
@@ -176,7 +175,7 @@ import { stringLiteral } from "@babel/types";
 
         console.log(sessionSearchResults.value)
 
-        sessionsGrouped.value = searchViewService.groupSessionsByDay(sessionSearchResults.value);
+        sessionsGrouped.value = groupingUtils.groupSessionsByDay(sessionSearchResults.value);
         openAllPanels()
 
         searchResultAvailable.value = true;

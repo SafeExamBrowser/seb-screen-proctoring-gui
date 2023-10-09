@@ -75,7 +75,7 @@
 
         <template v-slot:expanded-row="{ columns, item, index }">
 
-            <template v-for="screenshot in searchViewService.groupScreenshotsByMetadata(item.raw.timelineScreenshotDataList)!">
+            <template v-for="screenshot in groupingUtils.groupScreenshotsByMetadata(item.raw.timelineScreenshotDataList, true)!">
                 <tr>
                     <td>
                         {{ timeUtils.formatTimestmapToTime(screenshot.timelineScreenshotDataList[0].timestamp)}}
@@ -115,6 +115,7 @@
     import * as tableUtils from "@/utils/tableUtils";
     import { VDataTable } from "vuetify/labs/VDataTable";
     import * as searchViewService from "@/services/component-services/searchViewService";
+    import * as groupingUtils from "@/utils/groupingUtils";
 
 
     const props = defineProps<{

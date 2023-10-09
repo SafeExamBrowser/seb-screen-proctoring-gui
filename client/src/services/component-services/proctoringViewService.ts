@@ -23,13 +23,14 @@ export async function getSessionByTimestamp(sessionId: string, timestamp: string
 //==============================
 
 //=============metadata==================
-export function getScreenshotMetadata(sliderTime: number, currentScreenshotMetadata: MetaData | null): object{
+export function getScreenshotMetadata(sliderTime: number, currentScreenshotMetadata: MetaData | null, additionalMetadataInfo: string, total: string): object{
     return {
+        "Total:": total,
         "Date:": timeUtils.formatTimestmapToDate(sliderTime),
         "Time:": timeUtils.formatTimestmapToTime(sliderTime),
         "Url:": currentScreenshotMetadata?.screenProctoringMetadataURL,
         "Window Title:": currentScreenshotMetadata?.screenProctoringMetadataWindowTitle,
-        "User-Action:": currentScreenshotMetadata?.screenProctoringMetadataUserAction
+        "User-Action:": currentScreenshotMetadata?.screenProctoringMetadataUserAction + " " + additionalMetadataInfo
     };
 }
 
