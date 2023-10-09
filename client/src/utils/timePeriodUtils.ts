@@ -20,8 +20,5 @@ export function getTimestampFromPeriodSelection(timePeriod: number, amount: numb
         break;
     }
 
-    console.log(now)
-    console.log(now.getTime())
-
     return now.getTime().toString();
 }

@@ -1,15 +1,20 @@
 <template>
 
     <v-row v-if="!showError">
-        <v-col cols="9">
-
+        <!-- <v-col cols="9"> -->
+        <v-col>
             <v-img 
                 class="img-styling"
+                ref="videoPlayer"
                 :src="imageLink" 
                 :aspect-ratio="16/9">
                 <template v-slot:error>
                     no img available
                 </template>
+
+                <div v-if="isFullscreen">
+                    testtesttest
+                </div>
             </v-img>
 
             <v-slider class="mt-4" :min="firstScreenshotTime" :max="lastScreenshotTime" :step="1000" v-model="sliderTime" thumb-label>
@@ -25,15 +30,24 @@
                     <v-chip variant="outlined">
                         {{ currentTimeString }} / {{ endTimeString }}
                     </v-chip>
+                    <v-btn @click="toggle" variant="text" icon="mdi-fullscreen"></v-btn>
                 </template>
             </v-slider>
-
         </v-col>
 
-        <v-col cols="3">
-            <v-card>
-                <v-card-title>SEB Session Info:</v-card-title>
+        <v-col cols="3" v-if="isMetadataInfo">
+            <v-card color="#e2ecf7">
                 <v-card-text>
+                    <v-row>
+                        <v-col cols="9">
+                            <div class="text-h6">
+                                SEB Session Info
+                            </div>
+                        </v-col>
+                        <v-col cols="3" align="right">
+                            <v-btn @click="hideShowMetadataInfo()" size="small" icon="mdi-arrow-expand-right"></v-btn>
+                        </v-col>
+                    </v-row>
                     <v-row v-for="(value, key) in sessionInfodata" :key="key">
                         <v-col>
                             {{key}}
@@ -43,9 +57,7 @@
                         </v-col>
                     </v-row>
                 </v-card-text>
-            </v-card>   
 
-            <v-card class="mt-4">
                 <v-card-title>Screenshot Metadata</v-card-title>
                 <v-card-text>
                     <v-row v-for="(value, key) in screenshotMetadata" :key="key">
@@ -58,8 +70,16 @@
                     </v-row>
                 </v-card-text>
             </v-card>
-
         </v-col>
+        <v-col v-else cols="1" align="center">
+            <v-card color="#e2ecf7">
+                <v-card-title>
+                    <v-btn @click="hideShowMetadataInfo()" size="small" icon="mdi-arrow-expand-left"></v-btn>
+                </v-card-title>
+            </v-card>
+        </v-col>
+
+
     </v-row>
 
     <AlertMsg 
@@ -78,8 +98,10 @@
     import { ref, onBeforeMount, onBeforeUnmount, watch, computed } from "vue";
     import * as proctoringViewService from "@/services/component-services/proctoringViewService";
     import * as timeUtils from "@/utils/timeUtils";
+    import * as groupingUtils from "@/utils/groupingUtils";
     import { useAppBarStore } from '@/store/app';
-
+    import * as searchViewService from "@/services/component-services/searchViewService";
+    import { useFullscreen } from '@vueuse/core'
 
     //reactive variables
     const isPlaying = ref<boolean>(false);
@@ -90,6 +112,7 @@
     const lastScreenshotTime = ref<number>();
     const imageLink = ref<string>("");
     const showError = ref<boolean>(false);
+    const searchTimeline = ref<SearchTimeline | null>();
 
     //time constants
     const SLIDER_INTERVAL: number = 1 * 1000;
@@ -103,6 +126,13 @@
     const appBarStore = useAppBarStore();
     const sessionId: string = useRoute().params.sessionId.toString();
     const searchTimestamp: string | undefined = useRoute().query.searchTimestamp?.toString();
+
+    //fullscreen
+    const videoPlayer = ref(null);
+    const { isFullscreen, enter, exit, toggle } = useFullscreen(videoPlayer);
+
+    //metadata
+    const isMetadataInfo = ref<boolean>(true);
 
 
     //=============lifecycle and watchers==================
@@ -136,6 +166,13 @@
 
         session.value = sessionResponse;
         lastScreenshotTime.value = session.value.timestamp;
+
+        searchTimeline.value = await searchViewService.searchTimeline(sessionId);
+
+        if(!session.value.active){
+            stopIntervalSessions()
+        }
+
     }
     //==============================
 
@@ -181,18 +218,62 @@
         return "";
     });
 
-    const screenshotMetadata = computed<object>(() => {
-        if(currentScreenshot.value){
-            return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, currentScreenshot.value.metaData);
-        }
-
-        return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, null);
-    });
 
     const sessionInfodata = computed<object>(() => {
         return proctoringViewService.getSessionInfodata(session.value || null);
     });
     //==============================
+
+    //=============metadata==================
+    const screenshotMetadata = computed<object>(() => {
+        if(currentScreenshot.value){
+            return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, currentScreenshot.value.metaData, additionalMetadataInfo.value, totalNumberOfScreenshots.value);
+        }
+
+        return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, null, additionalMetadataInfo.value, totalNumberOfScreenshots.value);
+    });
+
+    const additionalMetadataInfo = computed<string>(() => {
+        let result: string = "";
+
+        if(searchTimeline.value != null){
+            searchTimeline.value.timelineGroupDataList?.forEach((timelineGroupData, firstIndex) => {
+                const screenshotsGrouped: ScreenshotsGrouped[] | null = groupingUtils.groupScreenshotsByMetadata(timelineGroupData.timelineScreenshotDataList, false);
+
+                for(var i = 0; i < screenshotsGrouped?.length!; i++){
+                    if (screenshotsGrouped!= null){
+                        const index: number = screenshotsGrouped[i].timelineScreenshotDataList.findIndex((group) => timeUtils.toTimeString(group.timestamp) == timeUtils.toTimeString(sliderTime.value!));
+
+                        if(index !== -1){
+                            result = `(${index+1}/${screenshotsGrouped[i].timelineScreenshotDataList?.length})`;
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+        return result;
+    });
+
+    const totalNumberOfScreenshots = computed<string>(() => {
+        if(session.value != null && firstScreenshotTime.value != null && sliderTime.value != null){
+            const current: number = timeUtils.toSeconds(sliderTime.value - firstScreenshotTime.value);
+            const total: number = timeUtils.toSeconds(session.value.endTime - firstScreenshotTime.value);
+
+            return `${current}/${total}`;
+        }
+
+        return ""
+    });
+
+    function hideShowMetadataInfo(){
+        isMetadataInfo.value ? isMetadataInfo.value = false : isMetadataInfo.value = true;
+    }
+
+    //==============================
+
+
 
 
     //=============interval==================
