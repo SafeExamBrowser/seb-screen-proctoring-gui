@@ -5,7 +5,7 @@ export async function getSessionBySessionId(sessionId: string): Promise<Screensh
 
   try {
     const url: string = "/session/" + sessionId;
-    const {data, status}: AxiosResponse = await apiService.api.get(url, {headers: getHeaders()});
+    const {data, status}: AxiosResponse = await apiService.api.get(url);
 
     if (status === 200) {
       return data;
@@ -21,7 +21,7 @@ export async function getSessionByTimestamp(sessionId: string, timestamp: string
 
   try {
     const url: string = "/session/" + sessionId + "/" + timestamp;
-    const {data, status}: AxiosResponse = await apiService.api.get(url, {headers: getHeaders()});
+    const {data, status}: AxiosResponse = await apiService.api.get(url);
 
     if (status === 200) {
       return data;
@@ -31,12 +31,4 @@ export async function getSessionByTimestamp(sessionId: string, timestamp: string
   } catch (error) {
     throw error;
   }
-}
-
-function getHeaders(): object{
-  return {
-    "accept": "application/json",
-    "Authorization": "Bearer " + localStorage.getItem("accessToken"),
-    "Content-Type": "application/x-www-form-urlencoded"
-  };
 }

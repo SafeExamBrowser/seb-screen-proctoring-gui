@@ -36,10 +36,10 @@
             </tr>
         </template>
 
-        <template v-slot:item.timestamp="{item}">
+        <template v-slot:item.timestamp="{internalItem}">
             <td>
                 <div>
-                    {{timeUtils.formatTimestmapToTime(item.columns.timestamp)}}
+                    {{timeUtils.formatTimestmapToTime(internalItem.columns.timestamp)}}
                 </div>
             </td>
         </template>
@@ -47,14 +47,14 @@
         <template v-slot:item.groupName="{item}">
             <td>
                 <div>
-                    {{item.columns.groupName}} ({{ item.raw.timelineScreenshotDataList.length }})
+                    {{item.groupName}} ({{ item.timelineScreenshotDataList.length }})
                 </div>
             </td>
         </template>
 
         <template v-slot:item.proctoringViewLink="{item}">
             <v-btn 
-                @click="searchViewService.openProctoringView(timelineSearchResult.sessionUUID, item.columns.timestamp)" 
+                @click="searchViewService.openProctoringView(timelineSearchResult.sessionUUID, item.timestamp)" 
                 variant="text" 
                 icon="mdi-video">
             </v-btn>
@@ -63,19 +63,19 @@
 
 
         <!------------content------------>
-        <template v-slot:item.data-table-expand="{item, isExpanded, toggleExpand}">
+        <template v-slot:item.data-table-expand="{internalItem, item, isExpanded, toggleExpand}">
             <v-icon 
-                v-if="item.raw.timelineScreenshotDataList.length > 1"
+                v-if="item.timelineScreenshotDataList.length > 1"
                 tabindex="0" 
                 variant="text" 
-                @click="toggleExpand(item)"
-                :icon="isExpanded(item) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
+                @click="toggleExpand(internalItem)"
+                :icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
             </v-icon>
         </template>
 
         <template v-slot:expanded-row="{ columns, item, index }">
 
-            <template v-for="screenshot in groupingUtils.groupScreenshotsByMetadata(item.raw.timelineScreenshotDataList, true)!">
+            <template v-for="screenshot in groupingUtils.groupScreenshotsByMetadata(item.timelineScreenshotDataList, true)!">
                 <tr>
                     <td>
                         {{ timeUtils.formatTimestmapToTime(screenshot.timelineScreenshotDataList[0].timestamp)}}
@@ -137,6 +137,8 @@
 
     onBeforeMount(() => {
         timelineSearchResult.value = props.timelineSearchResult;
+
+        // console.log(timelineSearchResult)
     });
 
     watch(timelineSearchResult, (newList) => {

@@ -22,7 +22,7 @@
     "vue-i18n": "^9.3.0",
     "vue-loading-overlay": "^6.0.3",
     "vue-router": "^4.2.4",
-    "vuetify": "^v3.3.15",
+    "vuetify": "^v3.3.21",
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {

@@ -1,32 +1,42 @@
 <template>
 
+    <!--page title with logo-->
     <v-navigation-drawer v-model="drawer" class="d-none d-sm-flex">
         <v-sheet class="pa-4">
             <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Logo ETH Zürich"></v-img>
             <div class="app-title text-h6">{{ $t("navigation.title") }}</div>
         </v-sheet>
-
+<!-- 
         <v-sheet color="grey-lighten-4" class="pa-4">
             <div>{{ $t("navigation.current-user") }}</div>
             <div class="text-decoration-underline text-blue">
                 <router-link @click="signOut()" to="/">{{ $t("navigation.sign-out") }}</router-link>
             </div>
-        </v-sheet>
+        </v-sheet> -->
 
+        <!--navigation items-->
         <v-list>
-            <v-list-item v-for="[title, link] in links" :key="title" :to="link" link>
+            <v-list-item v-for="[title, link] in navigationLinks" :key="title" :to="link" link>
                 <v-list-item-title>{{ title }}</v-list-item-title>
             </v-list-item>
         </v-list>
+
     </v-navigation-drawer>
 
     <v-app-bar>
+
+        <!--menu icon-->
         <v-app-bar-nav-icon variant="text"
             @click.stop="drawer = !drawer">
         </v-app-bar-nav-icon>
+
+        <!--current site title-->
         <v-app-bar-title>{{ appBarStore.title }}</v-app-bar-title>
 
+
         <template v-slot:append>
+
+            <!--gallery view specfic items-->
             <template v-if="useRoute().name == 'GalleryViewPage'">
 
                 <div>
@@ -75,24 +85,38 @@
             <!-- <div class="switch-container">
                 <v-switch class="mx-auto" label="theme test" color="primary" v-model="useLigtTheme"></v-switch>
             </div> -->
-            <!-- <div class="profile-icon-container">
+
+            <!--profile icon menu-->
+            <div class="profile-icon-container">
                 <v-menu>
                     <template v-slot:activator="{ props }">
                         <v-btn v-bind="props" color="primary" icon="mdi-account-circle" size="x-large"></v-btn>
                     </template>
+
                     <v-list>
-                        <v-list-item class="d-flex justify-center align-center" v-for="(gridSize, index) in gridSizes" :key="index" :value="index" @click="changeGridSize(gridSize)">
-                            <v-list-item-title>{{ gridSize.title }}</v-list-item-title>
+                        <v-list-item class="d-flex">
+                            <v-list-item-title>Logged in as: temp name</v-list-item-title>
                         </v-list-item>
+
+                        <v-list-item class="d-flex" to="/userAccount">
+                            <v-list-item-title>Account</v-list-item-title>
+                        </v-list-item>
+
+                        <v-divider></v-divider>
+
+                        <v-list-item class="d-flex text-decoration-underline text-blue" to="/" @click="signOut()">
+                            <v-list-item-title>{{ $t("navigation.sign-out") }}</v-list-item-title>
+                        </v-list-item>
+
                     </v-list>
                 </v-menu>
-            </div> -->
+            </div>
+
         </template>
-
-
 
     </v-app-bar>
 
+    <!--main content view-->
     <v-main>
         <v-container fluid>
             <router-view></router-view>
@@ -113,7 +137,7 @@
     const appBarStore = useAppBarStore();
     const theme = useTheme();
 
-    const links = [
+    const navigationLinks = [
         ["SEB Groups Proctoring", "/start"],
         ["Search", "/search"],
         ["Example Page", "/example"],
@@ -128,12 +152,9 @@
     ];
 
 
-
     watch(useLigtTheme, () => {
         theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
     });
-
-
 
     function signOut(){
         localStorage.clear();

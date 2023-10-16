@@ -46,7 +46,13 @@
                     </v-expansion-panel-title>
                     
                     <v-expansion-panel-text>
-                        <SearchSessionTable :sessions="session.sessions"></SearchSessionTable>
+                        <SearchSessionTable 
+                            :sessions="session.sessions" 
+                            :metaData="{
+                                screenProctoringMetadataWindowTitle: metadataSearchWindowTitle!, 
+                                screenProctoringMetadataUserAction: metadataSearchAction!
+                            }">
+                        </SearchSessionTable>
                     </v-expansion-panel-text>
 
                 </v-expansion-panel>
@@ -173,7 +179,7 @@
 
         sessionSearchResults.value = sessionSearchResponse;
 
-        console.log(sessionSearchResults.value)
+        // console.log(sessionSearchResults.value)
 
         sessionsGrouped.value = groupingUtils.groupSessionsByDay(sessionSearchResults.value);
         openAllPanels()

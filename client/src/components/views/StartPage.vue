@@ -3,7 +3,7 @@
     <div class="table-container">
         <div class="table d-flex align-center">
             <v-data-table 
-                item-value="name" 
+                item-value="item.name" 
                 class="elevation-1"
                 :items-per-page="tableUtils.calcDefaultItemsPerPage(groups)" 
                 :items-per-page-options="tableUtils.calcItemsPerPage(groups)"
@@ -32,21 +32,21 @@
                     </tr>
                 </template>
 
-
-                <template v-slot:item.name="{item}">
+                <!--compiler currently shows an error for those items, but they are accesible -> should be removed in fututre vuetify releases -->
+                <template v-slot:item.name="{item, index, internalItem}">
                     <td class="text-decoration-underline text-blue">
                         <div 
                             role="button" 
                             tabindex="0" 
-                            @keydown="handleTabKeyEvent($event, 'navigate', item.index, 0)">
-                            <router-link :to="getGalleryViewLink(item.index)">{{item.columns.name}}</router-link>
+                            @keydown="handleTabKeyEvent($event, 'navigate', internalItem.index, 0)">
+                            <router-link :to="getGalleryViewLink(internalItem.index)">{{item.name}}</router-link>
                         </div>
                     </td>
                 </template>
                 <template v-slot:item.creationTime="{item}">
                     <td>
                         <div>
-                            {{timeUtils.formatTimestampToFullDate(item.columns.creationTime)}}
+                            {{timeUtils.formatTimestampToFullDate(item.creationTime)}}
                         </div>
                     </td>
                 </template>

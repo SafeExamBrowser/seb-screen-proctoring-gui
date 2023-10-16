@@ -2,7 +2,7 @@
 
     <v-data-table
         show-expand
-        item-value="sessionUUID"
+        item-value="sessionUUID" 
         class="elevation-1"
         :items-per-page="tableUtils.calcDefaultItemsPerPage(sessions)" 
         :items-per-page-options="tableUtils.calcItemsPerPage(sessions)"
@@ -33,21 +33,21 @@
         <template v-slot:item.startTime="{item}">
             <td>
                 <div>
-                    {{timeUtils.formatTimestmapToTime(item.columns.startTime)}}
+                    {{timeUtils.formatTimestmapToTime(item.startTime)}}
                 </div>
             </td>
         </template>
 
         <template v-slot:item.proctoringViewLink="{item}">
-            <v-btn @click="searchViewService.openProctoringView(item.raw.sessionUUID)" variant="text" icon="mdi-video"></v-btn>
+            <v-btn @click="searchViewService.openProctoringView(item.sessionUUID)" variant="text" icon="mdi-video"></v-btn>
         </template>
 
-        <template v-slot:item.data-table-expand="{item, isExpanded, toggleExpand}">
+        <template v-slot:item.data-table-expand="{internalItem, isExpanded, toggleExpand}">
             <v-icon 
                 tabindex="0" 
                 variant="text" 
-                @click="searchTimeline(item, isExpanded, toggleExpand)"
-                :icon="isExpanded(item) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
+                @click="searchTimeline(internalItem, isExpanded, toggleExpand)"
+                :icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
             </v-icon>
         </template>
 
@@ -55,7 +55,7 @@
             <tr>
                 <td :colspan="columns.length">
                     <!--@vue-ignore-->
-                    <SearchScreenshotsTable :timelineSearchResult="timelineSearchResults.find(i => i.sessionUUID == item.raw.sessionUUID)"></SearchScreenshotsTable>
+                    <SearchScreenshotsTable :timelineSearchResult="timelineSearchResults.find(i => i.sessionUUID == item.sessionUUID)"></SearchScreenshotsTable>
                 </td>
             </tr>
         </template>
@@ -74,14 +74,12 @@
 
     //props
     const props = defineProps<{
-        sessions: Session[]
+        sessions: Session[],
+        metaData: MetaData
     }>();
-
 
     //reactive variables
     const timelineSearchResults = ref<SearchTimeline[]>([]);
-    const timelineSearchResult = ref<SearchTimeline>();
-
 
     //table
     const sessionTableHeadersRef = ref<any[]>();
@@ -102,14 +100,11 @@
             return;
         }
 
-        const timelineSearchResponse: SearchTimeline | null = await searchViewService.searchTimeline(item.raw.sessionUUID);
+        const timelineSearchResponse: SearchTimeline | null = await searchViewService.searchTimeline(item.raw.sessionUUID, {screenProctoringMetadataWindowTitle: props.metaData.screenProctoringMetadataWindowTitle, screenProctoringMetadataUserAction: props.metaData.screenProctoringMetadataUserAction});
 
         if(timelineSearchResponse == null){
             return;
         }
-
-        timelineSearchResult.value = timelineSearchResponse;
-        console.log(timelineSearchResponse)
 
         addTableItemToRefs(timelineSearchResponse, toggleExpand, item);
     }
@@ -139,7 +134,7 @@
         
         if(isExpanded(item)){
             toggleExpand(item);
-            const index: number = timelineSearchResults.value.findIndex(i => i.sessionUUID == item.raw.sessionUUID);
+            const index: number = timelineSearchResults.value.findIndex(i => i.sessionUUID == item.sessionUUID);
 
             if (index !== -1) {
                 timelineSearchResults.value.splice(index, 1);

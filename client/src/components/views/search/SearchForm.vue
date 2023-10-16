@@ -3,7 +3,10 @@
         elevation="4"
         class="search-container rounded-lg"
         title="Search">
-        <v-form>
+        <v-form 
+            @keyup.enter="searchSessions()"
+            @keyup.esc="clearForm()">
+
             <div class="form-container">
                 <!------------Exam Name------------->
                 <v-row align="center">
@@ -98,7 +101,7 @@
 
                                     <!------------Metatdata: Url------------->
                                     <v-row align="center">
-                                        <v-col cols="4">
+                                        <v-col cols="4" class="text-decoration-line-through">
                                             Url:
                                         </v-col>
                                         <v-col cols="8">
@@ -108,6 +111,7 @@
                                                 density="compact"
                                                 variant="solo"
                                                 v-model="metadataUrlField"
+                                                :disabled=true
                                             ></v-text-field>
                                         </v-col>
                                     </v-row>
@@ -116,7 +120,7 @@
                                     <!------------Metatdata: Window Title------------->
                                     <v-row align="center">
                                         <v-col cols="4">
-                                            Window Title:
+                                            Application / Website:
                                         </v-col>
                                         <v-col cols="8">
                                             <v-text-field
@@ -133,7 +137,7 @@
                                     <!------------Metatdata: User Action------------->
                                     <v-row align="center">
                                         <v-col cols="4">
-                                            User Action:
+                                            Activity Details:
                                         </v-col>
                                         <v-col cols="8">
                                             <v-text-field
@@ -216,7 +220,8 @@
                         <v-btn 
                             rounded="sm" 
                             color="black" 
-                            variant="outlined">
+                            variant="outlined"
+                            @click="clearForm()">
                             Cancel
                         </v-btn>
 
@@ -232,8 +237,6 @@
                     </v-col>
                 </v-row>
                 <!----------------------------------->
-
-                
 
             </div>
         </v-form>
@@ -285,7 +288,7 @@
     ];
 
     const timeSelectionRadio = ref<boolean>(true);
-    const timeSelectionPicker = ref();
+    const timeSelectionPicker = ref(null);
 
 
     onBeforeMount(async () => {
@@ -311,6 +314,25 @@
             fromTime, 
             toTime
         );
+    }
+
+    function clearForm(){
+        examNameField.value = "";
+        groupNameField.value = ""; 
+        loginNameField.value = "";
+        machineNameField.value = ""; 
+        metadataUrlField.value = ""; 
+        metadataWindowTitleField.value = "";
+        metadataUserActionField.value = "";
+        timePeriodField.value = 5;
+        timePeriodRadio.value = false;
+        timePeriodSelect.value = 1;
+        timeSelectionRadio.value = true;
+        timeSelectionPicker.value = null;
+    }
+
+    const testFunction = () => {
+
     }
 
     function calcTimePeriod(): [string, string]{

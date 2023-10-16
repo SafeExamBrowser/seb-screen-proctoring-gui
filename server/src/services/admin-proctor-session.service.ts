@@ -12,7 +12,6 @@ export async function getSessionBySessionId(token: string, sessionId: string): P
         return data;
 
     }catch(error){
-        console.error(error)
         apiService.handleGenericApiError(error);
     }
 }

@@ -8,7 +8,7 @@
                     Sign in
                 </h1>
                 <p class="mt-2 text-center text-sm text-gray-600">
-                    Please fill the form to sign in to your SEB server account.
+                    Please fill the form to sign in to your SEB screen proctoring account.
                 </p>
             </div>
 
@@ -30,6 +30,19 @@
                 </div>
                 <ActionButton type="submit" label="Sign In" :full="true"></ActionButton>
             </form>
+
+            <div class="text-center">
+                <span>
+                    No Account? 
+                </span>
+                <span 
+                    class="text-decoration-underline text-blue"
+                    role="button" 
+                    tabindex="0" 
+                    @keydown="handleTabKeyEvent($event, 'navigate')">
+                    <router-link to="/register">Register</router-link>
+                </span>
+            </div>
 
         </div>
     </main>
@@ -69,6 +82,22 @@
             loginError.value = true;
         }
 
+    }
+
+    //todo: extract this function into a global file
+    function handleTabKeyEvent(event: any, action: string){
+        if (event.key == 'Enter' || event.key == ' ') {
+
+            if(action == "navigate"){
+                navigateToRegisterView();
+            }
+        }
+    }
+
+    function navigateToRegisterView(){
+        router.push({
+            path: "/register"
+        });
     }
 
 

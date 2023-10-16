@@ -20,7 +20,19 @@ export function getHeaders(token: string): object {
     };
 }
 
+export function getHeadersWithoutAuth(): object {
+    return {
+        "accept": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded"
+    };
+}
+
 export function handleGenericApiError(error: any){
+
+    console.log("teeeeeeeeeeeeest")
+        console.log(error)
+
+
     LOG.error("====================")
     LOG.error("error message: " + error.message)
     LOG.error("====================")

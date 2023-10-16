@@ -12,9 +12,9 @@
                     no img available
                 </template>
 
-                <div v-if="isFullscreen">
+                <!-- <div v-if="isFullscreen">
                     testtesttest
-                </div>
+                </div> -->
             </v-img>
 
             <v-slider class="mt-4" :min="firstScreenshotTime" :max="lastScreenshotTime" :step="1000" v-model="sliderTime" thumb-label>
@@ -236,22 +236,21 @@
     const additionalMetadataInfo = computed<string>(() => {
         let result: string = "";
 
-        if(searchTimeline.value != null){
-            searchTimeline.value.timelineGroupDataList?.forEach((timelineGroupData, firstIndex) => {
-                const screenshotsGrouped: ScreenshotsGrouped[] | null = groupingUtils.groupScreenshotsByMetadata(timelineGroupData.timelineScreenshotDataList, false);
+        searchTimeline.value?.timelineGroupDataList.forEach((timelineGroupData, firstIndex) => {
+            const screenshotsGrouped: ScreenshotsGrouped[] | null = groupingUtils.groupScreenshotsByMetadata(timelineGroupData.timelineScreenshotDataList, false);
 
-                for(var i = 0; i < screenshotsGrouped?.length!; i++){
-                    if (screenshotsGrouped!= null){
-                        const index: number = screenshotsGrouped[i].timelineScreenshotDataList.findIndex((group) => timeUtils.toTimeString(group.timestamp) == timeUtils.toTimeString(sliderTime.value!));
+            if (screenshotsGrouped!= null){
+                for(var i = 0; i < screenshotsGrouped.length; i++){
+                    const index: number = screenshotsGrouped[i].timelineScreenshotDataList.findIndex((group) => timeUtils.toTimeString(group.timestamp) == timeUtils.toTimeString(sliderTime.value!));
 
-                        if(index !== -1){
-                            result = `(${index+1}/${screenshotsGrouped[i].timelineScreenshotDataList?.length})`;
-                            break;
-                        }
+                    if(index !== -1){
+                        result = `(${index+1}/${screenshotsGrouped[i].timelineScreenshotDataList?.length})`;
+                        break;
                     }
                 }
-            });
-        }
+            }
+
+        });
 
         return result;
     });
