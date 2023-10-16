@@ -1,7 +1,8 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue';
+import { defineStore } from "pinia"
+import { ref } from "vue";
+import router from "@/router";
 
-export const useAppBarStore = defineStore('appBar', () => {
+export const useAppBarStore = defineStore("appBar", () => {
   const title = ref<string>("Example Title");
 
   const galleryGridSize = ref<GridSize>({
@@ -21,4 +22,38 @@ export const useLoadingStore = defineStore("loading", () => {
   const isLoading = ref<boolean>(false);
 
   return {skipLoading, isLoading};
+});
+
+export const useAuthStore = defineStore("auth", () => {
+
+  const accessToken = ref<string | null>();
+  const refreshToken = ref<string | null>();
+
+  function login(accessTokenString: string, refershTokenString: string){
+    accessToken.value = accessTokenString;
+    refreshToken.value = refershTokenString;
+
+    router.push({
+      path: "/start"
+    });
+  }
+
+  function logout(){
+    accessToken.value = null;
+    refreshToken.value = null;
+
+    router.push({
+      path: "/"
+    });
+  }
+
+  function setAccessToken(accessTokenString: string){
+    accessToken.value = accessTokenString;
+  }
+
+  function setRefreshToken(refreshTokenString: string){
+    refreshToken.value = refreshTokenString;
+  }
+
+  return {accessToken, refreshToken, login, logout, setAccessToken, setRefreshToken};
 });

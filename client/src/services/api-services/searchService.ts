@@ -4,7 +4,7 @@ import * as apiService from "@/services/api-services/apiService";
 export async function searchSessions(optionalParamters?: OptionalParSearchSessions): Promise<SearchSessions | any> {
   try {
     const url: string = "/search/sessions";
-    const {data, status}: AxiosResponse = await apiService.api.get(url, {params: {optionalParamters}});
+    const {data, status}: AxiosResponse = await apiService.api.get(url, {headers: apiService.getHeaders(), params: {optionalParamters}});
 
     if (status === 200) {
       return data;
@@ -19,7 +19,7 @@ export async function searchSessions(optionalParamters?: OptionalParSearchSessio
 export async function searchScreenshots(optionalParamters?: OptionalParSearchScreenshots): Promise<SearchScreenshots | any> {
   try {
     const url: string = "/search/screenshots"
-    const {data, status}: AxiosResponse = await apiService.api.get(url, {params: {optionalParamters}});
+    const {data, status}: AxiosResponse = await apiService.api.get(url, {headers: apiService.getHeaders(), params: {optionalParamters}});
 
     if (status === 200) {
       return data;
@@ -34,7 +34,7 @@ export async function searchScreenshots(optionalParamters?: OptionalParSearchScr
 export async function searchTimeline(sessionId: string, optionalParamters?: OptionalParSearchTimeline): Promise<SearchTimeline | any> {
   try {
     const url: string = "/search/timeline/" + sessionId;
-    const {data, status}: AxiosResponse = await apiService.api.get(url, {params: {optionalParamters}});
+    const {data, status}: AxiosResponse = await apiService.api.get(url, {headers: apiService.getHeaders(), params: {optionalParamters}});
 
     if (status === 200) {
       return data;
