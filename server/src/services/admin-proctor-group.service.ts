@@ -15,7 +15,7 @@ export async function getGroups(token: string, options?: {}): Promise<object>{
         return data;
 
     }catch(error){
-        apiService.handleGenericApiError(error);
+        apiService.handleGenericApiErrorOld(error);
     }
 }
 
@@ -29,6 +29,6 @@ export async function getGroupByUuid(token: string, uuid: string, options?: {}):
         return data;
 
     }catch(error){
-        apiService.handleGenericApiError(error);
+        apiService.handleGenericApiErrorOld(error);
     }
 }

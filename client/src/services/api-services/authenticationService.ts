@@ -29,7 +29,7 @@ export async function refresh(): Promise<string | any>{
     const url: string = ENV.SERVER_URL + ENV.SERVER_PORT + "/refresh";
 
     const headers = {
-      "Authorization": "Bearer " + authStore.refreshToken,
+      "Authorization": "Bearer " + authStore.getRefreshToken(),
     };
     
     const response: AxiosResponse<Token> = await axios.post(url, {}, {headers: headers});

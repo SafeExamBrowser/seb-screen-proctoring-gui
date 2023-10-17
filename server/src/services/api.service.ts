@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import * as ENV from "../config/envConfig";
+import {Request, Response} from "express";
 import {LOG} from '../logging/logger';
 
 export const api: AxiosInstance = axios.create({
@@ -27,7 +28,26 @@ export function getHeadersWithoutAuth(): object {
     };
 }
 
-export function handleGenericApiError(error: any){
+export function handleGenericApiError(error: any, res: Response){
+
+    //if there is an error-response from sp-server
+    if(error.response){
+        console.error(error.response.status);
+        console.error(error.response.data)
+        return res.status(error.response.status).json(error.response.data);
+    }
+
+    //if there is no response from the sp-server
+    if(error.request){
+        console.error(500)
+        return res.status(500).json("server-error");
+    }
+    
+    //else if there is another type of error
+    return res.status(500).send();
+}
+
+export function handleGenericApiErrorOld(error: any){
 
     console.log("teeeeeeeeeeeeest")
         console.log(error)

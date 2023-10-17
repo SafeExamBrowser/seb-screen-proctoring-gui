@@ -58,7 +58,7 @@ export function createImageLinkWithToken(screenshots: Screenshot[] | undefined, 
         return "";
     }
 
-    const screenshotLink: string = screenshots[index].latestImageLink + "?access_token=" + authStore.accessToken;
+    const screenshotLink: string = screenshots[index].latestImageLink + "?access_token=" + authStore.getAccessToken();
 
     if(screenshots[index].active){
         return screenshotLink + '&t=' + timestamp;

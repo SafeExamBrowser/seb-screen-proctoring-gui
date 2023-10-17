@@ -1,6 +1,9 @@
 import { defineStore } from "pinia"
 import { ref } from "vue";
 import router from "@/router";
+import * as userAccountViewService from "@/services/component-services/userAccountViewService";
+
+//-------------------------------------------------//
 
 export const useAppBarStore = defineStore("appBar", () => {
   const title = ref<string>("Example Title");
@@ -17,6 +20,8 @@ export const useAppBarStore = defineStore("appBar", () => {
   return {title, galleryGridSize, galleryIsNameEnabled, galleryIsMetadataEnabled, gallerNumberOfSessions, galleryDescription};
 });
 
+//-------------------------------------------------//
+
 export const useLoadingStore = defineStore("loading", () => {
   const skipLoading = ref<boolean>(false);
   const isLoading = ref<boolean>(false);
@@ -24,36 +29,56 @@ export const useLoadingStore = defineStore("loading", () => {
   return {skipLoading, isLoading};
 });
 
+//-------------------------------------------------//
+
 export const useAuthStore = defineStore("auth", () => {
-
-  const accessToken = ref<string | null>();
-  const refreshToken = ref<string | null>();
-
-  function login(accessTokenString: string, refershTokenString: string){
-    accessToken.value = accessTokenString;
-    refreshToken.value = refershTokenString;
+  async function login(accessTokenString: string, refershTokenString: string){
+    setAccessToken(accessTokenString);
+    setRefreshToken(refershTokenString);
 
     router.push({
       path: "/start"
     });
+
+   await userAccountViewService.setPersonalUserAccount();
   }
 
   function logout(){
-    accessToken.value = null;
-    refreshToken.value = null;
+    setAccessToken("");
+    setRefreshToken("");
+    useUserAccountStore().userAccount = null;
 
     router.push({
       path: "/"
     });
   }
-
+  
   function setAccessToken(accessTokenString: string){
-    accessToken.value = accessTokenString;
+    localStorage.setItem("accessToken", accessTokenString);
+  }
+
+  function getAccessToken() : string{
+    const accessToken: string | null = localStorage.getItem("accessToken");
+    if(accessToken == null){ return "accessToken";}
+    return accessToken;
   }
 
   function setRefreshToken(refreshTokenString: string){
-    refreshToken.value = refreshTokenString;
+    localStorage.setItem("refreshToken", refreshTokenString);
   }
 
-  return {accessToken, refreshToken, login, logout, setAccessToken, setRefreshToken};
+  function getRefreshToken() : string{
+    const refreshToken: string | null = localStorage.getItem("refreshToken");
+    if(refreshToken == null){ return "refreshToken";}
+    return refreshToken;
+  }
+
+  return {login, logout, setAccessToken, getAccessToken, setRefreshToken, getRefreshToken};
+});
+
+//-------------------------------------------------//
+
+export const useUserAccountStore = defineStore("account", () => {
+  const userAccount = ref<UserAccount | null>();
+  return {userAccount};
 });

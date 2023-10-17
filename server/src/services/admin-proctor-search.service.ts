@@ -11,7 +11,7 @@ export async function searchSessions(token: string, options?: {}): Promise<objec
         return data;
 
     }catch(error){
-        apiService.handleGenericApiError(error);
+        apiService.handleGenericApiErrorOld(error);
     }
 }
 
@@ -25,7 +25,7 @@ export async function searchScreenshots(token: string, options?: {}): Promise<ob
         return data;
 
     }catch(error){
-        apiService.handleGenericApiError(error);
+        apiService.handleGenericApiErrorOld(error);
     }
 }
 
@@ -39,6 +39,6 @@ export async function searchTimeline(token: string, uuid: string, options?: {}):
         return data;
 
     }catch(error){
-        apiService.handleGenericApiError(error);
+        apiService.handleGenericApiErrorOld(error);
     }
 }

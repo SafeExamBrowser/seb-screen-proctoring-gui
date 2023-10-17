@@ -37,6 +37,18 @@
         {
             key: "api-error",
             value: "Something went wrong, please try again"
+        },
+        {
+            key: "login-error",
+            value: "Please provide a correct pair of user name and password."
+        },
+        {
+            key: "register-error",
+            value: "Please try again."
+        },
+        {
+            key: "register-success",
+            value: "Your regisration was successful. You can now login"
         }
     ];
 

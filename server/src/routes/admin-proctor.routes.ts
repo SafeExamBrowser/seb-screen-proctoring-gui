@@ -22,6 +22,7 @@ router.get("/search/sessions", adminProctorSearchController.searchSessions);
 router.get("/search/screenshots", adminProctorSearchController.searchScreenshots);
 router.get("/search/timeline/:sessionId", adminProctorSearchController.searchTimeline);
 
+router.get("/useraccount/me", adminProctorUserAccountController.getPersonalUserAccount)
 router.post("/useraccount/register", adminProctorUserAccountController.registerUserAccount)
 
 

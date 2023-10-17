@@ -63,12 +63,7 @@ export function createApiInterceptor(){
                 authStore.setRefreshToken(response.refresh_token);
 
                 originalRequest._retry = true;
-
-                originalRequest.headers = {
-                    "accept": "application/json",
-                    "Authorization": "Bearer " + authStore.accessToken,
-                    "Content-Type": "application/x-www-form-urlencoded"
-                }
+                originalRequest.headers = getHeaders();
 
                 return api(originalRequest);
 
@@ -81,11 +76,6 @@ export function createApiInterceptor(){
             }
             
         }
-        // else{
-        //     router.push({
-        //         path: "/"
-        //     });
-        // }
     });
 }
 
@@ -94,7 +84,7 @@ export function getHeaders(): object{
 
     return {
       "accept": "application/json",
-      "Authorization": "Bearer " + authStore.accessToken,
+      "Authorization": "Bearer " + authStore.getAccessToken(),
       "Content-Type": "application/x-www-form-urlencoded"
     };
 }

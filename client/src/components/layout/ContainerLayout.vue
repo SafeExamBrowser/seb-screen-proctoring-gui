@@ -1,18 +1,12 @@
 <template>
 
-    <!--page title with logo-->
     <v-navigation-drawer v-model="drawer" class="d-none d-sm-flex">
+        
+        <!--page title with logo-->
         <v-sheet class="pa-4">
             <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Logo ETH Zürich"></v-img>
             <div class="app-title text-h6">{{ $t("navigation.title") }}</div>
         </v-sheet>
-<!-- 
-        <v-sheet color="grey-lighten-4" class="pa-4">
-            <div>{{ $t("navigation.current-user") }}</div>
-            <div class="text-decoration-underline text-blue">
-                <router-link @click="signOut()" to="/">{{ $t("navigation.sign-out") }}</router-link>
-            </div>
-        </v-sheet> -->
 
         <!--navigation items-->
         <v-list>
@@ -90,12 +84,12 @@
             <div class="profile-icon-container">
                 <v-menu>
                     <template v-slot:activator="{ props }">
-                        <v-btn v-bind="props" color="primary" icon="mdi-account-circle" size="x-large"></v-btn>
+                        <v-btn v-bind="props" color="primary" icon="mdi-account-circle" size="x-large" @click="userMenuOpened()"></v-btn>
                     </template>
 
                     <v-list>
                         <v-list-item class="d-flex">
-                            <v-list-item-title>Logged in as: temp name</v-list-item-title>
+                            <v-list-item-title>Logged in as: {{ userAccountStore.userAccount?.name }}</v-list-item-title>
                         </v-list-item>
 
                         <v-list-item class="d-flex" to="/userAccount">
@@ -104,7 +98,7 @@
 
                         <v-divider></v-divider>
 
-                        <v-list-item class="d-flex text-decoration-underline text-blue" to="/" @click="signOut()">
+                        <v-list-item class="d-flex text-decoration-underline text-blue" @click="authStore.logout()">
                             <v-list-item-title>{{ $t("navigation.sign-out") }}</v-list-item-title>
                         </v-list-item>
 
@@ -127,22 +121,30 @@
 
 <script setup lang="ts">
     import { ref, watch } from "vue"
-    import { useAppBarStore } from "@/store/app";
+    import { useAppBarStore, useAuthStore, useUserAccountStore } from "@/store/app";
+    import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
-    import { useTheme } from 'vuetify'
+    import { useTheme } from "vuetify";
+    import router from "@/router";
 
+    //navigation
     const drawer = ref();
-    const useLigtTheme = ref<boolean>(true);
-
-    const appBarStore = useAppBarStore();
-    const theme = useTheme();
-
     const navigationLinks = [
         ["SEB Groups Proctoring", "/start"],
         ["Search", "/search"],
         ["Example Page", "/example"],
     ];
 
+    //stores
+    const appBarStore = useAppBarStore();
+    const authStore = useAuthStore();
+    const userAccountStore = useUserAccountStore();
+
+    //theme
+    const useLigtTheme = ref<boolean>(true);
+    const theme = useTheme();
+
+    //gallery view
     const gridSizes: GridSize[] = [
         {title: "2x2", value: 2},
         {title: "3x3", value: 3},
@@ -151,17 +153,16 @@
         // {title: "6x6", value: 6},
     ];
 
-
     watch(useLigtTheme, () => {
         theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
     });
 
-    function signOut(){
-        localStorage.clear();
-    }
-
     function changeGridSize(gridSize: GridSize){
         appBarStore.galleryGridSize = gridSize;
+    }
+
+    async function userMenuOpened(){
+        await userAccountViewService.setPersonalUserAccount();
     }
 
 </script>

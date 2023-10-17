@@ -12,7 +12,7 @@ export async function getSessionBySessionId(token: string, sessionId: string): P
         return data;
 
     }catch(error){
-        apiService.handleGenericApiError(error);
+        apiService.handleGenericApiErrorOld(error);
     }
 }
 
@@ -26,6 +26,6 @@ export async function getSessionByTimestamp(token: string, sessionId: string, ti
         return data;
 
     }catch(error){
-        apiService.handleGenericApiError(error);
+        apiService.handleGenericApiErrorOld(error);
     }
 }

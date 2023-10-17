@@ -99,7 +99,7 @@
     import * as proctoringViewService from "@/services/component-services/proctoringViewService";
     import * as timeUtils from "@/utils/timeUtils";
     import * as groupingUtils from "@/utils/groupingUtils";
-    import { useAppBarStore } from '@/store/app';
+    import { useAppBarStore, useAuthStore } from '@/store/app';
     import * as searchViewService from "@/services/component-services/searchViewService";
     import { useFullscreen } from '@vueuse/core'
 
@@ -124,6 +124,7 @@
 
     //remaining
     const appBarStore = useAppBarStore();
+    const authStore = useAuthStore();
     const sessionId: string = useRoute().params.sessionId.toString();
     const searchTimestamp: string | undefined = useRoute().query.searchTimestamp?.toString();
 
@@ -198,7 +199,7 @@
         if(specificSessionResponse == null) return;
 
         currentScreenshot.value = specificSessionResponse;
-        imageLink.value = currentScreenshot.value.latestImageLink + "/" + timestamp + "/" + "?access_token=" + localStorage.getItem("accessToken");
+        imageLink.value = currentScreenshot.value.latestImageLink + "/" + timestamp + "/" + "?access_token=" + authStore.getAccessToken();
     }
 
     const currentTimeString = computed<string>(() => {

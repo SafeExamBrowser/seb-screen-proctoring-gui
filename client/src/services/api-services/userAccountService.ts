@@ -1,5 +1,6 @@
-import axios from "axios";
-;import * as ENV from "@/config/envConfig";
+import axios, { AxiosResponse } from "axios";
+import * as ENV from "@/config/envConfig";
+import * as apiService from "@/services/api-services/apiService";
 
 export async function register(
   name: string,
@@ -14,7 +15,7 @@ export async function register(
   try {
     const url: string = ENV.SERVER_URL + ENV.SERVER_PORT + "/useraccount/register";
 
-    const response = await axios.post(url, {
+    const {data, status}: AxiosResponse = await axios.post(url, {
       name,
       surname,
       username,
@@ -24,11 +25,27 @@ export async function register(
       timeZone
     });
 
-    if (response.status === 200) {
-      return response.data;
+    if (status === 200) {
+      return data;
     } 
 
   } catch (error) {
+    throw error;
+  }
+}
+
+const userAccountUrl: string = "/useraccount";
+
+export async function getPersonalUserAccount(): Promise<UserAccount | any>{
+  try{
+    const url: string = userAccountUrl + "/me";
+    const {data, status}: AxiosResponse = await apiService.api.get(url, {headers: apiService.getHeaders()});
+
+    if (status === 200) {
+      return data;
+    } 
+
+  }catch(error){
     throw error;
   }
 }

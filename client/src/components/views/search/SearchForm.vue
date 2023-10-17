@@ -344,6 +344,7 @@
             return ["", ""];
         }
         
+        //@ts-ignore
         return [timeSelectionPicker.value[0].getTime(), timeSelectionPicker.value[1].getTime()];
     }
 
