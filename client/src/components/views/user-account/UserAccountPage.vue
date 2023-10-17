@@ -19,7 +19,9 @@
                     </template>
 
                     <template v-else>
-                        <UserInfo :userAccount="userAccountStore.userAccount!"> </UserInfo>
+                        <template v-if="!isLoading">
+                            <UserInfo :userAccount="userAccountStore.userAccount!" :isEditMode="false"> </UserInfo>
+                        </template>
                     </template>
                 </v-col>
 
@@ -33,6 +35,7 @@
                                 v-for="(item, i) in actionItems"
                                 :key="i"
                                 :value="item"
+                                @click="item.event"
                                 color="primary">
 
                                 <template v-slot:prepend>
@@ -59,6 +62,7 @@
 
 
     //reactive variables
+    const isLoading = ref<boolean>(true);
 
 
     //store
@@ -66,26 +70,29 @@
     const userAccountStore = useUserAccountStore();
 
     //action lists
-    const actionItems = ref<{text: string, icon: string}[]>();
+    const actionItems = ref<{text: string, icon: string, event: Function}[]>();
 
-    const actionItemsAdmin: {text: string, icon: string}[] = [
-        { text: "View User Account", icon: "mdi-account-eye" },
-        { text: "Edit User Account", icon: "mdi-account-edit" },
-        { text: "Deactivate User Account", icon: "mdi-account-cancel" },
-        { text: "Add User Account", icon: "mdi-account-plus" },
+    const actionItemsAdmin: {text: string, icon: string, event: Function}[] = [
+        { text: "View User Account", icon: "mdi-account-eye", event: tempFunction},
+        { text: "Edit User Account", icon: "mdi-account-edit", event: tempFunction},
+        { text: "Deactivate User Account", icon: "mdi-account-cancel", event: tempFunction},
+        { text: "Add User Account", icon: "mdi-account-plus", event: tempFunction},
     ];
 
-    const actionItemsUser: {text: string, icon: string}[] = [
-        { text: "Edit User Account", icon: "mdi-account-edit" },
-        { text: "Change Password", icon: "mdi-lock" },
+    const actionItemsUser: {text: string, icon: string, event: Function}[] = [
+        { text: "Edit User Account", icon: "mdi-account-edit", event: editUserAccount},
+        { text: "Change Password", icon: "mdi-lock", event: tempFunction}
     ];
 
 
     onBeforeMount(async () => {
         appBarStore.title = "Account";
         await userAccountViewService.setPersonalUserAccount();
+        isLoading.value = false;
 
         assignUserActionList();
+
+        console.log(userAccountStore.userAccount)
     });
 
     function assignUserActionList(){
@@ -95,6 +102,16 @@
         }
 
         actionItems.value = actionItemsUser;
+    }
+
+    //action-icons event listeners
+    function tempFunction(){
+        console.log("test")
+
+    }
+
+    function editUserAccount(){
+        userAccountStore.isEditMode = userAccountStore.isEditMode ? false : true;
     }
 
 </script>

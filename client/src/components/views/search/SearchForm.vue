@@ -18,7 +18,7 @@
                             single-line
                             hide-details
                             density="compact"
-                            variant="solo"
+                            variant="outlined"
                             v-model="examNameField"
                         ></v-text-field>
                     </v-col>
@@ -35,7 +35,7 @@
                             single-line
                             hide-details
                             density="compact"
-                            variant="solo"
+                            variant="outlined"
                             v-model="groupNameField"
                         ></v-text-field>
                     </v-col>
@@ -60,7 +60,7 @@
                                                 single-line
                                                 hide-details
                                                 density="compact"
-                                                variant="solo"
+                                                variant="outlined"
                                                 v-model="loginNameField">
                                             </v-text-field>
                                         </v-col>
@@ -77,7 +77,7 @@
                                                 single-line
                                                 hide-details
                                                 density="compact"
-                                                variant="solo"
+                                                variant="outlined"
                                                 v-model="machineNameField">
                                             </v-text-field>
                                         </v-col>
@@ -109,7 +109,7 @@
                                                 single-line
                                                 hide-details
                                                 density="compact"
-                                                variant="solo"
+                                                variant="outlined"
                                                 v-model="metadataUrlField"
                                                 :disabled=true
                                             ></v-text-field>
@@ -127,7 +127,7 @@
                                                 single-line
                                                 hide-details
                                                 density="compact"
-                                                variant="solo"
+                                                variant="outlined"
                                                 v-model="metadataWindowTitleField"
                                             ></v-text-field>
                                         </v-col>
@@ -144,7 +144,7 @@
                                                 single-line
                                                 hide-details
                                                 density="compact"
-                                                variant="solo"
+                                                variant="outlined"
                                                 v-model="metadataUserActionField"
                                             ></v-text-field>
                                         </v-col>

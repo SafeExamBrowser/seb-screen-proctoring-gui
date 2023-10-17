@@ -4,7 +4,6 @@ import router from "@/router";
 import * as userAccountViewService from "@/services/component-services/userAccountViewService";
 
 //-------------------------------------------------//
-
 export const useAppBarStore = defineStore("appBar", () => {
   const title = ref<string>("Example Title");
 
@@ -19,18 +18,20 @@ export const useAppBarStore = defineStore("appBar", () => {
 
   return {title, galleryGridSize, galleryIsNameEnabled, galleryIsMetadataEnabled, gallerNumberOfSessions, galleryDescription};
 });
-
 //-------------------------------------------------//
 
+
+//-------------------------------------------------//
 export const useLoadingStore = defineStore("loading", () => {
   const skipLoading = ref<boolean>(false);
   const isLoading = ref<boolean>(false);
 
   return {skipLoading, isLoading};
 });
-
 //-------------------------------------------------//
 
+
+//-------------------------------------------------//
 export const useAuthStore = defineStore("auth", () => {
   async function login(accessTokenString: string, refershTokenString: string){
     setAccessToken(accessTokenString);
@@ -75,10 +76,15 @@ export const useAuthStore = defineStore("auth", () => {
 
   return {login, logout, setAccessToken, getAccessToken, setRefreshToken, getRefreshToken};
 });
-
 //-------------------------------------------------//
 
+
+//-------------------------------------------------//
 export const useUserAccountStore = defineStore("account", () => {
   const userAccount = ref<UserAccount | null>();
-  return {userAccount};
+  const isEditMode = ref<boolean>()
+
+
+  return {userAccount, isEditMode};
 });
+//-------------------------------------------------//

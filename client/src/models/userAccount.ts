@@ -4,6 +4,7 @@ type UserAccount = {
     name: string;
     surname: string;
     username: string;
+    email: string;
     language: string;
     timeZone: string;
     roles: string[];

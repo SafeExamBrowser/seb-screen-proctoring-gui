@@ -146,13 +146,13 @@
     import router from "@/router";
 
     //form fields
-    const name = ref("");
-    const surname = ref("");
-    const username = ref("");
-    const email = ref();
-    const timeZone = ref();
-    const password = ref("");
-    const confirmPassword = ref("");
+    const name = ref<string>("");
+    const surname = ref<string>("");
+    const username = ref<string>("");
+    const email = ref<string>();
+    const timeZone = ref<string>();
+    const password = ref<string>("");
+    const confirmPassword = ref<string>("");
 
     //error handling
     const registerError = ref(false);
