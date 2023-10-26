@@ -21,7 +21,11 @@
                 <v-card-title class="mt-10">
                     Sign in
                 </v-card-title>
-                <v-card-subtitle>Please fill the form to sign in to your SEB screen proctoring account.</v-card-subtitle>
+                <v-card-subtitle>
+                    <span class="subtitle-color">
+                        Please fill the form to sign in to your SEB screen proctoring account.
+                    </span>
+                </v-card-subtitle>
 
                 <v-card-text>
                     <v-form @keyup.enter="signIn()">
@@ -34,14 +38,22 @@
                         </v-text-field>
 
                         <v-text-field
-                            :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
                             :type="passwordVisible ? 'text' : 'password'"
-                            @click:append-inner="passwordVisible = !passwordVisible"
                             prepend-inner-icon="mdi-lock-outline"
                             density="compact"
                             placeholder="Password *"
                             variant="outlined"
                             v-model="password">
+
+                            <template v-slot:append-inner>
+                                <v-btn
+                                    density="compact"
+                                    variant="text"
+                                    :icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                                    @click="passwordVisible = !passwordVisible">
+                                </v-btn>
+                            </template>
+
                         </v-text-field>
 
                         <v-btn

@@ -16,3 +16,11 @@
   const loadingStore = useLoadingStore();
 
 </script>
+
+<style>
+
+  .subtitle-color{
+    color: black;
+  }
+
+</style>

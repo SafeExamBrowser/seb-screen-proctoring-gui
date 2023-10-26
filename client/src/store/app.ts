@@ -80,9 +80,9 @@ export const useUserAccountStore = defineStore("account", () => {
   const userAccount = ref<UserAccount | null>();
   const isEditMode = ref<boolean>();
   const isAccountSelected = ref<boolean>(false);
-  const isAdminViewMode = ref<boolean>(false);
+  const selectedAccountId = ref<number>();
 
 
-  return {userAccount, isEditMode, isAccountSelected, isAdminViewMode};
+  return {userAccount, isEditMode, isAccountSelected, selectedAccountId};
 });
 //-------------------------------------------------//

@@ -10,24 +10,13 @@
         :items="sessions">
 
         <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
-            <tr>
-                <template v-for="(column, index) in columns">
-                <td>
-                    <span 
-                        ref="sessionTableHeadersRef"
-                        tabindex="0"
-                        class="mr-2 cursor-pointer font-weight-bold" 
-                        role="button" 
-                        @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
-                        @click="() => toggleSort(column)">
-                        {{ column.title }}
-                    </span>
-                    <template v-if="isSorted(column)">
-                        <v-icon :icon="getSortIcon(column)"></v-icon>
-                    </template>
-                </td>
-                </template>
-            </tr>
+            <CustomTableHeader
+                :columns="columns"
+                :is-sorted="isSorted"
+                :get-sort-icon="getSortIcon"
+                :toggle-sort="toggleSort"
+                :header-refs-prop="sessionTableHeadersRef">
+            </CustomTableHeader>
         </template>
 
         <template v-slot:item.startTime="{item}">
@@ -46,6 +35,8 @@
             <v-icon 
                 tabindex="0" 
                 variant="text" 
+                @keydown.native.enter="searchTimeline(internalItem, isExpanded, toggleExpand)"
+                @keydown.native.space="searchTimeline(internalItem, isExpanded, toggleExpand)"
                 @click="searchTimeline(internalItem, isExpanded, toggleExpand)"
                 :icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
             </v-icon>
@@ -71,6 +62,7 @@
     import * as tableUtils from "@/utils/table/tableUtils"
     import SearchScreenshotsTable from "./SearchScreenshotsTable.vue";
     import * as searchViewService from "@/services/component-services/searchViewService";
+    import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
 
     //props
     const props = defineProps<{
@@ -107,20 +99,6 @@
         }
 
         addTableItemToRefs(timelineSearchResponse, toggleExpand, item);
-    }
-
-    function handleTabKeyEvent(event: any, action: string, index: number, key: number){
-        if (event.key == 'Enter' || event.key == ' ') {
-            if(action == "sort"){
-                sortTable(key)
-            }
-        }
-    }
-
-    function sortTable(key: number){
-        if(sessionTableHeadersRef.value != null){
-            sessionTableHeadersRef.value[key].click();
-        }
     }
 
 

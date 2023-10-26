@@ -25,7 +25,7 @@ export async function setPersonalUserAccount(): Promise<UserAccount | null>{
 
 export async function getUserAccountById(accountId: string): Promise<UserAccount[] | any>{
     try{
-        const userAccount = userAccountService.getUserAccountById(accountId)
+        const userAccount = await userAccountService.getUserAccountById(accountId)
 
         return userAccount;
 
@@ -37,7 +37,7 @@ export async function getUserAccountById(accountId: string): Promise<UserAccount
 
 export async function getUserAccounts(optionalParamters?: OptionalParGeneric): Promise<UserAccountResponse[] | any>{
     try{
-        const userAccounts = userAccountService.getUserAccounts(optionalParamters)
+        const userAccounts = await userAccountService.getUserAccounts(optionalParamters)
 
         return userAccounts;
 
@@ -45,4 +45,18 @@ export async function getUserAccounts(optionalParamters?: OptionalParGeneric): P
         console.error(error);
         return null;
     }
+}
+
+export function disableEnableActionItem(action: string): boolean{
+    const userAccountStore = useUserAccountStore();
+
+    if(!userAccountStore.userAccount?.roles.includes('ADMIN')){
+        return false;
+    }
+
+    if(action == "add"){
+        return false;
+    }
+
+    return !userAccountStore.isAccountSelected;
 }

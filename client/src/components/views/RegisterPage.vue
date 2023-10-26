@@ -86,27 +86,41 @@
                         <!--password-->
                         <v-text-field
                             required
-                            :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
                             :type="passwordVisible ? 'text' : 'password'"
-                            @click:append-inner="passwordVisible = !passwordVisible"
                             prepend-inner-icon="mdi-lock-outline"
                             density="compact"
                             placeholder="Password *"
                             variant="outlined"
                             v-model="password">
+
+                            <template v-slot:append-inner>
+                                <v-btn
+                                    density="compact"
+                                    variant="text"
+                                    :icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                                    @click="passwordVisible = !passwordVisible">
+                                </v-btn>
+                            </template>
                         </v-text-field>
 
                         <!--confirm password-->
                         <v-text-field
                             required
-                            :append-inner-icon="confirmPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
                             :type="confirmPasswordVisible ? 'text' : 'password'"
-                            @click:append-inner="confirmPasswordVisible = !confirmPasswordVisible"
                             prepend-inner-icon="mdi-lock-outline"
                             density="compact"
                             placeholder="Confirm password *"
                             variant="outlined"
                             v-model="confirmPassword">
+
+                            <template v-slot:append-inner>
+                                <v-btn
+                                    density="compact"
+                                    variant="text"
+                                    :icon="confirmPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                                    @click="confirmPasswordVisible = !confirmPasswordVisible">
+                                </v-btn>
+                            </template>
                         </v-text-field>
 
                         <!--register button-->

@@ -13,25 +13,13 @@
         :items="accounts">
 
         <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort}">
-            <tr>
-                <template v-for="(column, index) in columns">
-                <td>
-                    <span 
-                        ref="headerRefs"
-                        tabindex="0" 
-                        class="mr-2 cursor-pointer font-weight-bold" 
-                        role="button" 
-                        @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
-                        @click="() => toggleSort(column)"
-                    >
-                        {{ column.title }}
-                    </span>
-                    <template v-if="isSorted(column)">
-                        <v-icon :icon="getSortIcon(column)"></v-icon>
-                    </template>
-                </td>
-                </template>
-            </tr>
+            <CustomTableHeader
+                :columns="columns"
+                :is-sorted="isSorted"
+                :get-sort-icon="getSortIcon"
+                :toggle-sort="toggleSort"
+                :header-refs-prop="headerRefs">
+            </CustomTableHeader>
         </template>
 
         <template v-slot:item.terminationTime="{item}">
@@ -53,6 +41,7 @@
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import * as tableUtils from "@/utils/table/tableUtils";
     import { Status } from "@/models/statusEnum";
+    import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
 
 
     //store
@@ -77,8 +66,6 @@
     onBeforeMount(async () => {
         const userAccountResponse: UserAccountResponse = await userAccountViewService.getUserAccounts({pageSize: 500});
         accounts.value = userAccountResponse?.content;
-
-        console.log(accounts.value)
     });
 
 
@@ -89,9 +76,7 @@
         }
 
         userAccountStore.isAccountSelected = true;
-
-        console.log(selectedItem.value)
-
+        userAccountStore.selectedAccountId = selectedItem.value[0];
     });
 
 
@@ -108,28 +93,9 @@
 
 
 
-
-    function handleTabKeyEvent(event: any, action: string, index: number, key: number){
-        if (event.key == 'Enter' || event.key == ' ') {
-            if(action == "sort"){
-                sortTable(key)
-            }
-        }
-    }
-
-    function sortTable(key: number){
-        if(headerRefs.value != null){
-            headerRefs.value[key].click();
-        }
-    }
-
-
 </script>
 
 <style scoped>
 
-    .test{
 
-    }
-
-</style>@/utils/table/tableUtils
+</style>
