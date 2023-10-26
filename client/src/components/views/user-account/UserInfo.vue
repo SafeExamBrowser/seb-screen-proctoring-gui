@@ -1,6 +1,7 @@
 <template>
     <template v-if="userAccount != null">
-        <div class="user-info-parent-container">
+        <div class="user-info-page-container">
+
             <v-sheet elevation="4" class="user-info-container rounded-lg">
                 <v-form :disabled="!userAccountStore.isEditMode">
 
@@ -176,10 +177,14 @@
 
 <style scoped>
 
-    .user-info-parent-container{
+    .user-info-page-container{
         display: flex;
         justify-content: center;
-        align-items: center; 
+    }
+
+    .user-info-back-button-container{
+        display: flex;
+        justify-content: start;
     }
 
     .user-info-container{

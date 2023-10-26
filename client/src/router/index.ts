@@ -53,9 +53,14 @@ const routes: Array<RouteRecordRaw> = [
         component: ProctoringViewPage,
       },
       {
-        path: "/userAccount",
+        path: "/account",
         name: "UserAccountPage",
         component: UserAccountPage,
+      },
+      {
+        path: "/account/:accountId",
+        name: "SingleUserAccount",
+        component: UserAccountPage
       }
 
     ]

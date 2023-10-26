@@ -92,7 +92,7 @@
                             <v-list-item-title>Logged in as: {{ userAccountStore.userAccount?.name }}</v-list-item-title>
                         </v-list-item>
 
-                        <v-list-item class="d-flex" to="/userAccount">
+                        <v-list-item class="d-flex" to="/account">
                             <v-list-item-title>Account</v-list-item-title>
                         </v-list-item>
 

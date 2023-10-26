@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios'
 import * as apiService from "@/services/api-services/apiService";
 
-export async function getGroups(optionalParamters?: OptionalParGroup): Promise<Group[] | any> {
+export async function getGroups(optionalParamters?: OptionalParGeneric): Promise<Group[] | any> {
 
   try {
     const url: string = "/group";

@@ -17,7 +17,7 @@
                             <span 
                                 ref="headerRefs"
                                 tabindex="0" 
-                                class="mr-2 cursor-pointer" 
+                                class="mr-2 cursor-pointer font-weight-bold" 
                                 role="button" 
                                 @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
                                 @click="() => toggleSort(column)"
@@ -32,7 +32,6 @@
                     </tr>
                 </template>
 
-                <!--compiler currently shows an error for those items, but they are accesible -> should be removed in fututre vuetify releases -->
                 <template v-slot:item.name="{item, index, internalItem}">
                     <td class="text-decoration-underline text-blue">
                         <div 
@@ -60,20 +59,18 @@
 <script setup lang="ts">
     import { ref, onBeforeMount, onMounted } from "vue";
     import * as groupService from "@/services/api-services/groupService";
-    import { VDataTable } from "vuetify/labs/VDataTable"
+    import { VDataTable } from "vuetify/labs/VDataTable";
     import { useAppBarStore } from "@/store/app";
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/tableUtils";
     import router from "@/router";
 
-    //reactive variables
-    const groups = ref<Group[]>();
-    const headerRefs = ref<any[]>();
-
     //stores
     const appBarStore = useAppBarStore();
 
     //table
+    const groups = ref<Group[]>();
+    const headerRefs = ref<any[]>();
     const headers = ref([
         {title: "Exam", key: "exam.name"},
         {title: "Name", key: "name"},
@@ -82,17 +79,10 @@
     ]);
 
     onBeforeMount(async () => {
-        try {
-            appBarStore.title = "Active SEB Groups"
-            groups.value = await groupService.getGroups({pageSize: 500});
+        appBarStore.title = "Active SEB Groups"
+        groups.value = await groupService.getGroups({pageSize: 500});
 
-            console.log(groups.value)
-
-
-        } catch (error) {
-            //todo: add better error handling
-            console.error(error);
-        }
+        console.log(groups.value)
     });
 
     onMounted(() => {

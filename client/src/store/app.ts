@@ -82,9 +82,11 @@ export const useAuthStore = defineStore("auth", () => {
 //-------------------------------------------------//
 export const useUserAccountStore = defineStore("account", () => {
   const userAccount = ref<UserAccount | null>();
-  const isEditMode = ref<boolean>()
+  const isEditMode = ref<boolean>();
+  const isAccountSelected = ref<boolean>(false);
+  const isAdminViewMode = ref<boolean>(false);
 
 
-  return {userAccount, isEditMode};
+  return {userAccount, isEditMode, isAccountSelected, isAdminViewMode};
 });
 //-------------------------------------------------//

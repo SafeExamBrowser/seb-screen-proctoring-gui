@@ -109,11 +109,7 @@
 
 
     onBeforeMount(async () => {
-        try {
-            appBarStore.title = "Search"
-        } catch (error) {
-            console.error(error);
-        }
+        appBarStore.title = "Search"
     });
 
     watch(sessionPanels, () => {

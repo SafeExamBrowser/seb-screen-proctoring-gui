@@ -183,6 +183,7 @@
 
         // screenshots.value = groupUuidResponse.screenshots.slice(0, -4);
         group.value.screenshots = group.value?.screenshots.flatMap(f => f ? [f] : []);
+        appBarStore.gallerNumberOfSessions = group.value.numberOfSessions;
 
         if (group.value.screenshots.length == 0) {
             noScreenshotData.value = true;

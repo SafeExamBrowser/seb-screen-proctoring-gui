@@ -1,8 +1,7 @@
 type GroupResponse  = {
-    number_of_pages: number;
-    page_number: number;
-    page_size: number;
-    sort: string;
+    numberOfPages: number;
+    pageNumber: number;
+    pageSize: number;
     content: Group[];
 }
 

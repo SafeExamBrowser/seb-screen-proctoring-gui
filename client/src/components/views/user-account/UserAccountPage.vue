@@ -3,26 +3,30 @@
         <v-sheet elevation="4" class="account-container rounded-lg">
             <v-row>
 
+                <v-col cols="1">
+                    <v-btn
+                        v-if="userAccountStore.isAdminViewMode" 
+                        size="x-large"
+                        variant="text" 
+                        icon="mdi-arrow-left"
+                        @click="backToTable">
+                    </v-btn>
+                </v-col>
+
                 <v-col>
-                    <template v-if="userAccountStore.userAccount?.roles.includes('ADMIN')">
-
-                        admin
-                        <!-- <v-data-table>
-
-
-
-                            
-                        </v-data-table>  -->
-
-
-
+                    <!-----------admin---------->
+                    <template v-if="userAccountStore.userAccount?.roles.includes('ADMIN') && !userAccountStore.isAdminViewMode">
+                        <UserList></UserList>
                     </template>
+                    <!-------------------------->
 
-                    <template v-else>
+                    <!--user or admin edit mode-->
+                    <template v-if="!userAccountStore.userAccount?.roles.includes('ADMIN') || userAccountStore.isAdminViewMode">
                         <template v-if="!isLoading">
                             <UserInfo :userAccount="userAccountStore.userAccount!" :isEditMode="false"> </UserInfo>
                         </template>
                     </template>
+                    <!-------------------------->
                 </v-col>
 
                 <v-col cols="2">
@@ -35,6 +39,7 @@
                                 v-for="(item, i) in actionItems"
                                 :key="i"
                                 :value="item"
+                                :disabled="disableEnableActionItem(item.action)"
                                 @click="item.event"
                                 color="primary">
 
@@ -59,29 +64,28 @@
     import { useAppBarStore, useUserAccountStore } from "@/store/app";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import UserInfo from "./UserInfo.vue";
-
+    import UserList from "./UserList.vue";
+    import router from "@/router";
 
     //reactive variables
     const isLoading = ref<boolean>(true);
-
 
     //store
     const appBarStore = useAppBarStore();
     const userAccountStore = useUserAccountStore();
 
     //action lists
-    const actionItems = ref<{text: string, icon: string, event: Function}[]>();
+    const actionItems = ref<{text: string, icon: string, action: string, event: Function}[]>();
 
-    const actionItemsAdmin: {text: string, icon: string, event: Function}[] = [
-        { text: "View User Account", icon: "mdi-account-eye", event: tempFunction},
-        { text: "Edit User Account", icon: "mdi-account-edit", event: tempFunction},
-        { text: "Deactivate User Account", icon: "mdi-account-cancel", event: tempFunction},
-        { text: "Add User Account", icon: "mdi-account-plus", event: tempFunction},
+    const actionItemsAdmin: {text: string, icon: string, action: string, event: Function}[] = [
+        { text: "View User Account", icon: "mdi-account-eye", action: "view", event: viewUserAccount},
+        { text: "Deactivate User Account", icon: "mdi-account-cancel", action: "deactivate", event: tempFunction},
+        { text: "Add User Account", icon: "mdi-account-plus", action: "add", event: tempFunction},
     ];
 
-    const actionItemsUser: {text: string, icon: string, event: Function}[] = [
-        { text: "Edit User Account", icon: "mdi-account-edit", event: editUserAccount},
-        { text: "Change Password", icon: "mdi-lock", event: tempFunction}
+    const actionItemsUser: {text: string, icon: string, action: string, event: Function,}[] = [
+        { text: "Edit User Account", icon: "mdi-account-edit", action: "edit", event: editUserAccount},
+        { text: "Change Password", icon: "mdi-lock", action: "change", event: tempFunction}
     ];
 
 
@@ -95,24 +99,53 @@
         console.log(userAccountStore.userAccount)
     });
 
+
     function assignUserActionList(){
-        if(userAccountStore.userAccount?.roles.includes('ADMIN')){
+        if(userAccountStore.userAccount?.roles.includes('ADMIN') && !userAccountStore.isAdminViewMode){
             actionItems.value = actionItemsAdmin;
             return;
         }
 
-        actionItems.value = actionItemsUser;
+        if(!userAccountStore.userAccount?.roles.includes('ADMIN') || userAccountStore.isAdminViewMode){
+            actionItems.value = actionItemsUser;
+            return;
+        }
     }
 
-    //action-icons event listeners
+    function backToTable(){
+        userAccountStore.isAdminViewMode = false;
+        assignUserActionList();
+    }
+
+
+
+    //=====action-icons event listeners======
     function tempFunction(){
         console.log("test")
+    }
 
+    function viewUserAccount(){
+        userAccountStore.isAdminViewMode = userAccountStore.isAdminViewMode ? false : true; 
+        assignUserActionList();
     }
 
     function editUserAccount(){
         userAccountStore.isEditMode = userAccountStore.isEditMode ? false : true;
     }
+
+    function disableEnableActionItem(action: string): boolean{
+        if(!userAccountStore.userAccount?.roles.includes('ADMIN')){
+            return false;
+        }
+
+        if(action == "add"){
+            return false;
+        }
+
+        return !userAccountStore.isAccountSelected;
+    }
+    //==============================
+
 
 </script>
 
