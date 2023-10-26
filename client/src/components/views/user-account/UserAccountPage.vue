@@ -92,6 +92,10 @@
     onBeforeMount(async () => {
         appBarStore.title = "Account";
         await userAccountViewService.setPersonalUserAccount();
+
+        
+
+
         isLoading.value = false;
 
         assignUserActionList();

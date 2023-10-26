@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 import { ref } from "vue";
-import router from "@/router";
+import {navigateTo} from "@/router/navigation";
 import * as userAccountViewService from "@/services/component-services/userAccountViewService";
 
 //-------------------------------------------------//
@@ -37,9 +37,7 @@ export const useAuthStore = defineStore("auth", () => {
     setAccessToken(accessTokenString);
     setRefreshToken(refershTokenString);
 
-    router.push({
-      path: "/start"
-    });
+    navigateTo("/start");
 
    await userAccountViewService.setPersonalUserAccount();
   }
@@ -49,9 +47,7 @@ export const useAuthStore = defineStore("auth", () => {
     setRefreshToken("");
     useUserAccountStore().userAccount = null;
 
-    router.push({
-      path: "/"
-    });
+    navigateTo("/");
   }
   
   function setAccessToken(accessTokenString: string){

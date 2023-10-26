@@ -8,6 +8,7 @@ import GalleryViewPage from "@/components/views/GalleryViewPage.vue"
 import ProctoringViewPage from "@/components/views/ProctoringViewPage.vue"
 import ExamplePage from "@/components/views/ExamplePage.vue"
 import UserAccountPage from "@/components/views/user-account/UserAccountPage.vue"
+import UserInfo from "@/components/views/user-account/UserInfo.vue"
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -60,7 +61,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/account/:accountId",
         name: "SingleUserAccount",
-        component: UserAccountPage
+        component: UserInfo
       }
 
     ]

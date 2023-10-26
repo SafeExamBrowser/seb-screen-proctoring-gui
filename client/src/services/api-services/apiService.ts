@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import * as authenticationService from "@/services/api-services/authenticationService";
-import router from "@/router";
+import {navigateTo} from "@/router/navigation";
 import * as ENV from "@/config/envConfig";
 import { useLoadingStore, useAuthStore } from "@/store/app";
 
@@ -68,9 +68,7 @@ export function createApiInterceptor(){
                 return api(originalRequest);
 
             }catch(error){
-                router.push({
-                    path: "/"
-                });
+                navigateTo("/");
 
                 throw Promise.reject(error);
             }

@@ -78,7 +78,7 @@
 <script setup lang="ts">
     import { ref } from "vue";
     import * as authenticationService from "@/services/api-services/authenticationService";
-    import router from "@/router";
+    import {navigateTo} from "@/router/navigation";
     import { useLoadingStore, useAuthStore } from "@/store/app";
 
 
@@ -114,17 +114,10 @@
         if (event.key == 'Enter' || event.key == ' ') {
 
             if(action == "navigate"){
-                navigateToRegisterView();
+                navigateTo("/register");
             }
         }
     }
-
-    function navigateToRegisterView(){
-        router.push({
-            path: "/register"
-        });
-    }
-
 
 </script>
   

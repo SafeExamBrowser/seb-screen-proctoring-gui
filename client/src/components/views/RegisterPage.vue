@@ -143,7 +143,7 @@
 <script setup lang="ts">
     import { ref } from "vue";
     import * as userAccountService from "@/services/api-services/userAccountService";
-    import router from "@/router";
+    import {navigateTo} from "@/router/navigation";
 
     //form fields
     const name = ref<string>("");
@@ -186,17 +186,10 @@
         if (event.key == 'Enter' || event.key == ' ') {
 
             if(action == "navigate"){
-                navigateToLoginView();
+                navigateTo("/");
             }
         }
     }
-
-    function navigateToLoginView(){
-        router.push({
-            path: "/"
-        });
-    }
-
 
 </script>
   

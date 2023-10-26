@@ -1,7 +1,7 @@
 import * as groupService from "@/services/api-services/groupService";
 import * as sessionService from "@/services/api-services/sessionService";
 import { SortOrder } from "@/models/sortOrderEnum";
-import router from "@/router";
+import {navigateTo} from "@/router/navigation";
 import { useAuthStore } from "@/store/app";
 
 //=============api==================
@@ -69,9 +69,7 @@ export function createImageLinkWithToken(screenshots: Screenshot[] | undefined, 
 
 export function navigateToProctoringView(screenshots: Screenshot[] | undefined, groupUuid: string, index: number) {
     if (screenshots != null) {
-        router.push({
-            path: "/recording/" + screenshots[index].uuid
-        });
+        navigateTo("/recording/" + screenshots[index].uuid);
     }
 }
 //==============================

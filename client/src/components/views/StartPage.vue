@@ -63,7 +63,8 @@
     import { useAppBarStore } from "@/store/app";
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/tableUtils";
-    import router from "@/router";
+    import {navigateTo} from "@/router/navigation";
+
 
     //stores
     const appBarStore = useAppBarStore();
@@ -108,16 +109,11 @@
             }
 
             if(action == "navigate"){
-                navigateToGalleryView(index);
+                navigateTo(getGalleryViewLink(index));
             }
         }
     }
 
-    function navigateToGalleryView(index: number){
-        router.push({
-            path: getGalleryViewLink(index)
-        });
-    }
 
     function sortTable(key: number){
         if(headerRefs.value != null){

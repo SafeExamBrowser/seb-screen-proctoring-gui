@@ -157,6 +157,8 @@
             username.value = props.userAccount.username;
             email.value = props.userAccount.email;
             timeZone.value = props.userAccount.name;
+        }else{
+            
         }
     });
 
