@@ -51,7 +51,7 @@
     import { useAppBarStore, useUserAccountStore } from "@/store/app";
     import { VDataTable } from "vuetify/labs/VDataTable";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
-    import * as tableUtils from "@/utils/tableUtils";
+    import * as tableUtils from "@/utils/table/tableUtils";
     import { Status } from "@/models/statusEnum";
 
 
@@ -132,4 +132,4 @@
 
     }
 
-</style>
+</style>@/utils/table/tableUtils

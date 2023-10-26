@@ -112,7 +112,7 @@
 <script setup lang="ts">
     import { ref, watch, onBeforeMount } from "vue";
     import * as timeUtils from "@/utils/timeUtils";
-    import * as tableUtils from "@/utils/tableUtils";
+    import * as tableUtils from "@/utils/table/tableUtils";
     import { VDataTable } from "vuetify/labs/VDataTable";
     import * as searchViewService from "@/services/component-services/searchViewService";
     import * as groupingUtils from "@/utils/groupingUtils";
@@ -178,3 +178,4 @@
         border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity));
     } 
 </style>
+@/utils/table/tableUtils

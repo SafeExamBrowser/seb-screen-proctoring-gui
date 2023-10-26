@@ -11,25 +11,13 @@
                 :items="groups">
 
                 <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
-                    <tr>
-                        <template v-for="(column, index) in columns">
-                        <td>
-                            <span 
-                                ref="headerRefs"
-                                tabindex="0" 
-                                class="mr-2 cursor-pointer font-weight-bold" 
-                                role="button" 
-                                @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
-                                @click="() => toggleSort(column)"
-                            >
-                                {{ column.title }}
-                            </span>
-                            <template v-if="isSorted(column)">
-                                <v-icon :icon="getSortIcon(column)"></v-icon>
-                            </template>
-                        </td>
-                        </template>
-                    </tr>
+                    <CustomTableHeader
+                        :columns="columns"
+                        :is-sorted="isSorted"
+                        :get-sort-icon="getSortIcon"
+                        :toggle-sort="toggleSort"
+                        :header-refs-prop="headerRefs">
+                    </CustomTableHeader>
                 </template>
 
                 <template v-slot:item.name="{item, index, internalItem}">
@@ -37,7 +25,7 @@
                         <div 
                             role="button" 
                             tabindex="0" 
-                            @keydown="handleTabKeyEvent($event, 'navigate', internalItem.index, 0)">
+                            @keydown="tableUtils.handleTabKeyEvent($event, 'navigate', internalItem.index, {path: getGalleryViewLink(internalItem.index)})">
                             <router-link :to="getGalleryViewLink(internalItem.index)">{{item.name}}</router-link>
                         </div>
                     </td>
@@ -62,8 +50,8 @@
     import { VDataTable } from "vuetify/labs/VDataTable";
     import { useAppBarStore } from "@/store/app";
     import * as timeUtils from "@/utils/timeUtils";
-    import * as tableUtils from "@/utils/tableUtils";
-    import {navigateTo} from "@/router/navigation";
+    import * as tableUtils from "@/utils/table/tableUtils";
+    import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
 
 
     //stores
@@ -86,13 +74,6 @@
         console.log(groups.value)
     });
 
-    onMounted(() => {
-        //sort by start-time desc
-        sortTable(3);
-        sortTable(3);
-    });
-
-
     function getGalleryViewLink(index: number) {
         if(groups.value != null){
             return "/galleryView/" + groups.value[index].uuid;
@@ -101,25 +82,6 @@
         return "";
     }
 
-    function handleTabKeyEvent(event: any, action: string, index: number, key: number){
-        if (event.key == 'Enter' || event.key == ' ') {
-
-            if(action == "sort"){
-                sortTable(key)
-            }
-
-            if(action == "navigate"){
-                navigateTo(getGalleryViewLink(index));
-            }
-        }
-    }
-
-
-    function sortTable(key: number){
-        if(headerRefs.value != null){
-            headerRefs.value[key].click();
-        }
-    }
 </script>
 
 <style>
