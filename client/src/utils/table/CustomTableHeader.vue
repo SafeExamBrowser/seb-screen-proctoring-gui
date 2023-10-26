@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-    import { defineProps, ref, onBeforeMount, onMounted } from "vue";
+    import { ref, onBeforeMount, onMounted } from "vue";
     import * as tableUtils from "@/utils/table/tableUtils";
     import { useAppBarStore } from "@/store/app";
 
