@@ -2,7 +2,7 @@
 
     <v-data-table
         show-expand
-        item-value="sessionUUID"
+        item-value="sessionUUID" 
         class="elevation-1"
         :items-per-page="tableUtils.calcDefaultItemsPerPage(sessions)" 
         :items-per-page-options="tableUtils.calcItemsPerPage(sessions)"
@@ -10,44 +10,35 @@
         :items="sessions">
 
         <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
-            <tr>
-                <template v-for="(column, index) in columns">
-                <td>
-                    <span 
-                        ref="sessionTableHeadersRef"
-                        tabindex="0"
-                        class="mr-2 cursor-pointer font-weight-bold" 
-                        role="button" 
-                        @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
-                        @click="() => toggleSort(column)">
-                        {{ column.title }}
-                    </span>
-                    <template v-if="isSorted(column)">
-                        <v-icon :icon="getSortIcon(column)"></v-icon>
-                    </template>
-                </td>
-                </template>
-            </tr>
+            <CustomTableHeader
+                :columns="columns"
+                :is-sorted="isSorted"
+                :get-sort-icon="getSortIcon"
+                :toggle-sort="toggleSort"
+                :header-refs-prop="sessionTableHeadersRef">
+            </CustomTableHeader>
         </template>
 
         <template v-slot:item.startTime="{item}">
             <td>
                 <div>
-                    {{timeUtils.formatTimestmapToTime(item.columns.startTime)}}
+                    {{timeUtils.formatTimestmapToTime(item.startTime)}}
                 </div>
             </td>
         </template>
 
         <template v-slot:item.proctoringViewLink="{item}">
-            <v-btn @click="searchViewService.openProctoringView(item.raw.sessionUUID)" variant="text" icon="mdi-video"></v-btn>
+            <v-btn @click="searchViewService.openProctoringView(item.sessionUUID)" variant="text" icon="mdi-video"></v-btn>
         </template>
 
-        <template v-slot:item.data-table-expand="{item, isExpanded, toggleExpand}">
+        <template v-slot:item.data-table-expand="{internalItem, isExpanded, toggleExpand}">
             <v-icon 
                 tabindex="0" 
                 variant="text" 
-                @click="searchTimeline(item, isExpanded, toggleExpand)"
-                :icon="isExpanded(item) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
+                @keydown.native.enter="searchTimeline(internalItem, isExpanded, toggleExpand)"
+                @keydown.native.space="searchTimeline(internalItem, isExpanded, toggleExpand)"
+                @click="searchTimeline(internalItem, isExpanded, toggleExpand)"
+                :icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
             </v-icon>
         </template>
 
@@ -55,7 +46,7 @@
             <tr>
                 <td :colspan="columns.length">
                     <!--@vue-ignore-->
-                    <SearchScreenshotsTable :timelineSearchResult="timelineSearchResults.find(i => i.sessionUUID == item.raw.sessionUUID)"></SearchScreenshotsTable>
+                    <SearchScreenshotsTable :timelineSearchResult="timelineSearchResults.find(i => i.sessionUUID == item.sessionUUID)"></SearchScreenshotsTable>
                 </td>
             </tr>
         </template>
@@ -68,20 +59,19 @@
     import { ref } from "vue";
     import { VDataTable } from "vuetify/labs/VDataTable"
     import * as timeUtils from "@/utils/timeUtils";
-    import * as tableUtils from "@/utils/tableUtils"
+    import * as tableUtils from "@/utils/table/tableUtils"
     import SearchScreenshotsTable from "./SearchScreenshotsTable.vue";
     import * as searchViewService from "@/services/component-services/searchViewService";
+    import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
 
     //props
     const props = defineProps<{
-        sessions: Session[]
+        sessions: Session[],
+        metaData: MetaData
     }>();
-
 
     //reactive variables
     const timelineSearchResults = ref<SearchTimeline[]>([]);
-    const timelineSearchResult = ref<SearchTimeline>();
-
 
     //table
     const sessionTableHeadersRef = ref<any[]>();
@@ -102,30 +92,13 @@
             return;
         }
 
-        const timelineSearchResponse: SearchTimeline | null = await searchViewService.searchTimeline(item.raw.sessionUUID);
+        const timelineSearchResponse: SearchTimeline | null = await searchViewService.searchTimeline(item.raw.sessionUUID, {screenProctoringMetadataWindowTitle: props.metaData.screenProctoringMetadataWindowTitle, screenProctoringMetadataUserAction: props.metaData.screenProctoringMetadataUserAction});
 
         if(timelineSearchResponse == null){
             return;
         }
 
-        timelineSearchResult.value = timelineSearchResponse;
-        console.log(timelineSearchResponse)
-
         addTableItemToRefs(timelineSearchResponse, toggleExpand, item);
-    }
-
-    function handleTabKeyEvent(event: any, action: string, index: number, key: number){
-        if (event.key == 'Enter' || event.key == ' ') {
-            if(action == "sort"){
-                sortTable(key)
-            }
-        }
-    }
-
-    function sortTable(key: number){
-        if(sessionTableHeadersRef.value != null){
-            sessionTableHeadersRef.value[key].click();
-        }
     }
 
 
@@ -139,7 +112,7 @@
         
         if(isExpanded(item)){
             toggleExpand(item);
-            const index: number = timelineSearchResults.value.findIndex(i => i.sessionUUID == item.raw.sessionUUID);
+            const index: number = timelineSearchResults.value.findIndex(i => i.sessionUUID == item.sessionUUID);
 
             if (index !== -1) {
                 timelineSearchResults.value.splice(index, 1);
@@ -152,4 +125,4 @@
     }
 
 
-</script>
+</script>@/utils/table/tableUtils

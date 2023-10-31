@@ -1,46 +1,98 @@
 <template>
-    <main id="main-content" class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-md w-full space-y-8">
+    <v-main>
+        <v-container class="fill-height d-flex align-center justify-center">
 
-            <div>
-                <img class="mx-auto h-12 w-auto" src="/img/logo.svg" alt="Logo ETH Zürich" />
-                <h1 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                    Sign in
-                </h1>
-                <p class="mt-2 text-center text-sm text-gray-600">
-                    Please fill the form to sign in to your SEB server account.
-                </p>
-            </div>
-
-            <AlertMsgOld v-if="loginError" title="Login failed"
-                message="Please provide a correct pair of user name and password."></AlertMsgOld>
-
-            <form class="mt-8 space-y-6" action="#" method="POST" @submit.prevent="handleFormSubmit">
-                <div class="space-y-3">
-                    <div>
-                        <label for="username" class="sr-only">Username</label>
-                        <input v-model="username" name="username" type="text" autocomplete="off" required
-                            class="login_input" placeholder="Username" />
-                    </div>
-                    <div>
-                        <label for="password" class="sr-only">Password</label>
-                        <input v-model="password" name="password" type="password" autocomplete="off" required
-                            class="login_input" placeholder="Password" />
-                    </div>
+            <v-card class="pa-10">
+                <div class="d-flex ml-15 mr-15">
+                    <img src="/img/logo.svg" alt="Logo ETH Zürich" />
                 </div>
-                <ActionButton type="submit" label="Sign In" :full="true"></ActionButton>
-            </form>
 
-        </div>
-    </main>
+                <div class="mt-10">
+                    <AlertMsg 
+                        v-if="loginError"
+                        :alertProps="{
+                            color: 'error',
+                            type: 'alert',
+                            textKey: 'login-error'
+                        }">
+                    </AlertMsg>
+                </div>
+                
+                <v-card-title class="mt-10">
+                    Sign in
+                </v-card-title>
+                <v-card-subtitle>
+                    <span class="subtitle-color">
+                        Please fill the form to sign in to your SEB screen proctoring account.
+                    </span>
+                </v-card-subtitle>
+
+                <v-card-text>
+                    <v-form @keyup.enter="signIn()">
+                        <v-text-field
+                            prepend-inner-icon="mdi-account-outline"
+                            density="compact"
+                            placeholder="Username *"
+                            variant="outlined"
+                            v-model="username">
+                        </v-text-field>
+
+                        <v-text-field
+                            :type="passwordVisible ? 'text' : 'password'"
+                            prepend-inner-icon="mdi-lock-outline"
+                            density="compact"
+                            placeholder="Password *"
+                            variant="outlined"
+                            v-model="password">
+
+                            <template v-slot:append-inner>
+                                <v-btn
+                                    density="compact"
+                                    variant="text"
+                                    :icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                                    @click="passwordVisible = !passwordVisible">
+                                </v-btn>
+                            </template>
+
+                        </v-text-field>
+
+                        <v-btn
+                            block
+                            rounded="sm" 
+                            color="primary"
+                            @click="signIn()">
+                            {{ $t("navigation.sign-in") }}
+                        </v-btn>
+
+                    </v-form>
+
+                    <div class="text-center mt-7">
+                        <span>
+                            No Account? 
+                        </span>
+                        <span 
+                            class="text-decoration-underline text-blue"
+                            role="button" 
+                            tabindex="0" 
+                            @keydown="handleTabKeyEvent($event, 'navigate')">
+                            <router-link to="/register">Register</router-link>
+                        </span>
+                    </div>
+
+                </v-card-text>
+
+            </v-card>
+
+        </v-container>
+    </v-main>
 </template>
   
 <script setup lang="ts">
     import { ref } from "vue";
-    import AlertMsgOld from "@/components/widgets/AlertMsgOld.vue";
-    import ActionButton from "@/components/widgets/ActionButton.vue";
     import * as authenticationService from "@/services/api-services/authenticationService";
-    import router from "@/router";
+    import {navigateTo} from "@/router/navigation";
+    import { useLoadingStore, useAuthStore } from "@/store/app";
+
 
     const username = ref("super-admin");
     const password = ref("admin");
@@ -48,20 +100,18 @@
     // const password = ref("");
     const loginError = ref(false);
 
-    async function handleFormSubmit(){
+    const passwordVisible = ref<boolean>(false);
+
+    //store
+    const authStore = useAuthStore();
+    const loadingStore = useLoadingStore();
+
+    async function signIn(){
+        loginError.value = false;
 
         try{
             const tokenObject: Token = await authenticationService.login(username.value, password.value);
-
-            localStorage.setItem("accessToken", tokenObject.access_token);
-            localStorage.setItem("refreshToken", tokenObject.refresh_token);
-
-            console.log("token: " + localStorage.getItem("accessToken"))
-
-            router.push({
-                path: "/start"
-            });
-
+            authStore.login(tokenObject.access_token, tokenObject.refresh_token);
 
         }catch(error){
             //todo: add better error handling
@@ -71,24 +121,19 @@
 
     }
 
+    //todo: extract this function into a global file
+    function handleTabKeyEvent(event: any, action: string){
+        if (event.key == 'Enter' || event.key == ' ') {
+
+            if(action == "navigate"){
+                navigateTo("/register");
+            }
+        }
+    }
 
 </script>
   
 
-<style lang="scss" scoped>
-.login_input {
-    @apply appearance-none;
-    @apply rounded-none;
-    @apply relative;
-    @apply block;
-    @apply w-full;
-    @apply px-2;
-    @apply py-1.5;
-    @apply rounded-sm;
-    @apply placeholder-gray-500;
-    @apply text-gray-900;
-    @apply border-gray-300;
-    //@apply focus: border-primary-600;
-    //@apply sm: text-sm;
-}
+<style scoped>
+
 </style>

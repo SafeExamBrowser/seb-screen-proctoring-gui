@@ -1,3 +1,5 @@
+import {navigateTo} from "@/router/navigation";
+
 export function calcDefaultItemsPerPage(itemList: any): number {
     if (itemList == null || itemList.length == 0) {
         return 0;
@@ -44,4 +46,35 @@ export function calcItemsPerPage(itemList: any): { value: number, title: string 
         { value: 15, title: '15' },
         { value: itemList.length, title: 'All' }
     ];
+}
+
+export function handleTabKeyEvent(event: any, action: string, key: number, optional?: {path?: string, headerRefs?: any}){
+    if (event.key == 'Enter' || event.key == ' ') {
+
+        if(action == "sort"){
+            sortTable(key, optional?.headerRefs)
+        }
+
+        if(action == "navigate"){
+            navigateTo(optional?.path!);
+        }
+    }
+}
+
+
+export function sortTable(key: number, headerRefs: any){
+    if(headerRefs.value != null){
+
+        console.log("headersRefs.value")
+
+        headerRefs.value[key].click();
+        return;
+    }
+
+    if(headerRefs != null){
+
+        console.log("headersRefs")
+
+        headerRefs[key].click();
+    }
 }

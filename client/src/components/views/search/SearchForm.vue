@@ -3,7 +3,10 @@
         elevation="4"
         class="search-container rounded-lg"
         title="Search">
-        <v-form>
+        <v-form 
+            @keyup.enter="searchSessions()"
+            @keyup.esc="clearForm()">
+
             <div class="form-container">
                 <!------------Exam Name------------->
                 <v-row align="center">
@@ -15,7 +18,7 @@
                             single-line
                             hide-details
                             density="compact"
-                            variant="solo"
+                            variant="outlined"
                             v-model="examNameField"
                         ></v-text-field>
                     </v-col>
@@ -32,7 +35,7 @@
                             single-line
                             hide-details
                             density="compact"
-                            variant="solo"
+                            variant="outlined"
                             v-model="groupNameField"
                         ></v-text-field>
                     </v-col>
@@ -57,7 +60,7 @@
                                                 single-line
                                                 hide-details
                                                 density="compact"
-                                                variant="solo"
+                                                variant="outlined"
                                                 v-model="loginNameField">
                                             </v-text-field>
                                         </v-col>
@@ -74,7 +77,7 @@
                                                 single-line
                                                 hide-details
                                                 density="compact"
-                                                variant="solo"
+                                                variant="outlined"
                                                 v-model="machineNameField">
                                             </v-text-field>
                                         </v-col>
@@ -98,7 +101,7 @@
 
                                     <!------------Metatdata: Url------------->
                                     <v-row align="center">
-                                        <v-col cols="4">
+                                        <v-col cols="4" class="text-decoration-line-through">
                                             Url:
                                         </v-col>
                                         <v-col cols="8">
@@ -106,8 +109,9 @@
                                                 single-line
                                                 hide-details
                                                 density="compact"
-                                                variant="solo"
+                                                variant="outlined"
                                                 v-model="metadataUrlField"
+                                                :disabled=true
                                             ></v-text-field>
                                         </v-col>
                                     </v-row>
@@ -116,14 +120,14 @@
                                     <!------------Metatdata: Window Title------------->
                                     <v-row align="center">
                                         <v-col cols="4">
-                                            Window Title:
+                                            Application / Website:
                                         </v-col>
                                         <v-col cols="8">
                                             <v-text-field
                                                 single-line
                                                 hide-details
                                                 density="compact"
-                                                variant="solo"
+                                                variant="outlined"
                                                 v-model="metadataWindowTitleField"
                                             ></v-text-field>
                                         </v-col>
@@ -133,14 +137,14 @@
                                     <!------------Metatdata: User Action------------->
                                     <v-row align="center">
                                         <v-col cols="4">
-                                            User Action:
+                                            Activity Details:
                                         </v-col>
                                         <v-col cols="8">
                                             <v-text-field
                                                 single-line
                                                 hide-details
                                                 density="compact"
-                                                variant="solo"
+                                                variant="outlined"
                                                 v-model="metadataUserActionField"
                                             ></v-text-field>
                                         </v-col>
@@ -216,7 +220,8 @@
                         <v-btn 
                             rounded="sm" 
                             color="black" 
-                            variant="outlined">
+                            variant="outlined"
+                            @click="clearForm()">
                             Cancel
                         </v-btn>
 
@@ -232,8 +237,6 @@
                     </v-col>
                 </v-row>
                 <!----------------------------------->
-
-                
 
             </div>
         </v-form>
@@ -285,7 +288,7 @@
     ];
 
     const timeSelectionRadio = ref<boolean>(true);
-    const timeSelectionPicker = ref();
+    const timeSelectionPicker = ref(null);
 
 
     onBeforeMount(async () => {
@@ -313,6 +316,25 @@
         );
     }
 
+    function clearForm(){
+        examNameField.value = "";
+        groupNameField.value = ""; 
+        loginNameField.value = "";
+        machineNameField.value = ""; 
+        metadataUrlField.value = ""; 
+        metadataWindowTitleField.value = "";
+        metadataUserActionField.value = "";
+        timePeriodField.value = 5;
+        timePeriodRadio.value = false;
+        timePeriodSelect.value = 1;
+        timeSelectionRadio.value = true;
+        timeSelectionPicker.value = null;
+    }
+
+    const testFunction = () => {
+
+    }
+
     function calcTimePeriod(): [string, string]{
         return [timePeriodUtils.getTimestampFromPeriodSelection(timePeriodSelect.value, timePeriodField.value), Date.now().toString()];
     }
@@ -322,6 +344,7 @@
             return ["", ""];
         }
         
+        //@ts-ignore
         return [timeSelectionPicker.value[0].getTime(), timeSelectionPicker.value[1].getTime()];
     }
 

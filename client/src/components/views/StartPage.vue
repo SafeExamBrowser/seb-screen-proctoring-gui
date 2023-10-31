@@ -3,7 +3,7 @@
     <div class="table-container">
         <div class="table d-flex align-center">
             <v-data-table 
-                item-value="name" 
+                item-value="item.name" 
                 class="elevation-1"
                 :items-per-page="tableUtils.calcDefaultItemsPerPage(groups)" 
                 :items-per-page-options="tableUtils.calcItemsPerPage(groups)"
@@ -11,42 +11,29 @@
                 :items="groups">
 
                 <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
-                    <tr>
-                        <template v-for="(column, index) in columns">
-                        <td>
-                            <span 
-                                ref="headerRefs"
-                                tabindex="0" 
-                                class="mr-2 cursor-pointer" 
-                                role="button" 
-                                @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
-                                @click="() => toggleSort(column)"
-                            >
-                                {{ column.title }}
-                            </span>
-                            <template v-if="isSorted(column)">
-                                <v-icon :icon="getSortIcon(column)"></v-icon>
-                            </template>
-                        </td>
-                        </template>
-                    </tr>
+                    <CustomTableHeader
+                        :columns="columns"
+                        :is-sorted="isSorted"
+                        :get-sort-icon="getSortIcon"
+                        :toggle-sort="toggleSort"
+                        :header-refs-prop="headerRefs">
+                    </CustomTableHeader>
                 </template>
 
-
-                <template v-slot:item.name="{item}">
+                <template v-slot:item.name="{item, index, internalItem}">
                     <td class="text-decoration-underline text-blue">
                         <div 
                             role="button" 
                             tabindex="0" 
-                            @keydown="handleTabKeyEvent($event, 'navigate', item.index, 0)">
-                            <router-link :to="getGalleryViewLink(item.index)">{{item.columns.name}}</router-link>
+                            @keydown="tableUtils.handleTabKeyEvent($event, 'navigate', internalItem.index, {path: getGalleryViewLink(internalItem.index)})">
+                            <router-link :to="getGalleryViewLink(internalItem.index)">{{item.name}}</router-link>
                         </div>
                     </td>
                 </template>
                 <template v-slot:item.creationTime="{item}">
                     <td>
                         <div>
-                            {{timeUtils.formatTimestampToFullDate(item.columns.creationTime)}}
+                            {{timeUtils.formatTimestampToFullDate(item.creationTime)}}
                         </div>
                     </td>
                 </template>
@@ -60,20 +47,19 @@
 <script setup lang="ts">
     import { ref, onBeforeMount, onMounted } from "vue";
     import * as groupService from "@/services/api-services/groupService";
-    import { VDataTable } from "vuetify/labs/VDataTable"
+    import { VDataTable } from "vuetify/labs/VDataTable";
     import { useAppBarStore } from "@/store/app";
     import * as timeUtils from "@/utils/timeUtils";
-    import * as tableUtils from "@/utils/tableUtils";
-    import router from "@/router";
+    import * as tableUtils from "@/utils/table/tableUtils";
+    import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
 
-    //reactive variables
-    const groups = ref<Group[]>();
-    const headerRefs = ref<any[]>();
 
     //stores
     const appBarStore = useAppBarStore();
 
     //table
+    const groups = ref<Group[]>();
+    const headerRefs = ref<any[]>();
     const headers = ref([
         {title: "Exam", key: "exam.name"},
         {title: "Name", key: "name"},
@@ -82,25 +68,11 @@
     ]);
 
     onBeforeMount(async () => {
-        try {
-            appBarStore.title = "Active SEB Groups"
-            groups.value = await groupService.getGroups({pageSize: 500});
+        appBarStore.title = "Active SEB Groups"
+        groups.value = await groupService.getGroups({pageSize: 500});
 
-            console.log(groups.value)
-
-
-        } catch (error) {
-            //todo: add better error handling
-            console.error(error);
-        }
+        console.log(groups.value)
     });
-
-    onMounted(() => {
-        //sort by start-time desc
-        sortTable(3);
-        sortTable(3);
-    });
-
 
     function getGalleryViewLink(index: number) {
         if(groups.value != null){
@@ -110,30 +82,6 @@
         return "";
     }
 
-    function handleTabKeyEvent(event: any, action: string, index: number, key: number){
-        if (event.key == 'Enter' || event.key == ' ') {
-
-            if(action == "sort"){
-                sortTable(key)
-            }
-
-            if(action == "navigate"){
-                navigateToGalleryView(index);
-            }
-        }
-    }
-
-    function navigateToGalleryView(index: number){
-        router.push({
-            path: getGalleryViewLink(index)
-        });
-    }
-
-    function sortTable(key: number){
-        if(headerRefs.value != null){
-            headerRefs.value[key].click();
-        }
-    }
 </script>
 
 <style>

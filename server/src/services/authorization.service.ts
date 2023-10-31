@@ -18,7 +18,7 @@ export async function authorizeViaScreenProctoringServer(username: string, passw
         return data;
 
     }catch(error){
-        apiService.handleGenericApiError(error);
+        apiService.handleGenericApiErrorOld(error);
     }
 }
 
@@ -34,7 +34,7 @@ export async function refreshViaScreenProctoringServer(refreshToken: string): Pr
         return data;
 
     }catch(error){
-        apiService.handleGenericApiError(error);
+        apiService.handleGenericApiErrorOld(error);
     }
 }
 

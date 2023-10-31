@@ -1,11 +1,11 @@
 import { AxiosResponse } from 'axios'
 import * as apiService from "@/services/api-services/apiService";
 
-export async function getGroups(optionalParamters?: OptionalParGroup): Promise<Group[] | any> {
+export async function getGroups(optionalParamters?: OptionalParGeneric): Promise<Group[] | any> {
 
   try {
     const url: string = "/group";
-    const {data, status}: AxiosResponse = await apiService.api.get(url, {headers: getHeaders(), params: {optionalParamters}});
+    const {data, status}: AxiosResponse = await apiService.api.get(url, {headers: apiService.getHeaders(), params: {optionalParamters}});
 
     if (status === 200) {
       return data.content;
@@ -20,7 +20,7 @@ export async function getGroupByUuid(uuid: string, optionalParamters?: OptionalP
 
   try {
     const url: string = "/group/" + uuid;
-    const {data, status}: AxiosResponse = await apiService.api.get(url, {headers: getHeaders(), params: {optionalParamters}});
+    const {data, status}: AxiosResponse = await apiService.api.get(url, {headers: apiService.getHeaders(), params: {optionalParamters}});
 
     if (status === 200) {
       return data;
@@ -30,12 +30,4 @@ export async function getGroupByUuid(uuid: string, optionalParamters?: OptionalP
   } catch (error) {
     throw error;
   }
-}
-
-function getHeaders(): object{
-  return {
-    "accept": "application/json",
-    "Authorization": "Bearer " + localStorage.getItem("accessToken"),
-    "Content-Type": "application/x-www-form-urlencoded"
-  };
 }

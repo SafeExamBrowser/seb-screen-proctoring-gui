@@ -1,8 +1,10 @@
-// Utilities
-import { defineStore } from 'pinia'
-import { ref } from 'vue';
+import { defineStore } from "pinia"
+import { ref } from "vue";
+import {navigateTo} from "@/router/navigation";
+import * as userAccountViewService from "@/services/component-services/userAccountViewService";
 
-export const useAppBarStore = defineStore('appBar', () => {
+//-------------------------------------------------//
+export const useAppBarStore = defineStore("appBar", () => {
   const title = ref<string>("Example Title");
 
   const galleryGridSize = ref<GridSize>({
@@ -16,36 +18,71 @@ export const useAppBarStore = defineStore('appBar', () => {
 
   return {title, galleryGridSize, galleryIsNameEnabled, galleryIsMetadataEnabled, gallerNumberOfSessions, galleryDescription};
 });
+//-------------------------------------------------//
 
+
+//-------------------------------------------------//
 export const useLoadingStore = defineStore("loading", () => {
   const skipLoading = ref<boolean>(false);
   const isLoading = ref<boolean>(false);
 
   return {skipLoading, isLoading};
 });
+//-------------------------------------------------//
 
-// export const useAuthStore = defineStore("auth", () => {
 
-//   const accessToken = ref<string | null>();
-//   const refreshToken = ref<string | null>();
+//-------------------------------------------------//
+export const useAuthStore = defineStore("auth", () => {
+  async function login(accessTokenString: string, refershTokenString: string){
+    setAccessToken(accessTokenString);
+    setRefreshToken(refershTokenString);
 
-//   function login(accessTokenString: string, refershTokenString: string){
-//     accessToken.value = accessTokenString;
-//     refreshToken.value = refershTokenString;
-//   }
+    navigateTo("/start");
 
-//   function logout(){
-//     accessToken.value = null;
-//     refreshToken.value = null;
-//   }
+   await userAccountViewService.setPersonalUserAccount();
+  }
 
-//   function setAccessToken(accessTokenString: string){
-//     accessToken.value = accessTokenString;
-//   }
+  function logout(){
+    setAccessToken("");
+    setRefreshToken("");
+    useUserAccountStore().userAccount = null;
 
-//   function setRefreshToken(refreshTokenString: string){
-//     refreshToken.value = refreshTokenString;
-//   }
+    navigateTo("/");
+  }
+  
+  function setAccessToken(accessTokenString: string){
+    localStorage.setItem("accessToken", accessTokenString);
+  }
 
-//   return {accessToken, refreshToken, login, logout, setAccessToken, setRefreshToken};
-// });
+  function getAccessToken() : string{
+    const accessToken: string | null = localStorage.getItem("accessToken");
+    if(accessToken == null){ return "accessToken";}
+    return accessToken;
+  }
+
+  function setRefreshToken(refreshTokenString: string){
+    localStorage.setItem("refreshToken", refreshTokenString);
+  }
+
+  function getRefreshToken() : string{
+    const refreshToken: string | null = localStorage.getItem("refreshToken");
+    if(refreshToken == null){ return "refreshToken";}
+    return refreshToken;
+  }
+
+  return {login, logout, setAccessToken, getAccessToken, setRefreshToken, getRefreshToken};
+});
+//-------------------------------------------------//
+
+
+//-------------------------------------------------//
+export const useUserAccountStore = defineStore("account", () => {
+  const userAccount = ref<UserAccount | null>();
+  const isEditMode = ref<boolean>();
+  const isAccountSelected = ref<boolean>(false);
+  const selectedAccountId = ref<number>();
+
+
+  return {userAccount, isEditMode, isAccountSelected, selectedAccountId};
+});
+//-------------------------------------------------//

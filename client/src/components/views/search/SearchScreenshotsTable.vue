@@ -16,30 +16,19 @@
 
         <!------------headers------------>
         <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
-            <tr>
-                <template v-for="(column, index) in columns">
-                    <td>
-                        <span 
-                            ref="screenshotTableHeadersRef"
-                            tabindex="0" 
-                            class="mr-2 cursor-pointer font-weight-bold" 
-                            role="button" 
-                            @keydown="handleTabKeyEvent($event, 'sort', 0, index)" 
-                            @click="() => toggleSort(column)">
-                            {{ column.title }}
-                        </span>
-                        <template v-if="isSorted(column)">
-                            <v-icon :icon="getSortIcon(column)"></v-icon>
-                        </template>
-                    </td>
-                </template>
-            </tr>
+            <CustomTableHeader
+                :columns="columns"
+                :is-sorted="isSorted"
+                :get-sort-icon="getSortIcon"
+                :toggle-sort="toggleSort"
+                :header-refs-prop="screenshotTableHeadersRef">
+            </CustomTableHeader>
         </template>
 
-        <template v-slot:item.timestamp="{item}">
+        <template v-slot:item.timestamp="{internalItem}">
             <td>
                 <div>
-                    {{timeUtils.formatTimestmapToTime(item.columns.timestamp)}}
+                    {{timeUtils.formatTimestmapToTime(internalItem.columns.timestamp)}}
                 </div>
             </td>
         </template>
@@ -47,14 +36,14 @@
         <template v-slot:item.groupName="{item}">
             <td>
                 <div>
-                    {{item.columns.groupName}} ({{ item.raw.timelineScreenshotDataList.length }})
+                    {{item.groupName}} ({{ item.timelineScreenshotDataList.length }})
                 </div>
             </td>
         </template>
 
         <template v-slot:item.proctoringViewLink="{item}">
             <v-btn 
-                @click="searchViewService.openProctoringView(timelineSearchResult.sessionUUID, item.columns.timestamp)" 
+                @click="searchViewService.openProctoringView(timelineSearchResult.sessionUUID, item.timestamp)" 
                 variant="text" 
                 icon="mdi-video">
             </v-btn>
@@ -63,19 +52,21 @@
 
 
         <!------------content------------>
-        <template v-slot:item.data-table-expand="{item, isExpanded, toggleExpand}">
+        <template v-slot:item.data-table-expand="{internalItem, item, isExpanded, toggleExpand}">
             <v-icon 
-                v-if="item.raw.timelineScreenshotDataList.length > 1"
+                v-if="item.timelineScreenshotDataList.length > 1"
                 tabindex="0" 
                 variant="text" 
-                @click="toggleExpand(item)"
-                :icon="isExpanded(item) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
+                @keydown.native.enter="toggleExpand(internalItem)"
+                @keydown.native.space="toggleExpand(internalItem)"
+                @click="toggleExpand(internalItem)"
+                :icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
             </v-icon>
         </template>
-
+                    
         <template v-slot:expanded-row="{ columns, item, index }">
 
-            <template v-for="screenshot in groupingUtils.groupScreenshotsByMetadata(item.raw.timelineScreenshotDataList, true)!">
+            <template v-for="screenshot in groupingUtils.groupScreenshotsByMetadata(item.timelineScreenshotDataList, true)!">
                 <tr>
                     <td>
                         {{ timeUtils.formatTimestmapToTime(screenshot.timelineScreenshotDataList[0].timestamp)}}
@@ -112,11 +103,11 @@
 <script setup lang="ts">
     import { ref, watch, onBeforeMount } from "vue";
     import * as timeUtils from "@/utils/timeUtils";
-    import * as tableUtils from "@/utils/tableUtils";
+    import * as tableUtils from "@/utils/table/tableUtils";
     import { VDataTable } from "vuetify/labs/VDataTable";
     import * as searchViewService from "@/services/component-services/searchViewService";
     import * as groupingUtils from "@/utils/groupingUtils";
-
+    import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
 
     const props = defineProps<{
         timelineSearchResult: SearchTimeline
@@ -137,6 +128,8 @@
 
     onBeforeMount(() => {
         timelineSearchResult.value = props.timelineSearchResult;
+
+        // console.log(timelineSearchResult)
     });
 
     watch(timelineSearchResult, (newList) => {
@@ -147,20 +140,6 @@
         expandedItems.value = newList?.timelineGroupDataList.map(item => item.timelineScreenshotDataList[0].timestamp.toString());
     });
 
-
-    function handleTabKeyEvent(event: any, action: string, index: number, key: number){
-        if (event.key == 'Enter' || event.key == ' ') {
-            if(action == "sort"){
-                sortTable(key)
-            }
-        }
-    }
-
-    function sortTable(key: number){
-        if(screenshotTableHeadersRef.value != null){
-            screenshotTableHeadersRef.value[key].click();
-        }
-    }
 </script>
 
 <style scoped>
@@ -176,3 +155,4 @@
         border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity));
     } 
 </style>
+@/utils/table/tableUtils

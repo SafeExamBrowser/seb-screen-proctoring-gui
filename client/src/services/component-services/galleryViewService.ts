@@ -1,7 +1,8 @@
 import * as groupService from "@/services/api-services/groupService";
 import * as sessionService from "@/services/api-services/sessionService";
 import { SortOrder } from "@/models/sortOrderEnum";
-import router from "@/router";
+import {navigateTo} from "@/router/navigation";
+import { useAuthStore } from "@/store/app";
 
 //=============api==================
 export async function getGroup(groupUuid: string, currentWindow: number, pageSize: number): Promise<GroupUuid | null>{
@@ -51,12 +52,13 @@ export function currentIndexExists(screenshots: Screenshot[] | undefined, index:
 
 //=============links==================
 export function createImageLinkWithToken(screenshots: Screenshot[] | undefined, index: number, timestamp: number): string {
+    const authStore = useAuthStore();
 
     if(screenshots == null){
         return "";
     }
 
-    const screenshotLink: string = screenshots[index].latestImageLink + "?access_token=" + localStorage.getItem("accessToken");
+    const screenshotLink: string = screenshots[index].latestImageLink + "?access_token=" + authStore.getAccessToken();
 
     if(screenshots[index].active){
         return screenshotLink + '&t=' + timestamp;
@@ -67,9 +69,7 @@ export function createImageLinkWithToken(screenshots: Screenshot[] | undefined, 
 
 export function navigateToProctoringView(screenshots: Screenshot[] | undefined, groupUuid: string, index: number) {
     if (screenshots != null) {
-        router.push({
-            path: "/recording/" + screenshots[index].uuid
-        });
+        navigateTo("/recording/" + screenshots[index].uuid);
     }
 }
 //==============================

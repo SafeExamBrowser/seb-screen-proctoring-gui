@@ -1,26 +1,24 @@
 import axios, { AxiosInstance } from "axios";
 import * as authenticationService from "@/services/api-services/authenticationService";
-import router from "@/router";
+import {navigateTo} from "@/router/navigation";
 import * as ENV from "@/config/envConfig";
-import { useLoadingStore } from "@/store/app";
+import { useLoadingStore, useAuthStore } from "@/store/app";
 
 
 export let api: AxiosInstance;
 
 export function createApi(){
+    const authStore = useAuthStore();
+
     api = axios.create({
         //todo: when env not provided
         baseURL: ENV.SERVER_URL + ENV.SERVER_PORT,
-        headers: {
-            "accept": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("accessToken"),
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
+        headers: getHeaders()
     });
 }
 
-
 export function createApiInterceptor(){
+    const authStore = useAuthStore();
     const loadingStore = useLoadingStore();
     let loadingTimeout: NodeJS.Timeout | null = null;
 
@@ -50,8 +48,6 @@ export function createApiInterceptor(){
         return response;
 
     }, async error => {
-        console.error(error)
-
         if (loadingTimeout) clearTimeout(loadingTimeout); 
         loadingStore.isLoading = false;
         loadingStore.skipLoading = false;
@@ -63,34 +59,30 @@ export function createApiInterceptor(){
 
             try{
                 const response: Token = await authenticationService.refresh();
-                localStorage.setItem("accessToken", response.access_token);
-                localStorage.setItem("refreshToken", response.refresh_token);
-
-                console.log(localStorage.getItem("accessToken"))
+                authStore.setAccessToken(response.access_token);
+                authStore.setRefreshToken(response.refresh_token);
 
                 originalRequest._retry = true;
-
-                originalRequest.headers = {
-                    "accept": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("accessToken"),
-                    "Content-Type": "application/x-www-form-urlencoded"
-                }
+                originalRequest.headers = getHeaders();
 
                 return api(originalRequest);
 
             }catch(error){
-                router.push({
-                    path: "/"
-                });
+                navigateTo("/");
 
                 throw Promise.reject(error);
             }
             
         }
-        // else{
-        //     router.push({
-        //         path: "/"
-        //     });
-        // }
     });
+}
+
+export function getHeaders(): object{
+    const authStore = useAuthStore();
+
+    return {
+      "accept": "application/json",
+      "Authorization": "Bearer " + authStore.getAccessToken(),
+      "Content-Type": "application/x-www-form-urlencoded"
+    };
 }

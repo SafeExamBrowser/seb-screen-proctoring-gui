@@ -10,7 +10,6 @@
   "dependencies": {
     "@intlify/unplugin-vue-i18n": "^1.0.1",
     "@mdi/font": "7.2.96",
-    "@tailwindcss/forms": "^0.5.6",
     "@vuepic/vue-datepicker": "^6.0.3",
     "@vueuse/core": "^10.5.0",
     "axios": "^1.5.0",
@@ -22,7 +21,7 @@
     "vue-i18n": "^9.3.0",
     "vue-loading-overlay": "^6.0.3",
     "vue-router": "^4.2.4",
-    "vuetify": "^v3.3.15",
+    "vuetify": "^v3.3.21",
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
@@ -34,10 +33,6 @@
     "autoprefixer": "^10.4.15",
     "eslint": "^8.48.0",
     "eslint-plugin-vue": "^9.17.0",
-    "postcss": "^8.4.29",
-    "sass": "^1.66.1",
-    "sass-loader": "^13.3.2",
-    "tailwindcss": "^3.3.3",
     "typescript": "^5.2.2",
     "vite": "^4.4.9",
     "vite-plugin-vuetify": "^1.0.2",
