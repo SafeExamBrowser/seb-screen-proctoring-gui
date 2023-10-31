@@ -62,12 +62,15 @@
     //selected item
     const selectedItem = ref<any[]>([]);
 
-
-    onBeforeMount(async () => {
-        const userAccountResponse: UserAccountResponse = await userAccountViewService.getUserAccounts({pageSize: 500});
-        accounts.value = userAccountResponse?.content;
+    defineExpose({
+        updateTerminationTimeInList,
+        updateUserAccountInList
     });
 
+
+    onBeforeMount(async () => {
+        await getUserAccounts();
+    });
 
     watch(selectedItem, () => {
         if(selectedItem.value.length == 0){
@@ -79,17 +82,32 @@
         userAccountStore.selectedAccountId = selectedItem.value[0];
     });
 
+    async function getUserAccounts(){
+        const userAccountResponse: UserAccountResponse = await userAccountViewService.getUserAccounts({pageSize: 500});
+        accounts.value = userAccountResponse?.content;
+    }
 
+    function updateUserAccountInList(accountId: number, account: UserAccount){
+        if(accounts.value != null){
+            const index: number = accounts.value.findIndex(i => i.id == accountId);
+            accounts.value[index] = account;
+        }
+    }
 
+    function updateTerminationTimeInList(accountId: number, terminationTime: number | null){
+        if(accounts.value != null){
+            accounts.value.find(i => i.id == accountId)!.terminationTime = terminationTime;
+        }
+    }
 
     function getStatusValue(terminationTime: string | null): Status{
+        //if there is a terminatation time --> user is inactive
         if(terminationTime){
             return Status.inactive;
         }
 
         return Status.active;
     }
-
 
 
 

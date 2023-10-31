@@ -23,6 +23,7 @@ export async function setPersonalUserAccount(): Promise<UserAccount | null>{
 
 }
 
+//=============api==================
 export async function getUserAccountById(accountId: string): Promise<UserAccount[] | any>{
     try{
         const userAccount = await userAccountService.getUserAccountById(accountId)
@@ -46,6 +47,31 @@ export async function getUserAccounts(optionalParamters?: OptionalParGeneric): P
         return null;
     }
 }
+
+export async function activateUserAccount(accountId: string): Promise<UserAccount | any>{
+    try{
+        const userAccount = await userAccountService.activateUserAccount(accountId)
+
+        return userAccount;
+
+    }catch(error){
+        console.error(error);
+        return null;
+    }
+}
+
+export async function deactivateUserAccount(accountId: string): Promise<UserAccount | any>{
+    try{
+        const userAccount = await userAccountService.deactivateUserAccount(accountId)
+
+        return userAccount;
+
+    }catch(error){
+        console.error(error);
+        return null;
+    }
+}
+//==============================
 
 export function disableEnableActionItem(action: string): boolean{
     const userAccountStore = useUserAccountStore();

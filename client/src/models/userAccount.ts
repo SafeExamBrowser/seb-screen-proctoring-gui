@@ -17,6 +17,6 @@ type UserAccount = {
     roles: string[];
     creationTime: number;
     lastUpdateTime: number;
-    terminationTime?: number;
+    terminationTime?: number | null;
     creationDate: string;
 };

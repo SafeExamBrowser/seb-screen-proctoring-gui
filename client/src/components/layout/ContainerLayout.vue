@@ -132,7 +132,6 @@
     const navigationLinks = [
         ["SEB Groups Proctoring", "/start"],
         ["Search", "/search"],
-        ["Example Page", "/example"],
     ];
 
     //stores

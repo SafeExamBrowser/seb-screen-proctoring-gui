@@ -210,10 +210,4 @@
 
 <style scoped>
 
-    .link{
-        text-decoration: none;
-        color: red;
-    }
-
-
 </style>

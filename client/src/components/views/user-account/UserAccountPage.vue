@@ -9,7 +9,7 @@
                 <v-col>
                     <!-----------admin---------->
                     <template v-if="userAccountStore.userAccount?.roles.includes('ADMIN')">
-                        <UserList></UserList>
+                        <UserList ref="userListRef"></UserList>
                     </template>
                     <!-------------------------->
                 </v-col>
@@ -42,6 +42,18 @@
             </v-row>
         </v-sheet>
     </div>
+
+    <v-dialog v-model="activateUserAccountDialog" max-width="500">
+        <ActivateUserAccountDialog 
+            @closeActivateDialog="closeActivateDialog"
+            :accountId="userAccountStore.selectedAccountId!">
+        </ActivateUserAccountDialog>
+    </v-dialog>
+
+    <v-dialog v-model="addUserAccountDialog" max-width="1000">
+        <AddUserAccountDialog @closeAddDialog="closeAddDialog"></AddUserAccountDialog>
+    </v-dialog>
+
 </template>
 
 <script setup lang="ts">
@@ -50,9 +62,14 @@
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import UserList from "./UserList.vue";
     import {navigateTo} from "@/router/navigation";
+    import ActivateUserAccountDialog from "./ActivateUserAccountDialog.vue";
+    import AddUserAccountDialog from "./AddUserAccountDialog.vue";
 
     //reactive variables
     const isLoading = ref<boolean>(true);
+    const activateUserAccountDialog = ref(false);
+    const addUserAccountDialog = ref(false);
+    const userListRef = ref<any>(null);
 
     //store
     const appBarStore = useAppBarStore();
@@ -60,9 +77,9 @@
 
     //action lists
     const actionItems: {text: string, icon: string, action: string, event: Function}[] = [
-        { text: "View User Account", icon: "mdi-account-eye", action: "view", event: viewUserAccount},
-        { text: "Deactivate User Account", icon: "mdi-account-cancel", action: "deactivate", event: tempFunction},
-        { text: "Add User Account", icon: "mdi-account-plus", action: "add", event: tempFunction},
+        { text: "View", icon: "mdi-account-eye", action: "view", event: viewUserAccount},
+        { text: "De/ -Activate", icon: "mdi-account-sync", action: "activate", event: openActivateDialog},
+        { text: "Add", icon: "mdi-account-plus", action: "add", event: openAddDialog},
     ];
 
 
@@ -79,12 +96,40 @@
 
 
     //=====action-icons event listeners======
-    function tempFunction(){
-        console.log("test")
-    }
-
     function viewUserAccount(){
         navigateTo("/account/" + userAccountStore.selectedAccountId);
+    }
+
+    function openActivateDialog(){
+        activateUserAccountDialog.value = true;
+    }
+
+    function closeActivateDialog(isUpdated: boolean, accountId?: number, terminationTime?: number | null){
+        if(!isUpdated){
+            activateUserAccountDialog.value = false;
+            return;
+        }
+
+        if(userListRef.value != null){
+            userListRef.value.updateTerminationTimeInList(accountId, terminationTime);
+            activateUserAccountDialog.value = false;
+        }
+    }
+
+    function openAddDialog(){
+        addUserAccountDialog.value = true;
+    }
+
+    function closeAddDialog(newUserAccount?: UserAccount){
+        if(!newUserAccount){
+            addUserAccountDialog.value = false;
+            return;
+        }
+
+        if(userListRef.value != null){
+            userListRef.value.updateUserAccountInList(newUserAccount);
+            addUserAccountDialog.value = false;
+        }
     }
     //==============================
 

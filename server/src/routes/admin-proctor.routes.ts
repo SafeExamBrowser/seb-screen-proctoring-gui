@@ -26,6 +26,9 @@ router.get("/useraccount/me", adminProctorUserAccountController.getPersonalUserA
 router.get("/useraccount/:accountId", adminProctorUserAccountController.getUserAccountById)
 router.get("/useraccount", adminProctorUserAccountController.getUserAccounts)
 router.post("/useraccount/register", adminProctorUserAccountController.registerUserAccount)
+router.post("/useraccount/activate/:accountId", adminProctorUserAccountController.activateUserAccount)
+router.post("/useraccount/deactivate/:accountId", adminProctorUserAccountController.deactivateUserAccount)
+
 
 
 

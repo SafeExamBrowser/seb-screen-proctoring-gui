@@ -35,3 +35,17 @@ export async function getUserAccounts(token: string, options?: {}): Promise<obje
 
     return data;
 }
+
+export async function activateUserAccount(token: string, accountId: string){
+    const url: string = userAccountUrl + "/" + accountId + "/active";
+    const {data, status} = await apiService.api.post(url, {}, {headers: apiService.getHeaders(token)});
+
+    return data;
+}
+
+export async function deactivateUserAccount(token: string, accountId: string){
+    const url: string = userAccountUrl + "/" + accountId + "/inactive";
+    const {data, status} = await apiService.api.post(url, {}, {headers: apiService.getHeaders(token)});
+
+    return data;
+}

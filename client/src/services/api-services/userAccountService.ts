@@ -12,7 +12,7 @@ export async function register(
   confirmNewPassword: string,
   email?: string,
   timeZone?: string,
-): Promise<string | any> {
+): Promise<UserAccount | any> {
 
   try {
     const url: string = ENV.SERVER_URL + ENV.SERVER_PORT + userAccountUrl + "/register";
@@ -69,6 +69,34 @@ export async function getUserAccounts(optionalParamters?: OptionalParGeneric): P
   try{
     const url: string = userAccountUrl;
     const {data, status}: AxiosResponse = await apiService.api.get(url, {headers: apiService.getHeaders(), params: {optionalParamters}});
+
+    if (status === 200) {
+      return data;
+    } 
+
+  }catch(error){
+    throw error;
+  }
+}
+
+export async function activateUserAccount(accountId: string): Promise<UserAccount | any>{
+  try{
+    const url: string = userAccountUrl + "/activate/" + accountId;
+    const {data, status}: AxiosResponse = await apiService.api.post(url, {headers: apiService.getHeaders()});
+
+    if (status === 200) {
+      return data;
+    } 
+
+  }catch(error){
+    throw error;
+  }
+}
+
+export async function deactivateUserAccount(accountId: string): Promise<UserAccount | any>{
+  try{
+    const url: string = userAccountUrl + "/deactivate/" + accountId;
+    const {data, status}: AxiosResponse = await apiService.api.post(url, {headers: apiService.getHeaders()});
 
     if (status === 200) {
       return data;

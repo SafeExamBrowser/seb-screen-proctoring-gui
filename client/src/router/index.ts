@@ -34,11 +34,6 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: "/example",
-        name: "ExamplePage",
-        component: ExamplePage
-      },
-      {
         path: "/search",
         name: "Search",
         component: SearchPage

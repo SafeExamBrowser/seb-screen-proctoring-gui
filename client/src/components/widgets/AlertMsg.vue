@@ -48,7 +48,7 @@
         },
         {
             key: "register-success",
-            value: "Your regisration was successful. You can now login"
+            value: "Your registration was successful. You can now login"
         }
     ];
 

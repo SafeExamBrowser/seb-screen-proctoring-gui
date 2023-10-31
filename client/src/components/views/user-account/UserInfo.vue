@@ -153,10 +153,6 @@
 
             </v-row>
         </v-sheet>
-
-        <v-dialog v-model="changePasswordDialog" max-width="1000">
-            <ChangePasswordDialog></ChangePasswordDialog>
-        </v-dialog>
     </div>
 
     <AlertMsg 
@@ -167,6 +163,10 @@
             type: 'alert',
         }">
     </AlertMsg>
+
+    <v-dialog v-model="changePasswordDialog" max-width="1000">
+        <ChangePasswordDialog></ChangePasswordDialog>
+    </v-dialog>
     
 </template>
 
@@ -195,7 +195,7 @@
 
     //action list
     const actionItems: {text: string, icon: string, action: string, event: Function,}[] = [
-        { text: "Edit User Account", icon: "mdi-account-edit", action: "edit", event: editUserAccount},
+        { text: "Edit", icon: "mdi-account-edit", action: "edit", event: editUserAccount},
         { text: "Change Password", icon: "mdi-lock", action: "change", event: changePassword}
     ];
 

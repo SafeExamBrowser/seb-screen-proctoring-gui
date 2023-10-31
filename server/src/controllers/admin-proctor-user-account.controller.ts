@@ -15,6 +15,7 @@ export async function getPersonalUserAccount(req: Request, res: Response){
     
 }
 
+
 export async function getUserAccountById(req: Request, res: Response){
     try{
         const userAccount: object = await adminProctorUserAccountService.getUserAccountById(req.headers.authorization, req.params.accountId)
@@ -46,6 +47,30 @@ export async function getUserAccounts(req: Request, res: Response){
         const userAccounts: object = await adminProctorUserAccountService.getUserAccounts(req.headers.authorization, req.query.optionalParamters)
 
         return res.status(200).json(userAccounts);
+
+    }catch(error){
+        apiService.handleGenericApiError(error, res);
+    }
+}
+
+
+export async function activateUserAccount(req: Request, res: Response){
+    try{
+        const userAccount: object = await adminProctorUserAccountService.activateUserAccount(req.headers.authorization, req.params.accountId)
+
+        return res.status(200).json(userAccount);
+
+    }catch(error){
+        apiService.handleGenericApiError(error, res);
+    }
+}
+
+
+export async function deactivateUserAccount(req: Request, res: Response){
+    try{
+        const userAccount: object = await adminProctorUserAccountService.deactivateUserAccount(req.headers.authorization, req.params.accountId)
+
+        return res.status(200).json(userAccount);
 
     }catch(error){
         apiService.handleGenericApiError(error, res);

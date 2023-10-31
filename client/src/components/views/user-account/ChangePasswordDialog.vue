@@ -1,5 +1,10 @@
 <template>
     <v-sheet elevation="2" class="password-form-container rounded-lg">
+
+        <div class="title-container text-h6">
+            Change Password
+        </div>
+
         <v-form>
 
             <!-------------password--------------->
@@ -108,6 +113,10 @@
 </script>
 
 <style scoped>
+
+    .title-container{
+        margin-bottom: 20px;
+    }
 
     .password-form-container{
         padding: 20px;
