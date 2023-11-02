@@ -74,8 +74,8 @@ Instructions on how to get a local development environment up and running.
    DEV_SERVER_URL="http://localhost"
    DEV_SERVER_PORT="8080"
    
-   USERNAME="{username for oauth}"
-   PASSWORD="{pw for oauth}"
+   PROCTOR_SERVER_USERNAME="{username for oauth}"
+   PROCTOR_SERVER_PASSWORD="{pw for oauth}"
     ```
   7. run `npm install`
   8. run `npm run dev`
