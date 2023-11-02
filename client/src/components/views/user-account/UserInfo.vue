@@ -9,7 +9,7 @@
                         size="x-large"
                         variant="text" 
                         icon="mdi-arrow-left"
-                        @click="navigateTo('/account')">
+                        @click="navigateBack()">
                     </v-btn>
                 </v-col>
 
@@ -241,6 +241,11 @@
 
     }
 
+    function navigateBack(){
+        userAccountStore.isAccountSelected = false;
+        navigateTo('/account');
+    }
+
 
     //=====action-icons event listeners======
     function editUserAccount(){
@@ -250,7 +255,6 @@
     function changePassword(){
         changePasswordDialog.value = true;
     }
-    
     //==============================
 
 

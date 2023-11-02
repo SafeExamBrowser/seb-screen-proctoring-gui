@@ -2,6 +2,8 @@ import { defineStore } from "pinia"
 import { ref } from "vue";
 import {navigateTo} from "@/router/navigation";
 import * as userAccountViewService from "@/services/component-services/userAccountViewService";
+import * as authenticationService from "@/services/api-services/authenticationService";
+
 
 //-------------------------------------------------//
 export const useAppBarStore = defineStore("appBar", () => {
@@ -13,10 +15,12 @@ export const useAppBarStore = defineStore("appBar", () => {
   });
   const galleryIsNameEnabled = ref<boolean>(true);
   const galleryIsMetadataEnabled = ref<boolean>(false);
+  const galleryCurrentPage = ref<number>(1);
+  const galleryMaxPages = ref<number>(1);
   const gallerNumberOfSessions = ref<number>(0);
   const galleryDescription = ref<string>("");
 
-  return {title, galleryGridSize, galleryIsNameEnabled, galleryIsMetadataEnabled, gallerNumberOfSessions, galleryDescription};
+  return {title, galleryGridSize, galleryIsNameEnabled, galleryIsMetadataEnabled, galleryCurrentPage, galleryMaxPages, gallerNumberOfSessions, galleryDescription};
 });
 //-------------------------------------------------//
 
@@ -39,10 +43,12 @@ export const useAuthStore = defineStore("auth", () => {
 
     navigateTo("/start");
 
-   await userAccountViewService.setPersonalUserAccount();
+    await userAccountViewService.setPersonalUserAccount();
   }
 
-  function logout(){
+  async function logout(){
+    await authenticationService.logLogout();
+
     setAccessToken("");
     setRefreshToken("");
     useUserAccountStore().userAccount = null;

@@ -6,37 +6,46 @@ import * as apiService from "../services/api.service";
 const tokenUrl: string = ENV.PROCTOR_SERVER_URL + ENV.PROCTOR_SERVER_PORT + "/oauth/token?grant_type=";
 
 export async function authorizeViaScreenProctoringServer(username: string, password: string): Promise<object>{
-    try{
-        //todo: add env desc to gihub
-        const url: string = tokenUrl + "password&username=" + username + "&password=" + password;
-        const encodedCredentials: string = createEncodedCredentials(ENV.USERNAME, ENV.PASSWORD);
+    //todo: add env desc to gihub
+    const url: string = tokenUrl + "password&username=" + username + "&password=" + password;
+    const encodedCredentials: string = createEncodedCredentials(ENV.PROCTOR_SERVER_USERNAME, ENV.PROCTOR_SERVER_PASSWORD);
 
-        const {data, status} = await axios.post(url, {}, {
-            headers: apiService.getAuthorizationHeaders(encodedCredentials)
-        });
+    const {data, status} = await axios.post(url, {}, {
+        headers: apiService.getAuthorizationHeaders(encodedCredentials)
+    });
 
-        return data;
-
-    }catch(error){
-        apiService.handleGenericApiErrorOld(error);
-    }
+    return data;
 }
 
 export async function refreshViaScreenProctoringServer(refreshToken: string): Promise<object>{
-    try{
-        const url: string = tokenUrl + "refresh_token&client_id=" + ENV.USERNAME + "&refresh_token=" + refreshToken;
-        const encodedCredentials: string = createEncodedCredentials(ENV.USERNAME, ENV.PASSWORD);
+    const url: string = tokenUrl + "refresh_token&client_id=" + ENV.PROCTOR_SERVER_USERNAME + "&refresh_token=" + refreshToken;
+    const encodedCredentials: string = createEncodedCredentials(ENV.PROCTOR_SERVER_USERNAME, ENV.PROCTOR_SERVER_PASSWORD);
 
-        const {data, status} = await axios.post(url, {}, {
-            headers: apiService.getAuthorizationHeaders(encodedCredentials)
-        });
+    const {data, status} = await axios.post(url, {}, {
+        headers: apiService.getAuthorizationHeaders(encodedCredentials)
+    });
 
-        return data;
-
-    }catch(error){
-        apiService.handleGenericApiErrorOld(error);
-    }
+    return data;
 }
+
+export async function logLogin(token: string){
+    const url: string = "/useraccount/loglogin";
+
+    console.log("token")
+    console.log(token)
+
+    const {data, status} = await apiService.api.post(url, {}, {headers: apiService.getHeaders(token)});
+
+    return data;
+}
+
+export async function logLogout(token: string){
+    const url: string = "/useraccount/loglogout";
+    const {data, status} = await apiService.api.post(url, {}, {headers: apiService.getHeaders(token)});
+
+    return data;
+}
+
 
 function createEncodedCredentials(username: string, password: string): string{
     return Buffer.from(username + ":" + password).toString("base64");

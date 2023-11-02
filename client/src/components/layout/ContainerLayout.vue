@@ -35,6 +35,9 @@
 
                 <div>
                     <v-chip class="session-info-item">
+                        Page: {{ appBarStore.galleryCurrentPage }} / {{ appBarStore.galleryMaxPages }}
+                    </v-chip>
+                    <v-chip class="session-info-item">
                         Number of Sessions: {{ appBarStore.gallerNumberOfSessions }}
                     </v-chip>
                     <v-chip class="session-info-item">
@@ -76,6 +79,8 @@
                     </v-menu>
                 </div>
             </template>
+            <!-------–--------------------->
+
             <!-- <div class="switch-container">
                 <v-switch class="mx-auto" label="theme test" color="primary" v-model="useLigtTheme"></v-switch>
             </div> -->
@@ -125,7 +130,6 @@
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
     import { useTheme } from "vuetify";
-    import router from "@/router";
 
     //navigation
     const drawer = ref();

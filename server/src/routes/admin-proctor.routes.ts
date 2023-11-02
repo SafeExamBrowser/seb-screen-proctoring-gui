@@ -5,12 +5,7 @@ import * as adminProctorSessionController from '../controllers/admin-proctor-ses
 import * as adminProctorSearchController from '../controllers/admin-proctor-search.controller';
 import * as adminProctorUserAccountController from '../controllers/admin-proctor-user-account.controller';
 
-import * as validation from '../validation/validation';
-
 const router: Router = express.Router();
-
-//todo: validate headers for authorization
-// router.post("/authorize", validation.authorize, authorizationController.authorize);
 
 router.get("/group", adminProctorGroupController.getGroups);
 router.get("/group/:uuid", adminProctorGroupController.getGroupByUuid);
@@ -28,10 +23,6 @@ router.get("/useraccount", adminProctorUserAccountController.getUserAccounts)
 router.post("/useraccount/register", adminProctorUserAccountController.registerUserAccount)
 router.post("/useraccount/activate/:accountId", adminProctorUserAccountController.activateUserAccount)
 router.post("/useraccount/deactivate/:accountId", adminProctorUserAccountController.deactivateUserAccount)
-
-
-
-
 
 
 export default router;
