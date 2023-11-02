@@ -8,8 +8,8 @@ export const SERVER_PORT = process.env.SERVER_PORT || "";
 export const DEV_SERVER_URL = process.env.DEV_SERVER_URL
 export const DEV_SERVER_PORT = process.env.DEV_SERVER_PORT
 
-export const USERNAME = process.env.USERNAME
-export const PASSWORD = process.env.PASSWORD
+export const PROCTOR_SERVER_USERNAME = process.env.PROCTOR_SERVER_USERNAME
+export const PROCTOR_SERVER_PASSWORD = process.env.PROCTOR_SERVER_PASSWORD
 
 function getServerPort(){
     if(!process.env.PROCTOR_SERVER_PORT){

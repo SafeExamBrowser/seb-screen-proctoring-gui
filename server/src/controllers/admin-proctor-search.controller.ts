@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-
+import * as apiService from "../services/api.service";
 import * as adminProctorSearchService from '../services/admin-proctor-search.service';
 
 export async function searchSessions(req: Request, res: Response){
@@ -10,11 +10,7 @@ export async function searchSessions(req: Request, res: Response){
         return res.status(200).json(sessions);
 
     }catch(error){
-        if(isNaN(error.message)){
-            return res.status(500).send();
-        }
-
-        return res.status(JSON.parse(error.message)).send();
+        apiService.handleGenericApiError(error, res);
     }
 }
 
@@ -27,11 +23,7 @@ export async function searchScreenshots(req: Request, res: Response){
         return res.status(200).json(screenshots);
 
     }catch(error){
-        if(isNaN(error.message)){
-            return res.status(500).send();
-        }
-
-        return res.status(JSON.parse(error.message)).send();
+        apiService.handleGenericApiError(error, res);
     }
 }
 
@@ -43,10 +35,6 @@ export async function searchTimeline(req: Request, res: Response){
         return res.status(200).json(timeline);
 
     }catch(error){
-        if(isNaN(error.message)){
-            return res.status(500).send();
-        }
-
-        return res.status(JSON.parse(error.message)).send();
+        apiService.handleGenericApiError(error, res);
     }
 }

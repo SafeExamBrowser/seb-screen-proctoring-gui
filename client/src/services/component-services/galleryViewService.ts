@@ -36,6 +36,7 @@ export async function getLatestScreenshotData(sessionUuid: string, timestamp: nu
 
 //=============index==================
 export function calcIndex(i: number, n: number, gridSize: number): number {
+    console.log(((i - 1) * gridSize + (n - 1)))
     return ((i - 1) * gridSize + (n - 1));
 }
 
@@ -51,25 +52,48 @@ export function currentIndexExists(screenshots: Screenshot[] | undefined, index:
 
 
 //=============links==================
-export function createImageLinkWithToken(screenshots: Screenshot[] | undefined, index: number, timestamp: number): string {
+// export function createImageLinkWithToken(screenshots: Screenshot[] | undefined, index: number, timestamp: number): string {
+//     const authStore = useAuthStore();
+
+//     if(screenshots == null){
+//         return "";
+//     }
+
+//     const screenshotLink: string = screenshots[index].latestImageLink + "?access_token=" + authStore.getAccessToken();
+
+//     if(screenshots[index].active){
+//         return screenshotLink + '&t=' + timestamp;
+//     }
+
+//     return screenshotLink;
+// }
+
+export function createImageLinkWithToken(screenshot: Screenshot | undefined, timestamp: number): string {
     const authStore = useAuthStore();
 
-    if(screenshots == null){
+    if(screenshot == null){
         return "";
     }
 
-    const screenshotLink: string = screenshots[index].latestImageLink + "?access_token=" + authStore.getAccessToken();
+    const screenshotLink: string = screenshot.latestImageLink + "?access_token=" + authStore.getAccessToken();
 
-    if(screenshots[index].active){
+    if(screenshot.active){
         return screenshotLink + '&t=' + timestamp;
     }
 
     return screenshotLink;
 }
 
-export function navigateToProctoringView(screenshots: Screenshot[] | undefined, groupUuid: string, index: number) {
-    if (screenshots != null) {
-        navigateTo("/recording/" + screenshots[index].uuid);
+
+// export function navigateToProctoringView(screenshots: Screenshot[] | undefined, groupUuid: string, index: number) {
+//     if (screenshots != null) {
+//         navigateTo("/recording/" + screenshots[index].uuid);
+//     }
+// }
+
+export function navigateToProctoringView(screenshot: Screenshot | undefined, groupUuid: string) {
+    if (screenshot != null) {
+        navigateTo("/recording/" + screenshot.uuid);
     }
 }
 //==============================
@@ -79,7 +103,7 @@ export function getScreenshotMetadata(currentScreenshotMetadata: MetaData | null
     return {
         "Url:": currentScreenshotMetadata?.screenProctoringMetadataURL,
         "Window Title:": currentScreenshotMetadata?.screenProctoringMetadataWindowTitle,
-        "User-Action:": currentScreenshotMetadata?.screenProctoringMetadataUserAction
+        "User-Action:": currentScreenshotMetadata?.screenProctoringMetadataUserAction,
     };
 }
 //==============================

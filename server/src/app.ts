@@ -19,7 +19,8 @@ const path: string = __dirname + "/views/";
 
 LOG.info("env mode: " + ENV.NODE_ENV);
 if(ENV.NODE_ENV === "dev"){
-  app.use(cors(getCorstOptions()))
+  // app.use(cors(getCorstOptions()))
+  app.use(cors())
 }
 
 

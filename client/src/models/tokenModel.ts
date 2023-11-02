@@ -1,6 +1,6 @@
 type Token = {
     access_token: string;
-    token_typeqwer: string;
+    token_type: string;
     refresh_token: string;
     expires_in: number;
     scope: string;

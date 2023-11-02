@@ -35,6 +35,9 @@
 
                 <div>
                     <v-chip class="session-info-item">
+                        Page: {{ appBarStore.galleryCurrentPage }} / {{ appBarStore.galleryMaxPages }}
+                    </v-chip>
+                    <v-chip class="session-info-item">
                         Number of Sessions: {{ appBarStore.gallerNumberOfSessions }}
                     </v-chip>
                     <v-chip class="session-info-item">
@@ -76,13 +79,13 @@
                     </v-menu>
                 </div>
             </template>
-            <!-- <div class="switch-container">
-                <v-switch class="mx-auto" label="theme test" color="primary" v-model="useLigtTheme"></v-switch>
-            </div> -->
+            <!-------–--------------------->
 
             <!--profile icon menu-->
             <div class="profile-icon-container">
-                <v-menu>
+                <v-menu
+                    :close-on-content-click="false">
+
                     <template v-slot:activator="{ props }">
                         <v-btn v-bind="props" color="primary" icon="mdi-account-circle" size="x-large" @click="userMenuOpened()"></v-btn>
                     </template>
@@ -94,6 +97,12 @@
 
                         <v-list-item class="d-flex" to="/account">
                             <v-list-item-title>Account</v-list-item-title>
+                        </v-list-item>
+
+                        <v-divider></v-divider>
+
+                        <v-list-item>
+                            <v-switch :label="themeSwitchLabel" v-model="useLigtTheme" color="primary" hide-details></v-switch>
                         </v-list-item>
 
                         <v-divider></v-divider>
@@ -125,7 +134,6 @@
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
     import { useTheme } from "vuetify";
-    import router from "@/router";
 
     //navigation
     const drawer = ref();
@@ -140,6 +148,7 @@
     const userAccountStore = useUserAccountStore();
 
     //theme
+    const themeSwitchLabel = ref<string>("Dark");
     const useLigtTheme = ref<boolean>(true);
     const theme = useTheme();
 
@@ -153,7 +162,8 @@
     ];
 
     watch(useLigtTheme, () => {
-        theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+        theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
+        themeSwitchLabel.value = theme.global.current.value.dark ? "Light" : "Dark";
     });
 
     function changeGridSize(gridSize: GridSize){
