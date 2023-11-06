@@ -6,7 +6,7 @@ import StartPage from "@/components/views/StartPage.vue"
 import SearchPage from "@/components/views/search/SearchPage.vue"
 import GalleryViewPage from "@/components/views/gallery/GalleryViewPage.vue"
 import ProctoringViewPage from "@/components/views/ProctoringViewPage.vue"
-import ExamplePage from "@/components/views/ExamplePage.vue"
+import ChangePasswordDialog from "@/components/views/user-account/ChangePasswordDialog.vue"
 import UserAccountPage from "@/components/views/user-account/UserAccountPage.vue"
 import UserInfo from "@/components/views/user-account/UserInfo.vue"
 
@@ -20,6 +20,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/register",
     name: "RegisterPage",
     component: RegisterPage
+  },
+  {
+    path: "/changePasswordDialog",
+    name: "ChangePasswordDialog",
+    component: ChangePasswordDialog
   },
   {
     path: "/",
@@ -61,7 +66,7 @@ const routes: Array<RouteRecordRaw> = [
 
     ]
   },
-  
+
 ]
 
 const router = createRouter({

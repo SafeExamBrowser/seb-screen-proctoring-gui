@@ -29,7 +29,32 @@ export async function register(
 
     if (status === 200) {
       return data;
-    } 
+    }
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+// use fictive api schema
+export async function changePassword(
+  currentPassword: string,
+  newPassword: string,
+  confirmNewPassword: string,
+): Promise<UserAccount | any> {
+  console.log("changePassword service params:", currentPassword, newPassword, confirmNewPassword)
+  try {
+    const url: string = ENV.SERVER_URL + ENV.SERVER_PORT + userAccountUrl + "/changePassword";
+
+    const {data, status}: AxiosResponse = await axios.post(url, {
+      currentPassword,
+      newPassword,
+      confirmNewPassword,
+    });
+
+    if (status === 200) {
+      return data;
+    }
 
   } catch (error) {
     throw error;
@@ -44,7 +69,7 @@ export async function getPersonalUserAccount(): Promise<UserAccount | any>{
 
     if (status === 200) {
       return data;
-    } 
+    }
 
   }catch(error){
     throw error;
@@ -58,7 +83,7 @@ export async function getUserAccountById(accountId: string): Promise<UserAccount
 
     if (status === 200) {
       return data;
-    } 
+    }
 
   }catch(error){
     throw error;
@@ -72,7 +97,7 @@ export async function getUserAccounts(optionalParamters?: OptionalParGeneric): P
 
     if (status === 200) {
       return data;
-    } 
+    }
 
   }catch(error){
     throw error;
@@ -86,7 +111,7 @@ export async function activateUserAccount(accountId: string): Promise<UserAccoun
 
     if (status === 200) {
       return data;
-    } 
+    }
 
   }catch(error){
     throw error;
@@ -100,7 +125,7 @@ export async function deactivateUserAccount(accountId: string): Promise<UserAcco
 
     if (status === 200) {
       return data;
-    } 
+    }
 
   }catch(error){
     throw error;

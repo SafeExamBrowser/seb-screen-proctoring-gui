@@ -1,28 +1,44 @@
 <template>
     <v-sheet elevation="2" class="password-form-container rounded-lg">
+      <AlertMsg
+            v-if="addError"
+            :alertProps="{
+                color: 'error',
+                type: 'alert',
+                textKey: 'changePassword-error'
+            }">
+        </AlertMsg>
+
+        <AlertMsg
+            v-if="addSuccess"
+            :alertProps="{
+                color: 'success',
+                type: 'alert',
+                textKey: 'changePassword-success'
+            }">
+        </AlertMsg>
 
         <div class="title-container text-h6">
             Change Password
         </div>
+        <v-form @keyup.enter="updateAccount()">
 
-        <v-form>
-
-            <!-------------password--------------->
+            <!-------------current password--------------->
             <v-text-field
                 required
-                :type="oldPasswordVisible ? 'text' : 'password'"
+                :type="currentPasswordVisible ? 'text' : 'password'"
                 prepend-inner-icon="mdi-lock-outline"
                 density="compact"
-                placeholder="Password *"
+                placeholder="Current password *"
                 variant="outlined"
-                v-model="oldPassword">
+                v-model="currentPassword">
 
                 <template v-slot:append-inner>
                     <v-btn
                         density="compact"
                         variant="text"
-                        :icon="oldPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
-                        @click="oldPasswordVisible = !oldPasswordVisible">
+                        :icon="currentPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                        @click="currentPasswordVisible = !currentPasswordVisible">
                     </v-btn>
                 </template>
             </v-text-field>
@@ -34,7 +50,7 @@
                 :type="newPasswordVisible ? 'text' : 'password'"
                 prepend-inner-icon="mdi-lock-outline"
                 density="compact"
-                placeholder="Confirm password *"
+                placeholder="New password *"
                 variant="outlined"
                 v-model="newPassword">
 
@@ -54,7 +70,7 @@
                 :type="confirmNewPasswordVisible ? 'text' : 'password'"
                 prepend-inner-icon="mdi-lock-outline"
                 density="compact"
-                placeholder="Confirm password *"
+                placeholder="Confirm new password *"
                 variant="outlined"
                 v-model="confirmNewPassword">
 
@@ -72,20 +88,20 @@
             <!-------------buttons--------------->
             <v-row>
                 <v-col align="right">
-                    <v-btn 
-                        rounded="sm" 
-                        color="black" 
-                        variant="outlined">
-                        <!-- @click="clearForm()"> -->
+                    <v-btn
+                        rounded="sm"
+                        color="black"
+                        variant="outlined"
+                        @click="clearForm()">
                         Cancel
                     </v-btn>
 
-                    <v-btn 
-                        rounded="sm" 
-                        color="primary" 
-                        variant="flat" 
-                        class="ml-2">
-                        <!-- @click="updateAccount()"> -->
+                    <v-btn
+                        rounded="sm"
+                        color="primary"
+                        variant="flat"
+                        class="ml-2"
+                        @click="updateAccount()">
                         Save
                     </v-btn>
                 </v-col>
@@ -96,20 +112,54 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, onBeforeMount } from "vue";
+    import { ref } from "vue";
+    import * as userAccountViewService from "@/services/component-services/userAccountViewService";
 
+    const emit = defineEmits<{
+        closeAddDialog: any
+    }>();
+
+    //error handling
+    const addError = ref(false);
+    const addSuccess = ref(false);
 
     //form fields
-    const oldPassword = ref<string>("");
+    const currentPassword = ref<string>("");
     const newPassword = ref<string>("");
     const confirmNewPassword = ref<string>("");
 
     //password icon logic
-    const oldPasswordVisible = ref<boolean>(false);
+    const currentPasswordVisible = ref<boolean>(false);
     const newPasswordVisible = ref<boolean>(false);
     const confirmNewPasswordVisible = ref<boolean>(false);
 
+    //change password logic
+    const clearForm: () => void = () => {
+        currentPassword.value = "";
+        newPassword.value = "";
+        confirmNewPassword.value = "";
+        closeAddDialog();
+    }
 
+    const updateAccount: () => void = async () => {
+      addError.value = false;
+      addSuccess.value = false;
+
+      try{
+          const userAccount: UserAccount = await userAccountViewService.changePassword(currentPassword.value, newPassword.value, confirmNewPassword.value);
+          addSuccess.value = true;
+          closeAddDialog(userAccount)
+
+      }catch(error){
+          //todo: add better error handling
+          console.error(error)
+          addError.value = true;
+      }
+    };
+
+    function closeAddDialog(newUserAccount?: UserAccount){
+        emit("closeAddDialog", newUserAccount);
+    }
 </script>
 
 <style scoped>

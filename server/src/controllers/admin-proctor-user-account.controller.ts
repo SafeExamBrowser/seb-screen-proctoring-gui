@@ -41,6 +41,19 @@ export async function registerUserAccount(req: Request, res: Response){
 
 }
 
+export async function changePassword(req: Request, res: Response){
+    console.log("changePassword server controller body:", req.body)
+    try{
+        const newUserAccount: object = await adminProctorUserAccountService.changePassword(req.body)
+
+        return res.status(200).json(newUserAccount);
+
+    }catch(error){
+        apiService.handleGenericApiError(error, res);
+    }
+
+}
+
 
 export async function getUserAccounts(req: Request, res: Response){
     try{

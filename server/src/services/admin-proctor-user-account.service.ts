@@ -16,6 +16,14 @@ export async function registerUserAccount(userData: {}): Promise<object>{
 
 const userAccountUrl: string = "/useraccount";
 
+export async function changePassword(userData: {}): Promise<object>{
+    console.log("changePassword server controller userData:", userData)
+    const url = userAccountUrl + "/changePassword";
+    const {data, status} = await axios.post(url, userData, {headers: apiService.getHeadersWithoutAuth()});
+
+    return data;
+}
+
 export async function getPersonalUserAccount(token: string){
     const url: string = userAccountUrl + "/me";
     const {data, status} = await apiService.api.get(url, {headers: apiService.getHeaders(token)});
