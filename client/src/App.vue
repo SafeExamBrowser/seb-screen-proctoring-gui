@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <loading 
+    <loading
       color="#215CAF"
       :width=100
       :active="loadingStore.isLoading" />
@@ -21,6 +21,10 @@
 
   .subtitle-color{
     color: black;
+  }
+
+  a:visited {
+  color: blue !important;
   }
 
 </style>
