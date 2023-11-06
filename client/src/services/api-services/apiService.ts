@@ -11,7 +11,6 @@ export function createApi(){
     const authStore = useAuthStore();
 
     api = axios.create({
-        //todo: when env not provided
         baseURL: ENV.SERVER_URL + ENV.SERVER_PORT,
         headers: getHeaders()
     });

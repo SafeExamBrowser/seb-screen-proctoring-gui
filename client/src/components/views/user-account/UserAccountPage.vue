@@ -3,9 +3,6 @@
         <v-sheet elevation="4" class="account-container rounded-lg">
             <v-row>
 
-                <v-col cols="2">
-                </v-col>
-
                 <v-col>
                     <!-----------admin---------->
                     <template v-if="userAccountStore.userAccount?.roles.includes('ADMIN')">
