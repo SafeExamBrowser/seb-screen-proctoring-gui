@@ -21,7 +21,7 @@
                 </template>
 
                 <template v-slot:item.name="{item, index, internalItem}">
-                    <td class="text-decoration-underline text-blue">
+                    <td>
                         <div 
                             role="button" 
                             tabindex="0" 
@@ -70,8 +70,6 @@
     onBeforeMount(async () => {
         appBarStore.title = "Active SEB Groups"
         groups.value = await groupService.getGroups({pageSize: 500});
-
-        console.log(groups.value)
     });
 
     function getGalleryViewLink(index: number) {
