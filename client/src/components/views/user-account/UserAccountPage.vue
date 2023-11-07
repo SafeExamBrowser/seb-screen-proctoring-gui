@@ -3,7 +3,7 @@
         <v-sheet elevation="4" class="account-container rounded-lg">
             <v-row>
 
-                <v-col>
+                <v-col cols="10">
                     <!-----------admin---------->
                     <template v-if="userAccountStore.userAccount?.roles.includes('ADMIN')">
                         <UserList ref="userListRef"></UserList>

@@ -3,6 +3,7 @@ import * as authenticationService from "@/services/api-services/authenticationSe
 import {navigateTo} from "@/router/navigation";
 import * as ENV from "@/config/envConfig";
 import { useLoadingStore, useAuthStore } from "@/store/app";
+import router from "@/router";
 
 
 export let api: AxiosInstance;
@@ -67,6 +68,8 @@ export function createApiInterceptor(){
                 return api(originalRequest);
 
             }catch(error){
+                authStore.redirectRoute = router.currentRoute.value.fullPath;
+
                 navigateTo("/");
 
                 throw Promise.reject(error);
