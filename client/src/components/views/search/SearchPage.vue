@@ -1,67 +1,81 @@
 <template>
 
-    <div class="search-parent-container">
-        <SearchForm @searchSessions="searchSessions"></SearchForm>
-    </div>
+    <v-row>
+        <v-col>
+            <v-sheet 
+                elevation="4"
+                class="rounded-lg"
+                title="Search">
 
-    <div v-if="searchResultAvailable" class="search-result-parent-container">
-        <v-sheet 
-            elevation="4"
-            class="search-result-container rounded-lg"
-            title="Search results">
+                <SearchForm @searchSessions="searchSessions"></SearchForm>
+                
+            </v-sheet>
+        </v-col>
+    </v-row>
 
-            <v-row>
-                <v-col align="left" class="text-h6">
-                    Search Results
-                </v-col>
-                <v-col align="right" class="mb-2">
-                    <v-btn 
-                        rounded="sm" 
-                        color="black" 
-                        variant="outlined" 
-                        icon="mdi-arrow-collapse-vertical"
-                        :disabled=closeAllPanelsDisabled
-                        @click="closeAllPanels()">
-                    </v-btn>
-                    <v-btn 
-                        rounded="sm" 
-                        color="primary" 
-                        variant="flat" 
-                        icon="mdi-arrow-expand-vertical"
-                        class="ml-2"
-                        :disabled=openeAllPanelsDisabled
-                        @click="openAllPanels()">
-                    </v-btn>
-                </v-col>
-            </v-row>
+    <v-row v-if="searchResultAvailable">
+        <v-col>
+            <v-sheet 
+                elevation="4"
+                class="rounded-lg pa-4"
+                title="Search results">
 
-            <v-expansion-panels v-model="sessionPanels" multiple>
-                <v-expansion-panel
-                    v-for="session in sessionsGrouped?.content"
-                    :key="session.day"
-                    :value="'sessionPanel' + session.day">
+                    <!------------title and buttons------------->
+                    <v-row>
+                        <v-col align="left" class="text-h6">
+                            Search Results
+                        </v-col>
 
-                    <v-expansion-panel-title class="font-weight-bold">
-                        {{ session.day }}
-                    </v-expansion-panel-title>
-                    
-                    <v-expansion-panel-text>
-                        <SearchSessionTable 
-                            :sessions="session.sessions" 
-                            :metaData="{
-                                screenProctoringMetadataWindowTitle: metadataSearchWindowTitle!, 
-                                screenProctoringMetadataUserAction: metadataSearchAction!
-                            }">
-                        </SearchSessionTable>
-                    </v-expansion-panel-text>
+                        <v-col align="right" class="mb-2">
+                            <v-btn 
+                                rounded="sm" 
+                                color="black" 
+                                variant="outlined" 
+                                icon="mdi-arrow-collapse-vertical"
+                                :disabled=closeAllPanelsDisabled
+                                @click="closeAllPanels()">
+                            </v-btn>
+                            <v-btn 
+                                rounded="sm" 
+                                color="primary" 
+                                variant="flat" 
+                                icon="mdi-arrow-expand-vertical"
+                                class="ml-2"
+                                :disabled=openeAllPanelsDisabled
+                                @click="openAllPanels()">
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                    <!----------------------------------->
 
-                </v-expansion-panel>
-            </v-expansion-panels>
+                    <!-- <v-expansion-panels v-model="sessionPanels" variant="popout" multiple> -->
+                    <v-expansion-panels v-model="sessionPanels" multiple>
+                        <v-expansion-panel
+                            v-for="session in sessionsGrouped?.content"
+                            :key="session.day"
+                            :value="'sessionPanel' + session.day">
 
+                            <v-expansion-panel-title class="font-weight-bold">
+                                {{ session.day }}
+                            </v-expansion-panel-title>
+                            
+                            <v-expansion-panel-text>
+                                <SearchSessionTable 
+                                    :sessions="session.sessions" 
+                                    :metaData="{
+                                        screenProctoringMetadataWindowTitle: metadataSearchWindowTitle!, 
+                                        screenProctoringMetadataUserAction: metadataSearchAction!
+                                    }">
+                                </SearchSessionTable>
+                            </v-expansion-panel-text>
 
-        </v-sheet>
-    </div>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
 
+            </v-sheet>
+        </v-col>
+    </v-row>
+            
     <AlertMsg 
         v-if="errorAvailable"
         :alertProps="{
@@ -72,7 +86,6 @@
     </AlertMsg>
 
 </template>
-
 
 <script setup lang="ts">
     import { ref, onBeforeMount, watch, computed, reactive, onMounted } from "vue";
@@ -192,27 +205,3 @@
     }
 
 </script>
-
-<style scoped>
-
-    .search-parent-container, .search-result-parent-container{
-        display: flex;
-        justify-content: center;
-        align-items: center; 
-    }
-
-    .search-result-parent-container{
-        margin-top: 20px;
-    }
-
-    .search-container, .search-result-container{
-        width: 80%;
-        padding: 20px;
-    }
-
-    .form-container{
-        padding-left: 20%;
-        padding-right: 20%;
-    }
-
-</style>

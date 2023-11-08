@@ -1,44 +1,43 @@
 <template>
-    <div class="account-parent-container">
-        <v-sheet elevation="4" class="account-container rounded-lg">
-            <v-row>
+    <!-- <v-container> -->
+        <v-row>
 
-                <v-col cols="10">
-                    <!-----------admin---------->
-                    <template v-if="userAccountStore.userAccount?.roles.includes('ADMIN')">
-                        <UserList ref="userListRef"></UserList>
-                    </template>
-                    <!-------------------------->
-                </v-col>
+            <!-----------admin user list---------->
+            <v-col cols="10">
+                <template v-if="userAccountStore.userAccount?.roles.includes('ADMIN')">
+                    <UserList ref="userListRef"></UserList>
+                </template>
+            </v-col>
+            <!-------------------------->
 
-                <v-col cols="2">
-                    <!-- <v-card color="#e2ecf7"> -->
-                    <v-card>
-                        <v-card-title>Actions</v-card-title>
-                        <v-list density="compact">
+            <!-----------action items---------->
+            <v-col cols="2">
+                <v-card class="rounded-lg" elevation="4">
+                    <v-card-title>Actions</v-card-title>
+                    <v-list density="compact">
 
-                            <v-list-item
-                                v-for="(item, i) in actionItems"
-                                :key="i"
-                                :value="item"
-                                :disabled="userAccountViewService.disableEnableActionItem(item.action)"
-                                @click="item.event"
-                                color="primary">
+                        <v-list-item
+                            v-for="(item, i) in actionItems"
+                            :key="i"
+                            :value="item"
+                            :disabled="userAccountViewService.disableEnableActionItem(item.action)"
+                            @click="item.event"
+                            color="primary">
 
-                                <template v-slot:prepend>
-                                    <v-icon :icon="item.icon"></v-icon>
-                                </template>
+                            <template v-slot:prepend>
+                                <v-icon :icon="item.icon"></v-icon>
+                            </template>
 
-                                <v-list-item-title v-text="item.text"></v-list-item-title>
-                            </v-list-item>
-                        </v-list>
+                            <v-list-item-title v-text="item.text"></v-list-item-title>
+                        </v-list-item>
+                    </v-list>
 
-                    </v-card>
-                </v-col>
+                </v-card>
+            </v-col>
+            <!-------------------------->
 
-            </v-row>
-        </v-sheet>
-    </div>
+        </v-row>
+    <!-- </v-container> -->
 
     <v-dialog v-model="activateUserAccountDialog" max-width="500">
         <ActivateUserAccountDialog 
@@ -135,7 +134,7 @@
 
 <style scoped>
 
-    .account-parent-container{
+    /* .account-parent-container{
         display: flex;
         justify-content: center;
         align-items: center; 
@@ -144,6 +143,6 @@
     .account-container{
         width: 80%;
         padding: 20px;
-    }
+    } */
 
 </style>

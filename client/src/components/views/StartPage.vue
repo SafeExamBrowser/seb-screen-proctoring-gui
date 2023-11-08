@@ -1,10 +1,10 @@
 <template>
-    
-    <div class="table-container">
-        <div class="table d-flex align-center">
+    <v-row>
+        <v-col>
+
             <v-data-table 
                 item-value="item.name" 
-                class="elevation-1"
+                class="rounded-lg elevation-4"
                 :items-per-page="tableUtils.calcDefaultItemsPerPage(groups)" 
                 :items-per-page-options="tableUtils.calcItemsPerPage(groups)"
                 :headers="headers" 
@@ -37,11 +37,11 @@
                         </div>
                     </td>
                 </template>
-
+                
             </v-data-table>
-        </div>
-    </div>
 
+        </v-col>
+    </v-row>
 </template>
 
 <script setup lang="ts">
@@ -81,15 +81,3 @@
     }
 
 </script>
-
-<style>
-    .table-container{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .table {
-        width: 75%;
-    }
-</style>
