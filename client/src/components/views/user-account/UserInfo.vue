@@ -1,22 +1,24 @@
 <template>
-    <div v-if="userAccount != null" class="user-info-parent-container">
-        <v-sheet elevation="4" class="user-info-container rounded-lg">
-            <v-row>
+    <!-- <v-container> -->
+        <v-row v-if="userAccount != null">
+            <v-col cols="1">
+                <v-btn
+                    v-if="userAccountStore.userAccount?.roles.includes('ADMIN')"
+                    size="x-large"
+                    variant="text" 
+                    icon="mdi-arrow-left"
+                    @click="navigateBack()">
+                </v-btn>
+            </v-col>
 
-                <v-col cols="2">
-                    <v-btn
-                        v-if="userAccountStore.userAccount?.roles.includes('ADMIN')"
-                        size="x-large"
-                        variant="text" 
-                        icon="mdi-arrow-left"
-                        @click="navigateBack()">
-                    </v-btn>
-                </v-col>
+            <v-col cols="8">
+                <v-sheet 
+                    elevation="4" 
+                    class="rounded-lg pa-4">
 
-                <v-col>
-                    <v-sheet elevation="2" class="user-form-container rounded-lg">
+                    <!-- <v-container> -->
                         <v-form :disabled="!userAccountStore.isEditMode">
-                            <!-------------name--------------->
+                        <!-------------name--------------->
                             <v-row align="center">
                                 <v-col cols="4" align="end">
                                     Name:
@@ -124,45 +126,49 @@
                             </v-row>
                             <!----------------------------------->
                         </v-form>
-                    </v-sheet>
-                </v-col>
+                    <!-- </v-container> -->
+                </v-sheet>
+            </v-col>
 
-                <v-col cols="2">
-                    <!-- <v-card color="#e2ecf7"> -->
-                    <v-card>
-                        <v-card-title>Actions</v-card-title>
-                        <v-list density="compact">
+            <v-col cols="3">
+                <!-- <v-card color="#e2ecf7"> -->
+                <v-card 
+                    elevation="4"
+                    class="rounded-lg">
+                    
+                    <v-card-title>Actions</v-card-title>
+                    <v-list density="compact">
 
-                            <v-list-item
-                                v-for="(item, i) in actionItems"
-                                :key="i"
-                                :value="item"
-                                @click="item.event"
-                                color="primary">
+                        <v-list-item
+                            v-for="(item, i) in actionItems"
+                            :key="i"
+                            :value="item"
+                            @click="item.event"
+                            color="primary">
 
-                                <template v-slot:prepend>
-                                    <v-icon :icon="item.icon"></v-icon>
-                                </template>
+                            <template v-slot:prepend>
+                                <v-icon :icon="item.icon"></v-icon>
+                            </template>
 
-                                <v-list-item-title v-text="item.text"></v-list-item-title>
-                            </v-list-item>
-                        </v-list>
+                            <v-list-item-title v-text="item.text"></v-list-item-title>
+                        </v-list-item>
+                    </v-list>
 
-                    </v-card>
-                </v-col>
+                </v-card>
+            </v-col>
+            
+        </v-row>
 
-            </v-row>
-        </v-sheet>
-    </div>
+        <AlertMsg 
+            v-else 
+            :alertProps="{
+                textKey: 'no-data',
+                color: 'warning',
+                type: 'alert',
+            }">
+        </AlertMsg>
 
-    <AlertMsg 
-        v-else 
-        :alertProps="{
-            textKey: 'no-data',
-            color: 'warning',
-            type: 'alert',
-        }">
-    </AlertMsg>
+    <!-- </v-container> -->
 
     <v-dialog v-model="changePasswordDialog" max-width="1000">
         <ChangePasswordDialog></ChangePasswordDialog>
@@ -261,28 +267,3 @@
 
 
 </script>
-
-<style scoped>
-
-    .user-info-parent-container{
-        display: flex;
-        justify-content: center;
-        align-items: center; 
-    }
-
-    /* .user-info-back-button-container{
-        display: flex;
-        justify-content: start;
-    } */
-
-    .user-info-container{
-        width: 80%;
-        padding: 20px;
-    }
-
-    .user-form-container{
-        width: 80%;
-        padding: 20px; 
-    }
-
-</style>

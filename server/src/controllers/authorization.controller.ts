@@ -18,6 +18,20 @@ export async function authorize(req: Request, res: Response){
     }
 }
 
+export async function verifyJwt(req: Request, res: Response){
+
+    try{
+        const token: string = req.body.token;
+
+        const tokenObject: any = await authorizationService.verifyJwt(token);
+
+        return res.status(200).json(tokenObject);
+
+    }catch(error){
+        apiService.handleGenericApiError(error, res);
+    }
+}
+
 export async function refresh(req: Request, res: Response){
 
     try{

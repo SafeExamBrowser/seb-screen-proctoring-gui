@@ -155,4 +155,3 @@
         border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity));
     } 
 </style>
-@/utils/table/tableUtils

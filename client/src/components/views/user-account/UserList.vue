@@ -4,7 +4,7 @@
         show-select
         v-model="selectedItem"
         item-value="id" 
-        class="elevation-1"
+        class="rounded-lg elevation-4"
         select-strategy="single"
         :hover="true"
         :items-per-page="tableUtils.calcDefaultItemsPerPage(accounts)" 

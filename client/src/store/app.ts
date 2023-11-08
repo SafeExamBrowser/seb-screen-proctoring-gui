@@ -43,12 +43,20 @@ export const useAuthStore = defineStore("auth", () => {
     setAccessToken(accessTokenString);
     setRefreshToken(refershTokenString);
 
-
     if(useAuthStore().redirectRoute == ""){
       navigateTo("/start");
     }else{
       navigateTo(useAuthStore().redirectRoute);
     }
+
+    await userAccountViewService.setPersonalUserAccount();
+  }
+
+  async function loginWithJwt(accessTokenString: string, refershTokenString: string, redirect: string){
+    setAccessToken(accessTokenString);
+    setRefreshToken(refershTokenString);
+
+    navigateTo(redirect);
 
     await userAccountViewService.setPersonalUserAccount();
   }
@@ -83,7 +91,7 @@ export const useAuthStore = defineStore("auth", () => {
     return refreshToken;
   }
 
-  return {redirectRoute, login, logout, setAccessToken, getAccessToken, setRefreshToken, getRefreshToken};
+  return {redirectRoute, login, loginWithJwt, logout, setAccessToken, getAccessToken, setRefreshToken, getRefreshToken};
 });
 //-------------------------------------------------//
 

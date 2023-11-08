@@ -107,6 +107,7 @@
     const loadingStore = useLoadingStore();
 
     async function signIn(){
+
         loginError.value = false;
 
         try{
@@ -114,8 +115,6 @@
             authStore.login(tokenObject.access_token, tokenObject.refresh_token);
 
         }catch(error){
-            //todo: add better error handling
-            console.error(error)
             loginError.value = true;
         }
 
