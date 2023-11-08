@@ -7,6 +7,9 @@ const router: Router = express.Router();
 
 router.post("/authorize", validation.authorize, authorizationController.authorize);
 router.post("/refresh", authorizationController.refresh);
+
+router.post("/jwttoken/verify", authorizationController.verifyJwt);
+
 router.post("/useraccount/logLogin", authorizationController.logLogin);
 router.post("/useraccount/logLogout", authorizationController.logLogout)
 

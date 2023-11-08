@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router"
+import { createRouter, createWebHashHistory, RouteRecordRaw, createWebHistory } from "vue-router"
 import ContainerLayout from "@/components/layout/ContainerLayout.vue"
 import LoginPage from "@/components/views/LoginPage.vue"
 import RegisterPage from "@/components/views/RegisterPage.vue"
@@ -9,6 +9,8 @@ import ProctoringViewPage from "@/components/views/ProctoringViewPage.vue"
 import ExamplePage from "@/components/views/ExamplePage.vue"
 import UserAccountPage from "@/components/views/user-account/UserAccountPage.vue"
 import UserInfo from "@/components/views/user-account/UserInfo.vue"
+import * as authenticationService from "@/services/api-services/authenticationService";
+import { useAuthStore } from "@/store/app";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -22,6 +24,29 @@ const routes: Array<RouteRecordRaw> = [
     component: RegisterPage
   },
   {
+    path: "/jwt",
+    beforeEnter: async (to, from) => {
+
+      const authStore = useAuthStore();
+
+      if(to.query.token != null){
+        try{
+          const tokenObject: JwtTokenResponse = await authenticationService.verifyJwt(to.query.token.toString());
+          authStore.loginWithJwt(tokenObject.login.access_token, tokenObject.login.refresh_token, tokenObject.redirect);
+
+          return;
+
+        }catch(error){
+          return true;
+        }
+      }
+
+      //true means redirecting to Login Page
+      return true;
+    },
+    component: LoginPage
+  },
+  {
     path: "/",
     component: ContainerLayout,
     children: [
@@ -29,9 +54,6 @@ const routes: Array<RouteRecordRaw> = [
         path: "/start",
         name: "StartPage",
         component: StartPage,
-        beforeEnter: () => {
-          // console.log("before enter")
-        }
       },
       {
         path: "/search",
@@ -65,7 +87,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes
 })
 
