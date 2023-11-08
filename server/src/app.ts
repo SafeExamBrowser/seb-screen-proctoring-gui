@@ -19,8 +19,8 @@ const path: string = __dirname + "/views/";
 
 LOG.info("env mode: " + ENV.NODE_ENV);
 if(ENV.NODE_ENV === "dev"){
-  // app.use(cors(getCorstOptions()))
-  app.use(cors())
+  app.use(cors(getCorstOptions()))
+  // app.use(cors())
 }
 
 
@@ -32,6 +32,10 @@ app.use(adminProctorRoutes);
 
 
 app.get("/", (req: Request, res: Response) => {
+  res.sendFile(path + "index.html");
+});
+
+app.get("*", (req: Request, res: Response) => {
   res.sendFile(path + "index.html");
 });
 
