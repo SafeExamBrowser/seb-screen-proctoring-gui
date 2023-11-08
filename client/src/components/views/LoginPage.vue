@@ -108,8 +108,6 @@
 
     async function signIn(){
 
-        // await authenticationService.verifyJwt("eyJhbGciOiJIUzI1NiJ9.eyJyZWRpcmVjdCI6Ii9nYWxsZXJ5Vmlldy8yZDQzZmRjZC1kOTBhLTQyMDAtYmM1OC1kYWY0NTk5NGEzMzAiLCJzdWIiOiJsb2dpbnRva2VuX2M2OTY5ODRlLTEzOTYtNDhhNi05YmE5LTFmNDQzYzliMzUyYiIsInVzciI6InN1cGVyLWFkbWluIiwicHdkIjoiYWRtaW4iLCJleHAiOjE2OTkzNjQxNDIsImlhdCI6MTY5OTM2NDA4Mn0.l1DL502OLIBZDP1SeGJHqq61bIlAXA3t00Cy5PwNoVw");
-
         loginError.value = false;
 
         try{

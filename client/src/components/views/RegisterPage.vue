@@ -183,9 +183,7 @@
 
         try{
             const userAccount: object = await userAccountService.register(name.value, surname.value, username.value, password.value, confirmPassword.value, email.value, timeZone.value);
-            console.log(userAccount)
             registerSuccess.value = true;
-
 
         }catch(error){
             //todo: add better error handling
