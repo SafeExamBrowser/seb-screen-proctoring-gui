@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import * as adminProctorUserAccountService from "../services/admin-proctor-user-account.service";
+import * as adminProctorUserAccountService from "../services/user-account.service";
 import * as apiService from "../services/api.service";
 
 

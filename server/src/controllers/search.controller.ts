@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import * as apiService from "../services/api.service";
-import * as adminProctorSearchService from '../services/admin-proctor-search.service';
+import * as adminProctorSearchService from '../services/search.service';
 
 export async function searchSessions(req: Request, res: Response){
 

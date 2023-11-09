@@ -1,5 +1,5 @@
 import axios from "axios";
-import * as apiService from "../services/api.service";
+import * as apiService from "./api.service";
 
 const sessionUrl: string = "/proctoring/session/";
 
