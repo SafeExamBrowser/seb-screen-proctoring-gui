@@ -104,7 +104,6 @@
     import { ref, watch, onBeforeMount } from "vue";
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/table/tableUtils";
-    import { VDataTable } from "vuetify/labs/VDataTable";
     import * as searchViewService from "@/services/component-services/searchViewService";
     import * as groupingUtils from "@/utils/groupingUtils";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
