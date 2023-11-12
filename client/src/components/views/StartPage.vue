@@ -47,7 +47,6 @@
 <script setup lang="ts">
     import { ref, onBeforeMount, onMounted } from "vue";
     import * as groupService from "@/services/api-services/groupService";
-    import { VDataTable } from "vuetify/labs/VDataTable";
     import { useAppBarStore } from "@/store/app";
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/table/tableUtils";
