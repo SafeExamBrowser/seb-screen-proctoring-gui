@@ -8,7 +8,7 @@
                 </div>
 
                 <div class="mt-10">
-                    <AlertMsg 
+                    <AlertMsg
                         v-if="registerError"
                         :alertProps="{
                             color: 'error',
@@ -17,7 +17,7 @@
                         }">
                     </AlertMsg>
 
-                    <AlertMsg 
+                    <AlertMsg
                         v-if="registerSuccess"
                         :alertProps="{
                             color: 'success',
@@ -26,7 +26,7 @@
                         }">
                     </AlertMsg>
                 </div>
-                
+
                 <v-card-title class="mt-10">
                     Register
                 </v-card-title>
@@ -126,7 +126,7 @@
                         <!--register button-->
                         <v-btn
                             block
-                            rounded="sm" 
+                            rounded="sm"
                             color="primary"
                             @click="register()">
                             Register
@@ -138,9 +138,10 @@
                         <span>
                             Already have an account?
                         </span>
-                        <span 
-                            role="button" 
-                            tabindex="0" 
+                        <span
+                            class="text-decoration-underline"
+                            role="button"
+                            tabindex="0"
                             @keydown="handleTabKeyEvent($event, 'navigate')">
                             <router-link to="/">Login</router-link>
                         </span>
@@ -153,7 +154,7 @@
         </v-container>
     </v-main>
 </template>
-  
+
 <script setup lang="ts">
     import { ref } from "vue";
     import * as userAccountService from "@/services/api-services/userAccountService";
@@ -206,7 +207,7 @@
     }
 
 </script>
-  
+
 
 <style scoped>
 

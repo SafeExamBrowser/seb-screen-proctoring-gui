@@ -23,8 +23,8 @@
     color: black;
   }
 
-  a:visited {
-  color: blue !important;
+  .text-decoration-underline a:visited {
+    color: #2196F3 !important;
   }
 
 </style>
