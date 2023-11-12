@@ -1,5 +1,4 @@
 import express, {Router} from 'express';
-
 import * as authorizationController from '../controllers/authorization.controller';
 import * as validation from '../validation/validation';
 

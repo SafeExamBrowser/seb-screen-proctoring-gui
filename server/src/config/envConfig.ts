@@ -11,7 +11,7 @@ export const DEV_SERVER_PORT = process.env.DEV_SERVER_PORT;
 export const PROCTOR_SERVER_USERNAME = process.env.PROCTOR_SERVER_USERNAME;
 export const PROCTOR_SERVER_PASSWORD = process.env.PROCTOR_SERVER_PASSWORD;
 
-export const SEB_INTEGRATION_MODE = process.env.SEB_INTEGRATION_MODE;
+export const SEB_SERVER_INTEGRATED_MODE = process.env.SEB_SERVER_INTEGRATED_MODE;
 
 function getServerPort(){
     if(!process.env.PROCTOR_SERVER_PORT){

@@ -6,7 +6,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 
 import authorizationRoutes from "./routes/authorization.routes";
-import adminProctorRoutes from "./routes/proctor.routes";
+import routes from "./routes/routes";
 import {LOG} from "./logging/logger";
 import {apiRequestLogger} from "./logging/api-request-logger";
 import * as ENV from "./config/envConfig";
@@ -25,8 +25,8 @@ if(ENV.NODE_ENV === "dev"){
 }
 
 
-console.log(ENV.SEB_INTEGRATION_MODE)
-if(!ENV.SEB_INTEGRATION_MODE){
+console.log(ENV.SEB_SERVER_INTEGRATED_MODE)
+if(!ENV.SEB_SERVER_INTEGRATED_MODE){
   console.log("it is false")
 }
 
@@ -36,7 +36,7 @@ app.use(bodyParser.json());
 app.use(apiRequestLogger);
 
 app.use(authorizationRoutes);
-app.use(adminProctorRoutes);
+app.use(routes);
 
 
 app.get("/", (req: Request, res: Response) => {
