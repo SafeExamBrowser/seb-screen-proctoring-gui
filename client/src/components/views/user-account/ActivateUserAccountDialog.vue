@@ -92,7 +92,10 @@
             return;
         }
 
-        closeActivateDialog(true, userAccountResponse.id, userAccountResponse.terminationTime);
+        console.log("activate account function")
+        console.log(userAccountResponse.terminationTime)
+
+        closeActivateDialog(true, userAccountResponse.id, null);
     }
 
     async function deactivateAccount(){

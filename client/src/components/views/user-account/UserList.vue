@@ -95,17 +95,39 @@
 
     function updateTerminationTimeInList(accountId: number, terminationTime: number | null){
         if(accounts.value != null){
+            // console.log("it got here========")
+            // console.log(accountId)
+            // console.log(terminationTime)
+            // console.log(null)
+
+            console.log(accounts.value.find(i => i.id == accountId))
+
+
             accounts.value.find(i => i.id == accountId)!.terminationTime = terminationTime;
+            accounts.value = [...accounts.value];
+
+            console.log(accounts.value.find(i => i.id == accountId))
         }
     }
 
     function getStatusValue(terminationTime: string | null): Status{
-        //if there is a terminatation time --> user is inactive
-        if(terminationTime){
-            return Status.inactive;
+
+        console.log("terminationTime in get status value")
+        console.log(terminationTime)
+
+        if(!terminationTime || terminationTime == null){
+            return Status.active;
         }
 
-        return Status.active;
+        //if there is a terminatation time --> user is inactive
+        // if(terminationTime && terminationTime != null){
+        //     // console.log("it got here inactive")
+        //     return Status.inactive;
+        // }
+
+        // console.log("it got here active")
+        return Status.inactive;
+        // return Status.active;
     }
 
 

@@ -1,12 +1,14 @@
 import {Request, Response} from "express";
 import * as adminProctorUserAccountService from "../services/user-account.service";
 import * as apiService from "../services/api.service";
-import * as ENV from "../config/envConfig";
 
 
 export async function getPersonalUserAccount(req: Request, res: Response){
     try{
         const personalUserAccount: object = await adminProctorUserAccountService.getPersonalUserAccount(req.headers.authorization)
+
+        console.log("it got here")
+        console.log(personalUserAccount)
 
         return res.status(200).json(personalUserAccount);
 
