@@ -45,9 +45,10 @@ export async function changePassword(
 ): Promise<UserAccount | any> {
   console.log("changePassword service params:", uuid, currentPassword, newPassword, confirmNewPassword)
   try {
-    const url: string = ENV.SERVER_URL + ENV.SERVER_PORT + userAccountUrl + "/changePassword";
 
-    const {data, status}: AxiosResponse = await axios.post(url, { headers: apiService.getHeaders() }, { headers: apiService.getHeaders() });
+    const url: string = userAccountUrl + "/changePassword";
+
+    const {data, status}: AxiosResponse = await apiService.api.post(url, {uuid, currentPassword, newPassword, confirmNewPassword}, {headers: apiService.getPostHeaders()});
 
     console.log("changePassword service data:", data)
 
