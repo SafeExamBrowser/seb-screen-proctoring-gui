@@ -32,8 +32,6 @@ export async function getUserAccountById(req: Request, res: Response){
 
 export async function registerUserAccount(req: Request, res: Response){
 
-    if(isRouteOperationAllowed(res)) return res.status(401).json("Unauthorized");
-
     try{
         const newUserAccount: object = await adminProctorUserAccountService.registerUserAccount(req.body)
         return res.status(200).json(newUserAccount);
@@ -59,8 +57,6 @@ export async function getUserAccounts(req: Request, res: Response){
 
 export async function activateUserAccount(req: Request, res: Response){
 
-    isRouteOperationAllowed(res);
-
     try{
         const userAccount: object = await adminProctorUserAccountService.activateUserAccount(req.headers.authorization, req.params.accountId)
 
@@ -74,8 +70,6 @@ export async function activateUserAccount(req: Request, res: Response){
 
 export async function deactivateUserAccount(req: Request, res: Response){
 
-    isRouteOperationAllowed(res);
-
     try{
         const userAccount: object = await adminProctorUserAccountService.deactivateUserAccount(req.headers.authorization, req.params.accountId)
 
@@ -84,12 +78,4 @@ export async function deactivateUserAccount(req: Request, res: Response){
     }catch(error){
         apiService.handleGenericApiError(error, res);
     }
-}
-
-function isRouteOperationAllowed(res: Response): boolean{
-    if(ENV.SEB_SERVER_INTEGRATED_MODE){
-        return true;
-    }
-
-    return false;
 }
