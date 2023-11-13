@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import * as apiService from "../services/api.service";
-import * as adminProctorSessionService from '../services/admin-proctor-session.service';
+import * as adminProctorSessionService from '../services/session.service';
 
 export async function getSessionBySessionId(req: Request, res: Response){
 
