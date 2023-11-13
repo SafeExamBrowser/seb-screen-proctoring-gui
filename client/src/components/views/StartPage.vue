@@ -2,12 +2,12 @@
     <v-row>
         <v-col>
 
-            <v-data-table 
-                item-value="item.name" 
+            <v-data-table
+                item-value="item.name"
                 class="rounded-lg elevation-4"
-                :items-per-page="tableUtils.calcDefaultItemsPerPage(groups)" 
+                :items-per-page="tableUtils.calcDefaultItemsPerPage(groups)"
                 :items-per-page-options="tableUtils.calcItemsPerPage(groups)"
-                :headers="headers" 
+                :headers="headers"
                 :items="groups">
 
                 <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
@@ -22,9 +22,9 @@
 
                 <template v-slot:item.name="{item, index, internalItem}">
                     <td>
-                        <div 
-                            role="button" 
-                            tabindex="0" 
+                        <div class="text-decoration-underline"
+                            role="button"
+                            tabindex="0"
                             @keydown="tableUtils.handleTabKeyEvent($event, 'navigate', internalItem.index, {path: getGalleryViewLink(internalItem.index)})">
                             <router-link :to="getGalleryViewLink(internalItem.index)">{{item.name}}</router-link>
                         </div>
@@ -37,7 +37,7 @@
                         </div>
                     </td>
                 </template>
-                
+
             </v-data-table>
 
         </v-col>
@@ -75,7 +75,7 @@
         if(groups.value != null){
             return "/galleryView/" + groups.value[index].uuid;
         }
-        
+
         return "";
     }
 
