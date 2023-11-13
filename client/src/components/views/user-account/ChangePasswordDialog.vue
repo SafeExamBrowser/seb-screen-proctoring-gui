@@ -119,6 +119,10 @@
         closeAddDialog: any
     }>();
 
+    const props = defineProps<{
+      uuid: string
+    }>();
+
     //error handling
     const addError = ref(false);
     const addSuccess = ref(false);
@@ -144,9 +148,8 @@
     const updateAccount: () => void = async () => {
       addError.value = false;
       addSuccess.value = false;
-
       try{
-          const userAccount: UserAccount = await userAccountViewService.changePassword(currentPassword.value, newPassword.value, confirmNewPassword.value);
+          const userAccount: UserAccount = await userAccountViewService.changePassword(props.uuid, currentPassword.value, newPassword.value, confirmNewPassword.value);
           addSuccess.value = true;
           closeAddDialog(userAccount)
 

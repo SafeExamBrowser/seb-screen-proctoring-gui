@@ -42,16 +42,16 @@ export async function registerUserAccount(req: Request, res: Response){
 }
 
 export async function changePassword(req: Request, res: Response){
+    console.log("changePassword server controller headers:", req.headers.authorization)
     console.log("changePassword server controller body:", req.body)
     try{
-        const newUserAccount: object = await adminProctorUserAccountService.changePassword(req.body)
-
+        const newUserAccount: object = await adminProctorUserAccountService.changePassword(req.headers.authorization, req.body)
+        console.log("changePassword server controller newUserAccount:", newUserAccount)
         return res.status(200).json(newUserAccount);
 
     }catch(error){
         apiService.handleGenericApiError(error, res);
     }
-
 }
 
 

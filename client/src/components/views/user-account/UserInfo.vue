@@ -7,7 +7,7 @@
                     <v-btn
                         v-if="userAccountStore.userAccount?.roles.includes('ADMIN')"
                         size="x-large"
-                        variant="text" 
+                        variant="text"
                         icon="mdi-arrow-left"
                         @click="navigateBack()">
                     </v-btn>
@@ -104,18 +104,18 @@
                             <!-------------buttons--------------->
                             <v-row v-if="userAccountStore.isEditMode">
                                 <v-col align="right">
-                                    <v-btn 
-                                        rounded="sm" 
-                                        color="black" 
+                                    <v-btn
+                                        rounded="sm"
+                                        color="black"
                                         variant="outlined"
                                         @click="clearForm()">
                                         Cancel
                                     </v-btn>
 
-                                    <v-btn 
-                                        rounded="sm" 
-                                        color="primary" 
-                                        variant="flat" 
+                                    <v-btn
+                                        rounded="sm"
+                                        color="primary"
+                                        variant="flat"
                                         class="ml-2"
                                         @click="updateAccount()">
                                         Save
@@ -155,8 +155,8 @@
         </v-sheet>
     </div>
 
-    <AlertMsg 
-        v-else 
+    <AlertMsg
+        v-else
         :alertProps="{
             textKey: 'no-data',
             color: 'warning',
@@ -165,9 +165,9 @@
     </AlertMsg>
 
     <v-dialog v-model="changePasswordDialog" max-width="1000">
-        <ChangePasswordDialog></ChangePasswordDialog>
+        <ChangePasswordDialog :uuid="userAccount.uuid" @closeAddDialog="closeAddDialog()"></ChangePasswordDialog>
     </v-dialog>
-    
+
 </template>
 
 
@@ -255,6 +255,13 @@
     function changePassword(){
         changePasswordDialog.value = true;
     }
+
+    function closeAddDialog(newUserAccount?: UserAccount){
+        if(!newUserAccount){
+          changePasswordDialog.value = false;
+            return;
+        }
+    }
     //==============================
 
 
@@ -267,7 +274,7 @@
     .user-info-parent-container{
         display: flex;
         justify-content: center;
-        align-items: center; 
+        align-items: center;
     }
 
     /* .user-info-back-button-container{
@@ -282,7 +289,7 @@
 
     .user-form-container{
         width: 80%;
-        padding: 20px; 
+        padding: 20px;
     }
 
 </style>

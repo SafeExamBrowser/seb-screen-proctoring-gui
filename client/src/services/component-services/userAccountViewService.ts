@@ -72,10 +72,10 @@ export async function deactivateUserAccount(accountId: string): Promise<UserAcco
     }
 }
 
-export async function changePassword(currentPassword: string, newPassword: string, confirmNewPassword: string): Promise<UserAccount[] | any>{
-  console.log("changePassword view service params:", currentPassword, newPassword, confirmNewPassword)
+export async function changePassword(uuid: string, currentPassword: string, newPassword: string, confirmNewPassword: string): Promise<UserAccount[] | any>{
+  console.log("changePassword VIEW service params:", uuid, currentPassword, newPassword, confirmNewPassword)
   try{
-      const userAccount = await userAccountService.changePassword(currentPassword, newPassword, confirmNewPassword)
+      const userAccount = await userAccountService.changePassword(uuid, currentPassword, newPassword, confirmNewPassword)
       return userAccount;
 
   }catch(error){

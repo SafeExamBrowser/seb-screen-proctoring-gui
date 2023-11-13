@@ -16,11 +16,11 @@ export async function registerUserAccount(userData: {}): Promise<object>{
 
 const userAccountUrl: string = "/useraccount";
 
-export async function changePassword(userData: {}): Promise<object>{
-    console.log("changePassword server controller userData:", userData)
-    const url = userAccountUrl + "/changePassword";
-    const {data, status} = await axios.post(url, userData, {headers: apiService.getHeadersWithoutAuth()});
-
+export async function changePassword(token: string, userData: {}): Promise<object>{
+    // console.log("changePassword server service userData:", userData)
+    // console.log("changePassword server service token:", token)
+    const url = userAccountUrl + "/password";
+    const {data, status} = await axios.post(url, userData, {headers: apiService.getHeaders(token)});
     return data;
 }
 

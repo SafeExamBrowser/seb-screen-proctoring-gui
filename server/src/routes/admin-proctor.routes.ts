@@ -17,10 +17,10 @@ router.get("/search/sessions", adminProctorSearchController.searchSessions);
 router.get("/search/screenshots", adminProctorSearchController.searchScreenshots);
 router.get("/search/timeline/:sessionId", adminProctorSearchController.searchTimeline);
 
-router.get("/useraccount/changePassword", adminProctorUserAccountController.changePassword)
 router.get("/useraccount/me", adminProctorUserAccountController.getPersonalUserAccount)
 router.get("/useraccount/:accountId", adminProctorUserAccountController.getUserAccountById)
 router.get("/useraccount", adminProctorUserAccountController.getUserAccounts)
+router.post("/useraccount/changePassword", adminProctorUserAccountController.changePassword)
 router.post("/useraccount/register", adminProctorUserAccountController.registerUserAccount)
 router.post("/useraccount/activate/:accountId", adminProctorUserAccountController.activateUserAccount)
 router.post("/useraccount/deactivate/:accountId", adminProctorUserAccountController.deactivateUserAccount)
