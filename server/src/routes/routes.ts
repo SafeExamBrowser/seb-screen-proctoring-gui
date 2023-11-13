@@ -22,6 +22,7 @@ router.get("/useraccount", userAccountController.getUserAccounts)
 router.post("/useraccount/register", userAccountController.registerUserAccount)
 router.post("/useraccount/activate/:accountId", userAccountController.activateUserAccount)
 router.post("/useraccount/deactivate/:accountId", userAccountController.deactivateUserAccount)
+router.post("/useraccount/changePassword", userAccountController.changePassword)
 
 
 export default router;
