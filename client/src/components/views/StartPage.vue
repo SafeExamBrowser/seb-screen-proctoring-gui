@@ -1,10 +1,10 @@
 <template>
-    
-    <div class="table-container">
-        <div class="table d-flex align-center">
+    <v-row>
+        <v-col>
+
             <v-data-table 
                 item-value="item.name" 
-                class="elevation-1"
+                class="rounded-lg elevation-4"
                 :items-per-page="tableUtils.calcDefaultItemsPerPage(groups)" 
                 :items-per-page-options="tableUtils.calcItemsPerPage(groups)"
                 :headers="headers" 
@@ -21,7 +21,7 @@
                 </template>
 
                 <template v-slot:item.name="{item, index, internalItem}">
-                    <td class="text-decoration-underline text-blue">
+                    <td>
                         <div 
                             role="button" 
                             tabindex="0" 
@@ -37,17 +37,16 @@
                         </div>
                     </td>
                 </template>
-
+                
             </v-data-table>
-        </div>
-    </div>
 
+        </v-col>
+    </v-row>
 </template>
 
 <script setup lang="ts">
     import { ref, onBeforeMount, onMounted } from "vue";
     import * as groupService from "@/services/api-services/groupService";
-    import { VDataTable } from "vuetify/labs/VDataTable";
     import { useAppBarStore } from "@/store/app";
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/table/tableUtils";
@@ -70,8 +69,6 @@
     onBeforeMount(async () => {
         appBarStore.title = "Active SEB Groups"
         groups.value = await groupService.getGroups({pageSize: 500});
-
-        console.log(groups.value)
     });
 
     function getGalleryViewLink(index: number) {
@@ -83,15 +80,3 @@
     }
 
 </script>
-
-<style>
-    .table-container{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .table {
-        width: 75%;
-    }
-</style>

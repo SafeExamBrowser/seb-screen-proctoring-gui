@@ -2,7 +2,7 @@ import {Request, Response, NextFunction} from 'express';
 import {Result, ValidationError, body, validationResult} from 'express-validator';
 import {LOG} from '../logging/logger';
 
-export const authorize = [
+export const validateAuthorize = [
 
     body("username").notEmpty().withMessage("username is required"), 
     body("password").notEmpty().withMessage("password is required"),

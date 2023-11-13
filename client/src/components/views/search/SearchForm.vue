@@ -1,246 +1,240 @@
 <template>
-    <v-sheet 
-        elevation="4"
-        class="search-container rounded-lg"
-        title="Search">
-        <v-form 
-            @keyup.enter="searchSessions()"
-            @keyup.esc="clearForm()">
+    <div style="visibility: hidden">placeholder</div>
+    <v-form 
+        class="form-container"
+        @keyup.enter="searchSessions()"
+        @keyup.esc="clearForm()">
 
-            <div class="form-container">
-                <!------------Exam Name------------->
+            <!------------Exam Name------------->
+            <v-row align="center">
+                <v-col cols="4">
+                    Exam Name:
+                </v-col>
+                <v-col cols="8">
+                    <v-text-field
+                        single-line
+                        hide-details
+                        density="compact"
+                        variant="outlined"
+                        v-model="examNameField"
+                    ></v-text-field>
+                </v-col>
+            </v-row>
+            <!----------------------------------->
+
+            <!------------Group Name------------->
+            <v-row align="center">
+                <v-col cols="4">
+                    Group Name:
+                </v-col>
+                <v-col cols="8">
+                    <v-text-field
+                        single-line
+                        hide-details
+                        density="compact"
+                        variant="outlined"
+                        v-model="groupNameField"
+                    ></v-text-field>
+                </v-col>
+            </v-row>
+            <!----------------------------------->
+
+            <!------------Login- / Machinename"------------->
+            <v-row>
+                <v-col>
+                    <v-expansion-panels>
+                        <v-expansion-panel
+                            title="Login- / Machinename">
+                            <v-expansion-panel-text>
+
+                                <!------------Login Name------------->
+                                <v-row align="center">
+                                    <v-col cols="4">
+                                        Login Name:
+                                    </v-col>
+                                    <v-col cols="8">
+                                        <v-text-field
+                                            single-line
+                                            hide-details
+                                            density="compact"
+                                            variant="outlined"
+                                            v-model="loginNameField">
+                                        </v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <!----------------------------------->
+
+                                <!------------Machine Name------------->
+                                <v-row align="center">
+                                    <v-col cols="4">
+                                        Machine Name:
+                                    </v-col>
+                                    <v-col cols="8">
+                                        <v-text-field
+                                            single-line
+                                            hide-details
+                                            density="compact"
+                                            variant="outlined"
+                                            v-model="machineNameField">
+                                        </v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <!----------------------------------->
+
+                            </v-expansion-panel-text>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                </v-col>
+            </v-row>
+            <!----------------------------------->
+
+            <!------------Metadata------------->
+            <v-row>
+                <v-col>
+                    <v-expansion-panels>
+                        <v-expansion-panel
+                            title="Metadata">
+                            <v-expansion-panel-text>
+
+                                <!------------Metatdata: Url------------->
+                                <v-row align="center">
+                                    <v-col cols="4" class="text-decoration-line-through">
+                                        Url:
+                                    </v-col>
+                                    <v-col cols="8">
+                                        <v-text-field
+                                            single-line
+                                            hide-details
+                                            density="compact"
+                                            variant="outlined"
+                                            v-model="metadataUrlField"
+                                            :disabled=true
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <!----------------------------------->
+
+                                <!------------Metatdata: Window Title------------->
+                                <v-row align="center">
+                                    <v-col cols="4">
+                                        Application / Website:
+                                    </v-col>
+                                    <v-col cols="8">
+                                        <v-text-field
+                                            single-line
+                                            hide-details
+                                            density="compact"
+                                            variant="outlined"
+                                            v-model="metadataWindowTitleField"
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <!----------------------------------->
+
+                                <!------------Metatdata: User Action------------->
+                                <v-row align="center">
+                                    <v-col cols="4">
+                                        Activity Details:
+                                    </v-col>
+                                    <v-col cols="8">
+                                        <v-text-field
+                                            single-line
+                                            hide-details
+                                            density="compact"
+                                            variant="outlined"
+                                            v-model="metadataUserActionField"
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <!----------------------------------->
+
+                            </v-expansion-panel-text>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                </v-col>
+            </v-row>
+            <!----------------------------------->
+
+            <!------------Time Period------------->
+            <v-row align="center">
+                    <v-col cols="4">
+                        Period:
+                    </v-col>
+                    <v-col cols="1">
+                        <v-radio v-model="timePeriodRadio" @click="radioButtonEvent('period')"></v-radio>
+                    </v-col>
+                    <v-col cols="1">
+                        Last
+                    </v-col>
+                    <v-col cols="2">
+                        <v-text-field
+                            hide-details    
+                            single-line
+                            type="number"
+                            density="compact"
+                            variant="solo"
+                            v-model="timePeriodField"
+                            :disabled="!timePeriodRadio"> 
+                        </v-text-field> 
+                    </v-col>
+                    <v-col cols="4">
+                        <v-select
+                            hide-details
+                            variant="outlined"
+                            v-model="timePeriodSelect"
+                            :items="timePeriodSelectValues"
+                            :disabled="!timePeriodRadio">
+                        </v-select>
+                    </v-col>
+                </v-row>
+                <!----------------------------------->
+
+
+                <!------------Time Selection------------->
                 <v-row align="center">
                     <v-col cols="4">
-                        Exam Name:
+                        Between:
                     </v-col>
-                    <v-col cols="8">
-                        <v-text-field
-                            single-line
-                            hide-details
-                            density="compact"
-                            variant="outlined"
-                            v-model="examNameField"
-                        ></v-text-field>
+                    <v-col cols="1">
+                        <v-radio v-model="timeSelectionRadio" @click="radioButtonEvent('selection')">
+                        </v-radio>
                     </v-col>
-                </v-row>
-                <!----------------------------------->
-
-                <!------------Group Name------------->
-                <v-row align="center">
-                    <v-col cols="4">
-                        Group Name:
-                    </v-col>
-                    <v-col cols="8">
-                        <v-text-field
-                            single-line
-                            hide-details
-                            density="compact"
-                            variant="outlined"
-                            v-model="groupNameField"
-                        ></v-text-field>
+                    <v-col cols="7">
+                        <VueDatePicker 
+                            range
+                            format="dd.MM.yyyy HH:mm"
+                            v-model="timeSelectionPicker"  
+                            :teleport="true"
+                            :disabled="!timeSelectionRadio">
+                        </VueDatePicker>
                     </v-col>
                 </v-row>
-                <!----------------------------------->
+            <!----------------------------------->
 
-                <!------------Login- / Machinename"------------->
-                <v-row>
-                    <v-col>
-                        <v-expansion-panels>
-                            <v-expansion-panel
-                                title="Login- / Machinename">
-                                <v-expansion-panel-text>
+            <!------------Buttons------------->
+            <v-row>
+                <v-col align="right">
+                    <v-btn 
+                        rounded="sm" 
+                        color="black" 
+                        variant="outlined"
+                        @click="clearForm()">
+                        Cancel
+                    </v-btn>
 
-                                    <!------------Login Name------------->
-                                    <v-row align="center">
-                                        <v-col cols="4">
-                                            Login Name:
-                                        </v-col>
-                                        <v-col cols="8">
-                                            <v-text-field
-                                                single-line
-                                                hide-details
-                                                density="compact"
-                                                variant="outlined"
-                                                v-model="loginNameField">
-                                            </v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <!----------------------------------->
+                    <v-btn 
+                        rounded="sm" 
+                        color="primary" 
+                        variant="flat" 
+                        class="ml-2"
+                        @click="searchSessions()">
+                        Search
+                    </v-btn>
 
-                                    <!------------Machine Name------------->
-                                    <v-row align="center">
-                                        <v-col cols="4">
-                                            Machine Name:
-                                        </v-col>
-                                        <v-col cols="8">
-                                            <v-text-field
-                                                single-line
-                                                hide-details
-                                                density="compact"
-                                                variant="outlined"
-                                                v-model="machineNameField">
-                                            </v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <!----------------------------------->
-
-                                </v-expansion-panel-text>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-col>
-                </v-row>
-                <!----------------------------------->
-
-                <!------------Metadata------------->
-                <v-row>
-                    <v-col>
-                        <v-expansion-panels>
-                            <v-expansion-panel
-                                title="Metadata">
-                                <v-expansion-panel-text>
-
-                                    <!------------Metatdata: Url------------->
-                                    <v-row align="center">
-                                        <v-col cols="4" class="text-decoration-line-through">
-                                            Url:
-                                        </v-col>
-                                        <v-col cols="8">
-                                            <v-text-field
-                                                single-line
-                                                hide-details
-                                                density="compact"
-                                                variant="outlined"
-                                                v-model="metadataUrlField"
-                                                :disabled=true
-                                            ></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <!----------------------------------->
-
-                                    <!------------Metatdata: Window Title------------->
-                                    <v-row align="center">
-                                        <v-col cols="4">
-                                            Application / Website:
-                                        </v-col>
-                                        <v-col cols="8">
-                                            <v-text-field
-                                                single-line
-                                                hide-details
-                                                density="compact"
-                                                variant="outlined"
-                                                v-model="metadataWindowTitleField"
-                                            ></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <!----------------------------------->
-
-                                    <!------------Metatdata: User Action------------->
-                                    <v-row align="center">
-                                        <v-col cols="4">
-                                            Activity Details:
-                                        </v-col>
-                                        <v-col cols="8">
-                                            <v-text-field
-                                                single-line
-                                                hide-details
-                                                density="compact"
-                                                variant="outlined"
-                                                v-model="metadataUserActionField"
-                                            ></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <!----------------------------------->
-
-                                </v-expansion-panel-text>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-col>
-                </v-row>
-                <!----------------------------------->
-
-                <!------------Time Period------------->
-                <v-row align="center">
-                        <v-col cols="4">
-                            Period:
-                        </v-col>
-                        <v-col cols="1">
-                            <v-radio v-model="timePeriodRadio" @click="radioButtonEvent('period')"></v-radio>
-                        </v-col>
-                        <v-col cols="1">
-                            Last
-                        </v-col>
-                        <v-col cols="2">
-                            <v-text-field
-                                hide-details    
-                                single-line
-                                type="number"
-                                density="compact"
-                                variant="solo"
-                                v-model="timePeriodField"
-                                :disabled="!timePeriodRadio"> 
-                            </v-text-field> 
-                        </v-col>
-                        <v-col cols="4">
-                            <v-select
-                                hide-details
-                                variant="outlined"
-                                v-model="timePeriodSelect"
-                                :items="timePeriodSelectValues"
-                                :disabled="!timePeriodRadio">
-                            </v-select>
-                        </v-col>
-                    </v-row>
-                    <!----------------------------------->
-
-
-                    <!------------Time Selection------------->
-                    <v-row align="center">
-                        <v-col cols="4">
-                            Between:
-                        </v-col>
-                        <v-col cols="1">
-                            <v-radio v-model="timeSelectionRadio" @click="radioButtonEvent('selection')">
-                            </v-radio>
-                        </v-col>
-                        <v-col cols="7">
-                            <VueDatePicker 
-                                range
-                                format="dd.MM.yyyy HH:mm"
-                                v-model="timeSelectionPicker"  
-                                :teleport="true"
-                                :disabled="!timeSelectionRadio">
-                            </VueDatePicker>
-                        </v-col>
-                    </v-row>
-                <!----------------------------------->
-
-                <!------------Buttons------------->
-                <v-row>
-                    <v-col align="right">
-                        <v-btn 
-                            rounded="sm" 
-                            color="black" 
-                            variant="outlined"
-                            @click="clearForm()">
-                            Cancel
-                        </v-btn>
-
-                        <v-btn 
-                            rounded="sm" 
-                            color="primary" 
-                            variant="flat" 
-                            class="ml-2"
-                            @click="searchSessions()">
-                            Search
-                        </v-btn>
-
-                    </v-col>
-                </v-row>
-                <!----------------------------------->
-
-            </div>
-        </v-form>
-    </v-sheet>
+                </v-col>
+            </v-row>
+            <!----------------------------------->
+    </v-form>
 </template>
 
 <script setup lang="ts">
@@ -367,10 +361,8 @@
 
 
 <style scoped>
-
     .form-container{
         padding-left: 20%;
         padding-right: 20%;
     }
-
 </style>

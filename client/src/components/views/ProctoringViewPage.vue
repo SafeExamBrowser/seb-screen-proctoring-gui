@@ -1,42 +1,44 @@
 <template>
-
     <v-row v-if="!showError">
-        <!-- <v-col cols="9"> -->
+        
+        <!-----------video player---------->
         <v-col>
-            <v-img 
-                class="img-styling"
-                ref="videoPlayer"
-                :src="imageLink" 
-                :aspect-ratio="16/9">
-                <template v-slot:error>
-                    no img available
-                </template>
+            <v-sheet 
+                elevation="4"
+                class="rounded-lg pt-4 pl-4 pr-4">
+                <v-img 
+                    class="img-styling"
+                    ref="videoPlayer"
+                    :src="imageLink" 
+                    :aspect-ratio="16/9">
+                    <template v-slot:error>
+                        no img available
+                    </template>
+                </v-img>
 
-                <!-- <div v-if="isFullscreen">
-                    testtesttest
-                </div> -->
-            </v-img>
-
-            <v-slider class="mt-4" :min="firstScreenshotTime" :max="lastScreenshotTime" :step="1000" v-model="sliderTime" thumb-label>
-                <template v-slot:thumb-label>
-                    {{currentTimeString}}
-                </template>
-                <template v-slot:prepend>
-                    <v-btn @click="backwards()" size="small" variant="text" icon="mdi-step-backward"></v-btn>
-                    <v-btn @click="pausePlay()" size="small" variant="text" :icon="isPlaying ? 'mdi-pause' : 'mdi-play'"></v-btn>
-                    <v-btn @click="forwards()" size="small" variant="text" icon="mdi-step-forward"></v-btn>
-                </template>
-                <template v-slot:append>
-                    <v-chip variant="outlined">
-                        {{ currentTimeString }} / {{ endTimeString }}
-                    </v-chip>
-                    <v-btn @click="toggle" variant="text" icon="mdi-fullscreen"></v-btn>
-                </template>
-            </v-slider>
+                <v-slider class="mt-4" :min="firstScreenshotTime" :max="lastScreenshotTime" :step="1000" v-model="sliderTime" thumb-label>
+                    <template v-slot:thumb-label>
+                        {{currentTimeString}}
+                    </template>
+                    <template v-slot:prepend>
+                        <v-btn @click="backwards()" size="small" variant="text" icon="mdi-step-backward"></v-btn>
+                        <v-btn @click="pausePlay()" size="small" variant="text" :icon="isPlaying ? 'mdi-pause' : 'mdi-play'"></v-btn>
+                        <v-btn @click="forwards()" size="small" variant="text" icon="mdi-step-forward"></v-btn>
+                    </template>
+                    <template v-slot:append>
+                        <v-chip variant="outlined">
+                            {{ currentTimeString }} / {{ endTimeString }}
+                        </v-chip>
+                        <v-btn @click="toggle" variant="text" icon="mdi-fullscreen"></v-btn>
+                    </template>
+                </v-slider>
+            </v-sheet>
         </v-col>
+        <!-------------------------->
 
+        <!-----------info box---------->
         <v-col cols="3" v-if="isMetadataInfo">
-            <v-card color="#e2ecf7">
+            <v-card color="#e2ecf7" elevation="4">
                 <v-card-text>
                     <v-row>
                         <v-col cols="9">
@@ -71,6 +73,7 @@
                 </v-card-text>
             </v-card>
         </v-col>
+
         <v-col v-else cols="1" align="center">
             <v-card color="#e2ecf7">
                 <v-card-title>
@@ -78,7 +81,7 @@
                 </v-card-title>
             </v-card>
         </v-col>
-
+        <!-------------------------->
 
     </v-row>
 
@@ -90,7 +93,6 @@
             textKey: 'no-data'
         }">
     </AlertMsg>
-
 </template>
 
 <script setup lang="ts">
@@ -272,8 +274,6 @@
     }
 
     //==============================
-
-
 
 
     //=============interval==================

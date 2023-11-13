@@ -1,6 +1,7 @@
 import {Request, Response} from "express";
-import * as adminProctorUserAccountService from "../services/admin-proctor-user-account.service";
+import * as adminProctorUserAccountService from "../services/user-account.service";
 import * as apiService from "../services/api.service";
+import * as ENV from "../config/envConfig";
 
 
 export async function getPersonalUserAccount(req: Request, res: Response){
@@ -30,9 +31,9 @@ export async function getUserAccountById(req: Request, res: Response){
 
 
 export async function registerUserAccount(req: Request, res: Response){
+
     try{
         const newUserAccount: object = await adminProctorUserAccountService.registerUserAccount(req.body)
-
         return res.status(200).json(newUserAccount);
 
     }catch(error){
@@ -68,6 +69,7 @@ export async function getUserAccounts(req: Request, res: Response){
 
 
 export async function activateUserAccount(req: Request, res: Response){
+
     try{
         const userAccount: object = await adminProctorUserAccountService.activateUserAccount(req.headers.authorization, req.params.accountId)
 
@@ -80,6 +82,7 @@ export async function activateUserAccount(req: Request, res: Response){
 
 
 export async function deactivateUserAccount(req: Request, res: Response){
+
     try{
         const userAccount: object = await adminProctorUserAccountService.deactivateUserAccount(req.headers.authorization, req.params.accountId)
 

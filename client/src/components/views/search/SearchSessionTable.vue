@@ -57,7 +57,6 @@
 
 <script setup lang="ts">
     import { ref } from "vue";
-    import { VDataTable } from "vuetify/labs/VDataTable"
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/table/tableUtils"
     import SearchScreenshotsTable from "./SearchScreenshotsTable.vue";
@@ -125,4 +124,4 @@
     }
 
 
-</script>@/utils/table/tableUtils
+</script>

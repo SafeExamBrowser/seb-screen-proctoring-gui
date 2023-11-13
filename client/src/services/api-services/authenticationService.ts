@@ -6,13 +6,12 @@ import * as apiService from "@/services/api-services/apiService";
 export async function login(username: string, password: string): Promise<string | any> {
 
   try {
-    //todo: add env desc to gihub
     const url: string = ENV.SERVER_URL + ENV.SERVER_PORT + "/authorize";
 
     const response = await axios.post(url, {
       username,
       password
-    })  
+    });
 
     if (response.status === 200) {
       return response.data;
@@ -22,6 +21,24 @@ export async function login(username: string, password: string): Promise<string 
     throw error;
   }
 }
+
+export async function verifyJwt(token: string): Promise<string | any> {
+
+  try {
+    const url: string = ENV.SERVER_URL + ENV.SERVER_PORT + "/jwttoken/verify";
+    
+    const response = await axios.post(url, {token});
+
+    if (response.status === 200) {
+      return response.data;
+    } 
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+
 
 export async function refresh(): Promise<string | any>{
   const authStore = useAuthStore();

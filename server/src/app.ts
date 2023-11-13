@@ -6,7 +6,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 
 import authorizationRoutes from "./routes/authorization.routes";
-import adminProctorRoutes from "./routes/admin-proctor.routes";
+import routes from "./routes/routes";
 import {LOG} from "./logging/logger";
 import {apiRequestLogger} from "./logging/api-request-logger";
 import * as ENV from "./config/envConfig";
@@ -17,21 +17,33 @@ const app: Express = express();
 const port: string = ENV.SERVER_PORT;
 const path: string = __dirname + "/views/";
 
+//get environemnt mode for local dev and set cors options
 LOG.info("env mode: " + ENV.NODE_ENV);
 if(ENV.NODE_ENV === "dev"){
-  // app.use(cors(getCorstOptions()))
-  app.use(cors())
+  app.use(cors(getCorstOptions()))
+  // app.use(cors())
+}
+
+
+console.log(ENV.SEB_SERVER_INTEGRATED_MODE)
+if(!ENV.SEB_SERVER_INTEGRATED_MODE){
+  console.log("it is false")
 }
 
 
 app.use(express.static(path));
 app.use(bodyParser.json());
 app.use(apiRequestLogger);
+
 app.use(authorizationRoutes);
-app.use(adminProctorRoutes);
+app.use(routes);
 
 
 app.get("/", (req: Request, res: Response) => {
+  res.sendFile(path + "index.html");
+});
+
+app.get("*", (req: Request, res: Response) => {
   res.sendFile(path + "index.html");
 });
 

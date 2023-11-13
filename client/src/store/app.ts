@@ -37,11 +37,26 @@ export const useLoadingStore = defineStore("loading", () => {
 
 //-------------------------------------------------//
 export const useAuthStore = defineStore("auth", () => {
+  const redirectRoute: string = "";
+
   async function login(accessTokenString: string, refershTokenString: string){
     setAccessToken(accessTokenString);
     setRefreshToken(refershTokenString);
 
-    navigateTo("/start");
+    if(useAuthStore().redirectRoute == ""){
+      navigateTo("/start");
+    }else{
+      navigateTo(useAuthStore().redirectRoute);
+    }
+
+    await userAccountViewService.setPersonalUserAccount();
+  }
+
+  async function loginWithJwt(accessTokenString: string, refershTokenString: string, redirect: string){
+    setAccessToken(accessTokenString);
+    setRefreshToken(refershTokenString);
+
+    navigateTo(redirect);
 
     await userAccountViewService.setPersonalUserAccount();
   }
@@ -76,7 +91,7 @@ export const useAuthStore = defineStore("auth", () => {
     return refreshToken;
   }
 
-  return {login, logout, setAccessToken, getAccessToken, setRefreshToken, getRefreshToken};
+  return {redirectRoute, login, loginWithJwt, logout, setAccessToken, getAccessToken, setRefreshToken, getRefreshToken};
 });
 //-------------------------------------------------//
 

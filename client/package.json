@@ -21,12 +21,12 @@
     "vue-i18n": "^9.3.0",
     "vue-loading-overlay": "^6.0.3",
     "vue-router": "^4.2.4",
-    "vuetify": "^v3.3.21",
+    "vuetify": "^v3.4.0",
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@babel/types": "^7.22.15",
-    "@types/node": "^20.5.9",
+    "@types/node": "^20.9.0",
     "@types/webfontloader": "^1.6.35",
     "@vitejs/plugin-vue": "^4.3.4",
     "@vue/eslint-config-typescript": "^11.0.3",

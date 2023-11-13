@@ -1,5 +1,5 @@
 import * as ENV from "../config/envConfig";
-import * as apiService from "../services/api.service";
+import * as apiService from "./api.service";
 import axios from "axios";
 
 

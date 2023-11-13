@@ -13,6 +13,13 @@ export function getAuthorizationHeaders(encodedCredentials: string): object {
     };
 }
 
+export function getJwtAuthorizationHeaders(encodedCredentials: string): object {
+    return {
+        "Authorization": "Basic " + encodedCredentials,
+        "Content-Type": "application/x-www-form-urlencoded"
+    };
+}
+
 export function getHeaders(token: string): object {
     return {
         "accept": "application/json",
@@ -45,21 +52,4 @@ export function handleGenericApiError(error: any, res: Response){
     
     //else if there is another type of error
     return res.status(500).send();
-}
-
-export function handleGenericApiErrorOld(error: any){
-
-    console.log("teeeeeeeeeeeeest")
-        console.log(error)
-
-
-    LOG.error("====================")
-    LOG.error("error message: " + error.message)
-    LOG.error("====================")
-
-    if(!error.response){
-        throw Error("server error");
-    }
-
-    throw Error(error.response.status);
 }

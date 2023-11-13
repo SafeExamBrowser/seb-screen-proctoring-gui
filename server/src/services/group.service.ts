@@ -1,4 +1,4 @@
-import * as apiService from "../services/api.service";
+import * as apiService from "./api.service";
 
 const groupUrl: string = "/proctoring/group";
 

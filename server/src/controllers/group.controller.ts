@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import {LOG} from '../logging/logger';
-import * as adminProctorGroupService from '../services/admin-proctor-group.service';
+import * as adminProctorGroupService from '../services/group.service';
 import * as apiService from "../services/api.service";
 
 export async function getGroups(req: Request, res: Response){
