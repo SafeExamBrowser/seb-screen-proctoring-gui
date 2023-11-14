@@ -5,7 +5,7 @@ import * as settingsService from '../services/settings.service';
 
 export async function getSettings(req: Request, res: Response){
     try{
-        const settings: string = settingsService.getSettings();
+        const settings: Settings = settingsService.getSettings();
 
         return res.status(200).json(settings);
 
