@@ -173,7 +173,7 @@
         await userAccountViewService.setPersonalUserAccount();
     }
 
-</script>
+</script>  
 
 <style scoped>
 

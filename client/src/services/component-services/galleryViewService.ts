@@ -36,7 +36,6 @@ export async function getLatestScreenshotData(sessionUuid: string, timestamp: nu
 
 //=============index==================
 export function calcIndex(i: number, n: number, gridSize: number): number {
-    console.log(((i - 1) * gridSize + (n - 1)))
     return ((i - 1) * gridSize + (n - 1));
 }
 

@@ -11,7 +11,6 @@ export async function setPersonalUserAccount(): Promise<UserAccount | null>{
             if(userAccountStore.userAccount != null){
                 return userAccountStore.userAccount;
             }
-            
         }
 
         return userAccountStore.userAccount!;

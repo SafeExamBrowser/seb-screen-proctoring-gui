@@ -96,18 +96,17 @@
     function updateTerminationTimeInList(accountId: number, terminationTime: number | null){
         if(accounts.value != null){
             accounts.value.find(i => i.id == accountId)!.terminationTime = terminationTime;
+            accounts.value = [...accounts.value];
         }
     }
 
     function getStatusValue(terminationTime: string | null): Status{
-        //if there is a terminatation time --> user is inactive
-        if(terminationTime){
-            return Status.inactive;
+        if(!terminationTime || terminationTime == null){
+            return Status.active;
         }
 
-        return Status.active;
+        return Status.inactive;
     }
-
 
 
 </script>

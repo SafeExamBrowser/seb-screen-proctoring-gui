@@ -1,13 +1,11 @@
 import {Request, Response} from "express";
-import * as adminProctorUserAccountService from "../services/user-account.service";
+import * as userAccountService from "../services/user-account.service";
 import * as apiService from "../services/api.service";
-import * as ENV from "../config/envConfig";
 
 
 export async function getPersonalUserAccount(req: Request, res: Response){
     try{
-        const personalUserAccount: object = await adminProctorUserAccountService.getPersonalUserAccount(req.headers.authorization)
-
+        const personalUserAccount: object = await userAccountService.getPersonalUserAccount(req.headers.authorization)
         return res.status(200).json(personalUserAccount);
 
     }catch(error){
@@ -19,7 +17,7 @@ export async function getPersonalUserAccount(req: Request, res: Response){
 
 export async function getUserAccountById(req: Request, res: Response){
     try{
-        const userAccount: object = await adminProctorUserAccountService.getUserAccountById(req.headers.authorization, req.params.accountId)
+        const userAccount: object = await userAccountService.getUserAccountById(req.headers.authorization, req.params.accountId)
 
         return res.status(200).json(userAccount);
 
@@ -33,7 +31,7 @@ export async function getUserAccountById(req: Request, res: Response){
 export async function registerUserAccount(req: Request, res: Response){
 
     try{
-        const newUserAccount: object = await adminProctorUserAccountService.registerUserAccount(req.body)
+        const newUserAccount: object = await userAccountService.registerUserAccount(req.body)
         return res.status(200).json(newUserAccount);
 
     }catch(error){
@@ -45,7 +43,7 @@ export async function registerUserAccount(req: Request, res: Response){
 
 export async function getUserAccounts(req: Request, res: Response){
     try{
-        const userAccounts: object = await adminProctorUserAccountService.getUserAccounts(req.headers.authorization, req.query.optionalParamters)
+        const userAccounts: object = await userAccountService.getUserAccounts(req.headers.authorization, req.query.optionalParamters)
 
         return res.status(200).json(userAccounts);
 
@@ -58,7 +56,7 @@ export async function getUserAccounts(req: Request, res: Response){
 export async function activateUserAccount(req: Request, res: Response){
 
     try{
-        const userAccount: object = await adminProctorUserAccountService.activateUserAccount(req.headers.authorization, req.params.accountId)
+        const userAccount: object = await userAccountService.activateUserAccount(req.headers.authorization, req.params.accountId)
 
         return res.status(200).json(userAccount);
 
@@ -71,7 +69,7 @@ export async function activateUserAccount(req: Request, res: Response){
 export async function deactivateUserAccount(req: Request, res: Response){
 
     try{
-        const userAccount: object = await adminProctorUserAccountService.deactivateUserAccount(req.headers.authorization, req.params.accountId)
+        const userAccount: object = await userAccountService.deactivateUserAccount(req.headers.authorization, req.params.accountId)
 
         return res.status(200).json(userAccount);
 

@@ -66,7 +66,7 @@
 
                     </v-form>
 
-                    <div class="text-center mt-7">
+                    <div v-if="!settingsStore.isSebServerIntegratedMode" class="text-center mt-7">
                         <span>
                             No Account? 
                         </span>
@@ -91,7 +91,7 @@
     import { ref } from "vue";
     import * as authenticationService from "@/services/api-services/authenticationService";
     import {navigateTo} from "@/router/navigation";
-    import { useLoadingStore, useAuthStore } from "@/store/app";
+    import { useLoadingStore, useAuthStore, useSettingsStore } from "@/store/app";
 
 
     const username = ref("super-admin");
@@ -105,6 +105,7 @@
     //store
     const authStore = useAuthStore();
     const loadingStore = useLoadingStore();
+    const settingsStore = useSettingsStore();
 
     async function signIn(){
 
