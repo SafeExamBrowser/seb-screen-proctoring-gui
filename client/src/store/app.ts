@@ -86,7 +86,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   async function logout(){
     await authenticationService.logLogout();
-
+    
     setAccessToken("");
     setRefreshToken("");
     useUserAccountStore().userAccount = null;

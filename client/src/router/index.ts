@@ -19,7 +19,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "LoginPage",
     component: LoginPage,
-    meta: {requiresAuth: false}
+    meta: {requiresAuth: false},
+    beforeEnter: async () => {
+      const settingsStore = useSettingsStore();
+      await settingsStore.setIsSebServerIntegratedMode();
+    }
   },
   {
     path: "/register",
@@ -109,6 +113,7 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   if(to.meta.requiresAuth){
     const settingsStore = useSettingsStore();
+
     await userAccountViewService.setPersonalUserAccount();
     await settingsStore.setIsSebServerIntegratedMode();
   }
