@@ -56,7 +56,7 @@
     const emit = defineEmits<{
         closeActivateDialog: any
     }>();
-
+    
     const isActive = ref<boolean>(true);
     const isError = ref<boolean>(false);
     const userAccount = ref<UserAccount>();
@@ -91,9 +91,6 @@
             isError.value = true;
             return;
         }
-
-        console.log("activate account function")
-        console.log(userAccountResponse.terminationTime)
 
         closeActivateDialog(true, userAccountResponse.id, null);
     }

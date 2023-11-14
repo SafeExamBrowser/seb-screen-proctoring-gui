@@ -24,13 +24,6 @@ if(ENV.NODE_ENV === "dev"){
   // app.use(cors())
 }
 
-
-console.log(ENV.SEB_SERVER_INTEGRATED_MODE)
-if(!ENV.SEB_SERVER_INTEGRATED_MODE){
-  console.log("it is false")
-}
-
-
 app.use(express.static(path));
 app.use(bodyParser.json());
 app.use(apiRequestLogger);

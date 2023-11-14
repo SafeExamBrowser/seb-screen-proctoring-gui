@@ -1,11 +1,11 @@
 import {Request, Response} from 'express';
 import * as apiService from "../services/api.service";
-import * as adminProctorSessionService from '../services/session.service';
+import * as sessionService from '../services/session.service';
 
 export async function getSessionBySessionId(req: Request, res: Response){
 
     try{
-        const session: object = await adminProctorSessionService.getSessionBySessionId(req.headers.authorization, req.params.sessionId);
+        const session: object = await sessionService.getSessionBySessionId(req.headers.authorization, req.params.sessionId);
 
         return res.status(200).json(session);
 
@@ -18,7 +18,7 @@ export async function getSessionBySessionId(req: Request, res: Response){
 export async function getSessionByTimestamp(req: Request, res: Response){
 
     try{
-        const session: object = await adminProctorSessionService.getSessionByTimestamp(req.headers.authorization, req.params.sessionId, req.params.timestamp);
+        const session: object = await sessionService.getSessionByTimestamp(req.headers.authorization, req.params.sessionId, req.params.timestamp);
 
         return res.status(200).json(session);
 

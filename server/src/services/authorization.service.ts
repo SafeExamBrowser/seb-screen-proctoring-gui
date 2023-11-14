@@ -42,9 +42,6 @@ export async function refreshViaScreenProctoringServer(refreshToken: string): Pr
 export async function logLogin(token: string){
     const url: string = "/useraccount/loglogin";
 
-    console.log("token")
-    console.log(token)
-
     const {data, status} = await apiService.api.post(url, {}, {headers: apiService.getHeaders(token)});
 
     return data;

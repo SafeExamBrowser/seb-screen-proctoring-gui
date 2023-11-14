@@ -11,9 +11,15 @@
 <script setup lang="ts">
   import Loading from 'vue-loading-overlay';
   import 'vue-loading-overlay/dist/css/index.css';
-  import { useLoadingStore } from "@/store/app";
+  import { useLoadingStore, useSettingsStore } from "@/store/app";
+  import { onBeforeMount } from "vue";
 
   const loadingStore = useLoadingStore();
+  const settingsStore = useSettingsStore();
+
+  onBeforeMount(async () => {
+    await settingsStore.setIsSebServerIntegratedMode();
+  });
 
 </script>
 

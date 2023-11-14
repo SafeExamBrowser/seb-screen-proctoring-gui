@@ -64,17 +64,11 @@ export function handleTabKeyEvent(event: any, action: string, key: number, optio
 
 export function sortTable(key: number, headerRefs: any){
     if(headerRefs.value != null){
-
-        console.log("headersRefs.value")
-
         headerRefs.value[key].click();
         return;
     }
 
     if(headerRefs != null){
-
-        console.log("headersRefs")
-
         headerRefs[key].click();
     }
 }

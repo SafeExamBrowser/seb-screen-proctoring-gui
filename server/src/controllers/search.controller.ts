@@ -1,11 +1,11 @@
 import {Request, Response} from 'express';
 import * as apiService from "../services/api.service";
-import * as adminProctorSearchService from '../services/search.service';
+import * as searchService from '../services/search.service';
 
 export async function searchSessions(req: Request, res: Response){
 
     try{
-        const sessions: object = await adminProctorSearchService.searchSessions(req.headers.authorization, req.query.optionalParamters);
+        const sessions: object = await searchService.searchSessions(req.headers.authorization, req.query.optionalParamters);
 
         return res.status(200).json(sessions);
 
@@ -18,7 +18,7 @@ export async function searchSessions(req: Request, res: Response){
 export async function searchScreenshots(req: Request, res: Response){
 
     try{
-        const screenshots: object = await adminProctorSearchService.searchScreenshots(req.headers.authorization, req.query.optionalParamters);
+        const screenshots: object = await searchService.searchScreenshots(req.headers.authorization, req.query.optionalParamters);
 
         return res.status(200).json(screenshots);
 
@@ -30,7 +30,7 @@ export async function searchScreenshots(req: Request, res: Response){
 export async function searchTimeline(req: Request, res: Response){
 
     try{
-        const timeline: object = await adminProctorSearchService.searchTimeline(req.headers.authorization, req.params.sessionId, req.query.optionalParamters);
+        const timeline: object = await searchService.searchTimeline(req.headers.authorization, req.params.sessionId, req.query.optionalParamters);
 
         return res.status(200).json(timeline);
 
