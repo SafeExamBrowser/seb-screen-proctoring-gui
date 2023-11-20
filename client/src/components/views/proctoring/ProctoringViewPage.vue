@@ -60,7 +60,7 @@
                     </v-row>
                 </v-card-text>
 
-                <v-card-title>Screenshot Metadata</v-card-title>
+                <v-card-title>ScreenshotData Metadata</v-card-title>
                 <v-card-text>
                     <v-row v-for="(value, key) in screenshotMetadata" :key="key">
                         <v-col>
@@ -107,8 +107,8 @@
 
     //reactive variables
     const isPlaying = ref<boolean>(false);
-    const session = ref<Screenshot>();
-    const currentScreenshot = ref<Screenshot>();
+    const session = ref<ScreenshotData>();
+    const currentScreenshot = ref<ScreenshotData>();
     const sliderTime = ref<number>();
     const firstScreenshotTime = ref<number>();
     const lastScreenshotTime = ref<number>();
@@ -160,7 +160,7 @@
     })
 
     async function getAndAssignSession(){
-        const sessionResponse: Screenshot | null = await proctoringViewService.getSessionBySessionId(sessionId);
+        const sessionResponse: ScreenshotData | null = await proctoringViewService.getScreenshotDataBySessionId(sessionId);
 
         if(sessionResponse == null){
             showError.value = true;
@@ -182,9 +182,9 @@
 
     //=============screenshot logic==================
     async function getFirstScreenshotTime(){
-        let specificSessionResponse: Screenshot | null = null;
+        let specificSessionResponse: ScreenshotData | null = null;
         if(session.value != null){
-            specificSessionResponse = await proctoringViewService.getSessionByTimestamp(sessionId, session.value?.startTime.toString());
+            specificSessionResponse = await proctoringViewService.getScreenshotDataByTimestamp(sessionId, session.value?.startTime.toString());
         }
 
         //error does not have to be shown here - if the slider moves too fast, some screenshots cannot be shown
@@ -195,7 +195,7 @@
     }
 
     async function getCurrentScreenshot(timestamp: string){
-        const specificSessionResponse: Screenshot | null = await proctoringViewService.getSessionByTimestamp(sessionId, timestamp);
+        const specificSessionResponse: ScreenshotData | null = await proctoringViewService.getScreenshotDataByTimestamp(sessionId, timestamp);
 
         //error does not have to be shown here - if the slider moves too fast, some screenshots cannot be shown
         if(specificSessionResponse == null) return;

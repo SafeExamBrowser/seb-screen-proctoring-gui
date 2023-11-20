@@ -5,7 +5,7 @@ import RegisterPage from "@/components/views/RegisterPage.vue"
 import StartPage from "@/components/views/StartPage.vue"
 import SearchPage from "@/components/views/search/SearchPage.vue"
 import GalleryViewPage from "@/components/views/gallery/GalleryViewPage.vue"
-import ProctoringViewPage from "@/components/views/ProctoringViewPage.vue"
+import ProctoringViewPage from "@/components/views/proctoring/ProctoringViewPage.vue"
 import UserAccountPage from "@/components/views/user-account/UserAccountPage.vue"
 import UserInfo from "@/components/views/user-account/UserInfo.vue"
 import * as authenticationService from "@/services/api-services/authenticationService";
