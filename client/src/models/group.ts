@@ -37,6 +37,6 @@ type GroupUuid = {
     pageSize: number;
     sortBy: string;
     sortOrder: string;
-    screenshots: Screenshot[];
+    screenshots: ScreenshotData[];
     exam: ExamView;
 }
