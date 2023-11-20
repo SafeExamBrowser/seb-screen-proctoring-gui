@@ -1,20 +1,20 @@
-import * as sessionService from "@/services/api-services/sessionService";
+import * as screenshotDataService from "@/services/api-services/screenshotDataService";
 import * as timeUtils from "@/utils/timeUtils";
 
 
 //=============api==================
-export async function getSessionBySessionId(sessionId: string): Promise<Screenshot | null>{
+export async function getScreenshotDataBySessionId(sessionId: string): Promise<ScreenshotData | null>{
     try{
-        return await sessionService.getSessionBySessionId(sessionId);        
+        return await screenshotDataService.getScreenshotDataBySessionId(sessionId);        
     }catch(error){
         console.error(error);
         return null;
     }
 }
 
-export async function getSessionByTimestamp(sessionId: string, timestamp: string): Promise<Screenshot | null>{
+export async function getScreenshotDataByTimestamp(sessionId: string, timestamp: string): Promise<ScreenshotData | null>{
     try{
-        return await sessionService.getSessionByTimestamp(sessionId, timestamp);        
+        return await screenshotDataService.getScreenshotDataByTimestamp(sessionId, timestamp);        
     }catch(error){
         console.error(error);
         return null;
@@ -34,7 +34,7 @@ export function getScreenshotMetadata(sliderTime: number, currentScreenshotMetad
     };
 }
 
-export function getSessionInfodata(session: Screenshot | null): object{
+export function getSessionInfodata(session: ScreenshotData | null): object{
     if(session == null){
         return {};
     }

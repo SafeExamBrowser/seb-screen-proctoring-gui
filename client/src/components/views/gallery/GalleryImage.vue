@@ -95,7 +95,7 @@
 
     //props
     const props = defineProps<{
-        screenshot: Screenshot | undefined,
+        screenshot: ScreenshotData | undefined,
         timestamp: number,
         groupUuid: string
     }>();

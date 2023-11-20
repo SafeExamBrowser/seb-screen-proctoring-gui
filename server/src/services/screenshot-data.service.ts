@@ -1,9 +1,9 @@
 import axios from "axios";
 import * as apiService from "./api.service";
 
-const sessionUrl: string = "/proctoring/session/";
+const sessionUrl: string = "/proctoring/screenshot-data/";
 
-export async function getSessionBySessionId(token: string, sessionId: string): Promise<object>{
+export async function getScreenshotDataBySessionId(token: string, sessionId: string): Promise<object>{
     const url: string = sessionUrl + sessionId;
     const {data, status} = await apiService.api.get(url, {headers: apiService.getHeaders(token)});
 
@@ -11,7 +11,7 @@ export async function getSessionBySessionId(token: string, sessionId: string): P
 }
 
 
-export async function getSessionByTimestamp(token: string, sessionId: string, timestamp: string): Promise<object>{
+export async function getScreenshotDataByTimestamp(token: string, sessionId: string, timestamp: string): Promise<object>{
     const url: string =  sessionUrl + sessionId + "/" + timestamp;
     const {data, status} = await apiService.api.get(url, {headers: apiService.getHeaders(token)});
 
