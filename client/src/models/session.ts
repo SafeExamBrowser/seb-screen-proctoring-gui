@@ -1,6 +1,6 @@
 //todo: change name
   
-type Screenshot = {
+type ScreenshotData = {
     startTime: number;
     timestamp: number;
     endTime: number;
