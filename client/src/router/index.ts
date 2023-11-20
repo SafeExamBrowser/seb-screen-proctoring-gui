@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw, createWebHistory } from "vue-router"
+import { createRouter, RouteRecordRaw, createWebHistory } from "vue-router"
 import ContainerLayout from "@/components/layout/ContainerLayout.vue"
 import LoginPage from "@/components/views/LoginPage.vue"
 import RegisterPage from "@/components/views/RegisterPage.vue"
@@ -10,23 +10,42 @@ import ChangePasswordDialog from "@/components/views/user-account/ChangePassword
 import UserAccountPage from "@/components/views/user-account/UserAccountPage.vue"
 import UserInfo from "@/components/views/user-account/UserInfo.vue"
 import * as authenticationService from "@/services/api-services/authenticationService";
-import { useAuthStore } from "@/store/app";
+import { useAuthStore, useSettingsStore } from "@/store/app";
+import {navigateTo} from "@/router/navigation";
+import * as userAccountViewService from "@/services/component-services/userAccountViewService";
+
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "LoginPage",
-    component: LoginPage
+    component: LoginPage,
+    meta: {requiresAuth: false},
+    beforeEnter: async () => {
+      const settingsStore = useSettingsStore();
+      await settingsStore.setIsSebServerIntegratedMode();
+    }
   },
   {
     path: "/register",
     name: "RegisterPage",
-    component: RegisterPage
+    component: RegisterPage,
+    meta: {requiresAuth: false},
+    beforeEnter: async () => {
+      const settingsStore = useSettingsStore();
+
+      if(settingsStore.isSebServerIntegratedMode){
+        navigateTo("/");
+        return false;
+      }else{
+        return true;
+      }
+    }
   },
   {
     path: "/jwt",
+    meta: {requiresAuth: false},
     beforeEnter: async (to, from) => {
-
       const authStore = useAuthStore();
 
       if(to.query.token != null){
@@ -54,6 +73,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     component: ContainerLayout,
+    meta: {requiresAuth: true},
     children: [
       {
         path: "/start",
@@ -88,12 +108,21 @@ const routes: Array<RouteRecordRaw> = [
 
     ]
   },
-
-]
+  
+];
 
 const router = createRouter({
   history: createWebHistory(),
   routes
-})
+});
 
-export default router
+router.beforeEach(async (to) => {
+  if(to.meta.requiresAuth){
+    const settingsStore = useSettingsStore();
+
+    await userAccountViewService.setPersonalUserAccount();
+    await settingsStore.setIsSebServerIntegratedMode();
+  }
+});
+
+export default router;

@@ -76,6 +76,8 @@ Instructions on how to get a local development environment up and running.
    
    PROCTOR_SERVER_USERNAME="{username for oauth}"
    PROCTOR_SERVER_PASSWORD="{pw for oauth}"
+
+   SEB_SERVER_INTEGRATED_MODE="true"
     ```
   7. run `npm install`
   8. run `npm run dev`

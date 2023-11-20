@@ -11,7 +11,6 @@ export async function setPersonalUserAccount(): Promise<UserAccount | null>{
             if(userAccountStore.userAccount != null){
                 return userAccountStore.userAccount;
             }
-
         }
 
         return userAccountStore.userAccount!;
@@ -70,6 +69,18 @@ export async function deactivateUserAccount(accountId: string): Promise<UserAcco
         console.error(error);
         return null;
     }
+}
+
+export async function changePassword(uuid: string, currentPassword: string, newPassword: string, confirmNewPassword: string): Promise<UserAccount[] | any>{
+  console.log("changePassword VIEW service params:", uuid, currentPassword, newPassword, confirmNewPassword)
+  try{
+      const userAccount = await userAccountService.changePassword(uuid, currentPassword, newPassword, confirmNewPassword)
+      return userAccount;
+
+  }catch(error){
+      console.error(error);
+      return null;
+  }
 }
 
 export async function changePassword(uuid: string, currentPassword: string, newPassword: string, confirmNewPassword: string): Promise<UserAccount[] | any>{

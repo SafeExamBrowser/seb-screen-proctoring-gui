@@ -59,7 +59,6 @@ export async function logLogin(req: Request, res: Response){
 export async function logLogout(req: Request, res: Response){
     try{
         //does not return data
-        console.log(req.headers.authorization)
         await authorizationService.logLogout(req.headers.authorization);
 
         return res.status(200).json();

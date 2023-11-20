@@ -1,7 +1,7 @@
 <template>
     <!-- <v-container> -->
         <v-row v-if="userAccount != null">
-            <v-col cols="1">
+            <v-col :cols="colsForPlaceholder">
                 <v-btn
                     v-if="userAccountStore.userAccount?.roles.includes('ADMIN')"
                     size="x-large"
@@ -130,7 +130,7 @@
                 </v-sheet>
             </v-col>
 
-            <v-col cols="3">
+            <v-col v-if="!settingsStore.isSebServerIntegratedMode" cols="3">
                 <!-- <v-card color="#e2ecf7"> -->
                 <v-card
                     elevation="4"
@@ -179,7 +179,7 @@
 
 <script setup lang="ts">
     import { ref, onBeforeMount } from "vue";
-    import { useAppBarStore, useUserAccountStore } from "@/store/app";
+    import { useAppBarStore, useUserAccountStore, useSettingsStore } from "@/store/app";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
     import {navigateTo} from "@/router/navigation";
@@ -189,6 +189,7 @@
     //stores
     const appBarStore = useAppBarStore();
     const userAccountStore = useUserAccountStore();
+    const settingsStore = useSettingsStore();
 
     //form fields
     const name = ref<string>("");
@@ -209,11 +210,16 @@
     const userAccount = ref<UserAccount>();
     const accountId: string = useRoute().params.accountId.toString();
     const changePasswordDialog = ref(false);
+    const colsForPlaceholder = ref<number>(1);
 
 
     onBeforeMount(async () => {
         await assignUserAccount();
         appBarStore.title = "Account of " + userAccount.value?.name + " " + userAccount.value?.surname;
+
+        if(settingsStore.isSebServerIntegratedMode){
+            colsForPlaceholder.value = 2;
+        }
     });
 
 
