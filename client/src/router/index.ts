@@ -5,7 +5,7 @@ import RegisterPage from "@/components/views/RegisterPage.vue"
 import StartPage from "@/components/views/StartPage.vue"
 import SearchPage from "@/components/views/search/SearchPage.vue"
 import GalleryViewPage from "@/components/views/gallery/GalleryViewPage.vue"
-import ProctoringViewPage from "@/components/views/ProctoringViewPage.vue"
+import ProctoringViewPage from "@/components/views/proctoring/ProctoringViewPage.vue"
 import UserAccountPage from "@/components/views/user-account/UserAccountPage.vue"
 import UserInfo from "@/components/views/user-account/UserInfo.vue"
 import * as authenticationService from "@/services/api-services/authenticationService";
@@ -19,7 +19,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "LoginPage",
     component: LoginPage,
-    meta: {requiresAuth: false}
+    meta: {requiresAuth: false},
+    beforeEnter: async () => {
+      const settingsStore = useSettingsStore();
+      await settingsStore.setIsSebServerIntegratedMode();
+    }
   },
   {
     path: "/register",
@@ -109,6 +113,7 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   if(to.meta.requiresAuth){
     const settingsStore = useSettingsStore();
+
     await userAccountViewService.setPersonalUserAccount();
     await settingsStore.setIsSebServerIntegratedMode();
   }

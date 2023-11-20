@@ -1,5 +1,5 @@
 import * as groupService from "@/services/api-services/groupService";
-import * as sessionService from "@/services/api-services/sessionService";
+import * as screenshotDataService from "@/services/api-services/screenshotDataService";
 import { SortOrder } from "@/models/sortOrderEnum";
 import {navigateTo} from "@/router/navigation";
 import { useAuthStore } from "@/store/app";
@@ -23,9 +23,9 @@ export async function getGroup(groupUuid: string, currentWindow: number, pageSiz
     }
 }
 
-export async function getLatestScreenshotData(sessionUuid: string, timestamp: number): Promise<Screenshot | null>{
+export async function getLatestScreenshotData(sessionUuid: string, timestamp: number): Promise<ScreenshotData | null>{
     try{
-        return await sessionService.getSessionByTimestamp(sessionUuid, timestamp.toString());        
+        return await screenshotDataService.getScreenshotDataByTimestamp(sessionUuid, timestamp.toString());        
     }catch(error){
         console.error(error);
         return null;
@@ -39,7 +39,7 @@ export function calcIndex(i: number, n: number, gridSize: number): number {
     return ((i - 1) * gridSize + (n - 1));
 }
 
-export function currentIndexExists(screenshots: Screenshot[] | undefined, index: number): boolean {
+export function currentIndexExists(screenshots: ScreenshotData[] | undefined, index: number): boolean {
 
     if (screenshots != null && screenshots.length > index) {
         return true;
@@ -67,7 +67,7 @@ export function currentIndexExists(screenshots: Screenshot[] | undefined, index:
 //     return screenshotLink;
 // }
 
-export function createImageLinkWithToken(screenshot: Screenshot | undefined, timestamp: number): string {
+export function createImageLinkWithToken(screenshot: ScreenshotData | undefined, timestamp: number): string {
     const authStore = useAuthStore();
 
     if(screenshot == null){
@@ -90,7 +90,7 @@ export function createImageLinkWithToken(screenshot: Screenshot | undefined, tim
 //     }
 // }
 
-export function navigateToProctoringView(screenshot: Screenshot | undefined, groupUuid: string) {
+export function navigateToProctoringView(screenshot: ScreenshotData | undefined, groupUuid: string) {
     if (screenshot != null) {
         navigateTo("/recording/" + screenshot.uuid);
     }
