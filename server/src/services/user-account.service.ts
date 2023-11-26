@@ -9,19 +9,16 @@ const unprotectedUrl = ENV.PROCTOR_SERVER_URL + ENV.PROCTOR_SERVER_PORT;
 export async function registerUserAccount(userData: {}): Promise<object>{
     const url = unprotectedUrl + "/register";
     const {data, status} = await axios.post(url, userData, {headers: apiService.getHeadersWithoutAuth()});
-    console.log("data in server service", data)
     return data;
 }
 //-----------------------------------------------------------------------//
 
 const userAccountUrl: string = "/useraccount";
 
-export async function changePassword(token: string, userData: {}): Promise<object>{
-    console.log("changePassword server service userData:", userData)
-    console.log("changePassword server service token:", token)
-    // const url = userAccountUrl + "/password";
-    // const {data, status} = await apiService.put(url, userData, {headers: apiService.getHeaders(token)});
-    // return data;
+export async function changePassword(token: string, userData: {}): Promise<any>{
+    const url = userAccountUrl + "/password";
+    const {data, status} = await apiService.api.put(url, userData, {headers: apiService.getPutHeaders(token)});
+    return data;
 }
 
 export async function getPersonalUserAccount(token: string){

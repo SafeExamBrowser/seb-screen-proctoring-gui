@@ -36,21 +36,17 @@ export async function register(
   }
 }
 
-// use fictive api schema
 export async function changePassword(
   uuid: string,
-  currentPassword: string,
+  password: string,
   newPassword: string,
   confirmNewPassword: string,
 ): Promise<UserAccount | any> {
-  console.log("changePassword service params:", uuid, currentPassword, newPassword, confirmNewPassword)
   try {
 
     const url: string = userAccountUrl + "/changePassword";
 
-    const {data, status}: AxiosResponse = await apiService.api.post(url, {uuid, currentPassword, newPassword, confirmNewPassword}, {headers: apiService.getPostHeaders()});
-
-    console.log("changePassword service data:", data)
+    const {data, status}: AxiosResponse = await apiService.api.post(url, {uuid, password, newPassword, confirmNewPassword}, {headers: apiService.getPostHeaders()});
 
     if (status === 200) {
       return data;

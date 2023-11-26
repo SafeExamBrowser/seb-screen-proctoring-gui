@@ -13,7 +13,7 @@
             v-if="addSuccess"
             :alertProps="{
                 color: 'success',
-                type: 'alert',
+                type: 'snackbar',
                 textKey: 'changePassword-success'
             }">
         </AlertMsg>
@@ -149,13 +149,17 @@
       addError.value = false;
       addSuccess.value = false;
       try{
-          const userAccount: UserAccount = await userAccountViewService.changePassword(props.uuid, currentPassword.value, newPassword.value, confirmNewPassword.value);
+          const userAccount: UserAccount | null = await userAccountViewService.changePassword(props.uuid, currentPassword.value, newPassword.value, confirmNewPassword.value);
+          
+          if(userAccount == null) {
+            addError.value = true;
+            return;
+          }
+
           addSuccess.value = true;
           closeAddDialog(userAccount)
 
       }catch(error){
-          //todo: add better error handling
-          console.error(error)
           addError.value = true;
       }
     };
