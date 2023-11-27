@@ -180,7 +180,7 @@
     <!-- </v-container> -->
 
     <v-dialog v-model="changePasswordDialog" max-width="1000">
-        <ChangePasswordDialog :uuid="userAccount.uuid" @closeAddDialog="closeAddDialog"></ChangePasswordDialog>
+        <ChangePasswordDialog :uuid="userAccount!.uuid" @closeAddDialog="closeAddDialog"></ChangePasswordDialog>
     </v-dialog>
 
 </template>
