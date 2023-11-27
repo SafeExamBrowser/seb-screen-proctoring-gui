@@ -1,15 +1,6 @@
 <template>
     <!-- <v-container> -->
         <v-row v-if="userAccount != null">
-            <AlertMsg
-                v-if="addSuccess"
-                :alertProps="{
-                    color: 'success',
-                    type: 'snackbar',
-                    textKey: 'changePassword-success'
-                }">
-            </AlertMsg>
-
             <v-col :cols="colsForPlaceholder">
                 <v-btn
                     v-if="userAccountStore.userAccount?.roles.includes('ADMIN')"
@@ -177,10 +168,19 @@
             }">
         </AlertMsg>
 
+        <AlertMsg
+                v-if="addSuccess"
+                :alertProps="{
+                    color: 'success',
+                    type: 'snackbar',
+                    textKey: 'changePassword-success'
+                }">
+        </AlertMsg>
+
     <!-- </v-container> -->
 
     <v-dialog v-model="changePasswordDialog" max-width="1000">
-        <ChangePasswordDialog :uuid="userAccount.uuid" @closeAddDialog="closeAddDialog(userAccount)"></ChangePasswordDialog>
+        <ChangePasswordDialog :uuid="userAccount.uuid" @closeAddDialog="closeAddDialog"></ChangePasswordDialog>
     </v-dialog>
 
 </template>
@@ -278,9 +278,13 @@
     }
 
     function closeAddDialog(newUserAccount?: UserAccount){
-        addSuccess.value = false;
+        if (newUserAccount != null) {
+            addSuccess.value = true;
+            setTimeout(() => {
+                addSuccess.value = false;
+            }, 6000);
+        }
         changePasswordDialog.value = false;
-        addSuccess.value = true;
     }
     //==============================
 

@@ -132,7 +132,7 @@
         currentPassword.value = "";
         newPassword.value = "";
         confirmNewPassword.value = "";
-        closeAddDialog();
+        closeAddDialog(null);
     }
 
     const updateAccount: () => void = async () => {
@@ -145,7 +145,9 @@
             return;
           }
 
-          console.log("updateAccount", userAccount)
+          currentPassword.value = "";
+          newPassword.value = "";
+          confirmNewPassword.value = "";
           closeAddDialog(userAccount)
 
       }catch(error){
@@ -153,8 +155,8 @@
       }
     };
 
-    function closeAddDialog(newUserAccount?: UserAccount){
-        console.log("closeAddDialog", newUserAccount)
+    function closeAddDialog(newUserAccount?: UserAccount | null){
+        console.log("closeAddDialog emitting:", newUserAccount)
         emit("closeAddDialog", newUserAccount);
     }
 </script>
