@@ -9,15 +9,6 @@
             }">
         </AlertMsg>
 
-        <AlertMsg
-            v-if="addSuccess"
-            :alertProps="{
-                color: 'success',
-                type: 'snackbar',
-                textKey: 'changePassword-success'
-            }">
-        </AlertMsg>
-
         <div class="title-container text-h6">
             Change Password
         </div>
@@ -125,7 +116,6 @@
 
     //error handling
     const addError = ref(false);
-    const addSuccess = ref(false);
 
     //form fields
     const currentPassword = ref<string>("");
@@ -147,7 +137,6 @@
 
     const updateAccount: () => void = async () => {
       addError.value = false;
-      addSuccess.value = false;
       try{
           const userAccount: UserAccount | null = await userAccountViewService.changePassword(props.uuid, currentPassword.value, newPassword.value, confirmNewPassword.value);
           
@@ -156,7 +145,7 @@
             return;
           }
 
-          addSuccess.value = true;
+          console.log("updateAccount", userAccount)
           closeAddDialog(userAccount)
 
       }catch(error){
@@ -165,6 +154,7 @@
     };
 
     function closeAddDialog(newUserAccount?: UserAccount){
+        console.log("closeAddDialog", newUserAccount)
         emit("closeAddDialog", newUserAccount);
     }
 </script>

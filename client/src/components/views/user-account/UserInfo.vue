@@ -1,6 +1,15 @@
 <template>
     <!-- <v-container> -->
         <v-row v-if="userAccount != null">
+            <AlertMsg
+                v-if="addSuccess"
+                :alertProps="{
+                    color: 'success',
+                    type: 'snackbar',
+                    textKey: 'changePassword-success'
+                }">
+            </AlertMsg>
+
             <v-col :cols="colsForPlaceholder">
                 <v-btn
                     v-if="userAccountStore.userAccount?.roles.includes('ADMIN')"
@@ -171,7 +180,7 @@
     <!-- </v-container> -->
 
     <v-dialog v-model="changePasswordDialog" max-width="1000">
-        <ChangePasswordDialog :uuid="userAccount.uuid" @closeAddDialog="closeAddDialog()"></ChangePasswordDialog>
+        <ChangePasswordDialog :uuid="userAccount.uuid" @closeAddDialog="closeAddDialog(userAccount)"></ChangePasswordDialog>
     </v-dialog>
 
 </template>
@@ -211,7 +220,7 @@
     const accountId: string = useRoute().params.accountId.toString();
     const changePasswordDialog = ref(false);
     const colsForPlaceholder = ref<number>(1);
-
+    const addSuccess = ref<boolean>(false);
 
     onBeforeMount(async () => {
         await assignUserAccount();
@@ -269,10 +278,9 @@
     }
 
     function closeAddDialog(newUserAccount?: UserAccount){
-        if(!newUserAccount){
-          changePasswordDialog.value = false;
-            return;
-        }
+        addSuccess.value = false;
+        changePasswordDialog.value = false;
+        addSuccess.value = true;
     }
     //==============================
 
