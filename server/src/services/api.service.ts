@@ -13,7 +13,7 @@ export function getAuthorizationHeaders(encodedCredentials: string): object {
     };
 }
 
-export function getJwtAuthorizationHeaders(encodedCredentials: string): object {
+export function getAuthorizationHeadersBasic(encodedCredentials: string): object {
     return {
         "Authorization": "Basic " + encodedCredentials,
         "Content-Type": "application/x-www-form-urlencoded"

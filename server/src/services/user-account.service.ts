@@ -1,14 +1,18 @@
 import * as ENV from "../config/envConfig";
 import * as apiService from "./api.service";
 import axios from "axios";
+import * as utils from "../utils/utils";
 
 
 //does not use the pre-configured api-serice --> calls an unprotected api on the sp-server
 const unprotectedUrl = ENV.PROCTOR_SERVER_URL + ENV.PROCTOR_SERVER_PORT;
 
 export async function registerUserAccount(userData: {}): Promise<object>{
+    const encodedCredentials: string = utils.createEncodedCredentials(ENV.PROCTOR_SERVER_USERNAME, ENV.PROCTOR_SERVER_PASSWORD);
     const url = unprotectedUrl + "/register";
-    const {data, status} = await axios.post(url, userData, {headers: apiService.getHeadersWithoutAuth()});
+
+    const {data, status} = await axios.post(url, userData, {headers: apiService.getAuthorizationHeadersBasic(encodedCredentials)});
+
     return data;
 }
 //-----------------------------------------------------------------------//

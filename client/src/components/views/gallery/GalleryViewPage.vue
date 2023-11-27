@@ -157,7 +157,7 @@
 
             if(appBarStore.galleryIsMetadataEnabled && group?.value?.screenshots != null){
                 for(let i = 0; i < group.value?.screenshots.length; i++){
-                    const screenshot: Screenshot | null = await galleryViewService.getLatestScreenshotData(group.value.screenshots[i].uuid, timestamp.value);
+                    const screenshot: ScreenshotData | null = await galleryViewService.getLatestScreenshotData(group.value.screenshots[i].uuid, timestamp.value);
                     const metaData: MetaData | undefined = screenshot?.metaData;
                     group.value.screenshots[i].metaData = metaData == null ? {} : metaData;
                 }
