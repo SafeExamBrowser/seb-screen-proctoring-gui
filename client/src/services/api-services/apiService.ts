@@ -88,3 +88,13 @@ export function getHeaders(): object{
       "Content-Type": "application/x-www-form-urlencoded"
     };
 }
+
+export function getPostHeaders(): object{
+    const authStore = useAuthStore();
+
+    return {
+      "accept": "application/json",
+      "Authorization": "Bearer " + authStore.getAccessToken(),
+      "Content-Type": "application/json"
+    };
+}

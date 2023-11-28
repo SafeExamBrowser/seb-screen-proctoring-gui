@@ -5,15 +5,15 @@
                 <v-btn
                     v-if="userAccountStore.userAccount?.roles.includes('ADMIN')"
                     size="x-large"
-                    variant="text" 
+                    variant="text"
                     icon="mdi-arrow-left"
                     @click="navigateBack()">
                 </v-btn>
             </v-col>
 
             <v-col cols="8">
-                <v-sheet 
-                    elevation="4" 
+                <v-sheet
+                    elevation="4"
                     class="rounded-lg pa-4">
 
                     <!-- <v-container> -->
@@ -106,18 +106,18 @@
                             <!-------------buttons--------------->
                             <v-row v-if="userAccountStore.isEditMode">
                                 <v-col align="right">
-                                    <v-btn 
-                                        rounded="sm" 
-                                        color="black" 
+                                    <v-btn
+                                        rounded="sm"
+                                        color="black"
                                         variant="outlined"
                                         @click="clearForm()">
                                         Cancel
                                     </v-btn>
 
-                                    <v-btn 
-                                        rounded="sm" 
-                                        color="primary" 
-                                        variant="flat" 
+                                    <v-btn
+                                        rounded="sm"
+                                        color="primary"
+                                        variant="flat"
                                         class="ml-2"
                                         @click="updateAccount()">
                                         Save
@@ -132,10 +132,10 @@
 
             <v-col v-if="!settingsStore.isSebServerIntegratedMode" cols="3">
                 <!-- <v-card color="#e2ecf7"> -->
-                <v-card 
+                <v-card
                     elevation="4"
                     class="rounded-lg">
-                    
+
                     <v-card-title>Actions</v-card-title>
                     <v-list density="compact">
 
@@ -156,11 +156,11 @@
 
                 </v-card>
             </v-col>
-            
+
         </v-row>
 
-        <AlertMsg 
-            v-else 
+        <AlertMsg
+            v-else
             :alertProps="{
                 textKey: 'no-data',
                 color: 'warning',
@@ -168,12 +168,21 @@
             }">
         </AlertMsg>
 
+        <AlertMsg
+                v-if="addSuccess"
+                :alertProps="{
+                    color: 'success',
+                    type: 'snackbar',
+                    textKey: 'changePassword-success'
+                }">
+        </AlertMsg>
+
     <!-- </v-container> -->
 
     <v-dialog v-model="changePasswordDialog" max-width="1000">
-        <ChangePasswordDialog></ChangePasswordDialog>
+        <ChangePasswordDialog :uuid="userAccount!.uuid" @closeAddDialog="closeAddDialog"></ChangePasswordDialog>
     </v-dialog>
-    
+
 </template>
 
 
@@ -211,7 +220,7 @@
     const accountId: string = useRoute().params.accountId.toString();
     const changePasswordDialog = ref(false);
     const colsForPlaceholder = ref<number>(1);
-
+    const addSuccess = ref<boolean>(false);
 
     onBeforeMount(async () => {
         await assignUserAccount();
@@ -266,6 +275,16 @@
 
     function changePassword(){
         changePasswordDialog.value = true;
+    }
+
+    function closeAddDialog(newUserAccount?: UserAccount){
+        if (newUserAccount != null) {
+            addSuccess.value = true;
+            setTimeout(() => {
+                addSuccess.value = false;
+            }, 6000);
+        }
+        changePasswordDialog.value = false;
     }
     //==============================
 

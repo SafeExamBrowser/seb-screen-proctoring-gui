@@ -24,6 +24,7 @@ router.get("/useraccount/me", userAccountController.getPersonalUserAccount)
 router.get("/useraccount/:accountId", userAccountController.getUserAccountById)
 router.get("/useraccount", userAccountController.getUserAccounts)
 router.post("/useraccount/register", authorizationAdditional.isUserAccountOperationAllowed, userAccountController.registerUserAccount)
+router.post("/useraccount/changePassword", authorizationAdditional.isUserAccountOperationAllowed, userAccountController.changePassword)
 router.post("/useraccount/activate/:accountId", authorizationAdditional.isUserAccountOperationAllowed, userAccountController.activateUserAccount)
 router.post("/useraccount/deactivate/:accountId", authorizationAdditional.isUserAccountOperationAllowed, userAccountController.deactivateUserAccount)
 
