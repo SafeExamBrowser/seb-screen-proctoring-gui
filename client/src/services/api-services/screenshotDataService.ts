@@ -32,3 +32,17 @@ export async function getScreenshotDataByTimestamp(sessionId: string, timestamp:
     throw error;
   }
 }
+
+export async function getScreenshotTimestamps(sessionId: string){
+    try {
+        const url: string = "/screenshot-timestamps/" + sessionId;
+        const {data, status}: AxiosResponse = await apiService.api.get(url, {headers: apiService.getHeaders()});
+
+        if (status === 200) {
+            return data;
+        }
+
+    } catch (error) {
+        throw error;
+    }
+}

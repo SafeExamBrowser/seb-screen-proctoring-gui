@@ -20,6 +20,15 @@ export async function getScreenshotDataByTimestamp(sessionId: string, timestamp:
         return null;
     }
 }
+
+export async function getScreenshotTimestamps(sessionId: string): Promise<number[] | null>{
+    try{
+        return await screenshotDataService.getScreenshotTimestamps(sessionId);        
+    }catch(error){
+        console.error(error);
+        return null;
+    }
+}
 //==============================
 
 //=============metadata==================

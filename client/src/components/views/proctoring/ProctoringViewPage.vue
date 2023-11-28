@@ -16,6 +16,7 @@
                     </template>
                 </v-img>
 
+                <!-----------slider---------->
                 <v-slider class="mt-4" :min="firstScreenshotTime" :max="lastScreenshotTime" :step="1000" v-model="sliderTime" thumb-label>
                     <template v-slot:thumb-label>
                         {{currentTimeString}}
@@ -24,6 +25,20 @@
                         <v-btn @click="backwards()" size="small" variant="text" icon="mdi-step-backward"></v-btn>
                         <v-btn @click="pausePlay()" size="small" variant="text" :icon="isPlaying ? 'mdi-pause' : 'mdi-play'"></v-btn>
                         <v-btn @click="forwards()" size="small" variant="text" icon="mdi-step-forward"></v-btn>
+
+                        <v-btn 
+                            variant="text"
+                            @click="isLiveSelected ? isLiveSelected=false : isLiveSelected=true">
+                            <template v-slot:prepend>
+                                <v-badge 
+                                    dot
+                                    inline 
+                                    :color="isLiveSelected ? 'error' : ''">
+                                </v-badge>
+                            </template>
+                            LIVE
+                        </v-btn>
+
                     </template>
                     <template v-slot:append>
                         <v-chip variant="outlined">
@@ -32,6 +47,8 @@
                         <v-btn @click="toggle" variant="text" icon="mdi-fullscreen"></v-btn>
                     </template>
                 </v-slider>
+                <!-------------------------->
+
             </v-sheet>
         </v-col>
         <!-------------------------->
@@ -107,6 +124,7 @@
 
     //reactive variables
     const isPlaying = ref<boolean>(false);
+    const isLiveSelected = ref<boolean>(false);
     const session = ref<ScreenshotData>();
     const currentScreenshot = ref<ScreenshotData>();
     const sliderTime = ref<number>();
@@ -140,6 +158,11 @@
 
     //=============lifecycle and watchers==================
     onBeforeMount(async () => {
+
+
+        console.log(await proctoringViewService.getScreenshotTimestamps(sessionId));
+
+
         await getAndAssignSession();
         await getFirstScreenshotTime();
         setStartingSliderTime();

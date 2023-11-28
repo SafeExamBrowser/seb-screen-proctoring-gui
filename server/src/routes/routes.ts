@@ -15,6 +15,7 @@ router.get("/group/:uuid", groupController.getGroupByUuid);
 
 router.get("/screenshot-data/:sessionId", screenshotDataController.getScreenshotDataBySessionId);
 router.get("/screenshot-data/:sessionId/:timestamp", screenshotDataController.getScreenshotDataByTimestamp);
+router.get("/screenshot-timestamps/:sessionId", screenshotDataController.getScreenshotTimestamps);
 
 router.get("/search/sessions", searchController.searchSessions);
 router.get("/search/screenshots", searchController.searchScreenshots);
