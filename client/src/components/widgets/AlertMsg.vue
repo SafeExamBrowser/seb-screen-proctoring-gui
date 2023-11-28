@@ -56,7 +56,7 @@
         },
         {
             key: "changePassword-success",
-            value: "Your password has been successfully changed."
+            value: "Your password has been changed successfully."
         }
     ];
 

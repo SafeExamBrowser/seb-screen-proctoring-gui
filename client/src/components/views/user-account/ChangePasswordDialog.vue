@@ -128,37 +128,40 @@
     const confirmNewPasswordVisible = ref<boolean>(false);
 
     //change password logic
-    const clearForm: () => void = () => {
+    function clearForm(){
         currentPassword.value = "";
         newPassword.value = "";
         confirmNewPassword.value = "";
+
         closeAddDialog(null);
     }
 
-    const updateAccount: () => void = async () => {
-      addError.value = false;
-      try{
-          const userAccount: UserAccount | null = await userAccountViewService.changePassword(props.uuid, currentPassword.value, newPassword.value, confirmNewPassword.value);
-          
-          if(userAccount == null) {
+    async function updateAccount() {
+        addError.value = false;
+        try {
+            const userAccount: UserAccount | null = await userAccountViewService.changePassword(props.uuid, currentPassword.value, newPassword.value, confirmNewPassword.value);
+
+            if (userAccount == null) {
+                addError.value = true;
+                return;
+            }
+
+            currentPassword.value = "";
+            newPassword.value = "";
+            confirmNewPassword.value = "";
+
+            closeAddDialog(userAccount)
+
+        } catch (error) {
             addError.value = true;
-            return;
-          }
-
-          currentPassword.value = "";
-          newPassword.value = "";
-          confirmNewPassword.value = "";
-          closeAddDialog(userAccount)
-
-      }catch(error){
-          addError.value = true;
-      }
+        }
     };
 
     function closeAddDialog(newUserAccount?: UserAccount | null){
         console.log("closeAddDialog emitting:", newUserAccount)
         emit("closeAddDialog", newUserAccount);
     }
+    
 </script>
 
 <style scoped>
