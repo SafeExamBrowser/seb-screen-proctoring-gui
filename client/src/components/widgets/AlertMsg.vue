@@ -49,6 +49,14 @@
         {
             key: "register-success",
             value: "Your registration was successful. You can now login"
+        },
+        {
+            key: "changePassword-error",
+            value: "Your password could not be changed. Please provide valid data."
+        },
+        {
+            key: "changePassword-success",
+            value: "Your password has been changed successfully."
         }
     ];
 

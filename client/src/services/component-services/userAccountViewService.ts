@@ -70,6 +70,17 @@ export async function deactivateUserAccount(accountId: string): Promise<UserAcco
         return null;
     }
 }
+
+export async function changePassword(uuid: string, password: string, newPassword: string, confirmNewPassword: string): Promise<UserAccount[] | any>{
+  try{
+      const userAccount = await userAccountService.changePassword(uuid, password, newPassword, confirmNewPassword)
+      return userAccount;
+
+  }catch(error){
+      console.error(error);
+      return null;
+  }
+}
 //==============================
 
 export function disableEnableActionItem(action: string): boolean{

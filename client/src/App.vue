@@ -25,12 +25,12 @@
 
 <style>
 
-  .subtitle-color{
-    color: black;
-  }
+    .subtitle-color{
+        color: black;
+    }
 
-  .text-decoration-underline a:visited {
-    color: #2196F3 !important;
-  }
+    .text-decoration-underline a:visited {
+        color: #2196F3 !important;
+    }
 
 </style>

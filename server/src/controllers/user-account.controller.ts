@@ -40,6 +40,16 @@ export async function registerUserAccount(req: Request, res: Response){
 
 }
 
+export async function changePassword(req: Request, res: Response){
+    try{
+        const newUserAccount: object = await userAccountService.changePassword(req.headers.authorization, req.body)
+        return res.status(200).json(newUserAccount);
+
+    }catch(error){
+        apiService.handleGenericApiError(error, res);
+    }
+}
+
 
 export async function getUserAccounts(req: Request, res: Response){
     try{
@@ -54,7 +64,6 @@ export async function getUserAccounts(req: Request, res: Response){
 
 
 export async function activateUserAccount(req: Request, res: Response){
-
     try{
         const userAccount: object = await userAccountService.activateUserAccount(req.headers.authorization, req.params.accountId)
 
