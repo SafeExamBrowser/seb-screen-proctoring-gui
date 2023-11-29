@@ -21,14 +21,17 @@
                     <template v-slot:thumb-label>
                         {{currentTimeString}}
                     </template>
+
+                    <!-----------control buttons---------->
                     <template v-slot:prepend>
                         <v-btn @click="backwards()" size="small" variant="text" icon="mdi-step-backward"></v-btn>
                         <v-btn @click="pausePlay()" size="small" variant="text" :icon="isPlaying ? 'mdi-pause' : 'mdi-play'"></v-btn>
                         <v-btn @click="forwards()" size="small" variant="text" icon="mdi-step-forward"></v-btn>
 
                         <v-btn 
+                            v-if="isLive"
                             variant="text"
-                            @click="isLiveSelected ? isLiveSelected=false : isLiveSelected=true">
+                            @click="liveSelected()">
                             <template v-slot:prepend>
                                 <v-badge 
                                     dot
@@ -38,14 +41,23 @@
                             </template>
                             LIVE
                         </v-btn>
-
                     </template>
+                    <!-------------------------->
+
+                    <!-----------time---------->
                     <template v-slot:append>
-                        <v-chip variant="outlined">
+                        <!-- <v-chip variant="outlined"> -->
+                        <v-chip v-if="isLive" variant="outlined">
+                            {{ liveSessionTime }}
+                        </v-chip>
+                        <v-chip v-else variant="outlined">
                             {{ currentTimeString }} / {{ endTimeString }}
                         </v-chip>
                         <v-btn @click="toggle" variant="text" icon="mdi-fullscreen"></v-btn>
                     </template>
+                    <!-------------------------->
+
+
                 </v-slider>
                 <!-------------------------->
 
@@ -113,18 +125,18 @@
 </template>
 
 <script setup lang="ts">
-    import { useRoute } from 'vue-router';
+    import { useRoute } from "vue-router";
     import { ref, onBeforeMount, onBeforeUnmount, watch, computed } from "vue";
     import * as proctoringViewService from "@/services/component-services/proctoringViewService";
     import * as timeUtils from "@/utils/timeUtils";
     import * as groupingUtils from "@/utils/groupingUtils";
-    import { useAppBarStore, useAuthStore } from '@/store/app';
+    import { useAppBarStore, useAuthStore } from "@/store/app";
     import * as searchViewService from "@/services/component-services/searchViewService";
-    import { useFullscreen } from '@vueuse/core'
+    import { useFullscreen } from "@vueuse/core";
+    import * as liveService from "@/services/component-services/liveService";
 
     //reactive variables
     const isPlaying = ref<boolean>(false);
-    const isLiveSelected = ref<boolean>(false);
     const session = ref<ScreenshotData>();
     const currentScreenshot = ref<ScreenshotData>();
     const sliderTime = ref<number>();
@@ -137,15 +149,19 @@
     //live 
     const isLive = ref<boolean>(false);
     const isLiveSelected = ref<boolean>(false);
-
+    const liveButtonNoAction = ref<boolean>(false);
+    const liveTimestamp = ref<number>(Date.now());
+    const liveSessionTime = ref<string>();
 
     //time constants
     const SLIDER_INTERVAL: number = 1 * 1000;
+    const LIVE_INTERVAL: number = 1 * 1000;
     const SESSION_INTERVAL: number = 3 * 1000;
 
     //intervals
     let intervalScreenshots: any | null = null;
     let intervalSession: any | null = null;
+    let intervalLiveImage: any | null = null;
 
     //remaining
     const appBarStore = useAppBarStore();
@@ -164,26 +180,28 @@
     //=============lifecycle and watchers==================
     onBeforeMount(async () => {
 
-
-        console.log(await proctoringViewService.getScreenshotTimestamps(sessionId));
-
+        // console.log(await proctoringViewService.getScreenshotTimestamps(sessionId));
 
         await getAndAssignSession();
         await getFirstScreenshotTime();
         setStartingSliderTime();
-        startIntervalSession();
+        // startIntervalSession();
 
         appBarStore.title = "Proctoring View of Session: " + session.value?.clientName;
     });
 
     onBeforeUnmount(() => {
-        stopIntervalScreenshots();  
-        stopIntervalSessions();
+        // stopIntervalScreenshots();  
+        // stopIntervalSessions();
     });
 
     watch(sliderTime, async () => {
         if(sliderTime.value != null){
-            await getCurrentScreenshot(sliderTime.value?.toString());
+            if(isLive.value && isLiveSelected.value){
+                sliderTime.value = lastScreenshotTime.value;
+            }
+
+            await getCurrentScreenshot(sliderTime.value!.toString());
         }
     });
 
@@ -207,7 +225,7 @@
         searchTimeline.value = await searchViewService.searchTimeline(sessionId);
 
         if(!session.value.active){
-            stopIntervalSessions()
+            // stopIntervalSessions()
         }
 
     }
@@ -310,44 +328,100 @@
     //==============================
 
 
-    //=============interval==================
-    function startIntervalSession(){
-        if(session.value?.active){
-            intervalSession = setInterval(async () => {
-                await getAndAssignSession();
-            }, SESSION_INTERVAL);
+
+    //=========live=================
+    watch(liveTimestamp, async () => {
+        if(isLiveSelected.value){
+            imageLink.value = liveService.createImageLinkWithToken(currentScreenshot.value, Date.now());
+
+            //no await makes sense here
+            assignScreenshotData();
+        }
+    });
+
+    async function assignScreenshotData(){
+        const screenshotDataResponse: ScreenshotData | null = await proctoringViewService.getScreenshotDataBySessionId(sessionId);
+        if(screenshotDataResponse) currentScreenshot.value = screenshotDataResponse;
+    }
+
+    watch(currentScreenshot, () => {
+        if(currentScreenshot.value) liveSessionTime.value = timeUtils.toTimeString(currentScreenshot.value?.endTime - currentScreenshot.value?.startTime);
+    });
+
+    //timeUtils.toTimeString(session.value.endTime - firstScreenshotTime.value);
+
+    function liveSelected(){
+        if(liveButtonNoAction.value == false){
+            console.log(isLiveSelected.value)
+            if(isLiveSelected.value){
+                isLiveSelected.value = false;
+                return;
+            }
+
+            isLiveSelected.value = true;
+            sliderTime.value = lastScreenshotTime.value;
+            isPlaying.value = true;
+            liveButtonNoAction.value = true;
+            startIntervalLiveImage();
         }
     }
 
-    function stopIntervalSessions(){
-        if (intervalSession) {
-            clearInterval(intervalSession);
-        }
-    }
+    function startIntervalLiveImage(){
+        intervalLiveImage = setInterval(() => {
+            liveTimestamp.value = Date.now();
+        }, LIVE_INTERVAL);
+    } 
 
-    function startIntervalScreenshots(){
-        intervalScreenshots = setInterval(async () => {
-            if(sliderTime.value != null) {
-                sliderTime.value += SLIDER_INTERVAL;
-            }
-
-            if(session.value != null && sliderTime.value != null && timeUtils.toSeconds(sliderTime.value) == timeUtils.toSeconds(session.value?.endTime)){
-                stopIntervalScreenshots();
-                isPlaying.value = false;
-            }
-
-        }, SLIDER_INTERVAL);
-    }
-
-    function stopIntervalScreenshots(){
-        if (intervalScreenshots) {
-            clearInterval(intervalScreenshots);
+    function stopIntervalLiveImage(){
+        if(intervalLiveImage){
+            clearInterval(intervalLiveImage);
         }
     }
     //==============================
 
+
+
+    //=========interval=============
     
-    //=============video intercation==================
+
+
+    // function startIntervalSession(){
+    //     if(session.value?.active){
+    //         intervalSession = setInterval(async () => {
+    //             await getAndAssignSession();
+    //         }, SESSION_INTERVAL);
+    //     }
+    // }
+
+    // function stopIntervalSessions(){
+    //     if (intervalSession) {
+    //         clearInterval(intervalSession);
+    //     }
+    // }
+
+    // function startIntervalScreenshots(){
+    //     intervalScreenshots = setInterval(async () => {
+    //         if(sliderTime.value != null) {
+    //             sliderTime.value += SLIDER_INTERVAL;
+    //         }
+
+    //         if(session.value != null && sliderTime.value != null && timeUtils.toSeconds(sliderTime.value) == timeUtils.toSeconds(session.value?.endTime)){
+    //             stopIntervalScreenshots();
+    //             isPlaying.value = false;
+    //         }
+
+    //     }, SLIDER_INTERVAL);
+    // }
+
+    // function stopIntervalScreenshots(){
+    //     if (intervalScreenshots) {
+    //         clearInterval(intervalScreenshots);
+    //     }
+    // }
+    //==============================
+
+
+    //======video intercation=======
     function setStartingSliderTime(){
         if(searchTimestamp){
             sliderTime.value = parseInt(searchTimestamp);
@@ -374,12 +448,12 @@
         }
 
         if(!isPlaying.value){
-            stopIntervalScreenshots();
+            // stopIntervalScreenshots();
             return;
         }
 
         if(isPlaying.value){
-            startIntervalScreenshots();
+            // startIntervalScreenshots();
         }
     }
     //==============================

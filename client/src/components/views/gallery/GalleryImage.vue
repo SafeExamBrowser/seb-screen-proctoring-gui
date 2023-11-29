@@ -7,7 +7,7 @@
             class="img-styling"
             :aspect-ratio="16/9"
             :class="{'on-hover': isHovering}"
-            :src="galleryViewService.createImageLinkWithToken(screenshot, timestamp)">
+            :src="liveService.createImageLinkWithToken(screenshot, timestamp)">
 
             <div v-if="isHovering" class="hover-overlay d-flex">
                 <v-row>
@@ -69,7 +69,7 @@
             v-else 
             class="content-filler"
             :aspect-ratio="16/9"
-            :src="galleryViewService.createImageLinkWithToken(screenshot, timestamp)">
+            :src="liveService.createImageLinkWithToken(screenshot, timestamp)">
         </v-img>
 
     </v-hover>
@@ -90,6 +90,7 @@
 <script setup lang="ts">
     import { ref, computed } from "vue";
     import * as galleryViewService from "@/services/component-services/galleryViewService";
+    import * as liveService from "@/services/component-services/liveService";
     import { useAppBarStore } from "@/store/app";
 
 
@@ -112,7 +113,7 @@
     }
 
     const expandedScreenshotLink = computed<string>(() => {
-        return galleryViewService.createImageLinkWithToken(props.screenshot, props.timestamp);
+        return liveService.createImageLinkWithToken(props.screenshot, props.timestamp);
     });
 
 </script>

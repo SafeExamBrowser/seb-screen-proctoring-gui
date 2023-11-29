@@ -30,7 +30,7 @@ export async function getScreenshotDataByTimestamp(req: Request, res: Response){
 export async function getScreenshotTimestamps(req: Request, res: Response){
 
     try{
-        const session: object = await screenshotDataService.getScreenshotTimestamps(req.headers.authorization, req.params.sessionId);
+        const session: object = await screenshotDataService.getScreenshotTimestamps(req.headers.authorization, req.params.sessionId, req.params.timestamp);
 
         return res.status(200).json(session);
 

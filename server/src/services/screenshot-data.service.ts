@@ -11,7 +11,6 @@ export async function getScreenshotDataBySessionId(token: string, sessionId: str
     return data;
 }
 
-
 export async function getScreenshotDataByTimestamp(token: string, sessionId: string, timestamp: string): Promise<object>{
     const url: string =  screenshotDataUrl + sessionId + "/" + timestamp;
     const {data, status} = await apiService.api.get(url, {headers: apiService.getHeaders(token)});
@@ -19,8 +18,8 @@ export async function getScreenshotDataByTimestamp(token: string, sessionId: str
     return data;
 }
 
-export async function getScreenshotTimestamps(token: string, sessionId: string): Promise<object>{
-    const url: string =  screenshotTimestampsUrl + sessionId;
+export async function getScreenshotTimestamps(token: string, sessionId: string, timestamp: string): Promise<object>{
+    const url: string =  screenshotTimestampsUrl + sessionId + "/" + timestamp;
     const {data, status} = await apiService.api.get(url, {headers: apiService.getHeaders(token)});
 
     return data;

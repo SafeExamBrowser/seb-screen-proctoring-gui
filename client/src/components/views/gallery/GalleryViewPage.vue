@@ -177,19 +177,4 @@
 </script>
 
 <style scoped>
-    .img-styling{
-        background-color: black;
-    }
-
-    .img-styling .hover-overlay {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 0;
-        background-color: rgba(255, 255, 255, 0.3);
-        flex-direction: column;
-        justify-content: space-between;
-    }
 </style>

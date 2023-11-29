@@ -4,7 +4,7 @@ import { SortOrder } from "@/models/sortOrderEnum";
 import {navigateTo} from "@/router/navigation";
 import { useAuthStore } from "@/store/app";
 
-//=============api==================
+//=============api==============
 export async function getGroup(groupUuid: string, currentWindow: number, pageSize: number): Promise<GroupUuid | null>{
     try {
         const groupUuidResponse = await groupService.getGroupByUuid(groupUuid, 
@@ -34,7 +34,7 @@ export async function getLatestScreenshotData(sessionUuid: string, timestamp: nu
 //==============================
 
 
-//=============index==================
+//=============index============
 export function calcIndex(i: number, n: number, gridSize: number): number {
     return ((i - 1) * gridSize + (n - 1));
 }
@@ -49,45 +49,21 @@ export function currentIndexExists(screenshots: ScreenshotData[] | undefined, in
 }
 //==============================
 
-
-//=============links==================
-// export function createImageLinkWithToken(screenshots: Screenshot[] | undefined, index: number, timestamp: number): string {
+//=============links============
+// export function createImageLinkWithToken(screenshot: ScreenshotData | undefined, timestamp: number): string {
 //     const authStore = useAuthStore();
 
-//     if(screenshots == null){
+//     if(screenshot == null){
 //         return "";
 //     }
 
-//     const screenshotLink: string = screenshots[index].latestImageLink + "?access_token=" + authStore.getAccessToken();
+//     const screenshotLink: string = screenshot.latestImageLink + "?access_token=" + authStore.getAccessToken();
 
-//     if(screenshots[index].active){
+//     if(screenshot.active){
 //         return screenshotLink + '&t=' + timestamp;
 //     }
 
 //     return screenshotLink;
-// }
-
-export function createImageLinkWithToken(screenshot: ScreenshotData | undefined, timestamp: number): string {
-    const authStore = useAuthStore();
-
-    if(screenshot == null){
-        return "";
-    }
-
-    const screenshotLink: string = screenshot.latestImageLink + "?access_token=" + authStore.getAccessToken();
-
-    if(screenshot.active){
-        return screenshotLink + '&t=' + timestamp;
-    }
-
-    return screenshotLink;
-}
-
-
-// export function navigateToProctoringView(screenshots: Screenshot[] | undefined, groupUuid: string, index: number) {
-//     if (screenshots != null) {
-//         navigateTo("/recording/" + screenshots[index].uuid);
-//     }
 // }
 
 export function navigateToProctoringView(screenshot: ScreenshotData | undefined, groupUuid: string) {
@@ -97,7 +73,7 @@ export function navigateToProctoringView(screenshot: ScreenshotData | undefined,
 }
 //==============================
 
-//=============metadata==================
+//=============metadata=========
 export function getScreenshotMetadata(currentScreenshotMetadata: MetaData | null | undefined): object{
     return {
         "Url:": currentScreenshotMetadata?.screenProctoringMetadataURL,
