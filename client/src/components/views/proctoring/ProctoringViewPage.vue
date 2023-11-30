@@ -17,7 +17,8 @@
                 </v-img>
 
                 <!-----------slider---------->
-                <v-slider class="mt-4" :min="firstScreenshotTime" :max="lastScreenshotTime" :step="1000" v-model="sliderTime" thumb-label>
+                <!-- <v-slider class="mt-4" :min="firstScreenshotTime" :max="lastScreenshotTime" :step="1000" v-model="sliderTime" thumb-label> -->
+                <v-slider :update:focused="testVar" class="mt-4" :min="firstScreenshotTime" :max="lastScreenshotTime" :step="1000" v-model="sliderTime" thumb-label>
                     <template v-slot:thumb-label>
                         {{currentTimeString}}
                     </template>
@@ -134,6 +135,8 @@
     import * as searchViewService from "@/services/component-services/searchViewService";
     import { useFullscreen } from "@vueuse/core";
     import * as liveService from "@/services/component-services/liveService";
+    import { SortOrder } from "@/models/sortOrderEnum";
+
 
     //reactive variables
     const isPlaying = ref<boolean>(false);
@@ -149,9 +152,12 @@
     //live 
     const isLive = ref<boolean>(false);
     const isLiveSelected = ref<boolean>(false);
-    const liveButtonNoAction = ref<boolean>(false);
+    const isLiveButtonDisabled = ref<boolean>(false);
     const liveTimestamp = ref<number>(Date.now());
     const liveSessionTime = ref<string>();
+
+    //screenshot list
+    const screenshotTimestampsList = ref<number[]>([]);
 
     //time constants
     const SLIDER_INTERVAL: number = 1 * 1000;
@@ -185,20 +191,29 @@
         await getAndAssignSession();
         await getFirstScreenshotTime();
         setStartingSliderTime();
+        setTimestampsList();
         // startIntervalSession();
 
         appBarStore.title = "Proctoring View of Session: " + session.value?.clientName;
     });
 
     onBeforeUnmount(() => {
-        // stopIntervalScreenshots();  
-        // stopIntervalSessions();
+        stopIntervalScreenshots();  
+        stopIntervalSessions();
+        stopIntervalLiveImage();
     });
 
     watch(sliderTime, async () => {
         if(sliderTime.value != null){
-            if(isLive.value && isLiveSelected.value){
-                sliderTime.value = lastScreenshotTime.value;
+
+            if(sliderTime.value != lastScreenshotTime.value){
+                console.log("test yess")
+                isLiveSelected.value = false;
+                isLiveButtonDisabled.value = false;
+
+                await setTimestampsList();
+
+                return;
             }
 
             await getCurrentScreenshot(sliderTime.value!.toString());
@@ -225,12 +240,26 @@
         searchTimeline.value = await searchViewService.searchTimeline(sessionId);
 
         if(!session.value.active){
-            // stopIntervalSessions()
+            stopIntervalSessions()
         }
 
     }
     //==============================
 
+
+    //=============screenshot list logic==================
+    async function setTimestampsList(){
+        if(sliderTime.value == null) return;
+
+        if(screenshotTimestampsList.value.length != 0) {
+            const timestampsResponse: number[] | null = await proctoringViewService.getScreenshotTimestamps(sessionId, sliderTime.value.toString(), SortOrder.asc);
+            if(timestampsResponse != null) screenshotTimestampsList.value = timestampsResponse;
+        }
+        
+        console.log(screenshotTimestampsList.value)
+    }
+    
+    //==============================
 
     //=============screenshot logic==================
     async function getFirstScreenshotTime(){
@@ -279,7 +308,151 @@
     });
     //==============================
 
-    //=============metadata==================
+   
+
+
+
+    //=========live=================
+    function testFunction(){
+        console.log("test1234")
+    }
+    const testVar = ref<boolean>()
+
+    watch(testVar, () => {
+        console.log("testVar: " + testVar.value)
+    });
+
+    function liveSelected(){
+        if(isLiveButtonDisabled.value == false){
+            if(isLiveSelected.value){
+                isLiveSelected.value = false;
+                return;
+            }
+
+            isLiveSelected.value = true;
+
+            sliderTime.value = lastScreenshotTime.value;
+
+            isPlaying.value = true;
+            isLiveButtonDisabled.value = true;
+            startIntervalLiveImage();
+        }
+    }
+
+    watch(liveTimestamp, async () => {
+        if(isLiveSelected.value){
+            imageLink.value = liveService.createImageLinkWithToken(currentScreenshot.value, Date.now());
+
+            //no await makes sense here
+            assignScreenshotData();
+        }
+    });
+
+    async function assignScreenshotData(){
+        const screenshotDataResponse: ScreenshotData | null = await proctoringViewService.getScreenshotDataBySessionId(sessionId);
+        if(screenshotDataResponse) currentScreenshot.value = screenshotDataResponse;
+    }
+
+    watch(currentScreenshot, () => {
+        if(currentScreenshot.value) liveSessionTime.value = timeUtils.toTimeString(currentScreenshot.value?.endTime - currentScreenshot.value?.startTime);
+    });
+
+    function startIntervalLiveImage(){
+        intervalLiveImage = setInterval(() => {
+            liveTimestamp.value = Date.now();
+
+            // console.log(sliderTime.value)
+        }, LIVE_INTERVAL);
+    } 
+
+    function stopIntervalLiveImage(){
+        if(intervalLiveImage){
+            clearInterval(intervalLiveImage);
+        }
+    }
+    //==============================
+
+
+
+    //=========interval=============
+
+    function startIntervalSession(){
+        if(session.value?.active){
+            intervalSession = setInterval(async () => {
+                await getAndAssignSession();
+            }, SESSION_INTERVAL);
+        }
+    }
+
+    function stopIntervalSessions(){
+        if (intervalSession) {
+            clearInterval(intervalSession);
+        }
+    }
+
+    function startIntervalScreenshots(){
+        intervalScreenshots = setInterval(async () => {
+            if(sliderTime.value != null) {
+                sliderTime.value += SLIDER_INTERVAL;
+            }
+
+            if(session.value != null && sliderTime.value != null && timeUtils.toSeconds(sliderTime.value) == timeUtils.toSeconds(session.value?.endTime)){
+                stopIntervalScreenshots();
+                isPlaying.value = false;
+            }
+
+        }, SLIDER_INTERVAL);
+    }
+
+    function stopIntervalScreenshots(){
+        if (intervalScreenshots) {
+            clearInterval(intervalScreenshots);
+        }
+    }
+    //==============================
+
+
+    //======video intercation=======
+    function setStartingSliderTime(){
+        if(searchTimestamp){
+            sliderTime.value = parseInt(searchTimestamp);
+        }else{
+            sliderTime.value = firstScreenshotTime.value;
+        }
+    }
+
+    function backwards(){
+        if(session.value != null && sliderTime.value != null && sliderTime.value != session.value.startTime){
+            sliderTime.value -= SLIDER_INTERVAL;
+        }
+    }
+
+    function forwards(){
+        if(session.value != null && sliderTime.value != null && timeUtils.toSeconds(sliderTime.value) != timeUtils.toSeconds(session.value?.endTime)){
+            sliderTime.value += SLIDER_INTERVAL;
+        }
+    }
+
+    function pausePlay() {
+        if(sliderTime.value != session.value?.endTime){
+            isPlaying.value = !isPlaying.value;
+        }
+
+        if(!isPlaying.value){
+            stopIntervalScreenshots();
+            return;
+        }
+
+        if(isPlaying.value){
+            startIntervalScreenshots();
+        }
+    }
+    //==============================
+
+
+
+
+     //=============metadata==================
     const screenshotMetadata = computed<object>(() => {
         if(currentScreenshot.value){
             return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, currentScreenshot.value.metaData, additionalMetadataInfo.value, totalNumberOfScreenshots.value);
@@ -325,137 +498,6 @@
         isMetadataInfo.value ? isMetadataInfo.value = false : isMetadataInfo.value = true;
     }
 
-    //==============================
-
-
-
-    //=========live=================
-    watch(liveTimestamp, async () => {
-        if(isLiveSelected.value){
-            imageLink.value = liveService.createImageLinkWithToken(currentScreenshot.value, Date.now());
-
-            //no await makes sense here
-            assignScreenshotData();
-        }
-    });
-
-    async function assignScreenshotData(){
-        const screenshotDataResponse: ScreenshotData | null = await proctoringViewService.getScreenshotDataBySessionId(sessionId);
-        if(screenshotDataResponse) currentScreenshot.value = screenshotDataResponse;
-    }
-
-    watch(currentScreenshot, () => {
-        if(currentScreenshot.value) liveSessionTime.value = timeUtils.toTimeString(currentScreenshot.value?.endTime - currentScreenshot.value?.startTime);
-    });
-
-    //timeUtils.toTimeString(session.value.endTime - firstScreenshotTime.value);
-
-    function liveSelected(){
-        if(liveButtonNoAction.value == false){
-            console.log(isLiveSelected.value)
-            if(isLiveSelected.value){
-                isLiveSelected.value = false;
-                return;
-            }
-
-            isLiveSelected.value = true;
-            sliderTime.value = lastScreenshotTime.value;
-            isPlaying.value = true;
-            liveButtonNoAction.value = true;
-            startIntervalLiveImage();
-        }
-    }
-
-    function startIntervalLiveImage(){
-        intervalLiveImage = setInterval(() => {
-            liveTimestamp.value = Date.now();
-        }, LIVE_INTERVAL);
-    } 
-
-    function stopIntervalLiveImage(){
-        if(intervalLiveImage){
-            clearInterval(intervalLiveImage);
-        }
-    }
-    //==============================
-
-
-
-    //=========interval=============
-    
-
-
-    // function startIntervalSession(){
-    //     if(session.value?.active){
-    //         intervalSession = setInterval(async () => {
-    //             await getAndAssignSession();
-    //         }, SESSION_INTERVAL);
-    //     }
-    // }
-
-    // function stopIntervalSessions(){
-    //     if (intervalSession) {
-    //         clearInterval(intervalSession);
-    //     }
-    // }
-
-    // function startIntervalScreenshots(){
-    //     intervalScreenshots = setInterval(async () => {
-    //         if(sliderTime.value != null) {
-    //             sliderTime.value += SLIDER_INTERVAL;
-    //         }
-
-    //         if(session.value != null && sliderTime.value != null && timeUtils.toSeconds(sliderTime.value) == timeUtils.toSeconds(session.value?.endTime)){
-    //             stopIntervalScreenshots();
-    //             isPlaying.value = false;
-    //         }
-
-    //     }, SLIDER_INTERVAL);
-    // }
-
-    // function stopIntervalScreenshots(){
-    //     if (intervalScreenshots) {
-    //         clearInterval(intervalScreenshots);
-    //     }
-    // }
-    //==============================
-
-
-    //======video intercation=======
-    function setStartingSliderTime(){
-        if(searchTimestamp){
-            sliderTime.value = parseInt(searchTimestamp);
-        }else{
-            sliderTime.value = firstScreenshotTime.value;
-        }
-    }
-
-    function backwards(){
-        if(session.value != null && sliderTime.value != null && sliderTime.value != session.value.startTime){
-            sliderTime.value -= SLIDER_INTERVAL;
-        }
-    }
-
-    function forwards(){
-        if(session.value != null && sliderTime.value != null && timeUtils.toSeconds(sliderTime.value) != timeUtils.toSeconds(session.value?.endTime)){
-            sliderTime.value += SLIDER_INTERVAL;
-        }
-    }
-
-    function pausePlay() {
-        if(sliderTime.value != session.value?.endTime){
-            isPlaying.value = !isPlaying.value;
-        }
-
-        if(!isPlaying.value){
-            // stopIntervalScreenshots();
-            return;
-        }
-
-        if(isPlaying.value){
-            // startIntervalScreenshots();
-        }
-    }
     //==============================
 
 
