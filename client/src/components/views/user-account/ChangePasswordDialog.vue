@@ -22,7 +22,8 @@
                 density="compact"
                 placeholder="Current password *"
                 variant="outlined"
-                v-model="currentPassword">
+                v-model="currentPassword"
+                class="pb-2">
 
                 <template v-slot:append-inner>
                     <v-btn
@@ -43,7 +44,10 @@
                 density="compact"
                 placeholder="New password *"
                 variant="outlined"
-                v-model="newPassword">
+                v-model="newPassword"
+                :rules="[matchPasswordRule]"
+                class="pb-2"
+                >
 
                 <template v-slot:append-inner>
                     <v-btn
@@ -56,6 +60,7 @@
             </v-text-field>
 
             <!-------------confirm new password--------------->
+            <!--@vue-ignore-->
             <v-text-field
                 required
                 :type="confirmNewPasswordVisible ? 'text' : 'password'"
@@ -63,7 +68,9 @@
                 density="compact"
                 placeholder="Confirm new password *"
                 variant="outlined"
-                v-model="confirmNewPassword">
+                v-model="confirmNewPassword"
+                :rules="[matchPasswordRule]"
+            >
 
                 <template v-slot:append-inner>
                     <v-btn
@@ -103,7 +110,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref } from "vue";
+    import { ref, computed } from "vue";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
 
     const emit = defineEmits<{
@@ -128,14 +135,14 @@
     const confirmNewPasswordVisible = ref<boolean>(false);
 
     //change password logic
-    const clearForm: () => void = () => {
+    function clearForm() {
         currentPassword.value = "";
         newPassword.value = "";
         confirmNewPassword.value = "";
         closeAddDialog(null);
     }
 
-    const updateAccount: () => void = async () => {
+    async function updateAccount() {
       addError.value = false;
       try{
           const userAccount: UserAccount | null = await userAccountViewService.changePassword(props.uuid, currentPassword.value, newPassword.value, confirmNewPassword.value);
@@ -159,6 +166,12 @@
         console.log("closeAddDialog emitting:", newUserAccount)
         emit("closeAddDialog", newUserAccount);
     }
+
+    function matchPasswordRule(): string | boolean | undefined {
+        if (newPassword.value != "" && confirmNewPassword.value != "") {
+            return newPassword.value === confirmNewPassword.value || 'Passwords must match' || undefined
+        }
+    }
 </script>
 
 <style scoped>
@@ -168,7 +181,7 @@
     }
 
     .password-form-container{
-        padding: 20px;
+        padding: 30px;
     }
 
 </style>
