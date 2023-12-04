@@ -135,43 +135,40 @@
     const confirmNewPasswordVisible = ref<boolean>(false);
 
     //change password logic
-    function clearForm() {
+    function clearForm(){
         currentPassword.value = "";
         newPassword.value = "";
         confirmNewPassword.value = "";
+
         closeAddDialog(null);
     }
 
     async function updateAccount() {
-      addError.value = false;
-      try{
-          const userAccount: UserAccount | null = await userAccountViewService.changePassword(props.uuid, currentPassword.value, newPassword.value, confirmNewPassword.value);
-          
-          if(userAccount == null) {
+        addError.value = false;
+        try {
+            const userAccount: UserAccount | null = await userAccountViewService.changePassword(props.uuid, currentPassword.value, newPassword.value, confirmNewPassword.value);
+
+            if (userAccount == null) {
+                addError.value = true;
+                return;
+            }
+
+            currentPassword.value = "";
+            newPassword.value = "";
+            confirmNewPassword.value = "";
+
+            closeAddDialog(userAccount)
+
+        } catch (error) {
             addError.value = true;
-            return;
-          }
-
-          currentPassword.value = "";
-          newPassword.value = "";
-          confirmNewPassword.value = "";
-          closeAddDialog(userAccount)
-
-      }catch(error){
-          addError.value = true;
-      }
+        }
     };
 
     function closeAddDialog(newUserAccount?: UserAccount | null){
         console.log("closeAddDialog emitting:", newUserAccount)
         emit("closeAddDialog", newUserAccount);
     }
-
-    function matchPasswordRule(): string | boolean | undefined {
-        if (newPassword.value != "" && confirmNewPassword.value != "") {
-            return newPassword.value === confirmNewPassword.value || 'Passwords must match' || undefined
-        }
-    }
+    
 </script>
 
 <style scoped>

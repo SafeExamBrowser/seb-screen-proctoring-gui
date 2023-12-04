@@ -116,6 +116,11 @@
     const showError = ref<boolean>(false);
     const searchTimeline = ref<SearchTimeline | null>();
 
+    //live 
+    const isLive = ref<boolean>(false);
+    const isLiveSelected = ref<boolean>(false);
+
+
     //time constants
     const SLIDER_INTERVAL: number = 1 * 1000;
     const SESSION_INTERVAL: number = 3 * 1000;
@@ -157,7 +162,13 @@
         if(sliderTime.value != null){
             await getCurrentScreenshot(sliderTime.value?.toString());
         }
-    })
+    });
+
+    watch(session, () => {
+        if(session.value?.active){
+            isLive.value = session.value.active;
+        }
+    });
 
     async function getAndAssignSession(){
         const sessionResponse: ScreenshotData | null = await proctoringViewService.getScreenshotDataBySessionId(sessionId);

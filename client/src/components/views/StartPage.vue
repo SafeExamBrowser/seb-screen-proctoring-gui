@@ -22,11 +22,11 @@
 
                 <template v-slot:item.name="{item, index, internalItem}">
                     <td>
-                        <div class="text-decoration-underline"
+                        <div 
                             role="button"
                             tabindex="0"
                             @keydown="tableUtils.handleTabKeyEvent($event, 'navigate', internalItem.index, {path: getGalleryViewLink(internalItem.index)})">
-                            <router-link :to="getGalleryViewLink(internalItem.index)">{{item.name}}</router-link>
+                            <router-link class="default-color" :to="getGalleryViewLink(internalItem.index)">{{item.name}}</router-link>
                         </div>
                     </td>
                 </template>
@@ -80,3 +80,10 @@
     }
 
 </script>
+
+<style scoped>
+    .default-color {
+        color: #2196F3;
+    }
+
+</style>

@@ -255,7 +255,8 @@
             metadataWindowTitle: string,
             metadataUserAction: string,
             fromTime: string,
-            toTime: string
+            toTime: string,
+            pageNumber: number
         ]
     }>();
 
@@ -306,7 +307,8 @@
             metadataWindowTitleField.value, 
             metadataUserActionField.value, 
             fromTime, 
-            toTime
+            toTime,
+            1
         );
     }
 
@@ -323,10 +325,6 @@
         timePeriodSelect.value = 1;
         timeSelectionRadio.value = true;
         timeSelectionPicker.value = null;
-    }
-
-    const testFunction = () => {
-
     }
 
     function calcTimePeriod(): [string, string]{

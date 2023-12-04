@@ -88,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, onBeforeMount, watch, computed, reactive, onMounted } from "vue";
+    import { ref, onBeforeMount, watch } from "vue";
     import { useAppBarStore, useLoadingStore } from "@/store/app";
     import * as searchViewService from "@/services/component-services/searchViewService";
     import SearchForm from "./SearchForm.vue";
@@ -100,9 +100,11 @@
     const sessionSearchResults = ref<SearchSessions>();
     const sessionsGrouped = ref<SessionsGrouped>();
 
+    const searchParameters = ref<OptionalParSearchSessions>();
+
     const sessionPanels = ref<string[]>([]);
-    const closeAllPanelsDisabled = ref<boolean>(false);
-    const openeAllPanelsDisabled = ref<boolean>(true);
+    const closeAllPanelsDisabled = ref<boolean>(true);
+    const openeAllPanelsDisabled = ref<boolean>(false);
 
     const errorAvailable = ref<boolean>();
 
@@ -151,7 +153,8 @@
         metadataWindowTitle: string, 
         metadataUserAction: string, 
         fromTime: string, 
-        toTime: string
+        toTime: string,
+        pageNumber: number
     ){
 
         //todo: fold all rows on new search
@@ -166,20 +169,21 @@
         loginNameSearch = loginName == "" ? null : loginName;
         machineNameSearch = machineName == "" ? null : machineName;
 
-        const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(
-            {   
-                examName: examNameSearch,
-                groupName: groupNameSearch,
-                clientName: loginNameSearch,
-                clientMachineName: machineNameSearch,
-                screenProctoringMetadataURL: metadataSearchUrl,
-                screenProctoringMetadataWindowTitle: metadataSearchWindowTitle,
-                screenProctoringMetadataUserAction: metadataSearchAction,
-                fromTime: fromTime, 
-                toTime: toTime,
-                pageSize: 500
-            }
-        );
+        searchParameters.value = {   
+            examName: examNameSearch,
+            groupName: groupNameSearch,
+            clientName: loginNameSearch,
+            clientMachineName: machineNameSearch,
+            screenProctoringMetadataURL: metadataSearchUrl,
+            screenProctoringMetadataWindowTitle: metadataSearchWindowTitle,
+            screenProctoringMetadataUserAction: metadataSearchAction,
+            fromTime: fromTime, 
+            toTime: toTime,
+            pageSize: 500,
+            pageNumber: pageNumber
+        }
+
+        const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(searchParameters.value);
         
         if(sessionSearchResponse == null){
             errorAvailable.value = true;
@@ -188,11 +192,33 @@
 
         sessionSearchResults.value = sessionSearchResponse;
 
-        // console.log(sessionSearchResults.value)
+        await assignSessions();
+    }
+
+    async function assignSessions(){
+        if(sessionSearchResults.value == null){ 
+            return;
+        }
+
+        if(sessionSearchResults.value.numberOfPages > 1 && sessionSearchResults.value.pageNumber != sessionSearchResults.value.numberOfPages){
+            if(searchParameters.value != null && searchParameters.value.pageNumber != null){
+                searchParameters.value.pageNumber += 1;
+            }
+
+            const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(searchParameters.value);
+
+            if(sessionSearchResponse == null){
+                errorAvailable.value = true;
+                return;
+            }
+
+            sessionSearchResults.value.content.push(...sessionSearchResponse.content);
+            sessionSearchResults.value.pageNumber += 1;
+
+            await assignSessions();
+        }
 
         sessionsGrouped.value = groupingUtils.groupSessionsByDay(sessionSearchResults.value);
-        openAllPanels()
-
         searchResultAvailable.value = true;
     }
 
