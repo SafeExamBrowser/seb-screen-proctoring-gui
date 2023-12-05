@@ -31,7 +31,8 @@ export async function getScreenshotTimestamps(sessionId: string, timestamp: stri
 }
 //==============================
 
-//=============metadata==================
+
+//=============metadata=========
 export function getScreenshotMetadata(sliderTime: number, currentScreenshotMetadata: MetaData | null, additionalMetadataInfo: string, total: string): object{
     return {
         "Total:": total,

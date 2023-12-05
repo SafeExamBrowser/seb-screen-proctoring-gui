@@ -100,7 +100,8 @@
         </v-col> -->
 
         <v-col cols="3" v-if="isMetadataInfo">
-            <v-card color="#e2ecf7" elevation="4">
+            <v-card color="#e2ecf7" elevation="4" class="rounded-lg">
+            <!-- <v-card elevation="4" class="rounded-lg"> -->
                 <v-card-text>
                     <v-row>
                         <v-col cols="9">
@@ -114,10 +115,14 @@
                     </v-row>
                     <v-row v-for="(value, key) in sessionInfodata" :key="key">
                         <v-col>
-                            {{key}}
+                            <v-chip variant="flat" color="primary">
+                                {{key}}
+                            </v-chip>
                         </v-col>
                         <v-col>
-                            {{value}}
+                            <v-chip variant="flat" color="secondary">
+                                {{value}}
+                            </v-chip>
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -126,10 +131,14 @@
                 <v-card-text>
                     <v-row v-for="(value, key) in screenshotMetadata" :key="key">
                         <v-col>
-                            {{key}}
+                            <v-chip variant="flat" color="primary">
+                                {{key}}
+                            </v-chip>
                         </v-col>
                         <v-col>
-                            {{value}}
+                            <v-chip variant="flat" color="secondary">
+                                {{value}}
+                            </v-chip>
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -237,13 +246,12 @@
     //=============lifecycle and watchers==================
     onBeforeMount(async () => {
         await initialize();
-        await getFirstScreenshotTime();
 
         setStartingSliderTime();
         await setTimestampsList(SortOrder.asc);
 
         if(currentScreenshot.value?.active){
-            goLive();
+            goLive();       
         }
 
         appBarStore.title = "Proctoring View of Session: " + currentScreenshot.value?.clientName;
@@ -298,17 +306,22 @@
     });
 
     async function initialize(){
-        const sessionResponse: ScreenshotData | null = await proctoringViewService.getScreenshotDataBySessionId(sessionId);
-
-        if(sessionResponse == null){ 
+        await assignScreenshotData()
+        if(currentScreenshot.value == null){ 
             showError.value = true; 
             return;
         }
 
-        currentScreenshot.value = sessionResponse;
         setSliderMax(currentScreenshot.value.timestamp);
-
         searchTimeline.value = await searchViewService.searchTimeline(sessionId);
+
+        await assignScreenshotDataByTimestamp(currentScreenshot.value?.startTime.toString());
+
+        if(currentScreenshot.value == null) return;
+
+        setSliderMin(currentScreenshot.value.timestamp);
+        firstScreenshotTime.value = currentScreenshot.value.timestamp;
+        setImageLink(Date.now().toString());
     }
     //==============================
 
@@ -335,6 +348,10 @@
     async function assignScreenshotData(){
         const screenshotDataResponse: ScreenshotData | null = await proctoringViewService.getScreenshotDataBySessionId(sessionId);
         if(screenshotDataResponse) currentScreenshot.value = screenshotDataResponse;
+
+        console.log("1:")
+        console.log(screenshotDataResponse)
+        console.log("====")
     }
 
 
@@ -343,19 +360,10 @@
 
         const screenshotDataResponse: ScreenshotData | null = await proctoringViewService.getScreenshotDataByTimestamp(sessionId, timestamp);
         if(screenshotDataResponse) currentScreenshot.value = screenshotDataResponse;
-    }
 
-
-
-    async function getFirstScreenshotTime(){
-        await assignScreenshotDataByTimestamp(currentScreenshot.value?.startTime.toString());
-
-        if(currentScreenshot.value == null) return;
-
-        const imageLinkSplitted: string[] = currentScreenshot.value.imageLink.split("/");
-        setSliderMin(parseInt(imageLinkSplitted[imageLinkSplitted.length-1]));
-        firstScreenshotTime.value = parseInt(imageLinkSplitted[imageLinkSplitted.length-1]);
-        setImageLink(Date.now().toString());
+        console.log("2:")
+        console.log(screenshotDataResponse)
+        console.log("====")
     }
 
     function setSliderMin(timestamp: number){
