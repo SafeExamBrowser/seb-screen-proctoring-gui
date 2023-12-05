@@ -50,7 +50,7 @@ export function currentIndexExists(screenshots: ScreenshotData[] | undefined, in
 //==============================
 
 //=============links============
-// export function createImageLinkWithToken(screenshot: ScreenshotData | undefined, timestamp: number): string {
+// export function getLatestImageLink(screenshot: ScreenshotData | undefined, timestamp: number): string {
 //     const authStore = useAuthStore();
 
 //     if(screenshot == null){

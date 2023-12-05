@@ -7,7 +7,7 @@
             class="img-styling"
             :aspect-ratio="16/9"
             :class="{'on-hover': isHovering}"
-            :src="liveService.createImageLinkWithToken(screenshot, timestamp)">
+            :src="liveService.getLatestImageLink(screenshot, timestamp.toString())">
 
             <div v-if="isHovering" class="hover-overlay d-flex">
                 <v-row>
@@ -69,7 +69,7 @@
             v-else 
             class="content-filler"
             :aspect-ratio="16/9"
-            :src="liveService.createImageLinkWithToken(screenshot, timestamp)">
+            :src="liveService.getLatestImageLink(screenshot, timestamp.toString())">
         </v-img>
 
     </v-hover>
@@ -113,7 +113,7 @@
     }
 
     const expandedScreenshotLink = computed<string>(() => {
-        return liveService.createImageLinkWithToken(props.screenshot, props.timestamp);
+        return liveService.getLatestImageLink(props.screenshot, props.timestamp.toString());
     });
 
 </script>
