@@ -115,14 +115,14 @@
                     </v-row>
                     <v-row v-for="(value, key) in sessionInfodata" :key="key">
                         <v-col>
-                            <v-chip variant="flat" color="primary">
+                            <!-- <v-chip variant="flat" color="primary"> -->
                                 {{key}}
-                            </v-chip>
+                            <!-- </v-chip> -->
                         </v-col>
                         <v-col>
-                            <v-chip variant="flat" color="secondary">
+                            <!-- <v-chip variant="flat" color="secondary"> -->
                                 {{value}}
-                            </v-chip>
+                            <!-- </v-chip> -->
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -131,14 +131,14 @@
                 <v-card-text>
                     <v-row v-for="(value, key) in screenshotMetadata" :key="key">
                         <v-col>
-                            <v-chip variant="flat" color="primary">
+                            <!-- <v-chip variant="flat" color="primary"> -->
                                 {{key}}
-                            </v-chip>
+                            <!-- </v-chip> -->
                         </v-col>
                         <v-col>
-                            <v-chip variant="flat" color="secondary">
+                            <!-- <v-chip variant="flat" color="secondary"> -->
                                 {{value}}
-                            </v-chip>
+                            <!-- </v-chip> -->
                         </v-col>
                     </v-row>
                 </v-card-text>
