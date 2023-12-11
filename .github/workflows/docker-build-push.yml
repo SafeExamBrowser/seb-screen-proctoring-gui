@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Build and Push to Docker Hub
 
 on:
   workflow_dispatch:
@@ -12,6 +12,14 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
+    - name: Set env for dynamic tag
+      if: github.event_name != 'workflow_dispatch'
+      run: echo "TAG_NAME=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+    - name: Set env manual
+      if: github.event_name == 'workflow_dispatch'
+      run: echo "TAG_NAME=default_version" >> $GITHUB_ENV
+    
     - name: Checkout code
       uses: actions/checkout@v3
       
@@ -26,4 +34,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: docker.io/naritter/seb-sps-gui:v0.1-latest
+        tags: docker.io/naritter/seb-sps-gui:${{ env.TAG_NAME }}
