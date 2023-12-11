@@ -41,9 +41,9 @@
             </td>
         </template>
 
-        <template v-slot:item.proctoringViewLink="{item}">
+        <template v-slot:item.proctoringViewLink="{internalItem}">
             <v-btn 
-                @click="searchViewService.openProctoringView(timelineSearchResult.sessionUUID, item.timestamp)" 
+                @click="searchViewService.openProctoringView(timelineSearchResult.sessionUUID, internalItem.columns.timestamp)" 
                 variant="text" 
                 icon="mdi-video">
             </v-btn>

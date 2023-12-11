@@ -26,3 +26,15 @@ export async function getScreenshotDataByTimestamp(req: Request, res: Response){
         apiService.handleGenericApiError(error, res);
     }
 }
+
+export async function getScreenshotTimestamps(req: Request, res: Response){
+
+    try{
+        const session: object = await screenshotDataService.getScreenshotTimestamps(req.headers.authorization, req.params.sessionId, req.params.timestamp, req.params.direction);
+
+        return res.status(200).json(session);
+
+    }catch(error){
+        apiService.handleGenericApiError(error, res);
+    }
+}

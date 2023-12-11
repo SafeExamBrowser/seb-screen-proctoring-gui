@@ -9,7 +9,6 @@ export async function searchSessions(token: string, options?: {}): Promise<objec
     return data;
 }
 
-
 export async function searchScreenshots(token: string, options?: {}): Promise<object>{
     const url: string = searchUrl + "/screenshots";
     const {data, status} = await apiService.api.get(url, {headers: apiService.getHeaders(token), params: options});

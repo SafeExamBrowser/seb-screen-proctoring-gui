@@ -15,6 +15,7 @@ router.get("/group/:uuid", groupController.getGroupByUuid);
 
 router.get("/screenshot-data/:sessionId", screenshotDataController.getScreenshotDataBySessionId);
 router.get("/screenshot-data/:sessionId/:timestamp", screenshotDataController.getScreenshotDataByTimestamp);
+router.get("/screenshot-timestamps/:sessionId/:timestamp/:direction", screenshotDataController.getScreenshotTimestamps);
 
 router.get("/search/sessions", searchController.searchSessions);
 router.get("/search/screenshots", searchController.searchScreenshots);
@@ -27,6 +28,5 @@ router.post("/useraccount/register", authorizationAdditional.isUserAccountOperat
 router.post("/useraccount/changePassword", authorizationAdditional.isUserAccountOperationAllowed, userAccountController.changePassword)
 router.post("/useraccount/activate/:accountId", authorizationAdditional.isUserAccountOperationAllowed, userAccountController.activateUserAccount)
 router.post("/useraccount/deactivate/:accountId", authorizationAdditional.isUserAccountOperationAllowed, userAccountController.deactivateUserAccount)
-
 
 export default router;

@@ -1,6 +1,6 @@
 import * as screenshotDataService from "@/services/api-services/screenshotDataService";
 import * as timeUtils from "@/utils/timeUtils";
-
+import { SortOrder } from "@/models/sortOrderEnum";
 
 //=============api==================
 export async function getScreenshotDataBySessionId(sessionId: string): Promise<ScreenshotData | null>{
@@ -20,9 +20,19 @@ export async function getScreenshotDataByTimestamp(sessionId: string, timestamp:
         return null;
     }
 }
+
+export async function getScreenshotTimestamps(sessionId: string, timestamp: string, direction: SortOrder): Promise<number[] | null>{
+    try{
+        return await screenshotDataService.getScreenshotTimestamps(sessionId, timestamp, direction);        
+    }catch(error){
+        console.error(error);
+        return null;
+    }
+}
 //==============================
 
-//=============metadata==================
+
+//=============metadata=========
 export function getScreenshotMetadata(sliderTime: number, currentScreenshotMetadata: MetaData | null, additionalMetadataInfo: string, total: string): object{
     return {
         "Total:": total,

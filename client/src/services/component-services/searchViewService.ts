@@ -1,7 +1,6 @@
 import * as searchService from "@/services/api-services/searchService";
 import router from "@/router";
 
-
 //=============api==================
 export async function searchSessions(optionalParamters?: OptionalParSearchSessions): Promise<SearchSessions | null>{
     try{
@@ -33,9 +32,13 @@ export async function searchTimeline(sessionId: string, optionalParamters?: Opti
 
 //=============window==================
 export function openProctoringView(sessionId: string, timestamp?: string){
+
+    console.log(timestamp)
+
     var url: string = "/recording/" + sessionId;
     
     if(timestamp){
+        console.log(timestamp)
         url = "/recording/" + sessionId + "?searchTimestamp=" + timestamp;
     }
 
