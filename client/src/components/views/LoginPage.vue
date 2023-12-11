@@ -94,10 +94,10 @@
     import { useLoadingStore, useAuthStore, useSettingsStore } from "@/store/app";
 
 
-    const username = ref("super-admin");
-    const password = ref("admin");
-    // const username = ref("");
-    // const password = ref("");
+    // const username = ref("super-admin");
+    // const password = ref("admin");
+    const username = ref("");
+    const password = ref("");
     const loginError = ref(false);
 
     const passwordVisible = ref<boolean>(false);
