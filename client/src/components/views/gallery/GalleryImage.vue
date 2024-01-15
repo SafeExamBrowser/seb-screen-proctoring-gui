@@ -2,6 +2,7 @@
     <v-hover v-slot="{isHovering, props}">
         <!--todo: add max height  -->
         <v-img
+            eager
             v-if="screenshot"
             v-bind="props"
             class="img-styling"

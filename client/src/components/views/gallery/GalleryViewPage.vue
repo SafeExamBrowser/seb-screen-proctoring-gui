@@ -153,8 +153,10 @@
 
     function startIntervalImageUrl() {
         intervalImageUrl = setInterval(async () => {
+            //update image url
             timestamp.value = Date.now();
 
+            //update metadata
             if(appBarStore.galleryIsMetadataEnabled && group?.value?.screenshots != null){
                 for(let i = 0; i < group.value?.screenshots.length; i++){
                     const screenshot: ScreenshotData | null = await galleryViewService.getLatestScreenshotData(group.value.screenshots[i].uuid, timestamp.value);
