@@ -177,6 +177,7 @@
     import { useFullscreen } from "@vueuse/core";
     import * as liveService from "@/services/component-services/liveService";
     import { SortOrder } from "@/models/sortOrderEnum";
+    import { setPersonalUserAccount } from "@/services/component-services/userAccountViewService";
 
 
     //slider
@@ -241,6 +242,7 @@
 
     //metadata
     const isMetadataInfo = ref<boolean>(true);
+    const userAccount = ref<UserAccount | null>();
 
 
     //=============lifecycle and watchers==================
@@ -255,6 +257,8 @@
         }
 
         appBarStore.title = "Proctoring View of Session: " + currentScreenshot.value?.clientName;
+
+        userAccount.value = await setPersonalUserAccount()
     });
 
     onBeforeUnmount(() => {
@@ -590,7 +594,7 @@
     //=============metadata==================
     const screenshotMetadata = computed<object>(() => {
         if(currentScreenshot.value){
-            return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, currentScreenshot.value.metaData, additionalMetadataInfo.value, totalNumberOfScreenshots.value);
+            return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, currentScreenshot.value.metaData, additionalMetadataInfo.value, totalNumberOfScreenshots.value, userAccount.value?.timeZone);
         }
 
         return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, null, additionalMetadataInfo.value, totalNumberOfScreenshots.value);

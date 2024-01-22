@@ -6,8 +6,9 @@ export function calcDefaultItemsPerPage(itemList: any): number {
     }
 
     if (itemList.length < 5) return itemList.length;
-    if (itemList.length < 10) return 5;
-    if (itemList.length < 15) return 10;
+    //@nadim coz it is annoying to have like 8 entries but only see 5 of it per default. this only starts to matter after 20ish entries.
+    if (itemList.length < 10) return 10;
+    if (itemList.length < 15) return 15;
 
     return 15;
 }
