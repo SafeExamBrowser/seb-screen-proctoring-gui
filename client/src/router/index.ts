@@ -3,6 +3,7 @@ import ContainerLayout from "@/components/layout/ContainerLayout.vue"
 import LoginPage from "@/components/views/LoginPage.vue"
 import RegisterPage from "@/components/views/RegisterPage.vue"
 import StartPage from "@/components/views/StartPage.vue"
+import ExamplePage from "@/components/views/ExamplePage.vue"
 import SearchPage from "@/components/views/search/SearchPage.vue"
 import GalleryViewPage from "@/components/views/gallery/GalleryViewPage.vue"
 import ProctoringViewPage from "@/components/views/proctoring/ProctoringViewPage.vue"
@@ -24,6 +25,16 @@ const routes: Array<RouteRecordRaw> = [
       const settingsStore = useSettingsStore();
       await settingsStore.setIsSebServerIntegratedMode();
     }
+  },
+  {
+    path: "/example",
+    name: "ExamplePage",
+    component: ExamplePage,
+    // meta: {requiresAuth: false},
+    // beforeEnter: async () => {
+    //   const settingsStore = useSettingsStore();
+    //   await settingsStore.setIsSebServerIntegratedMode();
+    // }
   },
   {
     path: "/register",

@@ -22,7 +22,7 @@
         <template v-slot:item.startTime="{item}">
             <td>
                 <div>
-                    {{timeUtils.formatTimestmapToTime(item.startTime)}}
+                    {{timeUtils.formatTimestampToTime(item.startTime)}}
                 </div>
             </td>
         </template>

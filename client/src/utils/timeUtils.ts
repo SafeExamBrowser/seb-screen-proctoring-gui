@@ -16,7 +16,7 @@ export function formatTimestampToFullDate(timestamp: string): string{
   return day + "." + month + "." + year + " " + hours + ":" + minutes + ":" + seconds; 
 }
 
-export function formatTimestmapToDate(timestamp: number): string{
+export function formatTimestampToDate(timestamp: number): string{
   if(timestamp == 0){
     return "";
   }
@@ -30,7 +30,7 @@ export function formatTimestmapToDate(timestamp: number): string{
   return day + "." + month + "." + year; 
 }
 
-export function formatTimestmapToTime(timestamp: number): string{
+export function formatTimestampToTime(timestamp: number): string{
   if(timestamp == 0){
     return "";
   }
