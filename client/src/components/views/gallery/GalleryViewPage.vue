@@ -68,7 +68,7 @@
 
         loadingStore.skipLoading = true;
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
-        console.log(group.value)
+        // console.log(group.value)
 
         if(group.value){
             appBarStore.title = "Gallery View of Group: " + group.value.name;
@@ -96,6 +96,13 @@
         appBarStore.galleryCurrentPage = currentWindow.value;
         appBarStore.galleryCurrentPage+=1;
     });
+
+    watch(appBarStore, () => {
+        if (appBarStore.galleryCurrentPage > appBarStore.galleryMaxPages) {
+            currentWindow.value = 1
+            appBarStore.galleryCurrentPage = 1
+        }
+    }, {deep: true});
 
     function assignData() {
         calcAmountOfWindows();
