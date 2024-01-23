@@ -97,12 +97,11 @@
         appBarStore.galleryCurrentPage+=1;
     });
 
-    watch(appBarStore, () => {
+    watch(appBarStoreRef.galleryMaxPages, () => {
         if (appBarStore.galleryCurrentPage > appBarStore.galleryMaxPages) {
             currentWindow.value = 1
-            appBarStore.galleryCurrentPage = 1
         }
-    }, {deep: true});
+    });
 
     function assignData() {
         calcAmountOfWindows();
