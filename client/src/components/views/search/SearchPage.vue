@@ -30,11 +30,19 @@
                             <v-btn 
                                 variant="text"
                                 :ripple="false"
-                                :append-icon="openAllPanelsDisabled ? 'mdi-unfold-less-horizontal' : 'mdi-unfold-more-horizontal'"
-                                @click="toggleAllPanels()">
-                                {{ openAllPanelsDisabled ? 'Collapse all' : 'Expand all' }}
-                                <template v-slot:append>
-                                    <v-icon size="x-large"></v-icon>
+                                @click="closeAllPanels()">
+                                Collapse
+                                <template v-slot:prepend>
+                                    <v-icon size="x-large" icon="mdi-unfold-less-horizontal"></v-icon>
+                                </template>
+                            </v-btn>
+                            <v-btn 
+                                variant="text"
+                                :ripple="false"
+                                @click="openAllPanels()">
+                                Expand
+                                <template v-slot:prepend>
+                                    <v-icon size="x-large" icon="mdi-unfold-more-horizontal"></v-icon>
                                 </template>
                             </v-btn>
                         </v-col>
@@ -98,7 +106,6 @@
     const sessionPanels = ref<string[]>([]);
     const closeAllPanelsDisabled = ref<boolean>(true);
     const openAllPanelsDisabled = ref<boolean>(false);
-    const maxSessionPanels = ref<number>(0);
 
     const errorAvailable = ref<boolean>();
 
@@ -119,13 +126,6 @@
 
     onBeforeMount(async () => {
         appBarStore.title = "Search"
-    });
-
-    watch(sessionsGrouped, () => {
-        if(sessionSearchResults.value == null){
-            return;
-        }
-        maxSessionPanels.value = sessionsGrouped.value?.content.length
     });
 
     watch(sessionPanels, () => {
@@ -230,13 +230,4 @@
     function openAllPanels(){
         sessionPanels.value = sessionsGrouped.value?.content.map((item) => "sessionPanel" + item.day)!;
     }
-
-    function toggleAllPanels() {
-        if (sessionPanels.value.length !== maxSessionPanels.value) {
-            openAllPanels();
-            return;
-        }
-        closeAllPanels();
-    }
-
 </script>
