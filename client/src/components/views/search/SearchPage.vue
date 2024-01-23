@@ -29,22 +29,14 @@
                         <v-col align="right" class="mb-2">
                             <v-btn 
                                 variant="text"
+                                :ripple="false"
                                 :append-icon="openAllPanelsDisabled ? 'mdi-unfold-less-horizontal' : 'mdi-unfold-more-horizontal'"
                                 @click="toggleAllPanels()">
-                                {{ openAllPanelsDisabled ? 'Collapse All' : 'Expand All'}}
+                                {{ openAllPanelsDisabled ? 'Collapse all' : 'Expand all' }}
                                 <template v-slot:append>
                                     <v-icon size="x-large"></v-icon>
                                 </template>
                             </v-btn>
-                            <!-- <v-btn 
-                                rounded="sm" 
-                                color="primary" 
-                                variant="flat" 
-                                icon="mdi-arrow-expand-vertical"
-                                class="ml-2"
-                                :disabled=openAllPanelsDisabled
-                                @click="openAllPanels()">
-                            </v-btn> -->
                         </v-col>
                     </v-row>
                     <!----------------------------------->
@@ -106,6 +98,7 @@
     const sessionPanels = ref<string[]>([]);
     const closeAllPanelsDisabled = ref<boolean>(true);
     const openAllPanelsDisabled = ref<boolean>(false);
+    const maxSessionPanels = ref<number>(0);
 
     const errorAvailable = ref<boolean>();
 
@@ -126,6 +119,13 @@
 
     onBeforeMount(async () => {
         appBarStore.title = "Search"
+    });
+
+    watch(sessionsGrouped, () => {
+        if(sessionSearchResults.value == null){
+            return;
+        }
+        maxSessionPanels.value = sessionsGrouped.value?.content.length
     });
 
     watch(sessionPanels, () => {
@@ -232,7 +232,7 @@
     }
 
     function toggleAllPanels() {
-        if(sessionPanels.value.length == 0){
+        if (sessionPanels.value.length !== maxSessionPanels.value) {
             openAllPanels();
             return;
         }

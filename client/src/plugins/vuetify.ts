@@ -16,7 +16,7 @@ export default createVuetify({
       },
       dark: {
         colors: { 
-          primary: "black",
+          primary: "#ffff00",
         }
       },
       tableTheme: {
