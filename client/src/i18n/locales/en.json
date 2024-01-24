@@ -4,5 +4,11 @@
         "current-user": "sebserver-admin",
         "sign-in": "Sign in",
         "sign-out": "Sign out"
+    },
+    "changePasswordDialog": {
+        "title": "Change password",
+        "currentPassword": "Current password *",
+        "newPassword": "New password *",
+        "confirmPassword": "Confirm password *"
     }
 }

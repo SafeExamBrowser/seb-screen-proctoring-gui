@@ -10,7 +10,7 @@
         </AlertMsg>
 
         <div class="title-container text-h6">
-            Change Password
+            {{ $t("changePasswordDialog.title") }}
         </div>
         <v-form @keyup.enter="updateAccount()">
 
@@ -20,7 +20,7 @@
                 :type="currentPasswordVisible ? 'text' : 'password'"
                 prepend-inner-icon="mdi-lock-outline"
                 density="compact"
-                placeholder="Current password *"
+                :placeholder="$t('changePasswordDialog.currentPassword')"
                 variant="outlined"
                 v-model="currentPassword">
 
@@ -41,7 +41,7 @@
                 :type="newPasswordVisible ? 'text' : 'password'"
                 prepend-inner-icon="mdi-lock-outline"
                 density="compact"
-                placeholder="New password *"
+                :placeholder="$t('changePasswordDialog.newPassword')"
                 variant="outlined"
                 v-model="newPassword">
 
@@ -61,7 +61,7 @@
                 :type="confirmNewPasswordVisible ? 'text' : 'password'"
                 prepend-inner-icon="mdi-lock-outline"
                 density="compact"
-                placeholder="Confirm new password *"
+                :placeholder="$t('changePasswordDialog.confirmPassword')"
                 variant="outlined"
                 v-model="confirmNewPassword">
 
