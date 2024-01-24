@@ -101,7 +101,10 @@
                         <v-divider></v-divider>
 
                         <v-list-item>
-                            <v-switch :label="themeSwitchLabel" v-model="useLigtTheme" color="primary" hide-details></v-switch>
+                            <v-btn-toggle v-model="themeToggle" variant="text" mandatory>
+                                <v-btn icon="mdi-white-balance-sunny"></v-btn>
+                                <v-btn icon="mdi-weather-night"></v-btn>
+                            </v-btn-toggle>
                         </v-list-item>
 
                         <v-divider></v-divider>
@@ -128,7 +131,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, watch } from "vue"
+    import { ref, watchEffect } from "vue"
     import { useAppBarStore, useAuthStore, useUserAccountStore } from "@/store/app";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
@@ -147,9 +150,8 @@
     const userAccountStore = useUserAccountStore();
 
     //theme
-    const themeSwitchLabel = ref<string>("Dark");
-    const useLigtTheme = ref<boolean>(true);
     const theme = useTheme();
+    const themeToggle = ref(0)
 
     //gallery view
     const gridSizes: GridSize[] = [
@@ -160,9 +162,9 @@
         // {title: "6x6", value: 6},
     ];
 
-    watch(useLigtTheme, () => {
-        theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
-        themeSwitchLabel.value = theme.global.current.value.dark ? "Light" : "Dark";
+    watchEffect(() => {
+        const lightMode = themeToggle.value !== 1
+        theme.global.name.value = lightMode ? "light" : "dark";
     });
 
     function changeGridSize(gridSize: GridSize){
@@ -196,5 +198,4 @@
         margin-top: 20px;
         margin-right: 10px;
     }
-
 </style>
