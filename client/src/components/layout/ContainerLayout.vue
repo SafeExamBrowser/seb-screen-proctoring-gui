@@ -91,11 +91,11 @@
 
                     <v-list>
                         <v-list-item class="d-flex">
-                            <v-list-item-title>Logged in as: {{ userAccountStore.userAccount?.name }}</v-list-item-title>
+                            <v-list-item-title>{{ $t('navigation.loggedInAs') }}: {{ userAccountStore.userAccount?.name }}</v-list-item-title>
                         </v-list-item>
 
                         <v-list-item class="d-flex" to="/account">
-                            <v-list-item-title>Account</v-list-item-title>
+                            <v-list-item-title>{{ $t('navigation.accountSettings') }}</v-list-item-title>
                         </v-list-item>
 
                         <v-divider></v-divider>
@@ -113,14 +113,10 @@
                             </v-btn-toggle>
                         </v-list-item>
 
-                        <v-locale-provider locale="de">
-                            {{ $t("navigation.sign-out") }}
-                        </v-locale-provider>
-
                         <v-divider></v-divider>
 
                         <v-list-item class="text-decoration-underline text-blue mx-auto" @click="authStore.logout()">
-                            <v-list-item-title class="mx-auto">{{ $t("navigation.sign-out") }}</v-list-item-title>
+                            <v-list-item-title class="mx-auto">{{ $t("navigation.signOut") }}</v-list-item-title>
                         </v-list-item>
 
                     </v-list>
@@ -145,12 +141,12 @@
     import { useAppBarStore, useAuthStore, useUserAccountStore } from "@/store/app";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
-    import { useTheme, useLocale } from "vuetify";
+    import { useTheme } from "vuetify";
+    import { useI18n } from 'vue-i18n'
+    const { locale } = useI18n()
 
-    const test = useLocale()
-
-    function changeLocale (locale: string) {
-        console.log(test)
+    function changeLocale (newLocale: string) {
+        locale.value = newLocale
     }
 
     //navigation
