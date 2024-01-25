@@ -91,11 +91,11 @@
 
                     <v-list>
                         <v-list-item class="d-flex">
-                            <v-list-item-title>Logged in as: {{ userAccountStore.userAccount?.name }}</v-list-item-title>
+                            <v-list-item-title>{{ $t('navigation.loggedInAs') }}: {{ userAccountStore.userAccount?.name }}</v-list-item-title>
                         </v-list-item>
 
                         <v-list-item class="d-flex" to="/account">
-                            <v-list-item-title>Account</v-list-item-title>
+                            <v-list-item-title>{{ $t('navigation.accountSettings') }}</v-list-item-title>
                         </v-list-item>
 
                         <v-divider></v-divider>
@@ -109,8 +109,17 @@
 
                         <v-divider></v-divider>
 
-                        <v-list-item class="d-flex text-decoration-underline text-blue" @click="authStore.logout()">
-                            <v-list-item-title>{{ $t("navigation.sign-out") }}</v-list-item-title>
+                        <v-list-item >
+                            <v-btn-toggle v-model="languageToggle" variant="text" rounded="0" mandatory>
+                                    <v-btn @click="changeLocale('en')">EN</v-btn>
+                                    <v-btn @click="changeLocale('de')">DE</v-btn>
+                            </v-btn-toggle>
+                        </v-list-item>
+
+                        <v-divider></v-divider>
+
+                        <v-list-item class="text-decoration-underline text-blue mx-auto" @click="authStore.logout()">
+                            <v-list-item-title class="mx-auto">{{ $t("navigation.signOut") }}</v-list-item-title>
                         </v-list-item>
 
                     </v-list>
@@ -131,11 +140,17 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, watchEffect } from "vue"
+    import { ref, watch, watchEffect, onMounted } from "vue"
     import { useAppBarStore, useAuthStore, useUserAccountStore } from "@/store/app";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
     import { useTheme } from "vuetify";
+    import { useI18n } from 'vue-i18n'
+    const { locale } = useI18n()
+
+    function changeLocale (newLocale: string) {
+        locale.value = newLocale
+    }
 
     //navigation
     const drawer = ref();
@@ -153,6 +168,10 @@
     const theme = useTheme();
     const themeToggle = ref(0)
 
+    //language
+    const languageToggle = ref<number>(0);
+    const language = ref<string>("EN");
+
     //gallery view
     const gridSizes: GridSize[] = [
         {title: "2x2", value: 2},
@@ -165,6 +184,8 @@
     watchEffect(() => {
         const lightMode = themeToggle.value !== 1
         theme.global.name.value = lightMode ? "light" : "dark";
+        const english = languageToggle.value !== 1
+        language.value = english ? "EN" : "DE";
     });
 
     function changeGridSize(gridSize: GridSize){

@@ -1,0 +1,16 @@
+{
+    "navigation": {
+        "title": "SEB Screen Proctoring",
+        "currentUser": "sebserver-admin",
+        "signIn": "Anmelden",
+        "signOut": "Abmelden",
+        "accountSettings": "Profil ändern",
+        "loggedInAs": "Angmeldet als"
+    },
+    "changePasswordDialog": {
+        "title": "Passwort ändern",
+        "currentPassword": "Aktuelles Passwort *",
+        "newPassword": "Neues Passwort *",
+        "confirmPassword": "Passwort bestätigen *"
+    }
+}
