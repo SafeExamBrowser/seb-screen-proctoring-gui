@@ -148,11 +148,6 @@
     import { useRoute } from "vue-router";
     import { useTheme } from "vuetify";
     import { useI18n } from 'vue-i18n'
-    const { locale } = useI18n()
-
-    function changeLocale (newLocale: string) {
-        locale.value = newLocale
-    }
 
     //navigation
     const drawer = ref();
@@ -183,6 +178,10 @@
         // {title: "6x6", value: 6},
     ];
 
+    // i18n
+    const { locale } = useI18n()
+
+    //watchers
     watch(themeToggle, () => {
         theme.global.name.value = themeToggle.value !== 1 ? "light" : "dark";
     });
@@ -191,12 +190,17 @@
         language.value = languageToggle.value !== 1 ? "EN" : "DE";
     });
 
+    //methods
     function changeGridSize(gridSize: GridSize){
         appBarStore.galleryGridSize = gridSize;
     }
 
     async function userMenuOpened(){
         await userAccountViewService.setPersonalUserAccount();
+    }
+
+    function changeLocale (newLocale: string) {
+        locale.value = newLocale
     }
 
 </script>  
