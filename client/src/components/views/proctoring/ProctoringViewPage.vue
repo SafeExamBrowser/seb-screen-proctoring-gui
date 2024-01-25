@@ -99,7 +99,7 @@
             placeholder
         </v-col> -->
 
-        <v-col cols="3" v-if="isMetadataInfo">
+        <v-col cols="4" v-if="isMetadataInfo">
             <v-card
                 class="mx-auto"
                 :ripple="false"
@@ -113,7 +113,7 @@
                     <v-table density="comfortable" class="text-caption">
                         <thead>
                             <tr>
-                                <th class="text-left">SEB Session Info</th>
+                                <th class="text-left text-no-wrap">SEB Session Info</th>
                                 <th class="text-left"></th>
                             </tr>
                         </thead>
@@ -125,7 +125,7 @@
                         </tbody>
                         <thead>
                             <tr>
-                                <th class="text-left">Screenshot Metadata</th>
+                                <th class="text-left text-no-wrap">Screenshot Metadata</th>
                                 <th class="text-left"></th>
                             </tr>
                         </thead>
@@ -140,13 +140,15 @@
             </v-card>
         </v-col>
         <v-col v-else cols="1" align="center">
-            <v-btn
-                @click="hideShowMetadataInfo()"
-                variant="text"
-                size="x-large"
-                density="default"
-                icon="mdi-information">
-            </v-btn>
+            <v-card>
+                <v-btn
+                    @click="hideShowMetadataInfo()"
+                    variant="text"
+                    size="x-large"
+                    density="default"
+                    icon="mdi-information">
+                </v-btn>
+            </v-card>
         </v-col>
         <!-------------------------->
 
