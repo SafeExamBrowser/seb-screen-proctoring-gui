@@ -27,7 +27,9 @@
                         </v-col>
 
                         <v-col align="right" class="mb-2">
-                            <v-btn 
+                            <v-btn
+                            class="mr-2"
+                                :color="closeAllPanelsDisabled ? 'grey' : 'black'"
                                 variant="text"
                                 :ripple="false"
                                 @click="closeAllPanels()">
@@ -37,6 +39,7 @@
                                 </template>
                             </v-btn>
                             <v-btn 
+                                :color="openAllPanelsDisabled ? 'grey' : 'black'"
                                 variant="text"
                                 :ripple="false"
                                 @click="openAllPanels()">
@@ -95,6 +98,7 @@
     import SearchForm from "./SearchForm.vue";
     import SearchSessionTable from "./SearchSessionTable.vue";
     import * as groupingUtils from "@/utils/groupingUtils";
+import { computed } from "vue";
 
     //reactive variables
     const searchResultAvailable = ref<boolean>(false);
