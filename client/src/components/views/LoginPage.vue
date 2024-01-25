@@ -61,7 +61,7 @@
                             rounded="sm" 
                             color="primary"
                             @click="signIn()">
-                            {{ $t("navigation.sign-in") }}
+                            {{ $t("navigation.signIn") }}
                         </v-btn>
 
                     </v-form>
