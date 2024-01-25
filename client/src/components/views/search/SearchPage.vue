@@ -98,7 +98,6 @@
     import SearchForm from "./SearchForm.vue";
     import SearchSessionTable from "./SearchSessionTable.vue";
     import * as groupingUtils from "@/utils/groupingUtils";
-import { computed } from "vue";
 
     //reactive variables
     const searchResultAvailable = ref<boolean>(false);
