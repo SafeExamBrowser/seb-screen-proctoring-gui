@@ -100,53 +100,57 @@
         </v-col> -->
 
         <v-col cols="3" v-if="isMetadataInfo">
-            <v-card
-                class="mx-auto"
-                :ripple="false"
-                prepend-icon="mdi-information"
-                @click="hideShowMetadataInfo()"
-            >
-                <template v-slot:title>
-                Details
-                </template>
+            <v-card color="#e2ecf7" elevation="4" class="rounded-lg">
+            <!-- <v-card elevation="4" class="rounded-lg"> -->
                 <v-card-text>
-                    <v-table density="comfortable" class="text-caption">
-                        <thead>
-                            <tr>
-                                <th class="text-left">SEB Session Info</th>
-                                <th class="text-left"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(value, key) in sessionInfodata" :key="key" >
-                            <td>{{ key }}</td>
-                            <td align="right">{{ value }}</td>
-                            </tr>
-                        </tbody>
-                        <thead>
-                            <tr>
-                                <th class="text-left">Screenshot Metadata</th>
-                                <th class="text-left"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(value, key) in screenshotMetadata" :key="key" >
-                            <td>{{ key }}</td>
-                            <td align="right">{{ value }}</td>
-                            </tr>
-                        </tbody>
-                    </v-table>
+                    <v-row>
+                        <v-col cols="9">
+                            <div class="text-h6">
+                                SEB Session Info
+                            </div>
+                        </v-col>
+                        <v-col cols="3" align="right">
+                            <v-btn @click="hideShowMetadataInfo()" size="small" icon="mdi-arrow-expand-right"></v-btn>
+                        </v-col>
+                    </v-row>
+                    <v-row v-for="(value, key) in sessionInfodata" :key="key">
+                        <v-col>
+                            <!-- <v-chip variant="flat" color="primary"> -->
+                                {{key}}
+                            <!-- </v-chip> -->
+                        </v-col>
+                        <v-col>
+                            <!-- <v-chip variant="flat" color="secondary"> -->
+                                {{value}}
+                            <!-- </v-chip> -->
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+
+                <v-card-title>ScreenshotData Metadata</v-card-title>
+                <v-card-text>
+                    <v-row v-for="(value, key) in screenshotMetadata" :key="key">
+                        <v-col>
+                            <!-- <v-chip variant="flat" color="primary"> -->
+                                {{key}}
+                            <!-- </v-chip> -->
+                        </v-col>
+                        <v-col>
+                            <!-- <v-chip variant="flat" color="secondary"> -->
+                                {{value}}
+                            <!-- </v-chip> -->
+                        </v-col>
+                    </v-row>
                 </v-card-text>
             </v-card>
         </v-col>
+
         <v-col v-else cols="1" align="center">
-            <v-btn
-                @click="hideShowMetadataInfo()"
-                variant="text"
-                size="x-large"
-                density="default"
-                icon="mdi-information">
-            </v-btn>
+            <v-card color="#e2ecf7">
+                <v-card-title>
+                    <v-btn @click="hideShowMetadataInfo()" size="small" icon="mdi-arrow-expand-left"></v-btn>
+                </v-card-title>
+            </v-card>
         </v-col>
         <!-------------------------->
 

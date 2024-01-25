@@ -101,7 +101,7 @@
                         <v-divider></v-divider>
 
                         <v-list-item>
-                            <v-switch :label="themeSwitchLabel" v-model="useLigtTheme" color="primary" hide-details></v-switch>
+                            <v-switch :label="themeSwitchLabel" v-model="useLightTheme" color="primary" hide-details></v-switch>
                         </v-list-item>
 
                         <v-divider></v-divider>
@@ -148,7 +148,7 @@
 
     //theme
     const themeSwitchLabel = ref<string>("Dark");
-    const useLigtTheme = ref<boolean>(true);
+    const useLightTheme = ref<boolean>(true);
     const theme = useTheme();
 
     //gallery view
@@ -160,7 +160,7 @@
         // {title: "6x6", value: 6},
     ];
 
-    watch(useLigtTheme, () => {
+    watch(useLightTheme, () => {
         theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
         themeSwitchLabel.value = theme.global.current.value.dark ? "Light" : "Dark";
     });
