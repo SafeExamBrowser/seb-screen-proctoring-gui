@@ -142,7 +142,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, watch, watchEffect, onMounted } from "vue"
+    import { ref, watch } from "vue"
     import { useAppBarStore, useAuthStore, useUserAccountStore } from "@/store/app";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
@@ -168,7 +168,7 @@
 
     //theme
     const theme = useTheme();
-    const themeToggle = ref(0)
+    const themeToggle = ref<number>(0);
 
     //language
     const languageToggle = ref<number>(0);
@@ -183,11 +183,12 @@
         // {title: "6x6", value: 6},
     ];
 
-    watchEffect(() => {
-        const lightMode = themeToggle.value !== 1
-        theme.global.name.value = lightMode ? "light" : "dark";
-        const english = languageToggle.value !== 1
-        language.value = english ? "EN" : "DE";
+    watch(themeToggle, () => {
+        theme.global.name.value = themeToggle.value !== 1 ? "light" : "dark";
+    });
+
+    watch(languageToggle, () => {
+        language.value = languageToggle.value !== 1 ? "EN" : "DE";
     });
 
     function changeGridSize(gridSize: GridSize){
