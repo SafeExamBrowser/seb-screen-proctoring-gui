@@ -68,7 +68,7 @@
 
         loadingStore.skipLoading = true;
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
-        console.log(group.value)
+        // console.log(group.value)
 
         if(group.value){
             appBarStore.title = "Gallery View of Group: " + group.value.name;
@@ -95,6 +95,12 @@
     watch(currentWindow, () => {
         appBarStore.galleryCurrentPage = currentWindow.value;
         appBarStore.galleryCurrentPage+=1;
+    });
+
+    watch(appBarStoreRef.galleryMaxPages, () => {
+        if (appBarStore.galleryCurrentPage > appBarStore.galleryMaxPages) {
+            currentWindow.value = 1
+        }
     });
 
     function assignData() {

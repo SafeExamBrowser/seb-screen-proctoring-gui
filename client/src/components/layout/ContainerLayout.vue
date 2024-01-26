@@ -4,8 +4,10 @@
         
         <!--page title with logo-->
         <v-sheet class="pa-4">
-            <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Logo ETH Zürich"></v-img>
-            <div class="app-title text-h6">{{ $t("navigation.title") }}</div>
+            <a href="/start" class="text-decoration-none text-black">
+                <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Logo ETH Zürich"></v-img>
+                <div class="app-title text-h6">{{ $t("navigation.title") }}</div>
+            </a>
         </v-sheet>
 
         <!--navigation items-->
@@ -91,23 +93,35 @@
 
                     <v-list>
                         <v-list-item class="d-flex">
-                            <v-list-item-title>Logged in as: {{ userAccountStore.userAccount?.name }}</v-list-item-title>
+                            <v-list-item-title>{{ $t('navigation.loggedInAs') }}: {{ userAccountStore.userAccount?.name }}</v-list-item-title>
                         </v-list-item>
 
                         <v-list-item class="d-flex" to="/account">
-                            <v-list-item-title>Account</v-list-item-title>
+                            <v-list-item-title>{{ $t('navigation.accountSettings') }}</v-list-item-title>
                         </v-list-item>
 
                         <v-divider></v-divider>
 
                         <v-list-item>
-                            <v-switch :label="themeSwitchLabel" v-model="useLigtTheme" color="primary" hide-details></v-switch>
+                            <v-btn-toggle v-model="themeToggle" variant="text" mandatory>
+                                <v-btn icon="mdi-white-balance-sunny"></v-btn>
+                                <v-btn icon="mdi-weather-night"></v-btn>
+                            </v-btn-toggle>
                         </v-list-item>
 
                         <v-divider></v-divider>
 
-                        <v-list-item class="d-flex text-decoration-underline text-blue" @click="authStore.logout()">
-                            <v-list-item-title>{{ $t("navigation.sign-out") }}</v-list-item-title>
+                        <v-list-item >
+                            <v-btn-toggle v-model="languageToggle" variant="text" rounded="0" mandatory>
+                                    <v-btn @click="changeLocale('en')">EN</v-btn>
+                                    <v-btn @click="changeLocale('de')">DE</v-btn>
+                            </v-btn-toggle>
+                        </v-list-item>
+
+                        <v-divider></v-divider>
+
+                        <v-list-item class="text-decoration-underline text-blue mx-auto" @click="authStore.logout()">
+                            <v-list-item-title class="mx-auto">{{ $t("navigation.signOut") }}</v-list-item-title>
                         </v-list-item>
 
                     </v-list>
@@ -133,6 +147,7 @@
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
     import { useTheme } from "vuetify";
+    import { useI18n } from 'vue-i18n'
 
     //navigation
     const drawer = ref();
@@ -147,9 +162,12 @@
     const userAccountStore = useUserAccountStore();
 
     //theme
-    const themeSwitchLabel = ref<string>("Dark");
-    const useLigtTheme = ref<boolean>(true);
     const theme = useTheme();
+    const themeToggle = ref<number>(0);
+
+    //language
+    const languageToggle = ref<number>(0);
+    const language = ref<string>("EN");
 
     //gallery view
     const gridSizes: GridSize[] = [
@@ -160,17 +178,29 @@
         // {title: "6x6", value: 6},
     ];
 
-    watch(useLigtTheme, () => {
-        theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
-        themeSwitchLabel.value = theme.global.current.value.dark ? "Light" : "Dark";
+    // i18n
+    const { locale } = useI18n()
+
+    //watchers
+    watch(themeToggle, () => {
+        theme.global.name.value = themeToggle.value !== 1 ? "light" : "dark";
     });
 
+    watch(languageToggle, () => {
+        language.value = languageToggle.value !== 1 ? "EN" : "DE";
+    });
+
+    //methods
     function changeGridSize(gridSize: GridSize){
         appBarStore.galleryGridSize = gridSize;
     }
 
     async function userMenuOpened(){
         await userAccountViewService.setPersonalUserAccount();
+    }
+
+    function changeLocale (newLocale: string) {
+        locale.value = newLocale
     }
 
 </script>  
@@ -196,5 +226,4 @@
         margin-top: 20px;
         margin-right: 10px;
     }
-
 </style>

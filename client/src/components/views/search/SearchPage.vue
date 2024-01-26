@@ -27,22 +27,26 @@
                         </v-col>
 
                         <v-col align="right" class="mb-2">
-                            <v-btn 
-                                rounded="sm" 
-                                color="black" 
-                                variant="outlined" 
-                                icon="mdi-arrow-collapse-vertical"
-                                :disabled=closeAllPanelsDisabled
+                            <v-btn
+                            class="mr-2"
+                                :color="closeAllPanelsDisabled ? 'grey' : 'black'"
+                                variant="text"
+                                :ripple="false"
                                 @click="closeAllPanels()">
+                                Collapse
+                                <template v-slot:prepend>
+                                    <v-icon size="x-large" icon="mdi-unfold-less-horizontal"></v-icon>
+                                </template>
                             </v-btn>
                             <v-btn 
-                                rounded="sm" 
-                                color="primary" 
-                                variant="flat" 
-                                icon="mdi-arrow-expand-vertical"
-                                class="ml-2"
-                                :disabled=openeAllPanelsDisabled
+                                :color="openAllPanelsDisabled ? 'grey' : 'black'"
+                                variant="text"
+                                :ripple="false"
                                 @click="openAllPanels()">
+                                Expand
+                                <template v-slot:prepend>
+                                    <v-icon size="x-large" icon="mdi-unfold-more-horizontal"></v-icon>
+                                </template>
                             </v-btn>
                         </v-col>
                     </v-row>
@@ -104,7 +108,7 @@
 
     const sessionPanels = ref<string[]>([]);
     const closeAllPanelsDisabled = ref<boolean>(true);
-    const openeAllPanelsDisabled = ref<boolean>(false);
+    const openAllPanelsDisabled = ref<boolean>(false);
 
     const errorAvailable = ref<boolean>();
 
@@ -130,18 +134,18 @@
     watch(sessionPanels, () => {
         if(sessionPanels.value.length == 0){
             closeAllPanelsDisabled.value = true;
-            openeAllPanelsDisabled.value = false;
+            openAllPanelsDisabled.value = false;
             return;
         }
 
         if(sessionPanels.value.length == sessionsGrouped.value?.content.length){
             closeAllPanelsDisabled.value = false;
-            openeAllPanelsDisabled.value = true;
+            openAllPanelsDisabled.value = true;
             return;
         }
 
         closeAllPanelsDisabled.value = false;
-        openeAllPanelsDisabled.value = false;
+        openAllPanelsDisabled.value = false;
     });
 
     async function searchSessions(
@@ -229,5 +233,4 @@
     function openAllPanels(){
         sessionPanels.value = sessionsGrouped.value?.content.map((item) => "sessionPanel" + item.day)!;
     }
-
 </script>

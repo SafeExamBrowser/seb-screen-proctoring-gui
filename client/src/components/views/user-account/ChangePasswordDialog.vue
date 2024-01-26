@@ -10,7 +10,7 @@
         </AlertMsg>
 
         <div class="title-container text-h6">
-            Change Password
+            {{ $t("changePasswordDialog.title") }}
         </div>
         <v-form @keyup.enter="updateAccount()">
 
@@ -20,9 +20,10 @@
                 :type="currentPasswordVisible ? 'text' : 'password'"
                 prepend-inner-icon="mdi-lock-outline"
                 density="compact"
-                placeholder="Current password *"
+                :placeholder="$t('changePasswordDialog.currentPassword')"
                 variant="outlined"
-                v-model="currentPassword">
+                v-model="currentPassword"
+                class="pb-2">
 
                 <template v-slot:append-inner>
                     <v-btn
@@ -41,9 +42,12 @@
                 :type="newPasswordVisible ? 'text' : 'password'"
                 prepend-inner-icon="mdi-lock-outline"
                 density="compact"
-                placeholder="New password *"
+                :placeholder="$t('changePasswordDialog.newPassword')"
                 variant="outlined"
-                v-model="newPassword">
+                v-model="newPassword"
+                :rules="[matchPasswordRule]"
+                class="pb-2"
+                >
 
                 <template v-slot:append-inner>
                     <v-btn
@@ -56,14 +60,17 @@
             </v-text-field>
 
             <!-------------confirm new password--------------->
+            <!--@vue-ignore-->
             <v-text-field
                 required
                 :type="confirmNewPasswordVisible ? 'text' : 'password'"
                 prepend-inner-icon="mdi-lock-outline"
                 density="compact"
-                placeholder="Confirm new password *"
+                :placeholder="$t('changePasswordDialog.confirmPassword')"
                 variant="outlined"
-                v-model="confirmNewPassword">
+                v-model="confirmNewPassword"
+                :rules="[matchPasswordRule]"
+            >
 
                 <template v-slot:append-inner>
                     <v-btn
@@ -103,7 +110,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref } from "vue";
+    import { ref, computed } from "vue";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
 
     const emit = defineEmits<{
@@ -128,40 +135,43 @@
     const confirmNewPasswordVisible = ref<boolean>(false);
 
     //change password logic
-    function clearForm(){
+    function clearForm() {
         currentPassword.value = "";
         newPassword.value = "";
         confirmNewPassword.value = "";
-
         closeAddDialog(null);
     }
 
     async function updateAccount() {
-        addError.value = false;
-        try {
-            const userAccount: UserAccount | null = await userAccountViewService.changePassword(props.uuid, currentPassword.value, newPassword.value, confirmNewPassword.value);
-
-            if (userAccount == null) {
-                addError.value = true;
-                return;
-            }
-
-            currentPassword.value = "";
-            newPassword.value = "";
-            confirmNewPassword.value = "";
-
-            closeAddDialog(userAccount)
-
-        } catch (error) {
+      addError.value = false;
+      try{
+          const userAccount: UserAccount | null = await userAccountViewService.changePassword(props.uuid, currentPassword.value, newPassword.value, confirmNewPassword.value);
+          
+          if(userAccount == null) {
             addError.value = true;
-        }
+            return;
+          }
+
+          currentPassword.value = "";
+          newPassword.value = "";
+          confirmNewPassword.value = "";
+          closeAddDialog(userAccount)
+
+      }catch(error){
+          addError.value = true;
+      }
     };
 
     function closeAddDialog(newUserAccount?: UserAccount | null){
         console.log("closeAddDialog emitting:", newUserAccount)
         emit("closeAddDialog", newUserAccount);
     }
-    
+
+    function matchPasswordRule(): string | boolean | undefined {
+        if (newPassword.value != "" && confirmNewPassword.value != "") {
+            return newPassword.value === confirmNewPassword.value || 'Passwords must match' || undefined
+        }
+    }
 </script>
 
 <style scoped>
@@ -171,7 +181,7 @@
     }
 
     .password-form-container{
-        padding: 20px;
+        padding: 30px;
     }
 
 </style>
