@@ -2,7 +2,7 @@ import * as timeUtils from "@/utils/timeUtils";
 
 //=============grouping==================
 export function groupSessionsByDay(sessionSearchResults: SearchSessions): SessionsGrouped{
-    var sessionsGrouped: SessionsGrouped = {
+    const sessionsGrouped: SessionsGrouped = {
         numberOfPages: sessionSearchResults.numberOfPages,
         pageNumber: sessionSearchResults.pageNumber,
         pageSize: sessionSearchResults.pageSize,
@@ -53,7 +53,7 @@ export function groupScreenshotsByMetadata(screenshotGroupList: ScreenshotGroup[
         return null;
     }
 
-    let groups: ScreenshotsGrouped[] = [];
+    const groups: ScreenshotsGrouped[] = [];
 
     let currentGroup: ScreenshotsGrouped = {
         groupName: screenshotGroupList[0].metaData.screenProctoringMetadataUserAction!, 

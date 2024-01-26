@@ -43,7 +43,7 @@
 
         <template v-slot:item.proctoringViewLink="{internalItem}">
             <v-btn 
-                @click="searchViewService.openProctoringView(timelineSearchResult.sessionUUID, internalItem.columns.timestamp)" 
+                @click="searchViewService.openProctoringView(timelineSearchResult!.sessionUUID, internalItem.columns.timestamp)" 
                 variant="text" 
                 icon="mdi-video">
             </v-btn>
@@ -81,7 +81,7 @@
 
                     <td>
                         <v-btn 
-                            @click="searchViewService.openProctoringView(timelineSearchResult.sessionUUID, screenshot.timelineScreenshotDataList[0].timestamp.toString())" 
+                            @click="searchViewService.openProctoringView(timelineSearchResult!.sessionUUID, screenshot.timelineScreenshotDataList[0].timestamp.toString())" 
                             variant="text" 
                             icon="mdi-video">
                         </v-btn>

@@ -1,4 +1,4 @@
-export function formatTimestampToFullDate(timestamp: string): string{
+export function formatTimestampToFullDate(timestamp: string | any): string{
   if(timestamp == "0"){
     return "";
   }

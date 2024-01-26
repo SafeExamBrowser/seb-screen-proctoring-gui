@@ -35,7 +35,7 @@ export function openProctoringView(sessionId: string, timestamp?: string){
 
     console.log(timestamp)
 
-    var url: string = "/recording/" + sessionId;
+    let url: string = "/recording/" + sessionId;
     
     if(timestamp){
         console.log(timestamp)

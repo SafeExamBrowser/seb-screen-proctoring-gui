@@ -100,7 +100,7 @@
         }
     }
 
-    function getStatusValue(terminationTime: string | null): Status{
+    function getStatusValue(terminationTime: string | null | any): Status{
         if(!terminationTime || terminationTime == null){
             return Status.active;
         }

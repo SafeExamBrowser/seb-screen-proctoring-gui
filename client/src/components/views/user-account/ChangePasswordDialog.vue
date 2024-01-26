@@ -161,7 +161,7 @@
       }catch(error){
           addError.value = true;
       }
-    };
+    }
 
     function closeAddDialog(newUserAccount?: UserAccount | null){
         console.log("closeAddDialog emitting:", newUserAccount)

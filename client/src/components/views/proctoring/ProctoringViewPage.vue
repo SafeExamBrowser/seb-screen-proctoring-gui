@@ -280,7 +280,7 @@
     });
 
     watch(liveTimestamp, async () => {
-        if(isLive && isLiveSelected.value){
+        if(isLive.value && isLiveSelected.value){
             setImageLink(Date.now().toString());
 
             //no await makes sense here
@@ -601,7 +601,7 @@
             const screenshotsGrouped: ScreenshotsGrouped[] | null = groupingUtils.groupScreenshotsByMetadata(timelineGroupData.timelineScreenshotDataList, false);
 
             if (screenshotsGrouped!= null){
-                for(var i = 0; i < screenshotsGrouped.length; i++){
+                for(let i = 0; i < screenshotsGrouped.length; i++){
                     const index: number = screenshotsGrouped[i].timelineScreenshotDataList.findIndex((group) => timeUtils.toTimeString(group.timestamp) == timeUtils.toTimeString(sliderTime.value!));
 
                     if(index !== -1){
