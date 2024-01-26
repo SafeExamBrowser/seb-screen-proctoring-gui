@@ -37,6 +37,7 @@
             <!----------------------------------->
 
             <!-------------new password--------------->
+            <!--@vue-ignore-->
             <v-text-field
                 required
                 :type="newPasswordVisible ? 'text' : 'password'"
