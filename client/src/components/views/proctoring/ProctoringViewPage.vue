@@ -7,6 +7,7 @@
                 elevation="4"
                 class="rounded-lg pt-4 pl-4 pr-4">
                 <v-img 
+                    eager
                     class="img-styling"
                     ref="videoPlayer"
                     :src="imageLink" 
@@ -101,13 +102,14 @@
 
         <v-col cols="4" v-if="isMetadataInfo">
             <v-card
-                class="mx-auto"
-                :ripple="false"
-                prepend-icon="mdi-information"
-                @click="hideShowMetadataInfo()"
-            >
+                class="mx-auto">
                 <template v-slot:title>
-                Details
+                    <v-btn
+                        @click="hideShowMetadataInfo()"
+                        variant="text"
+                        icon="mdi-information">
+                    </v-btn>
+                    Details
                 </template>
                 <v-card-text>
                     <v-table density="comfortable" class="text-caption">
@@ -118,11 +120,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(value, key) in sessionInfodata" :key="key" >
-                            <td>{{ key }}</td>
-                            <td align="right">{{ value }}</td>
+                            <tr v-for="(value, key) in sessionInfodata" :key="key">
+                                <td>{{ key }}</td>
+                                <td align="right">{{ value }}</td>
                             </tr>
                         </tbody>
+
                         <thead>
                             <tr>
                                 <th class="text-left text-no-wrap">Screenshot Metadata</th>
@@ -130,9 +133,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(value, key) in screenshotMetadata" :key="key" >
-                            <td>{{ key }}</td>
-                            <td align="right">{{ value }}</td>
+                            <tr v-for="(value, key) in screenshotMetadata" :key="key">
+                                <td>{{ key }}</td>
+                                <td align="right">{{ value }}</td>
                             </tr>
                         </tbody>
                     </v-table>
@@ -346,10 +349,6 @@
     async function assignScreenshotData(){
         const screenshotDataResponse: ScreenshotData | null = await proctoringViewService.getScreenshotDataBySessionId(sessionId);
         if(screenshotDataResponse) currentScreenshot.value = screenshotDataResponse;
-
-        console.log("1:")
-        console.log(screenshotDataResponse)
-        console.log("====")
     }
 
 
@@ -358,10 +357,6 @@
 
         const screenshotDataResponse: ScreenshotData | null = await proctoringViewService.getScreenshotDataByTimestamp(sessionId, timestamp);
         if(screenshotDataResponse) currentScreenshot.value = screenshotDataResponse;
-
-        console.log("2:")
-        console.log(screenshotDataResponse)
-        console.log("====")
     }
 
     function setSliderMin(timestamp: number){
@@ -417,8 +412,7 @@
     function startIntervalLiveImage(){
         intervalLiveImage = setInterval(() => {
             liveTimestamp.value = Date.now();
-
-            // console.log(sliderTime.value)
+            
         }, LIVE_INTERVAL);
     } 
 

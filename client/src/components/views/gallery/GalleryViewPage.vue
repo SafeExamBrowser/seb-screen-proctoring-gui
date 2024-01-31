@@ -68,7 +68,6 @@
 
         loadingStore.skipLoading = true;
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
-        // console.log(group.value)
 
         if(group.value){
             appBarStore.title = "Gallery View of Group: " + group.value.name;
@@ -99,7 +98,7 @@
 
     watch(appBarStoreRef.galleryMaxPages, () => {
         if (appBarStore.galleryCurrentPage > appBarStore.galleryMaxPages) {
-            currentWindow.value = 1
+            currentWindow.value = 1;
         }
     });
 
@@ -112,7 +111,6 @@
             return;
         }
 
-        // screenshots.value = groupUuidResponse.screenshots.slice(0, -4);
         group.value.screenshots = group.value?.screenshots.flatMap(f => f ? [f] : []);
         appBarStore.gallerNumberOfSessions = group.value.numberOfSessions;
         appBarStore.galleryMaxPages = maxPages.value;

@@ -1,5 +1,4 @@
 <template>
-
     <v-row>
         <v-col>
             <v-sheet 
@@ -88,7 +87,6 @@
             textKey: 'api-error'
         }">
     </AlertMsg>
-
 </template>
 
 <script setup lang="ts">

@@ -192,15 +192,4 @@
     function closeAddDialog(newUserAccount?: UserAccount){
         emit("closeAddDialog", newUserAccount);
     }
-
-    //todo: extract this function into a global file
-    function handleTabKeyEvent(event: any, action: string){
-        if (event.key == 'Enter' || event.key == ' ') {
-
-            if(action == "navigate"){
-                navigateTo("/");
-            }
-        }
-    }
-
 </script>

@@ -22,22 +22,22 @@ export function createApiInterceptor(){
     const loadingStore = useLoadingStore();
     let loadingTimeout: NodeJS.Timeout | null = null;
 
-    api.interceptors.request.use(
-        (config) => {
+    // api.interceptors.request.use(
+    //     (config) => {
 
-            //exclude calls
-            // console.log(config)
-            // console.log("url: " + config.url)
+    //         //exclude calls
+    //         // console.log(config)
+    //         // console.log("url: " + config.url)
 
-            if(!loadingStore.skipLoading){
-                loadingTimeout = setTimeout(() => {
-                    // loadingStore.isLoading = true;
-                }, 1000);
-            }
+    //         // if(!loadingStore.skipLoading){
+    //         //     loadingTimeout = setTimeout(() => {
+    //         //         // loadingStore.isLoading = true;
+    //         //     }, 1000);
+    //         // }
 
-            return config;
-        }
-    )
+    //         return config;
+    //     }
+    // )
 
 
     api.interceptors.response.use(response => {
