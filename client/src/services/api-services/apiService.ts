@@ -22,22 +22,27 @@ export function createApiInterceptor(){
     const loadingStore = useLoadingStore();
     let loadingTimeout: NodeJS.Timeout | null = null;
 
-    // api.interceptors.request.use(
-    //     (config) => {
+    api.interceptors.request.use(
+        async (config) => {
+            // exclude calls
+            console.log(config)
+            console.log("url: " + config.url)
+            if(config.url?.startsWith('/group') || config.url?.startsWith('/screenshot') || config.url?.startsWith('/search/timeline')){
+                return config;
+            }
 
-    //         //exclude calls
-    //         // console.log(config)
-    //         // console.log("url: " + config.url)
+            // set loading spinner only after 500ms and if not explicitly skipped in component
+            if(!loadingStore.skipLoading){
+                loadingTimeout = setTimeout(() => {
+                    loadingStore.isLoading = true;
+                }, 200);
+            }
 
-    //         // if(!loadingStore.skipLoading){
-    //         //     loadingTimeout = setTimeout(() => {
-    //         //         // loadingStore.isLoading = true;
-    //         //     }, 1000);
-    //         // }
-
-    //         return config;
-    //     }
-    // )
+            // fake delay
+            await new Promise(r => setTimeout(r, 1000));
+            return config;
+        }
+    )
 
 
     api.interceptors.response.use(response => {
