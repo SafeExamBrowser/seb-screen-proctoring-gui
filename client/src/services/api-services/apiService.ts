@@ -24,28 +24,26 @@ export function createApiInterceptor(){
 
     api.interceptors.request.use(
         async (config) => {
-            // exclude calls
-            console.log(config)
-            console.log("url: " + config.url)
-            if(config.url?.startsWith('/group') || config.url?.startsWith('/screenshot') || config.url?.startsWith('/search/timeline')){
-                return config;
-            }
-
-            // set loading spinner only after 500ms and if not explicitly skipped in component
             if(!loadingStore.skipLoading){
                 loadingTimeout = setTimeout(() => {
                     loadingStore.isLoading = true;
                 }, 200);
             }
 
-            // fake delay
-            await new Promise(r => setTimeout(r, 1000));
+            console.log("url: " + config.url)
+            if(config.url?.startsWith('/screenshot') || config.url?.startsWith('/search/timeline')){
+                if (loadingTimeout) clearTimeout(loadingTimeout); 
+                return config;
+            }
+
             return config;
         }
     )
 
 
-    api.interceptors.response.use(response => {
+    api.interceptors.response.use(async response => {
+        console.log("response")
+        // await new Promise(r => setTimeout(r, 600));
         if (loadingTimeout) clearTimeout(loadingTimeout); 
         loadingStore.isLoading = false;
         loadingStore.skipLoading = false;
@@ -53,6 +51,8 @@ export function createApiInterceptor(){
         return response;
 
     }, async error => {
+        console.log("error")
+        // await new Promise(r => setTimeout(r, 1000));
         if (loadingTimeout) clearTimeout(loadingTimeout); 
         loadingStore.isLoading = false;
         loadingStore.skipLoading = false;
