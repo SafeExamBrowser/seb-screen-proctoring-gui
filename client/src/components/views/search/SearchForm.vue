@@ -8,7 +8,7 @@
             <!------------Exam Name------------->
             <v-row align="center">
                 <v-col cols="4">
-                    Exam Name:
+                    {{ $t('searchForm.examName') }}:
                 </v-col>
                 <v-col cols="8">
                     <v-text-field
@@ -25,7 +25,7 @@
             <!------------Group Name------------->
             <v-row align="center">
                 <v-col cols="4">
-                    Group Name:
+                    {{ $t('searchForm.groupName') }}:
                 </v-col>
                 <v-col cols="8">
                     <v-text-field
@@ -44,13 +44,13 @@
                 <v-col>
                     <v-expansion-panels>
                         <v-expansion-panel
-                            title="Login- / Machinename">
+                            :title="$t('searchForm.loginMachineTitle')">
                             <v-expansion-panel-text>
 
                                 <!------------Login Name------------->
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        Login Name:
+                                        {{ $t('searchForm.loginName') }}:
                                     </v-col>
                                     <v-col cols="8">
                                         <v-text-field
@@ -67,7 +67,7 @@
                                 <!------------Machine Name------------->
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        Machine Name:
+                                    {{ $t('searchForm.machineName') }}:
                                     </v-col>
                                     <v-col cols="8">
                                         <v-text-field
@@ -93,13 +93,13 @@
                 <v-col>
                     <v-expansion-panels>
                         <v-expansion-panel
-                            title="Metadata">
+                        :title="$t('searchForm.metadataTitle')">
                             <v-expansion-panel-text>
 
                                 <!------------Metatdata: Url------------->
                                 <v-row align="center">
                                     <v-col cols="4" class="text-decoration-line-through">
-                                        Url:
+                                        {{ $t('searchForm.url') }}:
                                     </v-col>
                                     <v-col cols="8">
                                         <v-text-field
@@ -117,7 +117,7 @@
                                 <!------------Metatdata: Window Title------------->
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        Application / Website:
+                                        {{ $t('searchForm.applicationWebsite') }}:
                                     </v-col>
                                     <v-col cols="8">
                                         <v-text-field
@@ -134,7 +134,7 @@
                                 <!------------Metatdata: User Action------------->
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        Activity Details:
+                                        {{ $t('searchForm.activityDetails') }}:
                                     </v-col>
                                     <v-col cols="8">
                                         <v-text-field
@@ -158,13 +158,13 @@
             <!------------Time Period------------->
             <v-row align="center">
                     <v-col cols="4">
-                        Period:
+                        {{ $t('searchForm.period') }}:
                     </v-col>
                     <v-col cols="1">
                         <v-radio v-model="timePeriodRadio" @click="radioButtonEvent('period')"></v-radio>
                     </v-col>
                     <v-col cols="1">
-                        Last
+                        {{ $t('searchForm.last') }}
                     </v-col>
                     <v-col cols="2">
                         <v-text-field
@@ -182,7 +182,12 @@
                             hide-details
                             variant="outlined"
                             v-model="timePeriodSelect"
-                            :items="timePeriodSelectValues"
+                            :items="[
+                                {title: $t('timePeriod.day'), value: 1},
+                                {title: $t('timePeriod.week'), value: 2},
+                                {title: $t('timePeriod.month'), value: 3},
+                                {title: $t('timePeriod.year'), value: 4}
+                            ]"   
                             :disabled="!timePeriodRadio">
                         </v-select>
                     </v-col>
@@ -193,7 +198,7 @@
                 <!------------Time Selection------------->
                 <v-row align="center">
                     <v-col cols="4">
-                        Between:
+                        {{ $t('searchForm.between') }}:
                     </v-col>
                     <v-col cols="1">
                         <v-radio v-model="timeSelectionRadio" @click="radioButtonEvent('selection')">
@@ -219,7 +224,7 @@
                         color="black" 
                         variant="outlined"
                         @click="clearForm()">
-                        Cancel
+                        {{ $t('searchForm.cancel') }}
                     </v-btn>
 
                     <v-btn 
@@ -228,7 +233,7 @@
                         variant="flat" 
                         class="ml-2"
                         @click="searchSessions()">
-                        Search
+                        {{ $t('searchForm.search') }}
                     </v-btn>
 
                 </v-col>
@@ -241,7 +246,6 @@
     import { ref, onBeforeMount } from "vue";
     import VueDatePicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css'
-    import { TimePeriod } from "@/models/timePeriodEnum";
     import * as timePeriodUtils from "@/utils/timePeriodUtils";
 
     //emits (parent functions)
@@ -275,12 +279,6 @@
     const timePeriodField = ref<number>(5);
     const timePeriodRadio = ref<boolean>(false);
     const timePeriodSelect = ref<number>(1);
-    const timePeriodSelectValues: {title: string, value: number}[] = [
-        {title: TimePeriod.day, value: 1},
-        {title: TimePeriod.week, value: 2},
-        {title: TimePeriod.month, value: 3},
-        {title: TimePeriod.year, value: 4},
-    ];
 
     const timeSelectionRadio = ref<boolean>(true);
     const timeSelectionPicker = ref(null);
