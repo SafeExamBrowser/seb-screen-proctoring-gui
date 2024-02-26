@@ -30,7 +30,6 @@ export function createApiInterceptor(){
                 }, 200);
             }
 
-            console.log("url: " + config.url)
             if(config.url?.startsWith('/screenshot') || config.url?.startsWith('/search/timeline')){
                 if (loadingTimeout) clearTimeout(loadingTimeout); 
                 return config;
