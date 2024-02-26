@@ -41,7 +41,6 @@ export function createApiInterceptor(){
 
 
     api.interceptors.response.use(async response => {
-        console.log("response")
         // await new Promise(r => setTimeout(r, 600));
         if (loadingTimeout) clearTimeout(loadingTimeout); 
         loadingStore.isLoading = false;
@@ -50,7 +49,6 @@ export function createApiInterceptor(){
         return response;
 
     }, async error => {
-        console.log("error")
         // await new Promise(r => setTimeout(r, 1000));
         if (loadingTimeout) clearTimeout(loadingTimeout); 
         loadingStore.isLoading = false;
