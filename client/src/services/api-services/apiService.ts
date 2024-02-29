@@ -30,7 +30,7 @@ export function createApiInterceptor(){
                     loadingStore.isLoading = true;
                 }, 200);
                 loadingEndTimeout = setTimeout(() => {
-                    console.log("No response in 10 seconds. Most probably something went wrong.")
+                    console.log("No response in 10 seconds. Most probably something went wrong.");
                     loadingStore.isLoading = false;
                 }, 10000);
             }
@@ -46,7 +46,6 @@ export function createApiInterceptor(){
 
 
     api.interceptors.response.use(async response => {
-        // await new Promise(r => setTimeout(r, 600));
         if (loadingTimeout) clearTimeout(loadingTimeout); 
         if (loadingEndTimeout) clearTimeout(loadingEndTimeout); 
         loadingStore.isLoading = false;
@@ -55,7 +54,6 @@ export function createApiInterceptor(){
         return response;
 
     }, async error => {
-        // await new Promise(r => setTimeout(r, 1000));
         if (loadingTimeout) clearTimeout(loadingTimeout); 
         loadingStore.isLoading = false;
         loadingStore.skipLoading = false;
