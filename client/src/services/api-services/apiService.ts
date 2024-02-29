@@ -21,6 +21,7 @@ export function createApiInterceptor(){
     const authStore = useAuthStore();
     const loadingStore = useLoadingStore();
     let loadingTimeout: NodeJS.Timeout | null = null;
+    let loadingEndTimeout: NodeJS.Timeout | null = null;
 
     api.interceptors.request.use(
         async (config) => {
@@ -28,9 +29,13 @@ export function createApiInterceptor(){
                 loadingTimeout = setTimeout(() => {
                     loadingStore.isLoading = true;
                 }, 200);
+                loadingEndTimeout = setTimeout(() => {
+                    console.log("No response in 10 seconds. Most probably something went wrong.")
+                    loadingStore.isLoading = false;
+                }, 10000);
             }
 
-            if(config.url?.startsWith('/screenshot') || config.url?.startsWith('/search/timeline')){
+            if(config.url?.startsWith('/screenshot') || config.url?.startsWith('/search/timeline') || config.url?.startsWith('/useraccount/me')){
                 if (loadingTimeout) clearTimeout(loadingTimeout); 
                 return config;
             }
@@ -43,6 +48,7 @@ export function createApiInterceptor(){
     api.interceptors.response.use(async response => {
         // await new Promise(r => setTimeout(r, 600));
         if (loadingTimeout) clearTimeout(loadingTimeout); 
+        if (loadingEndTimeout) clearTimeout(loadingEndTimeout); 
         loadingStore.isLoading = false;
         loadingStore.skipLoading = false;
 
