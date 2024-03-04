@@ -9,8 +9,6 @@ import router from "@/router";
 export let api: AxiosInstance;
 
 export function createApi(){
-    const authStore = useAuthStore();
-
     api = axios.create({
         baseURL: ENV.SERVER_URL + ENV.SERVER_PORT,
         headers: getHeaders()
@@ -35,7 +33,8 @@ export function createApiInterceptor(){
                 }, 10000);
             }
 
-            if(config.url?.startsWith('/screenshot') || config.url?.startsWith('/search/timeline') || config.url?.startsWith('/useraccount/me')){
+            const ignoredRoutes: string[] = ["/screenshot", "/search/timeline", "/useraccount/me"];
+            if(config.url && ignoredRoutes.includes(config.url)){
                 if (loadingTimeout) clearTimeout(loadingTimeout); 
                 return config;
             }
