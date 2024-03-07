@@ -45,7 +45,6 @@
                         </v-btn>
                     </template>
                     <!-------------------------->
-
                     <!-----------time---------->
                     <template v-slot:append>
                         <v-menu>
@@ -277,8 +276,15 @@
             if(screenshotTimestampsFloored.value.includes(Math.floor(sliderTime.value/1000))){
                 timestampsIndex.value = screenshotTimestampsFloored.value.indexOf(Math.floor(sliderTime.value/1000));
             }else{
-                setTimestampsList(SortOrder.asc);
+                await setTimestampsList(SortOrder.asc);
             }
+
+            console.log("=====================")
+            console.log("sliderTime.value")
+            console.log(sliderTime.value)
+            console.log("=====================")
+
+            assignScreenshotDataByTimestamp(sliderTime.value.toString());
         }
     });
 
@@ -302,7 +308,10 @@
             liveSessionTime.value = timeUtils.toTimeString(currentScreenshot.value?.endTime - currentScreenshot.value?.startTime);
             isLive.value = currentScreenshot.value.active;
 
-            if(!isLive.value) pause();
+            // if(!isLive.value) {
+            //     console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+            //     pause();
+            // }
         }
     });
 
@@ -479,17 +488,9 @@
         stopIntervalScreenshots();
         selectedSpeedId.value = id;
 
-        if(id == 0){
-            PLAYBACK_SPEED.value = SLOW_PLAYBACK_SPEED;
-        }
-
-        if(id == 1){
-            PLAYBACK_SPEED.value = DEFAULT_PLAYBACK_SPEED;
-        }
-
-        if(id == 2){
-            PLAYBACK_SPEED.value = FAST_PLAYBACK_SPEED;
-        }
+        if(id == 0) PLAYBACK_SPEED.value = SLOW_PLAYBACK_SPEED;
+        if(id == 1) PLAYBACK_SPEED.value = DEFAULT_PLAYBACK_SPEED;
+        if(id == 2) PLAYBACK_SPEED.value = FAST_PLAYBACK_SPEED;
 
         if(isPlaying.value){
             startIntervalScreenshots();
@@ -582,6 +583,8 @@
     //=============metadata==================
     const screenshotMetadata = computed<object>(() => {
         if(currentScreenshot.value){
+            console.log("it got here")
+            console.log(currentScreenshot.value)
             return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, currentScreenshot.value.metaData, additionalMetadataInfo.value, totalNumberOfScreenshots.value);
         }
 

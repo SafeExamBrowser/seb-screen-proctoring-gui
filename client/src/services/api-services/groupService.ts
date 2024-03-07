@@ -16,7 +16,7 @@ export async function getGroups(optionalParamters?: OptionalParGeneric): Promise
   }
 }
 
-export async function getGroupByUuid(uuid: string, optionalParamters?: OptionalParGroupByUuid): Promise<GroupUuid[] | any> {
+export async function getGroupByUuid(uuid: string, optionalParamters?: OptionalParGroupByUuid): Promise<GroupUuid | any> {
 
   try {
     const url: string = "/group/" + uuid;

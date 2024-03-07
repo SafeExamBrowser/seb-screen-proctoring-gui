@@ -1,7 +1,6 @@
 <template>
     <v-window v-model="currentWindow" @update:model-value="windowChange()" show-arrows>
         <v-window-item v-for="(w , index) in maxPages" :key="index">
-        <!-- <v-window-item> -->
 
             <template v-if="!noScreenshotData">
                 <v-row v-for="i in appBarStore.galleryGridSize.value" :key="i" align-strech no-gutters>
@@ -21,7 +20,7 @@
             <AlertMsg 
                 v-else 
                 :alertProps="{
-                    textKey: 'no-data',
+                    textKey: 'no-live-data',
                     color: 'warning',
                     type: 'alert',
                 }">

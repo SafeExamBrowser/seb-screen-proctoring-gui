@@ -37,13 +37,14 @@ export const useAppBarStore = defineStore("appBar", () => {
     value: 3
   });
   const galleryIsNameEnabled = ref<boolean>(true);
+  const galleryIsIpEnabled = ref<boolean>(false);
   const galleryIsMetadataEnabled = ref<boolean>(false);
   const galleryCurrentPage = ref<number>(1);
   const galleryMaxPages = ref<number>(1);
   const gallerNumberOfSessions = ref<number>(0);
   const galleryDescription = ref<string>("");
 
-  return {title, galleryGridSize, galleryIsNameEnabled, galleryIsMetadataEnabled, galleryCurrentPage, galleryMaxPages, gallerNumberOfSessions, galleryDescription};
+  return {title, galleryGridSize, galleryIsNameEnabled, galleryIsIpEnabled, galleryIsMetadataEnabled, galleryCurrentPage, galleryMaxPages, gallerNumberOfSessions, galleryDescription};
 });
 //-------------------------------------------------//
 
