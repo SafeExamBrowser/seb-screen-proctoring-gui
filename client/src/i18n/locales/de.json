@@ -32,7 +32,7 @@
     "searchPage": {
         "title": "Suchresultate",
         "collapse": "Einklappen",
-        "expand": "Ausklappen",
+        "expand": "Ausklappen"
     },
     "searchSessionTable": {
         "startTime": "Startzeit",
