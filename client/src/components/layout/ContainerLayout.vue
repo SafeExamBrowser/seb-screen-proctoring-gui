@@ -111,10 +111,10 @@
 
                         <v-divider></v-divider>
 
-                        <v-list-item >
-                            <v-btn-toggle v-model="languageToggle" variant="text" rounded="0" mandatory>
-                                    <v-btn @click="changeLocale('en')">EN</v-btn>
-                                    <v-btn @click="changeLocale('de')">DE</v-btn>
+                        <v-list-item>
+                            <v-btn-toggle v-model="languageToggle" variant="text" mandatory>
+                                <v-btn>EN</v-btn>
+                                <v-btn>DE</v-btn>
                             </v-btn-toggle>
                         </v-list-item>
 
@@ -165,9 +165,6 @@
     const theme = useTheme();
     const themeToggle = ref<number>(theme.global.name.value === "light" ? 0 : 1);
 
-    //language
-    const languageToggle = ref<number>(0);
-    const language = ref<string>("EN");
 
     //gallery view
     const gridSizes: GridSize[] = [
@@ -180,14 +177,19 @@
 
     // i18n
     const { locale } = useI18n()
+    const localstorageLocale: string | null = localStorage.getItem("locale");
+    locale.value = localstorageLocale ?? 'en';
+    const languageToggle = ref<number>(locale.value === "en" ? 0 : 1);
 
     //watchers
     watch(themeToggle, () => {
         theme.global.name.value = themeToggle.value !== 1 ? "light" : "dark";
+        localStorage.setItem("theme", theme.global.name.value);
     });
 
     watch(languageToggle, () => {
-        language.value = languageToggle.value !== 1 ? "EN" : "DE";
+        locale.value = languageToggle.value === 0 ? "en" : "de";
+        localStorage.setItem("locale", locale.value);
     });
 
     //methods
@@ -197,10 +199,6 @@
 
     async function userMenuOpened(){
         await userAccountViewService.setPersonalUserAccount();
-    }
-
-    function changeLocale (newLocale: string) {
-        locale.value = newLocale
     }
 
 </script>  
