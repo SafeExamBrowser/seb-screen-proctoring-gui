@@ -111,15 +111,6 @@
 
                         <v-divider></v-divider>
 
-                        <v-list-item >
-                            <v-btn-toggle v-model="languageToggle" variant="text" rounded="0" mandatory>
-                                    <v-btn @click="changeLocale('en')">EN</v-btn>
-                                    <v-btn @click="changeLocale('de')">DE</v-btn>
-                            </v-btn-toggle>
-                        </v-list-item>
-
-                        <v-divider></v-divider>
-
                         <v-list-item class="text-decoration-underline text-blue mx-auto" @click="authStore.logout()">
                             <v-list-item-title class="mx-auto">{{ $t("navigation.signOut") }}</v-list-item-title>
                         </v-list-item>
@@ -147,7 +138,6 @@
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
     import { useTheme } from "vuetify";
-    import { useI18n } from 'vue-i18n'
 
     //navigation
     const drawer = ref();
@@ -163,11 +153,9 @@
 
     //theme
     const theme = useTheme();
-    const themeToggle = ref<number>(theme.global.name.value === "light" ? 0 : 1);
-
-    //language
-    const languageToggle = ref<number>(0);
-    const language = ref<string>("EN");
+    const localstorageTheme: string | null = localStorage.getItem("theme");
+    theme.global.name.value = localstorageTheme ?? theme.global.name.value ?? "light";
+    const themeToggle = ref<number>(theme.global.name.value === "dark" ? 1 : 0);
 
     //gallery view
     const gridSizes: GridSize[] = [
@@ -178,16 +166,10 @@
         // {title: "6x6", value: 6},
     ];
 
-    // i18n
-    const { locale } = useI18n()
-
     //watchers
     watch(themeToggle, () => {
-        theme.global.name.value = themeToggle.value !== 1 ? "light" : "dark";
-    });
-
-    watch(languageToggle, () => {
-        language.value = languageToggle.value !== 1 ? "EN" : "DE";
+        theme.global.name.value = themeToggle.value === 0 ? "light" : "dark";
+        localStorage.setItem("theme", theme.global.name.value);
     });
 
     //methods
@@ -198,11 +180,6 @@
     async function userMenuOpened(){
         await userAccountViewService.setPersonalUserAccount();
     }
-
-    function changeLocale (newLocale: string) {
-        locale.value = newLocale
-    }
-
 </script>  
 
 <style scoped>
