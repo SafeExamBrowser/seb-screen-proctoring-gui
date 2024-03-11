@@ -64,6 +64,7 @@
                             
                             <v-expansion-panel-text>
                                 <SearchSessionTable 
+                                    :day="session.day"
                                     :sessions="session.sessions" 
                                     :metaData="{
                                         screenProctoringMetadataWindowTitle: metadataSearchWindowTitle!, 
@@ -91,7 +92,7 @@
 
 <script setup lang="ts">
     import { ref, onBeforeMount, watch } from "vue";
-    import { useAppBarStore, useLoadingStore } from "@/store/app";
+    import { useAppBarStore, useLoadingStore, useTableStore } from "@/store/app";
     import * as searchViewService from "@/services/component-services/searchViewService";
     import SearchForm from "./SearchForm.vue";
     import SearchSessionTable from "./SearchSessionTable.vue";
@@ -123,6 +124,7 @@
 
     //store
     const loadingStore = useLoadingStore();
+    const tableStore = useTableStore();
 
 
     onBeforeMount(async () => {
@@ -221,7 +223,27 @@
         }
 
         sessionsGrouped.value = groupingUtils.groupSessionsByDay(sessionSearchResults.value);
+
+        loginNameIpToggleListFillUp();
+
         searchResultAvailable.value = true;
+    }
+
+    function loginNameIpToggleListFillUp(){
+        if(sessionsGrouped.value == null){
+            return;
+        }
+
+        for(var i = 0; i < sessionsGrouped.value.content.length; i++){
+            tableStore.isIpDisplayList.push(
+                {
+                    day: sessionsGrouped.value.content[i].day,
+                    isIp: false
+                }
+            );
+        }
+
+        console.log(tableStore.isIpDisplayList)
     }
 
     function closeAllPanels(){

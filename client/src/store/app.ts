@@ -6,6 +6,7 @@ import * as authenticationService from "@/services/api-services/authenticationSe
 import * as settingsService from "@/services/api-services/settingsService";
 
 
+//-------------------settings------------------------------//
 export const useSettingsStore = defineStore("settings", () => {
   const isSebServerIntegratedMode = ref<boolean>(false);
 
@@ -28,7 +29,7 @@ export const useSettingsStore = defineStore("settings", () => {
   return {isSebServerIntegratedMode, setIsSebServerIntegratedMode};
 });
 
-//-------------------------------------------------//
+//--------------------app bar-----------------------------//
 export const useAppBarStore = defineStore("appBar", () => {
   const title = ref<string>("Example Title");
 
@@ -49,7 +50,7 @@ export const useAppBarStore = defineStore("appBar", () => {
 //-------------------------------------------------//
 
 
-//-------------------------------------------------//
+//----------------------loading---------------------------//
 export const useLoadingStore = defineStore("loading", () => {
   const skipLoading = ref<boolean>(false);
   const isLoading = ref<boolean>(false);
@@ -59,7 +60,7 @@ export const useLoadingStore = defineStore("loading", () => {
 //-------------------------------------------------//
 
 
-//-------------------------------------------------//
+//----------------------authentication---------------------------//
 export const useAuthStore = defineStore("auth", () => {
   const redirectRoute: string = "";
 
@@ -120,7 +121,7 @@ export const useAuthStore = defineStore("auth", () => {
 //-------------------------------------------------//
 
 
-//-------------------------------------------------//
+//---------------------account----------------------------//
 export const useUserAccountStore = defineStore("account", () => {
   const userAccount = ref<UserAccount | null>();
   const isEditMode = ref<boolean>();
@@ -130,3 +131,13 @@ export const useUserAccountStore = defineStore("account", () => {
   return {userAccount, isEditMode, isAccountSelected, selectedAccountId};
 });
 //-------------------------------------------------//
+
+//---------------------start page----------------------------//
+export const useTableStore = defineStore("table", () => {
+    const isExamExpand = ref<boolean>(false);
+    // const isIpDisplay = ref<boolean>(false);
+    const isIpDisplayList = ref<{day: string, isIp: boolean}[]>([]);
+  
+    return {isExamExpand, isIpDisplayList};
+  });
+  //-------------------------------------------------//
