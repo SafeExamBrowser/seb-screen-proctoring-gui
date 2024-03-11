@@ -6,7 +6,7 @@
         <v-sheet class="pa-4">
             <a href="/start" class="text-decoration-none text-black">
                 <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Logo ETH Zürich"></v-img>
-                <div class="app-title text-h6">{{ $t("navigation.title") }}</div>
+                <div class="app-title text-h6 text-title">{{ $t("navigation.title") }}</div>
             </a>
         </v-sheet>
 

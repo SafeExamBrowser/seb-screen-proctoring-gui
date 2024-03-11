@@ -22,7 +22,7 @@
                     Sign in
                 </v-card-title>
                 <v-card-subtitle>
-                    <span class="subtitle-color">
+                    <span class="text-subtitle">
                         Please fill the form to sign in to your SEB screen proctoring account.
                     </span>
                 </v-card-subtitle>
