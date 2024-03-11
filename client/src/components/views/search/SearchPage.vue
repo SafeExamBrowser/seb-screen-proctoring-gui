@@ -120,6 +120,7 @@
     let metadataSearchWindowTitle: string | null;
     let metadataSearchAction: string | null;
     let loginNameSearch: string | null;
+    let ipAddressSearch: string | null;
     let machineNameSearch: string | null;
 
     //store
@@ -152,6 +153,7 @@
         examName: string,
         groupName: string, 
         loginName: string, 
+        ipAddress: string,
         machineName: string, 
         metadataUrl: string, 
         metadataWindowTitle: string, 
@@ -167,16 +169,17 @@
         examNameSearch = examName == "" ? null : examName;
         groupNameSearch = groupName == "" ? null : groupName;
         metadataSearchUrl = metadataUrl == "" ? null : metadataUrl;
-        metadataSearchUrl = metadataUrl == "" ? null : metadataUrl;
         metadataSearchWindowTitle = metadataWindowTitle == "" ? null : metadataWindowTitle;
         metadataSearchAction = metadataUserAction == "" ? null : metadataUserAction;
         loginNameSearch = loginName == "" ? null : loginName;
+        ipAddressSearch = ipAddress == "" ? null : ipAddress;
         machineNameSearch = machineName == "" ? null : machineName;
 
         searchParameters.value = {   
             examName: examNameSearch,
             groupName: groupNameSearch,
             clientName: loginNameSearch,
+            clientIp: ipAddressSearch,
             clientMachineName: machineNameSearch,
             screenProctoringMetadataURL: metadataSearchUrl,
             screenProctoringMetadataWindowTitle: metadataSearchWindowTitle,
@@ -242,8 +245,6 @@
                 }
             );
         }
-
-        console.log(tableStore.isIpDisplayList)
     }
 
     function closeAllPanels(){

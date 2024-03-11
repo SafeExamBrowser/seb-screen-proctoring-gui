@@ -87,8 +87,6 @@
 
     function toggleNameIpSwitch(){
         const index: number = tableUtils.getSessionListIndex(props.day!);
-        console.log(index);
-        console.log(props.day)
 
         if(tableStore.isIpDisplayList[index].isIp){
             tableStore.isIpDisplayList[index].isIp = false;
@@ -96,12 +94,6 @@
         }
 
         tableStore.isIpDisplayList[index].isIp = true;
-
-        // tableStore.isIpDisplayList[getSessionListIndex()] ? tableStore.isIpDisplayList[getSessionListIndex()].isIp=false : tableStore.isIpDisplayList[getSessionListIndex()].isIp=true
     }
 
 </script>
-
-<style scoped>
-
-</style>

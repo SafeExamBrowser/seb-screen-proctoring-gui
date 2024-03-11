@@ -135,7 +135,6 @@ export const useUserAccountStore = defineStore("account", () => {
 //---------------------start page----------------------------//
 export const useTableStore = defineStore("table", () => {
     const isExamExpand = ref<boolean>(false);
-    // const isIpDisplay = ref<boolean>(false);
     const isIpDisplayList = ref<{day: string, isIp: boolean}[]>([]);
   
     return {isExamExpand, isIpDisplayList};
