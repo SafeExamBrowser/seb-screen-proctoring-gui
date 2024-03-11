@@ -103,15 +103,6 @@
                         <v-divider></v-divider>
 
                         <v-list-item>
-                            <v-btn-toggle v-model="themeToggle" variant="text" mandatory>
-                                <v-btn icon="mdi-white-balance-sunny"></v-btn>
-                                <v-btn icon="mdi-weather-night"></v-btn>
-                            </v-btn-toggle>
-                        </v-list-item>
-
-                        <v-divider></v-divider>
-
-                        <v-list-item>
                             <v-btn-toggle v-model="languageToggle" variant="text" mandatory>
                                 <v-btn>EN</v-btn>
                                 <v-btn>DE</v-btn>
@@ -146,7 +137,6 @@
     import { useAppBarStore, useAuthStore, useUserAccountStore } from "@/store/app";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
-    import { useTheme } from "vuetify";
     import { useI18n } from 'vue-i18n'
 
     //navigation
@@ -160,10 +150,6 @@
     const appBarStore = useAppBarStore();
     const authStore = useAuthStore();
     const userAccountStore = useUserAccountStore();
-
-    //theme
-    const theme = useTheme();
-    const themeToggle = ref<number>(theme.global.name.value === "light" ? 0 : 1);
 
 
     //gallery view
@@ -180,12 +166,6 @@
     const localstorageLocale: string | null = localStorage.getItem("locale");
     locale.value = localstorageLocale ?? 'en';
     const languageToggle = ref<number>(locale.value === "en" ? 0 : 1);
-
-    //watchers
-    watch(themeToggle, () => {
-        theme.global.name.value = themeToggle.value !== 1 ? "light" : "dark";
-        localStorage.setItem("theme", theme.global.name.value);
-    });
 
     watch(languageToggle, () => {
         locale.value = languageToggle.value === 0 ? "en" : "de";
