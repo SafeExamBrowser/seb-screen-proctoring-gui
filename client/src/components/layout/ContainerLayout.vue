@@ -163,7 +163,7 @@
 
     //theme
     const theme = useTheme();
-    const themeToggle = ref<number>(0);
+    const themeToggle = ref<number>(theme.global.name.value === "light" ? 0 : 1);
 
     //language
     const languageToggle = ref<number>(0);
