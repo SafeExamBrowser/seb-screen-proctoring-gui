@@ -4,7 +4,7 @@
 
             <v-card class="pa-10">
                 <div class="d-flex ml-15 mr-15">
-                    <img src="/img/logo.svg" alt="Logo ETH Zürich" />
+                    <img src="/img/logo.svg" :class="isDark ? 'invert' : ''" alt="Logo ETH Zürich" />
                 </div>
 
                 <div class="mt-10">
@@ -88,7 +88,7 @@
 </template>
   
 <script setup lang="ts">
-    import { ref } from "vue";
+    import { ref, computed } from "vue";
     import * as authenticationService from "@/services/api-services/authenticationService";
     import {navigateTo} from "@/router/navigation";
     import { useLoadingStore, useAuthStore, useSettingsStore } from "@/store/app";
@@ -97,6 +97,7 @@
     const theme = useTheme();
     const localstorageTheme: string | null = localStorage.getItem("theme");
     theme.global.name.value = localstorageTheme ?? theme.global.name.value ?? "light";
+    const isDark = computed<boolean>(() => theme.global.current.value.dark);
 
     // const username = ref("super-admin");
     // const password = ref("admin");
@@ -137,7 +138,8 @@
 
 </script>
   
-
 <style scoped>
-
+.invert{
+    filter: invert(1);
+}
 </style>
