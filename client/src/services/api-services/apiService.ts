@@ -9,8 +9,6 @@ import router from "@/router";
 export let api: AxiosInstance;
 
 export function createApi(){
-    const authStore = useAuthStore();
-
     api = axios.create({
         baseURL: ENV.SERVER_URL + ENV.SERVER_PORT,
         headers: getHeaders()
@@ -18,40 +16,42 @@ export function createApi(){
 }
 
 export function createApiInterceptor(){
+    const ignoredUrls: string[] = getIgnoredUrls();
+
     const authStore = useAuthStore();
     const loadingStore = useLoadingStore();
+
     let loadingTimeout: NodeJS.Timeout | null = null;
+    let loadingEndTimeout: NodeJS.Timeout | null = null;
 
-    // api.interceptors.request.use(
-    //     (config) => {
+    api.interceptors.request.use(async (config) => {
+        //additional skip when url is used nmultiple times in differnet locations such as /group
+        if(!loadingStore.skipLoading){
+            loadingTimeout = setTimeout(() => {
+                loadingStore.isLoading = true;
+            }, 500);
 
-    //         //exclude calls
-    //         // console.log(config)
-    //         // console.log("url: " + config.url)
+            loadingEndTimeout = setTimeout(() => {
+                loadingStore.isLoading = false;
+            }, 10000);
+        }
 
-    //         // if(!loadingStore.skipLoading){
-    //         //     loadingTimeout = setTimeout(() => {
-    //         //         // loadingStore.isLoading = true;
-    //         //     }, 1000);
-    //         // }
+        const isIgnoredUrl: boolean = ignoredUrls.some(url => config.url?.includes(url));
+        if(isIgnoredUrl){
+            if (loadingTimeout) clearTimeout(loadingTimeout); 
+            return config;
+        }
 
-    //         return config;
-    //     }
-    // )
+        return config;
+    });
 
 
-    api.interceptors.response.use(response => {
-        if (loadingTimeout) clearTimeout(loadingTimeout); 
-        loadingStore.isLoading = false;
-        loadingStore.skipLoading = false;
-
+    api.interceptors.response.use(async response => {
+        resetLoadingState();
         return response;
 
     }, async error => {
-        if (loadingTimeout) clearTimeout(loadingTimeout); 
-        loadingStore.isLoading = false;
-        loadingStore.skipLoading = false;
-
+        resetLoadingState();
 
         const originalRequest = error.config;
 
@@ -77,6 +77,15 @@ export function createApiInterceptor(){
             
         }
     });
+
+
+    function resetLoadingState(){
+        if (loadingTimeout) clearTimeout(loadingTimeout); 
+        if (loadingEndTimeout) clearTimeout(loadingEndTimeout); 
+
+        loadingStore.isLoading = false;
+        loadingStore.skipLoading = false;
+    }
 }
 
 export function getHeaders(): object{
@@ -97,4 +106,14 @@ export function getPostHeaders(): object{
       "Authorization": "Bearer " + authStore.getAccessToken(),
       "Content-Type": "application/json"
     };
+}
+
+function getIgnoredUrls(): string[]{
+    return [
+        "/screenshot/", 
+        "/screenshot-data/", 
+        "/screenshot-timestamps/", 
+        "/search/timeline", 
+        "/useraccount/me"
+    ];
 }
