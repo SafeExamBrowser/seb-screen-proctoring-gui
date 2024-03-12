@@ -94,11 +94,6 @@
     import { useLoadingStore, useAuthStore, useSettingsStore } from "@/store/app";
     import { useTheme } from "vuetify";
 
-    const theme = useTheme();
-    const localstorageTheme: string | null = localStorage.getItem("theme");
-    theme.global.name.value = localstorageTheme ?? theme.global.name.value ?? "light";
-    const isDark = computed<boolean>(() => theme.global.current.value.dark);
-
     // const username = ref("super-admin");
     // const password = ref("admin");
     const username = ref("");
@@ -112,8 +107,14 @@
     const loadingStore = useLoadingStore();
     const settingsStore = useSettingsStore();
 
-    async function signIn(){
+    //theme
+    const theme = useTheme();
+    const localStorageTheme: string | null = localStorage.getItem("theme");
+    theme.global.name.value = localStorageTheme ?? theme.global.name.value ?? "light";
+    const isDark = computed<boolean>(() => theme.global.current.value.dark);
 
+    
+    async function signIn(){
         loginError.value = false;
 
         try{
