@@ -137,7 +137,7 @@
     import { useAppBarStore, useAuthStore, useUserAccountStore } from "@/store/app";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
-    import { useI18n } from 'vue-i18n'
+    import { useI18n } from "vue-i18n";
 
     //navigation
     const drawer = ref();
@@ -161,16 +161,19 @@
         // {title: "6x6", value: 6},
     ];
 
-    // i18n
-    const { locale } = useI18n()
-    const localstorageLocale: string | null = localStorage.getItem("locale");
-    locale.value = localstorageLocale ?? 'en';
+    //i18n
+    const { locale } = useI18n();
+    const localStorageLocale: string | null = localStorage.getItem("locale");
+
+    locale.value = localStorageLocale ?? "en";
+
     const languageToggle = ref<number>(locale.value === "en" ? 0 : 1);
 
     watch(languageToggle, () => {
         locale.value = languageToggle.value === 0 ? "en" : "de";
         localStorage.setItem("locale", locale.value);
     });
+
 
     //methods
     function changeGridSize(gridSize: GridSize){
