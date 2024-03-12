@@ -1,4 +1,5 @@
 import {navigateTo} from "@/router/navigation";
+import {useTableStore} from "@/store/app";
 
 export function calcDefaultItemsPerPage(itemList: any): number {
     if (itemList == null || itemList.length == 0) {
@@ -71,4 +72,9 @@ export function sortTable(key: number, headerRefs: any){
     if(headerRefs != null){
         headerRefs[key].click();
     }
+}
+
+export function getSessionListIndex(day: string): number{
+    const tableStore = useTableStore();
+    return tableStore.isIpDisplayList.findIndex(i => i.day == day);
 }

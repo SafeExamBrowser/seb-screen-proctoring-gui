@@ -41,6 +41,14 @@
             </td>
         </template>
 
+        <template v-slot:item.activityDetails="{item}">
+            <td>
+                <div>
+                    {{metadataUtils.filterOutLetters(item.timelineScreenshotDataList[0].metaData.screenProctoringMetadataUserAction)}}
+                </div>
+            </td>
+        </template>
+
         <template v-slot:item.proctoringViewLink="{internalItem}">
             <v-btn 
                 @click="searchViewService.openProctoringView(timelineSearchResult!.sessionUUID, internalItem.columns.timestamp)" 
@@ -76,7 +84,7 @@
                     </td>
 
                     <td>
-                        {{ screenshot.groupName }} ({{ screenshot.timelineScreenshotDataList.length }})
+                        {{ metadataUtils.filterOutLetters(screenshot.groupName + "(" + screenshot.timelineScreenshotDataList.length + ")") }}
                     </td>
 
                     <td>
@@ -107,6 +115,7 @@
     import * as searchViewService from "@/services/component-services/searchViewService";
     import * as groupingUtils from "@/utils/groupingUtils";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
+    import * as metadataUtils from "@/utils/metadataUtils";
 
     const props = defineProps<{
         timelineSearchResult: SearchTimeline
