@@ -45,6 +45,7 @@
                         </v-btn>
                     </template>
                     <!-------------------------->
+                    
                     <!-----------time---------->
                     <template v-slot:append>
                         <v-menu>
@@ -95,10 +96,6 @@
         <!-------------------------->
 
         <!-----------info box---------->
-        <!-- <v-col cols="3" v-if="isMetadataInfo">
-            placeholder
-        </v-col> -->
-
         <v-col cols="4" v-if="isMetadataInfo">
             <v-card
                 class="mx-auto">
@@ -279,11 +276,6 @@
                 await setTimestampsList(SortOrder.asc);
             }
 
-            console.log("=====================")
-            console.log("sliderTime.value")
-            console.log(sliderTime.value)
-            console.log("=====================")
-
             assignScreenshotDataByTimestamp(sliderTime.value.toString());
         }
     });
@@ -307,11 +299,6 @@
         if(currentScreenshot.value) {
             liveSessionTime.value = timeUtils.toTimeString(currentScreenshot.value?.endTime - currentScreenshot.value?.startTime);
             isLive.value = currentScreenshot.value.active;
-
-            // if(!isLive.value) {
-            //     console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-            //     pause();
-            // }
         }
     });
 

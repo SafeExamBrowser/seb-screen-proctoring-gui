@@ -2,7 +2,6 @@ import * as groupService from "@/services/api-services/groupService";
 import * as screenshotDataService from "@/services/api-services/screenshotDataService";
 import { SortOrder } from "@/models/sortOrderEnum";
 import {navigateTo} from "@/router/navigation";
-import { useAuthStore } from "@/store/app";
 import * as metadataUtils from "@/utils/metadataUtils";
 
 //=============api==============
@@ -41,8 +40,6 @@ export function filterLiveSessions(screenshotData: ScreenshotData[]): Screenshot
         return screenshot.active;
     }); 
 
-    console.log(screenshotDataOnlyLive);
-
     return screenshotDataOnlyLive;
 }
 
@@ -52,7 +49,6 @@ export function calcIndex(i: number, n: number, gridSize: number): number {
 }
 
 export function currentIndexExists(screenshots: ScreenshotData[] | undefined, index: number): boolean {
-
     if (screenshots != null && screenshots.length > index) {
         return true;
     }
