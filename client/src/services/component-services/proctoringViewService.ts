@@ -1,6 +1,7 @@
 import * as screenshotDataService from "@/services/api-services/screenshotDataService";
 import * as timeUtils from "@/utils/timeUtils";
 import { SortOrder } from "@/models/sortOrderEnum";
+import * as metadataUtils from "@/utils/metadataUtils";
 
 //=============api==================
 export async function getScreenshotDataBySessionId(sessionId: string): Promise<ScreenshotData | null>{
@@ -40,7 +41,8 @@ export function getScreenshotMetadata(sliderTime: number, currentScreenshotMetad
         "Time:": timeUtils.formatTimestmapToTime(sliderTime),
         "Url:": currentScreenshotMetadata?.screenProctoringMetadataURL,
         "Window Title:": currentScreenshotMetadata?.screenProctoringMetadataWindowTitle,
-        "User-Action:": currentScreenshotMetadata?.screenProctoringMetadataUserAction + " " + additionalMetadataInfo
+        //temp solution
+        "Activity Details:": metadataUtils.filterOutLetters(currentScreenshotMetadata?.screenProctoringMetadataUserAction + " " + additionalMetadataInfo)
     };
 }
 
