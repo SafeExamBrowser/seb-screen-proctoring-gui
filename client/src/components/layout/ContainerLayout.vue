@@ -1,5 +1,4 @@
 <template>
-
     <v-navigation-drawer v-model="drawer" class="d-none d-sm-flex">
         
         <!--page title with logo-->
@@ -74,6 +73,7 @@
                         <v-list>
                             <v-list-item>
                                 <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.galleryIsNameEnabled" hide-details></v-switch>
+                                <v-switch class="mx-auto" label="Show IP" color="primary" v-model="appBarStore.galleryIsIpEnabled" hide-details></v-switch>
                                 <v-switch class="mx-auto" label="Show Metadata" color="primary" v-model="appBarStore.galleryIsMetadataEnabled" hide-details></v-switch>
                             </v-list-item>
                         </v-list>
@@ -101,6 +101,13 @@
                         </v-list-item>
 
                         <v-divider></v-divider>
+
+                        <v-list-item>
+                            <v-btn-toggle v-model="languageToggle" variant="text" mandatory>
+                                <v-btn>EN</v-btn>
+                                <v-btn>DE</v-btn>
+                            </v-btn-toggle>
+                        </v-list-item>
 
                         <v-list-item>
                             <v-btn-toggle v-model="themeToggle" variant="text" mandatory>
@@ -138,6 +145,7 @@
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
     import { useTheme } from "vuetify";
+    import { useI18n } from "vue-i18n";
 
     //navigation
     const drawer = ref();
@@ -166,11 +174,23 @@
         // {title: "6x6", value: 6},
     ];
 
+    //i18n
+    const { locale } = useI18n();
+    const localStorageLocale: string | null = localStorage.getItem("locale");
+    locale.value = localStorageLocale ?? "en";
+    const languageToggle = ref<number>(locale.value === "en" ? 0 : 1);
+
     //watchers
+    watch(languageToggle, () => {
+        locale.value = languageToggle.value === 0 ? "en" : "de";
+        localStorage.setItem("locale", locale.value);
+    });
+
     watch(themeToggle, () => {
         theme.global.name.value = themeToggle.value === 0 ? "light" : "dark";
         localStorage.setItem("theme", theme.global.name.value);
     });
+
 
     //methods
     function changeGridSize(gridSize: GridSize){

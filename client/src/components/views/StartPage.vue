@@ -12,6 +12,8 @@
 
                 <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
                     <CustomTableHeader
+                        @addAddtionalExamHeaders="addAddtionalExamHeaders"
+                        @removeAddtionalExamHeaders="removeAddtionalExamHeaders"
                         :columns="columns"
                         :is-sorted="isSorted"
                         :get-sort-icon="getSortIcon"
@@ -30,6 +32,33 @@
                         </div>
                     </td>
                 </template>
+
+                <template v-slot:item.exam.name="{item}">
+                    <td>
+                        <div v-if="item.exam.name != '' && item.exam.name != null">
+                            <v-chip :color="item.exam.isRunning ? 'green' : 'red'">
+                                {{ item.exam.name }}
+                            </v-chip>
+                        </div>
+                    </td>
+                </template>
+
+                <template v-slot:item.exam.startTime="{item}">
+                    <td>
+                        <div>
+                            {{timeUtils.formatTimestampToFullDate(item.exam.startTime)}}
+                        </div>
+                    </td>
+                </template>
+
+                <template v-slot:item.exam.endTime="{item}">
+                    <td>
+                        <div>
+                            {{timeUtils.formatTimestampToFullDate(item.exam.endTime)}}
+                        </div>
+                    </td>
+                </template>
+
                 <template v-slot:item.creationTime="{item}">
                     <td>
                         <div>
@@ -45,9 +74,9 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, onBeforeMount, onMounted } from "vue";
+    import { ref, onBeforeMount, onUnmounted } from "vue";
     import * as groupService from "@/services/api-services/groupService";
-    import { useAppBarStore } from "@/store/app";
+    import { useAppBarStore, useTableStore } from "@/store/app";
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/table/tableUtils";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
@@ -55,6 +84,7 @@
 
     //stores
     const appBarStore = useAppBarStore();
+    const tableStore = useTableStore();
 
     //table
     const groups = ref<Group[]>();
@@ -71,12 +101,29 @@
         groups.value = await groupService.getGroups({pageSize: 500});
     });
 
+    onUnmounted(() => {
+        tableStore.isExamExpand = false;
+    });
+
     function getGalleryViewLink(index: number) {
         if(groups.value != null){
             return "/galleryView/" + groups.value[index].uuid;
         }
 
         return "";
+    }
+
+    function addAddtionalExamHeaders(){
+        tableStore.isExamExpand = true;
+
+        headers.value.splice(1, 0, {title: "Exam Start-Time", key: "exam.startTime"});
+        headers.value.splice(2, 0, {title: "Exam End-Time", key: "exam.endTime"});
+    }
+
+    function removeAddtionalExamHeaders(){
+        tableStore.isExamExpand = false;
+
+        headers.value.splice(1, 2);
     }
 
 </script>

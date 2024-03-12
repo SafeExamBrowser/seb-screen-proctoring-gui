@@ -94,8 +94,6 @@
     import { useLoadingStore, useAuthStore, useSettingsStore } from "@/store/app";
     import { useTheme } from "vuetify";
 
-    // const username = ref("super-admin");
-    // const password = ref("admin");
     const username = ref("");
     const password = ref("");
     const loginError = ref(false);
@@ -115,6 +113,8 @@
 
     
     async function signIn(){
+
+        loadingStore.isLoading = true;
         loginError.value = false;
 
         try{
@@ -124,6 +124,8 @@
         }catch(error){
             loginError.value = true;
         }
+
+        loadingStore.isLoading = false;
 
     }
 
