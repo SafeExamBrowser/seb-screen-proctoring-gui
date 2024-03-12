@@ -107,6 +107,7 @@
 
     async function signIn(){
 
+        loadingStore.isLoading = true;
         loginError.value = false;
 
         try{
@@ -116,6 +117,8 @@
         }catch(error){
             loginError.value = true;
         }
+
+        loadingStore.isLoading = false;
 
     }
 
