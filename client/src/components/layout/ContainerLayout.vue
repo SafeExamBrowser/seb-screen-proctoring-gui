@@ -104,18 +104,9 @@
                         <v-divider></v-divider>
 
                         <v-list-item>
-                            <v-btn-toggle v-model="themeToggle" variant="text" mandatory>
-                                <v-btn icon="mdi-white-balance-sunny"></v-btn>
-                                <v-btn icon="mdi-weather-night"></v-btn>
-                            </v-btn-toggle>
-                        </v-list-item>
-
-                        <v-divider></v-divider>
-
-                        <v-list-item >
-                            <v-btn-toggle v-model="languageToggle" variant="text" rounded="0" mandatory>
-                                    <v-btn @click="changeLocale('en')">EN</v-btn>
-                                    <v-btn @click="changeLocale('de')">DE</v-btn>
+                            <v-btn-toggle v-model="languageToggle" variant="text" mandatory>
+                                <v-btn>EN</v-btn>
+                                <v-btn>DE</v-btn>
                             </v-btn-toggle>
                         </v-list-item>
 
@@ -147,8 +138,7 @@
     import { useAppBarStore, useAuthStore, useUserAccountStore } from "@/store/app";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
-    import { useTheme } from "vuetify";
-    import { useI18n } from 'vue-i18n'
+    import { useI18n } from "vue-i18n";
 
     //navigation
     const drawer = ref();
@@ -162,13 +152,6 @@
     const authStore = useAuthStore();
     const userAccountStore = useUserAccountStore();
 
-    //theme
-    const theme = useTheme();
-    const themeToggle = ref<number>(0);
-
-    //language
-    const languageToggle = ref<number>(0);
-    const language = ref<string>("EN");
 
     //gallery view
     const gridSizes: GridSize[] = [
@@ -179,17 +162,19 @@
         // {title: "6x6", value: 6},
     ];
 
-    // i18n
-    const { locale } = useI18n()
+    //i18n
+    const { locale } = useI18n();
+    const localStorageLocale: string | null = localStorage.getItem("locale");
 
-    //watchers
-    watch(themeToggle, () => {
-        theme.global.name.value = themeToggle.value !== 1 ? "light" : "dark";
-    });
+    locale.value = localStorageLocale ?? "en";
+
+    const languageToggle = ref<number>(locale.value === "en" ? 0 : 1);
 
     watch(languageToggle, () => {
-        language.value = languageToggle.value !== 1 ? "EN" : "DE";
+        locale.value = languageToggle.value === 0 ? "en" : "de";
+        localStorage.setItem("locale", locale.value);
     });
+
 
     //methods
     function changeGridSize(gridSize: GridSize){
@@ -198,10 +183,6 @@
 
     async function userMenuOpened(){
         await userAccountViewService.setPersonalUserAccount();
-    }
-
-    function changeLocale (newLocale: string) {
-        locale.value = newLocale
     }
 
 </script>  
