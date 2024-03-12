@@ -1,12 +1,11 @@
 <template>
-
     <v-navigation-drawer v-model="drawer" class="d-none d-sm-flex">
         
         <!--page title with logo-->
         <v-sheet class="pa-4">
             <a href="/start" class="text-decoration-none text-black">
                 <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Logo ETH Zürich"></v-img>
-                <div class="app-title text-h6">{{ $t("navigation.title") }}</div>
+                <div class="app-title text-h6 text-title">{{ $t("navigation.title") }}</div>
             </a>
         </v-sheet>
 
@@ -110,6 +109,13 @@
                             </v-btn-toggle>
                         </v-list-item>
 
+                        <v-list-item>
+                            <v-btn-toggle v-model="themeToggle" variant="text" mandatory>
+                                <v-btn icon="mdi-white-balance-sunny"></v-btn>
+                                <v-btn icon="mdi-weather-night"></v-btn>
+                            </v-btn-toggle>
+                        </v-list-item>
+
                         <v-divider></v-divider>
 
                         <v-list-item class="text-decoration-underline text-blue mx-auto" @click="authStore.logout()">
@@ -138,6 +144,7 @@
     import { useAppBarStore, useAuthStore, useUserAccountStore } from "@/store/app";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
+    import { useTheme } from "vuetify";
     import { useI18n } from "vue-i18n";
 
     //navigation
@@ -152,6 +159,11 @@
     const authStore = useAuthStore();
     const userAccountStore = useUserAccountStore();
 
+    //theme
+    const theme = useTheme();
+    const localstorageTheme: string | null = localStorage.getItem("theme");
+    theme.global.name.value = localstorageTheme ?? theme.global.name.value ?? "light";
+    const themeToggle = ref<number>(theme.global.name.value === "dark" ? 1 : 0);
 
     //gallery view
     const gridSizes: GridSize[] = [
@@ -165,14 +177,18 @@
     //i18n
     const { locale } = useI18n();
     const localStorageLocale: string | null = localStorage.getItem("locale");
-
     locale.value = localStorageLocale ?? "en";
-
     const languageToggle = ref<number>(locale.value === "en" ? 0 : 1);
 
+    //watchers
     watch(languageToggle, () => {
         locale.value = languageToggle.value === 0 ? "en" : "de";
         localStorage.setItem("locale", locale.value);
+    });
+
+    watch(themeToggle, () => {
+        theme.global.name.value = themeToggle.value === 0 ? "light" : "dark";
+        localStorage.setItem("theme", theme.global.name.value);
     });
 
 
@@ -184,7 +200,6 @@
     async function userMenuOpened(){
         await userAccountViewService.setPersonalUserAccount();
     }
-
 </script>  
 
 <style scoped>

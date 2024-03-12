@@ -4,7 +4,7 @@
 
             <v-card class="pa-10">
                 <div class="d-flex ml-15 mr-15">
-                    <img src="/img/logo.svg" alt="Logo ETH Zürich" />
+                    <img src="/img/logo.svg" :class="isDark ? 'invert' : ''" alt="Logo ETH Zürich" />
                 </div>
 
                 <div class="mt-10">
@@ -22,7 +22,7 @@
                     Sign in
                 </v-card-title>
                 <v-card-subtitle>
-                    <span class="subtitle-color">
+                    <span class="text-subtitle">
                         Please fill the form to sign in to your SEB screen proctoring account.
                     </span>
                 </v-card-subtitle>
@@ -88,10 +88,11 @@
 </template>
   
 <script setup lang="ts">
-    import { ref } from "vue";
+    import { ref, computed } from "vue";
     import * as authenticationService from "@/services/api-services/authenticationService";
     import {navigateTo} from "@/router/navigation";
     import { useLoadingStore, useAuthStore, useSettingsStore } from "@/store/app";
+    import { useTheme } from "vuetify";
 
     const username = ref("");
     const password = ref("");
@@ -104,6 +105,13 @@
     const loadingStore = useLoadingStore();
     const settingsStore = useSettingsStore();
 
+    //theme
+    const theme = useTheme();
+    const localStorageTheme: string | null = localStorage.getItem("theme");
+    theme.global.name.value = localStorageTheme ?? theme.global.name.value ?? "light";
+    const isDark = computed<boolean>(() => theme.global.current.value.dark);
+
+    
     async function signIn(){
 
         loadingStore.isLoading = true;
@@ -133,7 +141,8 @@
 
 </script>
   
-
 <style scoped>
-
+.invert{
+    filter: invert(1);
+}
 </style>
