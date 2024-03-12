@@ -64,6 +64,23 @@
                                 </v-row>
                                 <!----------------------------------->
 
+                                <!------------IP-Address------------->
+                                <v-row align="center">
+                                    <v-col cols="4">
+                                        IP-Address:
+                                    </v-col>
+                                    <v-col cols="8">
+                                        <v-text-field
+                                            single-line
+                                            hide-details
+                                            density="compact"
+                                            variant="outlined"
+                                            v-model="ipAddressField">
+                                        </v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <!----------------------------------->
+
                                 <!------------Machine Name------------->
                                 <v-row align="center">
                                     <v-col cols="4">
@@ -250,6 +267,7 @@
             examName: string,
             groupName: string, 
             loginName: string,
+            ipAddress: string,
             machineName: string,
             metadataUrl: string,
             metadataWindowTitle: string,
@@ -261,11 +279,11 @@
     }>();
 
     //form fields
-    // const groupNameField = ref<string>("new-test-group");
     const groupNameField = ref<string>("");
     const examNameField = ref<string>("");
 
     const loginNameField = ref<string>("");
+    const ipAddressField = ref<string>("");
     const machineNameField = ref<string>("");
 
     const metadataUrlField = ref<string>("");
@@ -285,11 +303,9 @@
     const timeSelectionRadio = ref<boolean>(true);
     const timeSelectionPicker = ref(null);
 
-
     onBeforeMount(async () => {
         searchSessions();
     });
-
 
     async function searchSessions(){
         let fromTime: string = "";
@@ -302,6 +318,7 @@
             examNameField.value,
             groupNameField.value, 
             loginNameField.value, 
+            ipAddressField.value,
             machineNameField.value, 
             metadataUrlField.value, 
             metadataWindowTitleField.value, 
@@ -316,6 +333,7 @@
         examNameField.value = "";
         groupNameField.value = ""; 
         loginNameField.value = "";
+        ipAddressField.value = "";
         machineNameField.value = ""; 
         metadataUrlField.value = ""; 
         metadataWindowTitleField.value = "";

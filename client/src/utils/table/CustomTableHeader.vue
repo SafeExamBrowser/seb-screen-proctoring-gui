@@ -12,8 +12,31 @@
                 >
                     {{ column.title }}
                 </span>
+
                 <template v-if="props.isSorted(column)">
                     <v-icon :icon="props.getSortIcon(column)"></v-icon>
+                </template>
+
+                <!--todo: checking should not be done via title-->
+                <template v-if="column.title == 'Exam'">
+                    <v-btn 
+                        :icon="tableStore.isExamExpand ? 'mdi-arrow-expand-left' : 'mdi-arrow-expand-right'" 
+                        rounded="sm" 
+                        variant="flat" 
+                        size="small"
+                        @click="tableStore.isExamExpand ? emit('removeAddtionalExamHeaders') : emit('addAddtionalExamHeaders')"
+                        >
+                    </v-btn>
+                </template>
+
+                <template v-if="column.title == 'Login Name / IP'">
+                    <v-btn 
+                        :icon="tableStore.isIpDisplayList[tableUtils.getSessionListIndex(props.day!)].isIp ? 'mdi-toggle-switch-outline' : 'mdi-toggle-switch-off-outline'" 
+                        rounded="sm" 
+                        variant="flat" 
+                        @click="toggleNameIpSwitch()"
+                        >
+                    </v-btn>
                 </template>
             </td>
         </template>
@@ -23,10 +46,11 @@
 <script setup lang="ts">
     import { ref, onBeforeMount, onMounted } from "vue";
     import * as tableUtils from "@/utils/table/tableUtils";
-    import { useAppBarStore } from "@/store/app";
+    import { useAppBarStore, useTableStore } from "@/store/app";
 
     //stores
     const appBarStore = useAppBarStore();
+    const tableStore = useTableStore();
 
     //header reactivity
     const headerRefs = ref<any[]>();
@@ -37,7 +61,14 @@
         isSorted: (column: any) => boolean;
         getSortIcon: any
         toggleSort: (column: any) => void;
-        headerRefsProp: any
+        headerRefsProp: any;
+        day?: string;
+    }>();
+
+    //custom: start page
+    const emit = defineEmits<{
+        addAddtionalExamHeaders: any;
+        removeAddtionalExamHeaders: any;
     }>();
 
 
@@ -47,11 +78,22 @@
 
     onMounted(() => {
         //if page = start page --> sort by start-time desc
+        //todo: checking should not be done via title
         if(appBarStore.title == "Active SEB Groups"){
             tableUtils.sortTable(3, headerRefs);
             tableUtils.sortTable(3, headerRefs);
         }
     });
 
+    function toggleNameIpSwitch(){
+        const index: number = tableUtils.getSessionListIndex(props.day!);
+
+        if(tableStore.isIpDisplayList[index].isIp){
+            tableStore.isIpDisplayList[index].isIp = false;
+            return;
+        }
+
+        tableStore.isIpDisplayList[index].isIp = true;
+    }
 
 </script>

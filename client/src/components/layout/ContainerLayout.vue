@@ -74,6 +74,7 @@
                         <v-list>
                             <v-list-item>
                                 <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.galleryIsNameEnabled" hide-details></v-switch>
+                                <v-switch class="mx-auto" label="Show IP" color="primary" v-model="appBarStore.galleryIsIpEnabled" hide-details></v-switch>
                                 <v-switch class="mx-auto" label="Show Metadata" color="primary" v-model="appBarStore.galleryIsMetadataEnabled" hide-details></v-switch>
                             </v-list-item>
                         </v-list>
