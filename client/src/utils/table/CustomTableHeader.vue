@@ -1,7 +1,7 @@
 <template>
     <tr>
         <template v-for="(column, index) in props.columns">
-            <td>
+            <th>
                 <span 
                     ref="headerRefs"
                     tabindex="0" 
@@ -38,7 +38,7 @@
                         >
                     </v-btn>
                 </template>
-            </td>
+            </th>
         </template>
     </tr>
 </template>

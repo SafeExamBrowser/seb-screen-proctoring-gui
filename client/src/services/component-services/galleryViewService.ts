@@ -15,7 +15,7 @@ export async function getGroup(groupUuid: string, currentWindow: number, pageSiz
             }
         );
 
-        groupUuidResponse.screenshots = filterLiveSessions(groupUuidResponse.screenshots);
+        // groupUuidResponse.screenshots = filterLiveSessions(groupUuidResponse.screenshots);
 
         return groupUuidResponse;
 

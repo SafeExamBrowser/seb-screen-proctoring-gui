@@ -14,6 +14,9 @@
                     <v-text-field
                         single-line
                         hide-details
+
+                        placeholder="exam name"
+
                         density="compact"
                         variant="outlined"
                         v-model="examNameField"

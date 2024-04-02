@@ -1,5 +1,5 @@
 <template>
-    <v-hover v-slot="{isHovering, props}">
+    <v-hover v-slot="{isHovering, props}" >
         <!--todo: add max height  -->
         <v-img
             eager
@@ -8,6 +8,7 @@
             class="img-styling"
             :aspect-ratio="16/9"
             :class="{'on-hover': isHovering}"
+
             :src="liveService.getLatestImageLink(screenshot, timestamp.toString())">
 
             <div v-if="isHovering" class="hover-overlay d-flex">
@@ -15,7 +16,7 @@
                     <v-col >
                         <div v-if="appBarStore.galleryIsMetadataEnabled">
                             <v-expansion-panels color="#404040">
-                                <v-expansion-panel
+                                <v-expansion-panel  
                                     title="Metadata">
                                     <v-expansion-panel-text>
                                         <v-row v-for="(value, key) in galleryViewService.getScreenshotMetadata(screenshot.metaData)" :key="key" no-gutters>
@@ -70,6 +71,7 @@
 
         <v-img 
             v-else 
+            eager
             class="content-filler"
             :aspect-ratio="16/9"
             :src="liveService.getLatestImageLink(screenshot, timestamp.toString())">
@@ -80,6 +82,7 @@
     <v-dialog v-model="dialog" max-width="1500">
         <v-card>
             <v-img 
+                eager
                 class="img-styling"
                 :aspect-ratio="16/9"
                 :src="expandedScreenshotLink">
@@ -91,10 +94,11 @@
 
 
 <script setup lang="ts">
-    import { ref, computed } from "vue";
+    import { ref, computed, watch } from "vue";
     import * as galleryViewService from "@/services/component-services/galleryViewService";
     import * as liveService from "@/services/component-services/liveService";
     import { useAppBarStore } from "@/store/app";
+    import { useFocus } from '@vueuse/core'
 
 
     //props
@@ -118,6 +122,36 @@
     const expandedScreenshotLink = computed<string>(() => {
         return liveService.getLatestImageLink(props.screenshot, props.timestamp.toString());
     });
+
+    // tabindex="0"
+    // @focusin="isTabFocused = true"
+    // @focusout="isTabFocused = false"
+
+    // // const isTabFocused = computed<boolean>(() => {
+    // //     return 
+    // // });
+
+    // const isTabFocused = ref<boolean>(false);
+
+    // const target = ref()
+    // const { focused } = useFocus(target)
+
+    // watch(focused, (focused) => {
+    //     if (focused){
+    //         isTabFocused.value = true;
+    //     }
+    //     else {
+    //         isTabFocused.value = false;
+
+    //     }
+    // });
+
+    // function focusTabEvent(event: FocusEvent){
+    //     console.log(event)
+    //     isTabFocused.value = true;
+    // }
+
+
 
 </script>
 
