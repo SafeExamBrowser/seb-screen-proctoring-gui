@@ -29,7 +29,7 @@
                     </v-btn>
                 </template>
 
-                <template v-if="column.title == 'Login Name / IP'">
+                <template v-if="column.title == $t('searchSessionTable.loginName')">
                     <v-btn 
                         :icon="tableStore.isIpDisplayList[tableUtils.getSessionListIndex(props.day!)].isIp ? 'mdi-toggle-switch-outline' : 'mdi-toggle-switch-off-outline'" 
                         rounded="sm" 

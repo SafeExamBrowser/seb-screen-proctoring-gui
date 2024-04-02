@@ -27,16 +27,16 @@
         "last": "Last",
         "between": "Between",
         "cancel": "Cancel",
-        "search": "Search",
+        "search": "Search"
     },
     "searchPage": {
         "title": "Search results",
         "collapse": "Collapse",
-        "expand": "Expand",
+        "expand": "Expand"
     },
     "searchSessionTable": {
         "startTime": "Start time",
-        "loginName": "Login name",
+        "loginName": "Login name / IP",
         "machineName": "Machine name",
         "groupName": "Group name",
         "examName": "Exam name",
@@ -51,8 +51,8 @@
     },
     "$vuetify": {
         "dataIterator": {
-          "rowsPerPageText": "Isfddsftems per page:",
-          "pageText": "{0}-{1} of {2}",
-        },
+          "rowsPerPageText": "Items per page:",
+          "pageText": "{0}-{1} of {2}"
+        }
     }
 }
