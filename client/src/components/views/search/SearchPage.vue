@@ -64,6 +64,7 @@
                             
                             <v-expansion-panel-text>
                                 <SearchSessionTable 
+                                    :day="session.day"
                                     :sessions="session.sessions" 
                                     :metaData="{
                                         screenProctoringMetadataWindowTitle: metadataSearchWindowTitle!, 
@@ -91,7 +92,7 @@
 
 <script setup lang="ts">
     import { ref, onBeforeMount, watch } from "vue";
-    import { useAppBarStore, useLoadingStore } from "@/store/app";
+    import { useAppBarStore, useLoadingStore, useTableStore } from "@/store/app";
     import * as searchViewService from "@/services/component-services/searchViewService";
     import SearchForm from "./SearchForm.vue";
     import SearchSessionTable from "./SearchSessionTable.vue";
@@ -119,10 +120,12 @@
     let metadataSearchWindowTitle: string | null;
     let metadataSearchAction: string | null;
     let loginNameSearch: string | null;
+    let ipAddressSearch: string | null;
     let machineNameSearch: string | null;
 
     //store
     const loadingStore = useLoadingStore();
+    const tableStore = useTableStore();
 
 
     onBeforeMount(async () => {
@@ -150,6 +153,7 @@
         examName: string,
         groupName: string, 
         loginName: string, 
+        ipAddress: string,
         machineName: string, 
         metadataUrl: string, 
         metadataWindowTitle: string, 
@@ -165,16 +169,17 @@
         examNameSearch = examName == "" ? null : examName;
         groupNameSearch = groupName == "" ? null : groupName;
         metadataSearchUrl = metadataUrl == "" ? null : metadataUrl;
-        metadataSearchUrl = metadataUrl == "" ? null : metadataUrl;
         metadataSearchWindowTitle = metadataWindowTitle == "" ? null : metadataWindowTitle;
         metadataSearchAction = metadataUserAction == "" ? null : metadataUserAction;
         loginNameSearch = loginName == "" ? null : loginName;
+        ipAddressSearch = ipAddress == "" ? null : ipAddress;
         machineNameSearch = machineName == "" ? null : machineName;
 
         searchParameters.value = {   
             examName: examNameSearch,
             groupName: groupNameSearch,
             clientName: loginNameSearch,
+            clientIp: ipAddressSearch,
             clientMachineName: machineNameSearch,
             screenProctoringMetadataURL: metadataSearchUrl,
             screenProctoringMetadataWindowTitle: metadataSearchWindowTitle,
@@ -221,7 +226,25 @@
         }
 
         sessionsGrouped.value = groupingUtils.groupSessionsByDay(sessionSearchResults.value);
+
+        loginNameIpToggleListFillUp();
+
         searchResultAvailable.value = true;
+    }
+
+    function loginNameIpToggleListFillUp(){
+        if(sessionsGrouped.value == null){
+            return;
+        }
+
+        for(var i = 0; i < sessionsGrouped.value.content.length; i++){
+            tableStore.isIpDisplayList.push(
+                {
+                    day: sessionsGrouped.value.content[i].day,
+                    isIp: false
+                }
+            );
+        }
     }
 
     function closeAllPanels(){

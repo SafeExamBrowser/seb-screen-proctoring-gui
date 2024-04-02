@@ -23,7 +23,8 @@
                 :is-sorted="isSorted"
                 :get-sort-icon="getSortIcon"
                 :toggle-sort="toggleSort"
-                :header-refs-prop="sessionTableHeadersRef">
+                :header-refs-prop="sessionTableHeadersRef"
+                :day="props.day">
             </CustomTableHeader>
         </template>
 
@@ -31,6 +32,19 @@
             <td>
                 <div>
                     {{timeUtils.formatTimestmapToTime(item.startTime)}}
+                </div>
+            </td>
+        </template>
+
+        <template v-slot:item.clientName="{item, index}">
+            <td>
+                <div>
+                    <template v-if="!tableStore.isIpDisplayList[tableUtils.getSessionListIndex(props.day)].isIp">
+                        {{ item.clientName }}
+                    </template>
+                    <template v-else>
+                        {{ item.clientIp }}
+                    </template>
                 </div>
             </td>
         </template>
@@ -64,15 +78,20 @@
 
 
 <script setup lang="ts">
-    import { ref } from "vue";
+    import { ref, onBeforeMount } from "vue";
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/table/tableUtils"
     import SearchScreenshotsTable from "./SearchScreenshotsTable.vue";
     import * as searchViewService from "@/services/component-services/searchViewService";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
+    import { useTableStore } from "@/store/app";
+
+    //store
+    const tableStore = useTableStore();
 
     //props
     const props = defineProps<{
+        day: string;
         sessions: Session[],
         metaData: MetaData
     }>();
@@ -82,15 +101,15 @@
 
     //table
     const sessionTableHeadersRef = ref<any[]>();
-    // const sessionTableHeaders = ref([
-    //     {title: "Start-Time", key: "startTime", width: "10%"},
-    //     {title: "Login Name", key: "clientName", width: "30%"},
-    //     {title: "Machine Name", key: "clientMachineName", width: "20%"},
-    //     {title: "Group Name", key: "groupName", width: "20%"},
-    //     {title: "Exam Name", key: "exam.name", width: "20%"},
-    //     {title: "Slides", key: "nrOfScreenshots"},
-    //     {title: "Video", key: "proctoringViewLink"},
-    // ]);                 
+    const sessionTableHeaders = ref([
+        {title: "Start-Time", key: "startTime", width: "10%"},
+        {title: "Login Name / IP", key: "clientName", width: "30%"},
+        {title: "Machine Name", key: "clientMachineName", width: "20%"},
+        {title: "Group Name", key: "groupName", width: "20%"},
+        {title: "Exam Name", key: "exam.name", width: "20%"},
+        {title: "Slides", key: "nrOfScreenshots"},
+        {title: "Video", key: "proctoringViewLink"},
+    ]);                 
 
 
     async function searchTimeline(item: any, isExpanded: Function, toggleExpand: Function){
@@ -128,7 +147,6 @@
         }
 
         return false;
-
     }
 
 

@@ -9,14 +9,18 @@ export default createVuetify({
         colors: {
           primary: "#215CAF",
           secondary: "#5CBBF6",
-          blue: "#2196F3"
+          blue: "#2196F3",
+          title: "#000000",
+          subtitle: "#000000",
           // background: "#eef5f9",
           // surface: "#4D7DBF"
         },
       },
       dark: {
         colors: { 
-          primary: "#ffff00",
+          primary: "#2196F3",
+          title: "#ffffff",
+          subtitle: "#ffffff",
         }
       },
       tableTheme: {

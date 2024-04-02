@@ -35,6 +35,10 @@
             value: "No data available"
         },
         {
+            key: "no-live-data",
+            value: "No live sessions available"
+        },
+        {
             key: "api-error",
             value: "Something went wrong, please try again"
         },

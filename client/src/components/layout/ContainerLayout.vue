@@ -1,12 +1,11 @@
 <template>
-
     <v-navigation-drawer v-model="drawer" class="d-none d-sm-flex">
         
         <!--page title with logo-->
         <v-sheet class="pa-4">
             <a href="/start" class="text-decoration-none text-black">
                 <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Logo ETH Zürich"></v-img>
-                <div class="app-title text-h6">{{ $t("navigation.title") }}</div>
+                <div class="app-title text-h6 text-title">{{ $t("navigation.title") }}</div>
             </a>
         </v-sheet>
 
@@ -74,6 +73,7 @@
                         <v-list>
                             <v-list-item>
                                 <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.galleryIsNameEnabled" hide-details></v-switch>
+                                <v-switch class="mx-auto" label="Show IP" color="primary" v-model="appBarStore.galleryIsIpEnabled" hide-details></v-switch>
                                 <v-switch class="mx-auto" label="Show Metadata" color="primary" v-model="appBarStore.galleryIsMetadataEnabled" hide-details></v-switch>
                             </v-list-item>
                         </v-list>
@@ -103,18 +103,16 @@
                         <v-divider></v-divider>
 
                         <v-list-item>
-                            <v-btn-toggle v-model="themeToggle" variant="text" mandatory>
-                                <v-btn icon="mdi-white-balance-sunny"></v-btn>
-                                <v-btn icon="mdi-weather-night"></v-btn>
+                            <v-btn-toggle v-model="languageToggle" variant="text" mandatory>
+                                <v-btn>EN</v-btn>
+                                <v-btn>DE</v-btn>
                             </v-btn-toggle>
                         </v-list-item>
 
-                        <v-divider></v-divider>
-
-                        <v-list-item >
-                            <v-btn-toggle v-model="languageToggle" variant="text" rounded="0" mandatory>
-                                    <v-btn @click="changeLocale('en')">EN</v-btn>
-                                    <v-btn @click="changeLocale('de')">DE</v-btn>
+                        <v-list-item>
+                            <v-btn-toggle v-model="themeToggle" variant="text" mandatory>
+                                <v-btn icon="mdi-white-balance-sunny"></v-btn>
+                                <v-btn icon="mdi-weather-night"></v-btn>
                             </v-btn-toggle>
                         </v-list-item>
 
@@ -147,7 +145,7 @@
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
     import { useTheme } from "vuetify";
-    import { useI18n } from 'vue-i18n'
+    import { useI18n } from "vue-i18n";
 
     //navigation
     const drawer = ref();
@@ -163,11 +161,9 @@
 
     //theme
     const theme = useTheme();
-    const themeToggle = ref<number>(0);
-
-    //language
-    const languageToggle = ref<number>(0);
-    const language = ref<string>("EN");
+    const localstorageTheme: string | null = localStorage.getItem("theme");
+    theme.global.name.value = localstorageTheme ?? theme.global.name.value ?? "light";
+    const themeToggle = ref<number>(theme.global.name.value === "dark" ? 1 : 0);
 
     //gallery view
     const gridSizes: GridSize[] = [
@@ -178,17 +174,23 @@
         // {title: "6x6", value: 6},
     ];
 
-    // i18n
-    const { locale } = useI18n()
+    //i18n
+    const { locale } = useI18n();
+    const localStorageLocale: string | null = localStorage.getItem("locale");
+    locale.value = localStorageLocale ?? "en";
+    const languageToggle = ref<number>(locale.value === "en" ? 0 : 1);
 
     //watchers
-    watch(themeToggle, () => {
-        theme.global.name.value = themeToggle.value !== 1 ? "light" : "dark";
+    watch(languageToggle, () => {
+        locale.value = languageToggle.value === 0 ? "en" : "de";
+        localStorage.setItem("locale", locale.value);
     });
 
-    watch(languageToggle, () => {
-        language.value = languageToggle.value !== 1 ? "EN" : "DE";
+    watch(themeToggle, () => {
+        theme.global.name.value = themeToggle.value === 0 ? "light" : "dark";
+        localStorage.setItem("theme", theme.global.name.value);
     });
+
 
     //methods
     function changeGridSize(gridSize: GridSize){
@@ -198,11 +200,6 @@
     async function userMenuOpened(){
         await userAccountViewService.setPersonalUserAccount();
     }
-
-    function changeLocale (newLocale: string) {
-        locale.value = newLocale
-    }
-
 </script>  
 
 <style scoped>

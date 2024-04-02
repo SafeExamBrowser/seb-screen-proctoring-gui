@@ -36,8 +36,10 @@
                 <v-row align="end">
                     <v-col>
                         <v-sheet class="d-flex pa-2 button-row">
-                            <div v-if="appBarStore.galleryIsNameEnabled" class="text-body-1 title-box">
-                                {{screenshot.clientName.substring(0, 8)}}
+                            <div class="text-body-1 title-box">
+                                <template v-if="appBarStore.galleryIsNameEnabled">{{screenshot.clientName}}</template>
+                                <template v-if="appBarStore.galleryIsNameEnabled && appBarStore.galleryIsIpEnabled"> / </template>
+                                <template v-if="appBarStore.galleryIsIpEnabled">{{screenshot.clientIp}}</template>
                             </div>
                             <v-spacer></v-spacer>
                             <span>
