@@ -14,10 +14,11 @@
         "confirmPassword": "Confirm password *"
     },
     "searchForm": {
-        "examName": "Login name",
+        "examName": "Exam name",
         "groupName": "Group name",
         "loginMachineTitle": "Login- / Machine name",
         "loginName": "Login name",
+        "ipAddress": "IP Address",
         "machineName": "Machine name",
         "metadataTitle": "Metadata",
         "url": "Url",

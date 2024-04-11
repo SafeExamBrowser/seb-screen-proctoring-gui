@@ -14,12 +14,10 @@
                     <v-text-field
                         single-line
                         hide-details
-
-                        placeholder="exam name"
-
                         density="compact"
                         variant="outlined"
                         v-model="examNameField"
+                        :aria-label="$t('searchForm.examName')"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -37,6 +35,7 @@
                         density="compact"
                         variant="outlined"
                         v-model="groupNameField"
+                        :aria-label="$t('searchForm.groupName')"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -61,7 +60,8 @@
                                             hide-details
                                             density="compact"
                                             variant="outlined"
-                                            v-model="loginNameField">
+                                            v-model="loginNameField"
+                                            :aria-label="$t('searchForm.loginName')">
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
@@ -70,7 +70,7 @@
                                 <!------------IP-Address------------->
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        IP-Address:
+                                        {{ $t('searchForm.ipAddress') }}:
                                     </v-col>
                                     <v-col cols="8">
                                         <v-text-field
@@ -78,7 +78,8 @@
                                             hide-details
                                             density="compact"
                                             variant="outlined"
-                                            v-model="ipAddressField">
+                                            v-model="ipAddressField"
+                                            :aria-label="$t('searchForm.loginName')">
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
@@ -95,7 +96,8 @@
                                             hide-details
                                             density="compact"
                                             variant="outlined"
-                                            v-model="machineNameField">
+                                            v-model="machineNameField"
+                                            :aria-label="$t('searchForm.machineName')">
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
@@ -129,6 +131,7 @@
                                             variant="outlined"
                                             v-model="metadataUrlField"
                                             :disabled=true
+                                            :aria-label="$t('searchForm.url')"
                                         ></v-text-field>
                                     </v-col>
                                 </v-row>
@@ -146,7 +149,8 @@
                                             density="compact"
                                             variant="outlined"
                                             v-model="metadataWindowTitleField"
-                                        ></v-text-field>
+                                            :aria-label="$t('searchForm.applicationWebsite')">
+                                        </v-text-field>
                                     </v-col>
                                 </v-row>
                                 <!----------------------------------->
@@ -163,7 +167,8 @@
                                             density="compact"
                                             variant="outlined"
                                             v-model="metadataUserActionField"
-                                        ></v-text-field>
+                                            :aria-label="$t('searchForm.activityDetails')">
+                                        </v-text-field>
                                     </v-col>
                                 </v-row>
                                 <!----------------------------------->
@@ -194,7 +199,8 @@
                             density="compact"
                             variant="solo"
                             v-model="timePeriodField"
-                            :disabled="!timePeriodRadio"> 
+                            :disabled="!timePeriodRadio"
+                            :aria-label="$t('searchForm.last')"> 
                         </v-text-field> 
                     </v-col>
                     <v-col cols="4">

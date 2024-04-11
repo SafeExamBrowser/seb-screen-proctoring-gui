@@ -18,6 +18,7 @@
         "groupName": "Gruppenname",
         "loginMachineTitle": "Anmelde- / Computername",
         "loginName": "Anmeldename",
+        "ipAddress": "IP Adresse",
         "machineName": "Computername",
         "metadataTitle": "Metadaten",
         "url": "Url",
