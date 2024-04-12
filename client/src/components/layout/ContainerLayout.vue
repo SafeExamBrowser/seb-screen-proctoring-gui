@@ -1,6 +1,6 @@
 <template>
-    <v-navigation-drawer v-model="drawer" class="d-none d-sm-flex">
-        
+    <v-navigation-drawer v-model="drawer" class="d-sm-flex">
+    <!-- <v-navigation-drawer v-model="drawer" class="d-md-flex"> -->
         <!--page title with logo-->
         <v-sheet class="pa-4">
             <a href="/start" class="text-decoration-none text-black">
@@ -19,7 +19,6 @@
     </v-navigation-drawer>
 
     <v-app-bar>
-
         <!--menu icon-->
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer">
         </v-app-bar-nav-icon>

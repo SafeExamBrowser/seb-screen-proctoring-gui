@@ -88,6 +88,7 @@
         loadingStore.skipLoading = true;
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
         assignData();
+        currentWindow.value = 0;
     });
 
     watch(currentWindow, () => {
@@ -95,11 +96,11 @@
         appBarStore.galleryCurrentPage+=1;
     });
 
-    watch(appBarStoreRef.galleryMaxPages, () => {
-        if (appBarStore.galleryCurrentPage > appBarStore.galleryMaxPages) {
-            currentWindow.value = 1;
-        }
-    });
+    // watch(appBarStoreRef.galleryMaxPages, () => {
+    //     if (appBarStore.galleryCurrentPage > appBarStore.galleryMaxPages) {
+    //         currentWindow.value = 1;
+    //     }
+    // });
 
     // watch(noScreenshotData, () => {
     //     if(noScreenshotData.value){
@@ -123,7 +124,6 @@
 
         //filter out null values
         group.value.screenshots = group.value?.screenshots.flatMap(f => f ? [f] : []);
-
 
         updateInfoData();
 
