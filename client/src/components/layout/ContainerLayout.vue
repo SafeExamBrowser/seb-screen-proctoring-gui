@@ -38,11 +38,11 @@
                         Page: {{ appBarStore.galleryCurrentPage }} / {{ appBarStore.galleryMaxPages }}
                     </v-chip>
                     <v-chip class="session-info-item">
-                        Number of Sessions: {{ appBarStore.gallerNumberOfSessions }}
+                        Sessions: {{ appBarStore.galleryLiveSessions }} / {{ appBarStore.galleryAmountOfSessions }}
                     </v-chip>
-                    <v-chip class="session-info-item">
+                    <!-- <v-chip class="session-info-item">
                         Description: {{ appBarStore.galleryDescription }}
-                    </v-chip>
+                    </v-chip> -->
                 </div>
 
                 <div class="grid-size-container">

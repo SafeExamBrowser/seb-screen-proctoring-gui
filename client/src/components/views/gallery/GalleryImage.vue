@@ -70,6 +70,7 @@
 
         <v-img 
             v-else 
+            eager
             class="content-filler"
             :aspect-ratio="16/9"
             :src="liveService.getLatestImageLink(screenshot, timestamp.toString())">
@@ -80,6 +81,7 @@
     <v-dialog v-model="dialog" max-width="1500">
         <v-card>
             <v-img 
+                eager
                 class="img-styling"
                 :aspect-ratio="16/9"
                 :src="expandedScreenshotLink">
