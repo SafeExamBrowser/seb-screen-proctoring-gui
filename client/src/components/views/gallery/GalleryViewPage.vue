@@ -64,7 +64,6 @@
     //=============lifecycle and watchers==================
     onBeforeMount(async () => {
         //todo: add error handling
-
         loadingStore.skipLoading = true;
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
 
@@ -113,8 +112,6 @@
     function assignData() {
         calcAmountOfWindows();
         noScreenshotData.value = false;
-        console.log("numberOfLiveSessions: " + group.value?.numberOfLiveSessions)
-
 
         if (group.value?.screenshots == null || group.value?.screenshots.length == 0) {
             noScreenshotData.value = true;

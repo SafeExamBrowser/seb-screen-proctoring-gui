@@ -1,5 +1,6 @@
 <template>
-    <v-navigation-drawer v-model="drawer" class="d-sm-flex">
+    <!-- class="d-sm-flex" -->
+    <v-navigation-drawer v-model="drawer">
     <!-- <v-navigation-drawer v-model="drawer" class="d-md-flex"> -->
         <!--page title with logo-->
         <v-sheet class="pa-4">
@@ -26,9 +27,7 @@
         <!--current site title-->
         <v-app-bar-title>{{ appBarStore.title }}</v-app-bar-title>
 
-
         <template v-slot:append>
-
             <!--gallery view specfic items-->
             <template v-if="useRoute().name == 'GalleryViewPage'">
 
@@ -73,7 +72,7 @@
                             <v-list-item>
                                 <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.galleryIsNameEnabled" hide-details></v-switch>
                                 <v-switch class="mx-auto" label="Show IP" color="primary" v-model="appBarStore.galleryIsIpEnabled" hide-details></v-switch>
-                                <v-switch class="mx-auto" label="Show Metadata" color="primary" v-model="appBarStore.galleryIsMetadataEnabled" hide-details></v-switch>
+                                <!-- <v-switch class="mx-auto" label="Show Metadata" color="primary" v-model="appBarStore.galleryIsMetadataEnabled" hide-details></v-switch> -->
                             </v-list-item>
                         </v-list>
                     </v-menu>
@@ -202,7 +201,6 @@
 </script>  
 
 <style scoped>
-
     .app-title{
         text-align: center;
     }

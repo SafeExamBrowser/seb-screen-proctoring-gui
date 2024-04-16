@@ -47,7 +47,7 @@ export const useAppBarStore = defineStore("appBar", () => {
     const galleryDescription = ref<string>("");
 
     return {
-        title, 
+        title,      
         galleryGridSize, 
         galleryIsNameEnabled, 
         galleryIsIpEnabled, 
@@ -55,7 +55,7 @@ export const useAppBarStore = defineStore("appBar", () => {
         galleryCurrentPage, 
         galleryMaxPages, 
         galleryLiveSessions,
-        galleryAmountOfSessions: galleryAmountOfSessions,
+        galleryAmountOfSessions,
         galleryDescription
     };
 });
