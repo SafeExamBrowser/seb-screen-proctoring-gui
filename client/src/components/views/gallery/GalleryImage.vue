@@ -1,4 +1,5 @@
 <template>
+    <!-----------gallery image---------->
     <v-hover v-slot="{isHovering, props}">
         <!--todo: add max height  -->
         <v-img
@@ -6,13 +7,14 @@
             v-if="screenshot"
             v-bind="props"
             class="img-styling"
+            @dblclick="openDialog()"
             :aspect-ratio="16/9"
             :class="{'on-hover': isHovering}"
             :src="liveService.getLatestImageLink(screenshot, timestamp.toString())">
 
             <div v-if="isHovering" class="hover-overlay d-flex">
                 <v-row>
-                    <v-col >
+                    <v-col>
                         <div v-if="appBarStore.galleryIsMetadataEnabled">
                             <v-expansion-panels color="#404040">
                                 <v-expansion-panel
@@ -67,26 +69,97 @@
                 </v-row>
             </div>
         </v-img>
-
         <v-img 
             v-else 
+            eager
             class="content-filler"
             :aspect-ratio="16/9"
             :src="liveService.getLatestImageLink(screenshot, timestamp.toString())">
         </v-img>
-
     </v-hover>
+    <!-------------------------->
 
+    <!-----------expanded image---------->
     <v-dialog v-model="dialog" max-width="1500">
         <v-card>
             <v-img 
+                eager
+                v-if="screenshot"
                 class="img-styling"
                 :aspect-ratio="16/9"
                 :src="expandedScreenshotLink">
+
+                <div class="hover-overlay-expanded d-flex">
+                    <v-row>
+                        <v-col>
+                            <div>
+                                <v-expansion-panels>
+                                    <v-expansion-panel>
+                                        <v-expansion-panel-title color="#404040">
+                                            
+                                            <template v-slot:default="{ expanded }">
+                                                <v-icon
+                                                    class="mr-2"
+                                                    :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'">
+                                                </v-icon>
+                                                Metadata
+                                            </template>
+                                            
+                                            <template v-slot:actions="{ expanded }">
+                                                <v-btn
+                                                    color="white" 
+                                                    variant="outlined" 
+                                                    rounded="sm"
+                                                    icon="mdi-arrow-collapse"
+                                                    size="small"
+                                                    @click="closeDialog()">
+                                                </v-btn>
+                                            </template>
+
+                                        </v-expansion-panel-title>
+                                        <v-expansion-panel-text>
+                                            <v-row v-for="(value, key) in galleryViewService.getScreenshotMetadata(screenshot.metaData)" :key="key" no-gutters>
+                                                <v-col>
+                                                    {{key}}
+                                                </v-col>
+                                                <v-col>
+                                                    {{value}}
+                                                </v-col>
+                                            </v-row>
+                                        </v-expansion-panel-text>
+                                    </v-expansion-panel>
+                                </v-expansion-panels>
+                            </div>
+                        </v-col>
+                    </v-row>
+
+                    <v-row align="end">
+                        <v-col>
+                            <v-sheet class="d-flex pa-2 button-row">
+                                <div class="text-body-1 title-box">
+                                    {{screenshot.clientName}} / {{screenshot.clientIp}}
+                                </div>
+                                <v-spacer></v-spacer>
+                                <span>
+                                    <v-btn
+                                        rounded="sm" 
+                                        color="primary" 
+                                        variant="flat" 
+                                        class="ml-2"
+                                        icon="mdi-video"
+                                        size="small"
+                                        @click="galleryViewService.navigateToProctoringView(screenshot, groupUuid)">
+                                    </v-btn>
+                                </span>
+                            </v-sheet>
+                        </v-col>
+                    </v-row>
+                </div>
+
             </v-img>
         </v-card>
     </v-dialog>
-
+    <!-------------------------->
 </template>
 
 
@@ -95,7 +168,6 @@
     import * as galleryViewService from "@/services/component-services/galleryViewService";
     import * as liveService from "@/services/component-services/liveService";
     import { useAppBarStore } from "@/store/app";
-
 
     //props
     const props = defineProps<{
@@ -107,12 +179,15 @@
     //store
     const appBarStore = useAppBarStore();
 
-    //ref
+    //dialog - expanded image
     const dialog = ref(false);
 
-
-    function openDialog() {
+    function openDialog(){
         dialog.value = true;
+    }
+
+    function closeDialog(){
+        dialog.value = false;
     }
 
     const expandedScreenshotLink = computed<string>(() => {
@@ -135,6 +210,17 @@
         left: 0;
         z-index: 0;
         background-color: rgba(255, 255, 255, 0.3);
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .img-styling .hover-overlay-expanded {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 0;
         flex-direction: column;
         justify-content: space-between;
     }

@@ -47,7 +47,7 @@
     const currentWindow = ref<number>(0);   
 
     //time constants
-    const GROUP_INTERVAL: number = 5 * 1000;
+    const GROUP_INTERVAL: number = 2 * 1000;
     const SCREENSHOT_INTERVAL: number = 1 * 1000;
 
     //store
@@ -64,14 +64,13 @@
     //=============lifecycle and watchers==================
     onBeforeMount(async () => {
         //todo: add error handling
-
         loadingStore.skipLoading = true;
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
 
         if(group.value){
-            appBarStore.title = "Gallery View of Group: " + group.value.name;
-            appBarStore.gallerNumberOfSessions = group.value.numberOfSessions;
-            appBarStore.galleryDescription = group.value.description;
+            appBarStore.title = "Group: " + group.value.name;
+            updateInfoData();
+            // appBarStore.galleryDescription = group.value.description;
         }
 
         assignData();
@@ -88,6 +87,7 @@
         loadingStore.skipLoading = true;
         group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
         assignData();
+        currentWindow.value = 0;
     });
 
     watch(currentWindow, () => {
@@ -95,11 +95,19 @@
         appBarStore.galleryCurrentPage+=1;
     });
 
-    watch(appBarStoreRef.galleryMaxPages, () => {
-        if (appBarStore.galleryCurrentPage > appBarStore.galleryMaxPages) {
-            currentWindow.value = 1;
-        }
-    });
+    // watch(appBarStoreRef.galleryMaxPages, () => {
+    //     if (appBarStore.galleryCurrentPage > appBarStore.galleryMaxPages) {
+    //         currentWindow.value = 1;
+    //     }
+    // });
+
+    // watch(noScreenshotData, () => {
+    //     if(noScreenshotData.value){
+    //         appBarStore.galleryCurrentPage = 0;
+    //         appBarStore.galleryMaxPages = 0;
+    //         maxPages.value = 1;
+    //     }
+    // });
 
     function assignData() {
         calcAmountOfWindows();
@@ -107,12 +115,14 @@
 
         if (group.value?.screenshots == null || group.value?.screenshots.length == 0) {
             noScreenshotData.value = true;
+            updateInfoData();
             return;
         }
 
+        //filter out null values
         group.value.screenshots = group.value?.screenshots.flatMap(f => f ? [f] : []);
-        appBarStore.gallerNumberOfSessions = group.value.numberOfSessions;
-        appBarStore.galleryMaxPages = maxPages.value;
+
+        updateInfoData();
 
         if (group.value.screenshots.length == 0) {
             noScreenshotData.value = true;
@@ -120,6 +130,17 @@
     }
     //==============================
 
+    //=====general======
+    function updateInfoData(){
+        if(group.value){
+            appBarStore.galleryLiveSessions = group.value.numberOfLiveSessions;
+            appBarStore.galleryAmountOfSessions = group.value.numberOfSessions;
+
+            appBarStore.galleryMaxPages = maxPages.value;
+        }
+    }
+
+    //==============================
 
     //=====window functions======
     async function windowChange() {
@@ -133,7 +154,8 @@
             return;
         }
 
-        maxPages.value = Math.ceil(group.value?.numberOfSessions / Math.pow(appBarStore.galleryGridSize.value, 2));
+        const maxPagesCalc: number = Math.ceil(group.value.numberOfLiveSessions / Math.pow(appBarStore.galleryGridSize.value, 2));
+        maxPages.value = maxPagesCalc > 0 ? maxPagesCalc : 1;
     }
     //==============================
 
