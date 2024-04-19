@@ -275,7 +275,8 @@
             fromTime: string,
             toTime: string,
             pageNumber: number
-        ]
+        ];
+        closeAllPanels: any;
     }>();
 
     //form fields
@@ -290,9 +291,9 @@
     const metadataWindowTitleField = ref<string>("");
     const metadataUserActionField = ref<string>("");
 
-    const timePeriodField = ref<number>(5);
-    const timePeriodRadio = ref<boolean>(false);
-    const timePeriodSelect = ref<number>(1);
+    const timePeriodField = ref<number>(1);
+    const timePeriodRadio = ref<boolean>(true);
+    const timePeriodSelect = ref<number>(2);
     const timePeriodSelectValues: {title: string, value: number}[] = [
         {title: TimePeriod.day, value: 1},
         {title: TimePeriod.week, value: 2},
@@ -300,7 +301,7 @@
         {title: TimePeriod.year, value: 4},
     ];
 
-    const timeSelectionRadio = ref<boolean>(true);
+    const timeSelectionRadio = ref<boolean>(false);
     const timeSelectionPicker = ref(null);
 
     onBeforeMount(async () => {
@@ -338,11 +339,14 @@
         metadataUrlField.value = ""; 
         metadataWindowTitleField.value = "";
         metadataUserActionField.value = "";
-        timePeriodField.value = 5;
-        timePeriodRadio.value = false;
-        timePeriodSelect.value = 1;
-        timeSelectionRadio.value = true;
+        timePeriodField.value = 1;
+        timePeriodRadio.value = true;
+        timePeriodSelect.value = 2;
+        timeSelectionRadio.value = false;
         timeSelectionPicker.value = null;
+
+        emit("closeAllPanels");
+        searchSessions();
     }
 
     function calcTimePeriod(): [string, string]{
@@ -372,9 +376,6 @@
     }
 
 </script>
-
-
-
 
 <style scoped>
     .form-container{

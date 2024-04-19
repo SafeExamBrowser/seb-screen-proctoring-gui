@@ -66,8 +66,10 @@ export const useAppBarStore = defineStore("appBar", () => {
 export const useLoadingStore = defineStore("loading", () => {
   const skipLoading = ref<boolean>(false);
   const isLoading = ref<boolean>(false);
+  const isSessionsSearch = ref<boolean>(false);
+  const isTimeout = ref<boolean>(false);
 
-  return {skipLoading, isLoading};
+  return {skipLoading, isLoading, isSessionsSearch, isTimeout};
 });
 //-------------------------------------------------//
 
@@ -81,9 +83,9 @@ export const useAuthStore = defineStore("auth", () => {
     setRefreshToken(refershTokenString);
 
     if(useAuthStore().redirectRoute == ""){
-      navigateTo("/start");
+        navigateTo("/start");
     }else{
-      navigateTo(useAuthStore().redirectRoute);
+        navigateTo(useAuthStore().redirectRoute);
     }
 
     await userAccountViewService.setPersonalUserAccount();

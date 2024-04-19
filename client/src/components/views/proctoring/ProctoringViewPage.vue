@@ -298,8 +298,20 @@
             return;
         }
 
-        if(screenshotTimestampsFloored.value.includes(Math.floor(sliderTime.value/1000))){
-            timestampsIndex.value = screenshotTimestampsFloored.value.indexOf(Math.floor(sliderTime.value/1000));
+        const sliderTimeForIndex: number = Math.floor(sliderTime.value/1000); 
+        if(screenshotTimestampsFloored.value.includes(sliderTimeForIndex)){
+            console.log("debug 2")
+            timestampsIndex.value = screenshotTimestampsFloored.value.indexOf(sliderTimeForIndex);
+            assignScreenshotDataByTimestamp(sliderTime.value.toString());
+            return;
+        }
+
+        const screenshotTimestampsShortend: number[] = screenshotTimestamps.value.map(timestamp => Math.floor(timestamp / 10000));
+        const sliderTimeForIndexShortend: number = Math.floor(sliderTime.value / 10000);
+
+        if(screenshotTimestampsShortend.includes(sliderTimeForIndexShortend)){
+            timestampsIndex.value = screenshotTimestampsShortend.indexOf(sliderTimeForIndexShortend);
+
         }else{
             await setTimestampsList(SortOrder.asc);
         }
@@ -433,7 +445,6 @@
         isPlaying.value = true;
         isLiveButtonDisabled.value = true;
 
-        //console.log("debug 1")
         sliderTime.value = sliderMax.value;
 
         startIntervalLiveImage();
