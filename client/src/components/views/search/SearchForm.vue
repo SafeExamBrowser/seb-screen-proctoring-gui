@@ -115,7 +115,7 @@
 
                                 <!------------Metatdata: Url------------->
                                 <v-row align="center">
-                                    <v-col cols="4" class="text-decoration-line-through">
+                                    <v-col cols="4">
                                         Url:
                                     </v-col>
                                     <v-col cols="8">
@@ -125,7 +125,6 @@
                                             density="compact"
                                             variant="outlined"
                                             v-model="metadataUrlField"
-                                            :disabled=true
                                         ></v-text-field>
                                     </v-col>
                                 </v-row>
@@ -278,7 +277,7 @@
         ];
         closeAllPanels: any;
     }>();
-
+    
     //form fields
     const groupNameField = ref<string>("");
     const examNameField = ref<string>("");

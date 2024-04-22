@@ -49,6 +49,14 @@
             </td>
         </template>
 
+        <template v-slot:item.url="{item}">
+            <td>
+                <div>
+                    {{item.timelineScreenshotDataList[0].metaData.screenProctoringMetadataURL}}
+                </div>
+            </td>
+        </template>
+
         <template v-slot:item.proctoringViewLink="{internalItem}">
             <v-btn 
                 @click="searchViewService.openProctoringView(timelineSearchResult!.sessionUUID, internalItem.columns.timestamp)" 
@@ -85,6 +93,10 @@
 
                     <td>
                         {{ metadataUtils.filterOutLetters(screenshot.groupName + "(" + screenshot.timelineScreenshotDataList.length + ")") }}
+                    </td>
+
+                    <td>
+                        {{ screenshot.timelineScreenshotDataList[0].metaData.screenProctoringMetadataURL }}
                     </td>
 
                     <td>
@@ -130,6 +142,7 @@
         {title: "Capture-Time", key: "timestamp", value: "timelineScreenshotDataList[0].timestamp", width: "10%"},
         {title: "Application / Website", key: "groupName", width: "20%"},
         {title: "Activity Details", key: "activityDetails", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataUserAction"},
+        {title: "URL", key: "url", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataURL"},
         {title: "Video", key: "proctoringViewLink", width: "1%"},
         {title: "", key: "data-table-expand"}
     ]);
