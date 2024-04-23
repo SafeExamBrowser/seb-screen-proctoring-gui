@@ -149,8 +149,6 @@
 
     onBeforeMount(() => {
         timelineSearchResult.value = props.timelineSearchResult;
-
-        // console.log(timelineSearchResult)
     });
 
     watch(timelineSearchResult, (newList) => {

@@ -304,7 +304,6 @@
 
         const sliderTimeForIndex: number = Math.floor(sliderTime.value/1000); 
         if(screenshotTimestampsFloored.value.includes(sliderTimeForIndex)){
-            // console.log("debug 2")
             timestampsIndex.value = screenshotTimestampsFloored.value.indexOf(sliderTimeForIndex);
             assignScreenshotDataByTimestamp(sliderTime.value.toString());
             return;
@@ -386,11 +385,7 @@
         timestampsIndex.value = 0;
     }
 
-    const count = ref<number>(0);
     function setImageLink(timestamp: string){
-        count.value+=1;
-        console.log("count: " + count.value)
-        // console.log("debug 7")
         imageLink.value = liveService.getSpecificImageLink(currentScreenshot.value, timestamp);
     }
     
@@ -408,7 +403,6 @@
 
         if(screenshotDataResponse) {
             currentScreenshot.value = screenshotDataResponse;
-            console.log("debug 88")
             setImageLink(timestamp);
         }
     }
@@ -510,10 +504,7 @@
             if(sliderTime.value != null) {
                 sliderTime.value += DEFAULT_PLAYBACK_SPEED;
             }
-
-            console.log("debug 77")
             // setImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
-
             timestampsIndex.value += 1;
 
         }, PLAYBACK_SPEED.value);
@@ -654,7 +645,6 @@
     });
 
     const screenshotDisplay = computed<string>(() => {
-        // console.log("debug 2")
         if(currentScreenshot.value == null || firstScreenshotTime.value == null || sliderTime.value == null || sliderMax.value == null){
             return "";
         }

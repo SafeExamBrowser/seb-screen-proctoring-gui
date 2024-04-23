@@ -33,13 +33,9 @@ export async function searchTimeline(sessionId: string, optionalParamters?: Opti
 
 //=============window==================
 export function openProctoringView(sessionId: string, timestamp?: string){
-
-    console.log(timestamp)
-
     let url: string = "/recording/" + sessionId;
     
     if(timestamp){
-        console.log(timestamp)
         url = "/recording/" + sessionId + "?searchTimestamp=" + timestamp;
     }
 
