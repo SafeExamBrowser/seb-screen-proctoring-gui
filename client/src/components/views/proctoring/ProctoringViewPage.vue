@@ -221,6 +221,7 @@
     const liveSessionTime = ref<string>();
 
     //screenshot list
+    const allScreenshotTimestampsNotLive = ref<number[]>([]);
     const screenshotTimestamps = ref<number[]>([]);
     const screenshotTimestampsFloored = ref<number[]>([]);
     const timestampsIndex = ref<number>(0);
@@ -261,6 +262,7 @@
 
     //metadata
     const isMetadataInfo = ref<boolean>(true);
+    const totalAmountOfScreenshots = ref<number>();
 
 
     //=============lifecycle and watchers==================
@@ -272,6 +274,8 @@
 
         if(currentScreenshot.value?.active){
             goLive();       
+        }else{
+            totalAmountOfScreenshots.value = await calcTotalNrOfScreenshots()
         }
 
         appBarStore.title = "Proctoring: " + currentScreenshot.value?.clientName;
@@ -300,7 +304,7 @@
 
         const sliderTimeForIndex: number = Math.floor(sliderTime.value/1000); 
         if(screenshotTimestampsFloored.value.includes(sliderTimeForIndex)){
-            console.log("debug 2")
+            // console.log("debug 2")
             timestampsIndex.value = screenshotTimestampsFloored.value.indexOf(sliderTimeForIndex);
             assignScreenshotDataByTimestamp(sliderTime.value.toString());
             return;
@@ -339,10 +343,11 @@
         }
     });
 
-    watch(isLive, () => {
+    watch(isLive, async () => {
         if(!isLive.value){
             isLiveSelected.value = false;
             stopIntervalLiveImage();
+            totalAmountOfScreenshots.value = await calcTotalNrOfScreenshots()
             return;
         }
     });
@@ -381,7 +386,11 @@
         timestampsIndex.value = 0;
     }
 
+    const count = ref<number>(0);
     function setImageLink(timestamp: string){
+        count.value+=1;
+        console.log("count: " + count.value)
+        // console.log("debug 7")
         imageLink.value = liveService.getSpecificImageLink(currentScreenshot.value, timestamp);
     }
     
@@ -399,6 +408,7 @@
 
         if(screenshotDataResponse) {
             currentScreenshot.value = screenshotDataResponse;
+            console.log("debug 88")
             setImageLink(timestamp);
         }
     }
@@ -501,7 +511,8 @@
                 sliderTime.value += DEFAULT_PLAYBACK_SPEED;
             }
 
-            setImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
+            console.log("debug 77")
+            // setImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
 
             timestampsIndex.value += 1;
 
@@ -614,10 +625,10 @@
     //=============metadata==================
     const screenshotMetadata = computed<object>(() => {
         if(currentScreenshot.value){
-            return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, currentScreenshot.value.metaData, additionalMetadataInfo.value, totalNumberOfScreenshots.value);
+            return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, currentScreenshot.value.metaData, additionalMetadataInfo.value, screenshotDisplay.value);
         }
 
-        return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, null, additionalMetadataInfo.value, totalNumberOfScreenshots.value);
+        return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, null, additionalMetadataInfo.value, screenshotDisplay.value);
     });
 
     const additionalMetadataInfo = computed<string>(() => {
@@ -642,27 +653,40 @@
         return result;
     });
 
-    const totalNumberOfScreenshots = computed<string>(() => {
+    const screenshotDisplay = computed<string>(() => {
+        // console.log("debug 2")
         if(currentScreenshot.value == null || firstScreenshotTime.value == null || sliderTime.value == null || sliderMax.value == null){
             return "";
         }
 
-        const current: number = timeUtils.toSeconds(sliderTime.value - firstScreenshotTime.value);
-        // const total: number = timeUtils.toSeconds(currentScreenshot.value.endTime - firstScreenshotTime.value);
-        const total: number = timeUtils.toSeconds(sliderMax.value - firstScreenshotTime.value);
-
-
-        let nrOfScreenshots: string = `${current}/${total}`;
-
-        if(isLive.value && isLiveSelected.value){
-            nrOfScreenshots = `${total}/${total}`; 
+        if(isLive.value){
+            return "-";
         }
 
-        return nrOfScreenshots;
+        var currentScreenshotIndex: number = allScreenshotTimestampsNotLive.value.indexOf(currentScreenshot.value.timestamp);
+
+        if(currentScreenshotIndex == -1){
+            currentScreenshotIndex = 0;
+        }
+
+        currentScreenshotIndex += 1;
+
+        return currentScreenshotIndex + " / " + totalAmountOfScreenshots.value;
     });
 
     function hideShowMetadataInfo(){
         isMetadataInfo.value ? isMetadataInfo.value = false : isMetadataInfo.value = true;
+    }
+
+    async function calcTotalNrOfScreenshots(): Promise<number>{
+        if(!firstScreenshotTime.value) return 0;
+
+        const screenshotTimestamps: number[] | null = await proctoringViewService.getScreenshotTimestamps(sessionId, firstScreenshotTime.value.toString(), SortOrder.asc);
+        if(screenshotTimestamps == null) return 0;
+
+        allScreenshotTimestampsNotLive.value = screenshotTimestamps;
+
+        return allScreenshotTimestampsNotLive.value.length;
     }
     //==============================
 
