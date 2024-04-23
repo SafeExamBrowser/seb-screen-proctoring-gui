@@ -16,6 +16,14 @@
                             textKey: 'login-error'
                         }">
                     </AlertMsg>
+                    <AlertMsg 
+                        v-if="loadingStore.isTimeout"
+                        :alertProps="{
+                            color: 'error',
+                            type: 'alert',
+                            textKey: 'timeout-error'
+                        }">
+                    </AlertMsg>
                 </div>
                 
                 <v-card-title class="mt-10">
@@ -113,9 +121,8 @@
 
     
     async function signIn(){
-
-        loadingStore.isLoading = true;
         loginError.value = false;
+        loadingStore.isTimeout = false;
 
         try{
             const tokenObject: Token = await authenticationService.login(username.value, password.value);
@@ -124,9 +131,6 @@
         }catch(error){
             loginError.value = true;
         }
-
-        loadingStore.isLoading = false;
-
     }
 
     //todo: extract this function into a global file
@@ -142,7 +146,7 @@
 </script>
   
 <style scoped>
-.invert{
-    filter: invert(1);
-}
+    .invert{
+        filter: invert(1);
+    }
 </style>
