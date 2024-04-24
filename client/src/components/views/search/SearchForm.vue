@@ -308,6 +308,7 @@
     });
 
     async function searchSessions(){
+        emit("closeAllPanels");
         let fromTime: string = "";
         let toTime: string = "";
         if(timePeriodRadio.value) [fromTime, toTime] = calcTimePeriod();
@@ -344,7 +345,6 @@
         timeSelectionRadio.value = false;
         timeSelectionPicker.value = null;
 
-        emit("closeAllPanels");
         searchSessions();
     }
 

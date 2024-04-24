@@ -72,7 +72,8 @@
                                     :sessions="session.sessions" 
                                     :metaData="{
                                         screenProctoringMetadataWindowTitle: metadataSearchWindowTitle!, 
-                                        screenProctoringMetadataUserAction: metadataSearchAction!
+                                        screenProctoringMetadataUserAction: metadataSearchAction!,
+                                        screenProctoringMetadataURL: metadataSearchUrl!,
                                     }">
                                 </SearchSessionTable>
                             </v-expansion-panel-text>
@@ -174,8 +175,6 @@
         toTime: string,
         pageNumber: number
     ){
-
-        //todo: fold all rows on new search
         errorAvailable.value = false;
 
         examNameSearch = examName == "" ? null : examName;
