@@ -92,22 +92,14 @@
 
     watch(currentWindow, () => {
         appBarStore.galleryCurrentPage = currentWindow.value;
-        appBarStore.galleryCurrentPage+=1;
+        appBarStore.galleryCurrentPage += 1;
     });
 
-    // watch(appBarStoreRef.galleryMaxPages, () => {
-    //     if (appBarStore.galleryCurrentPage > appBarStore.galleryMaxPages) {
-    //         currentWindow.value = 1;
-    //     }
-    // });
-
-    // watch(noScreenshotData, () => {
-    //     if(noScreenshotData.value){
-    //         appBarStore.galleryCurrentPage = 0;
-    //         appBarStore.galleryMaxPages = 0;
-    //         maxPages.value = 1;
-    //     }
-    // });
+    watch(appBarStoreRef.galleryMaxPages, () => {
+        if(appBarStore.galleryCurrentPage > appBarStore.galleryMaxPages){
+            currentWindow.value -= 1;
+        }
+    });
 
     function assignData() {
         calcAmountOfWindows();
