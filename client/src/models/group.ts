@@ -32,6 +32,7 @@ type GroupUuid = {
     uuid: string;
     name: string;
     description: string;
+    numberOfLiveSessions: number;
     numberOfSessions: number;
     pageNumber: number;
     pageSize: number;

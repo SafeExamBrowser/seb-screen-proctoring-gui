@@ -25,15 +25,23 @@ export function createApiInterceptor(){
     let loadingEndTimeout: NodeJS.Timeout | null = null;
 
     api.interceptors.request.use(async (config) => {
-        //additional skip when url is used nmultiple times in differnet locations such as /group
-        if(!loadingStore.skipLoading){
+        //additional skip when url is used multiple times in differnet locations such as /group
+        if(!loadingStore.skipLoading && !loadingStore.isSessionsSearch){
             loadingTimeout = setTimeout(() => {
                 loadingStore.isLoading = true;
             }, 500);
 
             loadingEndTimeout = setTimeout(() => {
-                loadingStore.isLoading = false;
+                resetLoadingState();
             }, 10000);
+        }
+
+        if(loadingStore.isSessionsSearch){
+            loadingEndTimeout = setTimeout(() => {
+                loadingStore.isLoading = false;
+                loadingStore.isTimeout = true;
+                loadingStore.isSessionsSearch = false;
+            }, 15000);
         }
 
         const isIgnoredUrl: boolean = ignoredUrls.some(url => config.url?.includes(url));
@@ -47,7 +55,12 @@ export function createApiInterceptor(){
 
 
     api.interceptors.response.use(async response => {
-        resetLoadingState();
+        if(loadingStore.isSessionsSearch){
+            if (loadingEndTimeout) clearTimeout(loadingEndTimeout); 
+        }else{
+            resetLoadingState();
+        }
+
         return response;
 
     }, async error => {
@@ -80,6 +93,10 @@ export function createApiInterceptor(){
 
 
     function resetLoadingState(){
+        if(loadingStore.isSessionsSearch){
+            return;
+        }
+
         if (loadingTimeout) clearTimeout(loadingTimeout); 
         if (loadingEndTimeout) clearTimeout(loadingEndTimeout); 
 

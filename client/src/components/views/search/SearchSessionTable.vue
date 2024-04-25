@@ -118,7 +118,13 @@
             return;
         }
 
-        const timelineSearchResponse: SearchTimeline | null = await searchViewService.searchTimeline(item.raw.sessionUUID, {screenProctoringMetadataWindowTitle: props.metaData.screenProctoringMetadataWindowTitle, screenProctoringMetadataUserAction: props.metaData.screenProctoringMetadataUserAction});
+        const timelineSearchResponse: SearchTimeline | null = await searchViewService.searchTimeline(
+            item.raw.sessionUUID, 
+            {
+                screenProctoringMetadataWindowTitle: props.metaData.screenProctoringMetadataWindowTitle, 
+                screenProctoringMetadataUserAction: props.metaData.screenProctoringMetadataUserAction,
+                screenProctoringMetadataURL: props.metaData.screenProctoringMetadataURL
+            });
 
         if(timelineSearchResponse == null){
             return;

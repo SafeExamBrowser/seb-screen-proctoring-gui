@@ -1,6 +1,7 @@
 <template>
-    <v-navigation-drawer v-model="drawer" class="d-none d-sm-flex">
-        
+    <!-- class="d-sm-flex" -->
+    <v-navigation-drawer v-model="drawer">
+    <!-- <v-navigation-drawer v-model="drawer" class="d-md-flex"> -->
         <!--page title with logo-->
         <v-sheet class="pa-4">
             <a href="/start" class="text-decoration-none text-black">
@@ -19,7 +20,6 @@
     </v-navigation-drawer>
 
     <v-app-bar>
-
         <!--menu icon-->
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer">
         </v-app-bar-nav-icon>
@@ -27,9 +27,7 @@
         <!--current site title-->
         <v-app-bar-title>{{ appBarStore.title }}</v-app-bar-title>
 
-
         <template v-slot:append>
-
             <!--gallery view specfic items-->
             <template v-if="useRoute().name == 'GalleryViewPage'">
 
@@ -38,11 +36,11 @@
                         Page: {{ appBarStore.galleryCurrentPage }} / {{ appBarStore.galleryMaxPages }}
                     </v-chip>
                     <v-chip class="session-info-item">
-                        Number of Sessions: {{ appBarStore.gallerNumberOfSessions }}
+                        Sessions: {{ appBarStore.galleryLiveSessions }} / {{ appBarStore.galleryAmountOfSessions }}
                     </v-chip>
-                    <v-chip class="session-info-item">
+                    <!-- <v-chip class="session-info-item">
                         Description: {{ appBarStore.galleryDescription }}
-                    </v-chip>
+                    </v-chip> -->
                 </div>
 
                 <div class="grid-size-container">
@@ -74,7 +72,7 @@
                             <v-list-item>
                                 <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.galleryIsNameEnabled" hide-details></v-switch>
                                 <v-switch class="mx-auto" label="Show IP" color="primary" v-model="appBarStore.galleryIsIpEnabled" hide-details></v-switch>
-                                <v-switch class="mx-auto" label="Show Metadata" color="primary" v-model="appBarStore.galleryIsMetadataEnabled" hide-details></v-switch>
+                                <!-- <v-switch class="mx-auto" label="Show Metadata" color="primary" v-model="appBarStore.galleryIsMetadataEnabled" hide-details></v-switch> -->
                             </v-list-item>
                         </v-list>
                     </v-menu>
@@ -203,7 +201,6 @@
 </script>  
 
 <style scoped>
-
     .app-title{
         text-align: center;
     }

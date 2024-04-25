@@ -1,7 +1,7 @@
 import * as groupService from "@/services/api-services/groupService";
 import * as screenshotDataService from "@/services/api-services/screenshotDataService";
 import { SortOrder } from "@/models/sortOrderEnum";
-import {navigateTo} from "@/router/navigation";
+import {openUrlInNewTab} from "@/router/navigation";
 import * as metadataUtils from "@/utils/metadataUtils";
 
 //=============api==============
@@ -9,7 +9,8 @@ export async function getGroup(groupUuid: string, currentWindow: number, pageSiz
     try {
         const groupUuidResponse: GroupUuid = await groupService.getGroupByUuid(groupUuid, 
             {   
-                sortOrder: SortOrder.desc,
+                // sortOrder: SortOrder.asc,
+                // sortBy: "clientName",
                 pageNumber: currentWindow+=1, 
                 pageSize: Math.pow(pageSize, 2)
             }
@@ -59,7 +60,7 @@ export function currentIndexExists(screenshots: ScreenshotData[] | undefined, in
 //=============links============
 export function navigateToProctoringView(screenshot: ScreenshotData | undefined, groupUuid: string) {
     if (screenshot != null) {
-        navigateTo("/recording/" + screenshot.uuid);
+        openUrlInNewTab("/recording/" + screenshot.uuid);
     }
 }
 

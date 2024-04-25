@@ -130,7 +130,6 @@
                                             density="compact"
                                             variant="outlined"
                                             v-model="metadataUrlField"
-                                            :disabled=true
                                             :aria-label="$t('searchForm.url')"
                                         ></v-text-field>
                                     </v-col>
@@ -206,7 +205,7 @@
                     <v-col cols="4">
                         <v-select
                             hide-details
-                            variant="outlined"
+                            variant="outlined"  
                             v-model="timePeriodSelect"
                             :items="[
                                 {title: $t('timePeriod.day'), value: 1},
@@ -288,9 +287,10 @@
             fromTime: string,
             toTime: string,
             pageNumber: number
-        ]
+        ];
+        closeAllPanels: any;
     }>();
-
+    
     //form fields
     const groupNameField = ref<string>("");
     const examNameField = ref<string>("");
@@ -303,11 +303,10 @@
     const metadataWindowTitleField = ref<string>("");
     const metadataUserActionField = ref<string>("");
 
-    const timePeriodField = ref<number>(5);
-    const timePeriodRadio = ref<boolean>(false);
-    const timePeriodSelect = ref<number>(1);
-
-    const timeSelectionRadio = ref<boolean>(true);
+    const timePeriodField = ref<number>(1);
+    const timePeriodRadio = ref<boolean>(true);
+    const timePeriodSelect = ref<number>(2);
+    const timeSelectionRadio = ref<boolean>(false);
     const timeSelectionPicker = ref(null);
 
     onBeforeMount(async () => {
@@ -315,6 +314,7 @@
     });
 
     async function searchSessions(){
+        emit("closeAllPanels");
         let fromTime: string = "";
         let toTime: string = "";
         if(timePeriodRadio.value) [fromTime, toTime] = calcTimePeriod();
@@ -345,11 +345,13 @@
         metadataUrlField.value = ""; 
         metadataWindowTitleField.value = "";
         metadataUserActionField.value = "";
-        timePeriodField.value = 5;
-        timePeriodRadio.value = false;
-        timePeriodSelect.value = 1;
-        timeSelectionRadio.value = true;
+        timePeriodField.value = 1;
+        timePeriodRadio.value = true;
+        timePeriodSelect.value = 2;
+        timeSelectionRadio.value = false;
         timeSelectionPicker.value = null;
+
+        searchSessions();
     }
 
     function calcTimePeriod(): [string, string]{
@@ -379,9 +381,6 @@
     }
 
 </script>
-
-
-
 
 <style scoped>
     .form-container{

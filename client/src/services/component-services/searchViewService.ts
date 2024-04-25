@@ -1,5 +1,6 @@
 import * as searchService from "@/services/api-services/searchService";
 import router from "@/router";
+import {openUrlInNewTab} from "@/router/navigation";
 
 //=============api==================
 export async function searchSessions(optionalParamters?: OptionalParSearchSessions): Promise<SearchSessions | null>{
@@ -32,17 +33,12 @@ export async function searchTimeline(sessionId: string, optionalParamters?: Opti
 
 //=============window==================
 export function openProctoringView(sessionId: string, timestamp?: string){
-
-    console.log(timestamp)
-
     let url: string = "/recording/" + sessionId;
     
     if(timestamp){
-        console.log(timestamp)
         url = "/recording/" + sessionId + "?searchTimestamp=" + timestamp;
     }
 
-    //@ts-ignore
-    window.open("", "_blank").location.href = router.resolve(url).href;
+    openUrlInNewTab(url);
 }
 //==============================

@@ -6,7 +6,11 @@
                 class="rounded-lg"
                 title="Search">
 
-                <SearchForm @searchSessions="searchSessions"></SearchForm>
+                <SearchForm 
+                    @searchSessions="searchSessions"
+                    @closeAllPanels="closeAllPanels"
+                >
+                </SearchForm>
                 
             </v-sheet>
         </v-col>
@@ -68,7 +72,8 @@
                                     :sessions="session.sessions" 
                                     :metaData="{
                                         screenProctoringMetadataWindowTitle: metadataSearchWindowTitle!, 
-                                        screenProctoringMetadataUserAction: metadataSearchAction!
+                                        screenProctoringMetadataUserAction: metadataSearchAction!,
+                                        screenProctoringMetadataURL: metadataSearchUrl!,
                                     }">
                                 </SearchSessionTable>
                             </v-expansion-panel-text>
@@ -88,11 +93,19 @@
             textKey: 'api-error'
         }">
     </AlertMsg>
+    <AlertMsg 
+        v-if="loadingStore.isTimeout"
+        :alertProps="{
+            color: 'error',
+            type: 'snackbar',
+            textKey: 'timeout-error'
+        }">
+    </AlertMsg>
 </template>
 
 <script setup lang="ts">
     import { ref, onBeforeMount, watch } from "vue";
-    import { useAppBarStore, useLoadingStore, useTableStore } from "@/store/app";
+    import { useAppBarStore, useTableStore, useLoadingStore } from "@/store/app";
     import * as searchViewService from "@/services/component-services/searchViewService";
     import SearchForm from "./SearchForm.vue";
     import SearchSessionTable from "./SearchSessionTable.vue";
@@ -124,8 +137,8 @@
     let machineNameSearch: string | null;
 
     //store
-    const loadingStore = useLoadingStore();
     const tableStore = useTableStore();
+    const loadingStore = useLoadingStore();
 
 
     onBeforeMount(async () => {
@@ -162,8 +175,6 @@
         toTime: string,
         pageNumber: number
     ){
-
-        //todo: fold all rows on new search
         errorAvailable.value = false;
 
         examNameSearch = examName == "" ? null : examName;
@@ -190,10 +201,14 @@
             pageNumber: pageNumber
         }
 
+        //toggle sessions search on --> prevent multiple loading spinners as the search includes multiple api calls
+        startSessionSearchLoading();
+
         const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(searchParameters.value);
         
         if(sessionSearchResponse == null){
             errorAvailable.value = true;
+            endSessionSearchLoading();
             return;
         }
 
@@ -216,6 +231,7 @@
 
             if(sessionSearchResponse == null){
                 errorAvailable.value = true;
+                endSessionSearchLoading();
                 return;
             }
 
@@ -230,6 +246,7 @@
         loginNameIpToggleListFillUp();
 
         searchResultAvailable.value = true;
+        endSessionSearchLoading();
     }
 
     function loginNameIpToggleListFillUp(){
@@ -254,4 +271,16 @@
     function openAllPanels(){
         sessionPanels.value = sessionsGrouped.value?.content.map((item) => "sessionPanel" + item.day)!;
     }
+
+    function startSessionSearchLoading(){
+        loadingStore.isSessionsSearch = true;
+        loadingStore.isLoading = true;
+        loadingStore.isTimeout = false;
+    }
+
+    function endSessionSearchLoading(){
+        loadingStore.isSessionsSearch = false;
+        loadingStore.isLoading = false;
+    }
+
 </script>

@@ -51,6 +51,10 @@
             value: "Please try again."
         },
         {
+            key: "timeout-error",
+            value: "The connection to the remote server timed out. Please try again"
+        },
+        {
             key: "register-success",
             value: "Your registration was successful. You can now login"
         },
