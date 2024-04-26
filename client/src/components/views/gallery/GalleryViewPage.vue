@@ -10,6 +10,7 @@
                             :screenshot="group?.screenshots[galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value)]"
                             :timestamp="timestamp"
                             :group-uuid="groupUuid"
+                            :index="galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value)"
                         >
                         </GalleryImage>
 

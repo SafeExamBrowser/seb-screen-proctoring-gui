@@ -2,18 +2,23 @@
     <!-----------gallery image---------->
     <v-hover v-slot="{isHovering, props}">
         <!--todo: add max height  -->
+        <!-- @keydow="setTabFocus($event)" -->
+
+
         <v-img
             eager
+            tabindex="0"   
+            @focus="setTabFocus($event)"
             v-if="screenshot"
             v-bind="props"
-            class="img-styling"
+            class="img-styling" 
             @dblclick="openDialog()"
             :aspect-ratio="16/9"
             :class="{'on-hover': isHovering}"
 
             :src="liveService.getLatestImageLink(screenshot, timestamp.toString())">
 
-            <div v-if="isHovering" class="hover-overlay d-flex">
+            <div v-if="isHovering || galleryStore.focusedImageIndexes[index]" class="hover-overlay d-flex">
                 <v-row>
                     <v-col>
                         <div v-if="appBarStore.galleryIsMetadataEnabled">
@@ -80,7 +85,7 @@
     </v-hover>
     <!-------------------------->
 
-    <!-----------expanded image---------->
+    <!-----------expanded image---------->      
     <v-dialog v-model="dialog" max-width="1500">
         <v-card>
             <v-img 
@@ -165,23 +170,33 @@
 
 
 <script setup lang="ts">
-    import { ref, computed, watch } from "vue";
+    import { ref, computed, onBeforeMount } from "vue";
     import * as galleryViewService from "@/services/component-services/galleryViewService";
     import * as liveService from "@/services/component-services/liveService";
-    import { useAppBarStore } from "@/store/app";
+    import { useAppBarStore, useGalleryStore } from "@/store/app";
 
     //props
     const props = defineProps<{
         screenshot: ScreenshotData | undefined,
         timestamp: number,
-        groupUuid: string
+        groupUuid: string,
+        index: number
     }>();
 
     //store
     const appBarStore = useAppBarStore();
+    const galleryStore = useGalleryStore();
+
 
     //dialog - expanded image
     const dialog = ref(false);
+
+    //tabing
+    const isTabFocused = ref<boolean>(false);
+
+    onBeforeMount(() => {
+        galleryStore.focusedImageIndexes[props.index] = false;
+    });
 
     function openDialog(){
         dialog.value = true;
@@ -195,34 +210,17 @@
         return liveService.getLatestImageLink(props.screenshot, props.timestamp.toString());
     });
 
-    // tabindex="0"
-    // @focusin="isTabFocused = true"
-    // @focusout="isTabFocused = false"
+    function setTabFocus(event: any){
+        console.log(event)
 
-    // // const isTabFocused = computed<boolean>(() => {
-    // //     return 
-    // // });
+        galleryStore.focusedImageIndexes[props.index] = true;
 
-    // const isTabFocused = ref<boolean>(false);
-
-    // const target = ref()
-    // const { focused } = useFocus(target)
-
-    // watch(focused, (focused) => {
-    //     if (focused){
-    //         isTabFocused.value = true;
-    //     }
-    //     else {
-    //         isTabFocused.value = false;
-
-    //     }
-    // });
-
-    // function focusTabEvent(event: FocusEvent){
-    //     console.log(event)
-    //     isTabFocused.value = true;
-    // }
-
+        for(let i = 0; i < galleryStore.focusedImageIndexes.length; i++){
+            if(i != props.index){
+                galleryStore.focusedImageIndexes[i] = false;
+            }
+        }
+    }
 
 
 </script>

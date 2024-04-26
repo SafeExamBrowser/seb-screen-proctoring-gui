@@ -61,6 +61,14 @@ export const useAppBarStore = defineStore("appBar", () => {
 });
 //-------------------------------------------------//
 
+//----------------------gallery---------------------------//
+export const useGalleryStore = defineStore("gallery", () => {
+    const focusedImageIndexes = ref<boolean[]>([]);
+  
+    return {focusedImageIndexes};
+  });
+  //-------------------------------------------------//
+
 
 //----------------------loading---------------------------//
 export const useLoadingStore = defineStore("loading", () => {
