@@ -4,11 +4,12 @@
         <!--todo: add max height  -->
         <!-- @keydow="setTabFocus($event)" -->
 
-
         <v-img
             eager
             tabindex="0"   
             @focus="setTabFocus($event)"
+            @keydown="registerKeyPress($event)"
+            @mousedown="registerKeyPress($event)"
             v-if="screenshot"
             v-bind="props"
             class="img-styling" 
@@ -191,8 +192,9 @@
     //dialog - expanded image
     const dialog = ref(false);
 
-    //tabing
+    //accessibility
     const isTabFocused = ref<boolean>(false);
+    const lastKeyPressed = ref<string | null>("Tab");
 
     onBeforeMount(() => {
         galleryStore.focusedImageIndexes[props.index] = false;
@@ -208,10 +210,13 @@
 
     const expandedScreenshotLink = computed<string>(() => {
         return liveService.getLatestImageLink(props.screenshot, props.timestamp.toString());
-    });
+    });                                                         
 
-    function setTabFocus(event: any){
-        console.log(event)
+    function setTabFocus(event: any){   
+        // console.log(event)
+        if(lastKeyPressed.value != "Tab" || lastKeyPressed.value == null){
+            return;
+        }
 
         galleryStore.focusedImageIndexes[props.index] = true;
 
@@ -220,8 +225,13 @@
                 galleryStore.focusedImageIndexes[i] = false;
             }
         }
+
+        lastKeyPressed.value = null
     }
 
+    function registerKeyPress(event: any){
+        lastKeyPressed.value = event.key;
+    }
 
 </script>
 
@@ -232,7 +242,7 @@
     }
 
     .img-styling .hover-overlay {
-        position: absolute;
+        position: absolute;                     
         top: 0;
         right: 0;
         bottom: 0;
