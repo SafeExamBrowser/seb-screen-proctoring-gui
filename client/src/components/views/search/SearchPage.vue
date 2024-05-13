@@ -17,12 +17,24 @@
     </v-row>
 
     <v-row v-if="searchResultAvailable">
-        <v-col>
+        <v-col v-if="noResutsFound">
+            <v-sheet 
+                elevation="4"
+                class="rounded-lg pa-4"
+                title="No results match your search criteria">
+                <v-row>
+                    <v-col align="left" class="text-h6">
+                        No results match your search criteria
+                    </v-col>
+                </v-row>
+            </v-sheet>
+        </v-col>
+        
+        <v-col v-else>
             <v-sheet 
                 elevation="4"
                 class="rounded-lg pa-4"
                 title="Search results">
-
                     <!------------title and buttons------------->
                     <v-row>
                         <v-col align="left" class="text-h6">
@@ -31,9 +43,19 @@
 
                         <v-col align="right" class="mb-2">
                             <v-btn
-                            class="mr-2"
-                                :color="closeAllPanelsDisabled ? 'grey' : 'black'"
+                                class="mr-2"
                                 variant="text"
+                                :ripple="false"
+                                @click="isSearchDescending = !isSearchDescending">
+                                Date
+                                <template v-slot:prepend>
+                                    <v-icon size="x-large" :icon="isSearchDescending ? 'mdi-chevron-down' : 'mdi-chevron-up'"></v-icon>
+                                </template>
+                            </v-btn>
+                            <v-btn
+                                class="mr-2"
+                                variant="text"
+                                :color="closeAllPanelsDisabled ? 'grey' : 'black'"
                                 :ripple="false"
                                 @click="closeAllPanels()">
                                 Collapse
@@ -42,8 +64,8 @@
                                 </template>
                             </v-btn>
                             <v-btn 
-                                :color="openAllPanelsDisabled ? 'grey' : 'black'"
                                 variant="text"
+                                :color="openAllPanelsDisabled ? 'grey' : 'black'"
                                 :ripple="false"
                                 @click="openAllPanels()">
                                 Expand
@@ -113,11 +135,13 @@
 
     //reactive variables
     const searchResultAvailable = ref<boolean>(false);
+    const noResutsFound = ref<boolean>(false);
     const sessionSearchResults = ref<SearchSessions>();
     const sessionsGrouped = ref<SessionsGrouped>();
 
     const searchParameters = ref<OptionalParSearchSessions>();
 
+    const isSearchDescending = ref<boolean>(true);
     const sessionPanels = ref<string[]>([]);
     const closeAllPanelsDisabled = ref<boolean>(true);
     const openAllPanelsDisabled = ref<boolean>(false);
@@ -162,6 +186,10 @@
         openAllPanelsDisabled.value = false;
     });
 
+    watch(isSearchDescending, () => {
+        sessionsGrouped.value?.content.reverse();
+    });
+
     async function searchSessions(
         examName: string,
         groupName: string, 
@@ -176,6 +204,7 @@
         pageNumber: number
     ){
         errorAvailable.value = false;
+        noResutsFound.value = false;
 
         examNameSearch = examName == "" ? null : examName;
         groupNameSearch = groupName == "" ? null : groupName;
@@ -214,6 +243,13 @@
 
         sessionSearchResults.value = sessionSearchResponse;
 
+        if(sessionSearchResults.value.content.length == 0){
+            noResutsFound.value = true;
+            searchResultAvailable.value = true;
+            endSessionSearchLoading();
+            return;
+        }
+
         await assignSessions();
     }
 
@@ -242,6 +278,9 @@
         }
 
         sessionsGrouped.value = groupingUtils.groupSessionsByDay(sessionSearchResults.value);
+        if(isSearchDescending.value){
+            changeSessionsOrder();
+        }
 
         loginNameIpToggleListFillUp();
 
@@ -262,6 +301,11 @@
                 }
             );
         }
+    }
+
+    function changeSessionsOrder(){
+        //reverse list so latest session comes first
+        sessionsGrouped.value?.content.reverse();
     }
 
     function closeAllPanels(){
