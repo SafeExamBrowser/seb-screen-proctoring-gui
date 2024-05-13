@@ -17,7 +17,20 @@
     </v-row>
 
     <v-row v-if="searchResultAvailable">
-        <v-col>
+        <v-col v-if="noResutsFound">
+            <v-sheet 
+                elevation="4"
+                class="rounded-lg pa-4"
+                title="No results match your search criteria">
+                <v-row>
+                    <v-col align="left" class="text-h6">
+                        No results match your search criteria
+                    </v-col>
+                </v-row>
+            </v-sheet>
+        </v-col>
+        
+        <v-col v-else>
             <v-sheet 
                 elevation="4"
                 class="rounded-lg pa-4"
@@ -122,6 +135,7 @@
 
     //reactive variables
     const searchResultAvailable = ref<boolean>(false);
+    const noResutsFound = ref<boolean>(false);
     const sessionSearchResults = ref<SearchSessions>();
     const sessionsGrouped = ref<SessionsGrouped>();
 
@@ -190,6 +204,7 @@
         pageNumber: number
     ){
         errorAvailable.value = false;
+        noResutsFound.value = false;
 
         examNameSearch = examName == "" ? null : examName;
         groupNameSearch = groupName == "" ? null : groupName;
@@ -227,6 +242,13 @@
         }
 
         sessionSearchResults.value = sessionSearchResponse;
+
+        if(sessionSearchResults.value.content.length == 0){
+            noResutsFound.value = true;
+            searchResultAvailable.value = true;
+            endSessionSearchLoading();
+            return;
+        }
 
         await assignSessions();
     }
