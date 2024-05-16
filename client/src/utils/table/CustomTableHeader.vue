@@ -1,15 +1,15 @@
 <template>
     <tr>
         <template v-for="(column, index) in props.columns">
-            <td>
+            
+            <th :aria-label="getHeaderDescription(column, isSorted)"> 
                 <span 
                     ref="headerRefs"
                     tabindex="0" 
                     class="mr-2 cursor-pointer font-weight-bold" 
                     role="button" 
                     @keydown="tableUtils.handleTabKeyEvent($event, 'sort', index, {headerRefs: headerRefs})" 
-                    @click="() => props.toggleSort(column)"
-                >
+                    @click="() => props.toggleSort(column)">
                     {{ column.title }}
                 </span>
 
@@ -20,31 +20,31 @@
                 <!--todo: checking should not be done via title-->
                 <template v-if="column.title == 'Exam'">
                     <v-btn 
+                        :aria-label="tableStore.isExamExpand ? 'hide exam details' : 'show exam details'"
                         :icon="tableStore.isExamExpand ? 'mdi-arrow-expand-left' : 'mdi-arrow-expand-right'" 
                         rounded="sm" 
                         variant="flat" 
                         size="small"
-                        @click="tableStore.isExamExpand ? emit('removeAddtionalExamHeaders') : emit('addAddtionalExamHeaders')"
-                        >
+                        @click="tableStore.isExamExpand ? emit('removeAddtionalExamHeaders') : emit('addAddtionalExamHeaders')">
                     </v-btn>
                 </template>
 
-                <template v-if="column.title == 'Login Name / IP'">
+                <template v-if="column.title == $t('searchSessionTable.loginName')">
                     <v-btn 
+                        :aria-label="tableStore.isIpDisplayList[tableUtils.getSessionListIndex(props.day!)].isIp ? 'show login name' : 'show IP'"
                         :icon="tableStore.isIpDisplayList[tableUtils.getSessionListIndex(props.day!)].isIp ? 'mdi-toggle-switch-outline' : 'mdi-toggle-switch-off-outline'" 
                         rounded="sm" 
                         variant="flat" 
-                        @click="toggleNameIpSwitch()"
-                        >
+                        @click="toggleNameIpSwitch()">
                     </v-btn>
                 </template>
-            </td>
+            </th>
         </template>
     </tr>
 </template>
 
 <script setup lang="ts">
-    import { ref, onBeforeMount, onMounted } from "vue";
+    import { ref, onBeforeMount } from "vue";
     import * as tableUtils from "@/utils/table/tableUtils";
     import { useAppBarStore, useTableStore } from "@/store/app";
 
@@ -76,15 +76,6 @@
         headerRefs.value = props.headerRefsProp;
     });
 
-    onMounted(() => {
-        //if page = start page --> sort by start-time desc
-        //todo: checking should not be done via title
-        if(appBarStore.title == "Active SEB Groups"){
-            tableUtils.sortTable(3, headerRefs);
-            tableUtils.sortTable(3, headerRefs);
-        }
-    });
-
     function toggleNameIpSwitch(){
         const index: number = tableUtils.getSessionListIndex(props.day!);
 
@@ -94,6 +85,30 @@
         }
 
         tableStore.isIpDisplayList[index].isIp = true;
+    }
+
+    function getHeaderDescription(column: any, isSorted: any): any{
+        // if(column.sortable){
+        //     return "";
+        // }
+
+        console.log(column)
+
+        let headerDesc: string = `Header: ${column.title}, sort order: `
+
+        if(!isSorted(column)){
+            return `${headerDesc} none`;
+    }
+
+        if(props.getSortIcon(column) == "$sortAsc"){
+            return `${headerDesc} ascending`;
+        }
+
+        if(props.getSortIcon(column) == "$sortDesc"){
+            return `${headerDesc} descending`;
+        }
+
+        return `${headerDesc} none`;
     }
 
 </script>

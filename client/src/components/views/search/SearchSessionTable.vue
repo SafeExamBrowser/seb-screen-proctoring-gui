@@ -4,9 +4,18 @@
         show-expand
         item-value="sessionUUID" 
         class="elevation-1"
+        :sort-by="[{key: 'startTime', order: 'desc'}]"
         :items-per-page="tableUtils.calcDefaultItemsPerPage(sessions)" 
         :items-per-page-options="tableUtils.calcItemsPerPage(sessions)"
-        :headers="sessionTableHeaders"
+        :headers="[
+            {title: $t('searchSessionTable.startTime'), key: 'startTime', width: '10%'},
+            {title: $t('searchSessionTable.loginName'), key: 'clientName', width: '30%'},
+            {title: $t('searchSessionTable.machineName'), key: 'clientMachineName', width: '20%'},
+            {title: $t('searchSessionTable.groupName'), key: 'groupName', width: '20%'},
+            {title: $t('searchSessionTable.examName'), key: 'exam.name', width: '20%'},
+            {title: $t('searchSessionTable.slides'), key: 'nrOfScreenshots'},
+            {title: $t('searchSessionTable.video'), key: 'proctoringViewLink'},
+        ]"
         :items="sessions">
 
         <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">

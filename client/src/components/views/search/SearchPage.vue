@@ -34,11 +34,12 @@
             <v-sheet 
                 elevation="4"
                 class="rounded-lg pa-4"
-                title="Search results">
+                :title="$t('searchPage.title')">
+
                     <!------------title and buttons------------->
                     <v-row>
                         <v-col align="left" class="text-h6">
-                            Search Results
+                            {{ $t('searchPage.title') }}
                         </v-col>
 
                         <v-col align="right" class="mb-2">
@@ -58,7 +59,7 @@
                                 :color="closeAllPanelsDisabled ? 'grey' : 'black'"
                                 :ripple="false"
                                 @click="closeAllPanels()">
-                                Collapse
+                                {{ $t('searchPage.collapse') }}
                                 <template v-slot:prepend>
                                     <v-icon size="x-large" icon="mdi-unfold-less-horizontal"></v-icon>
                                 </template>
@@ -68,7 +69,7 @@
                                 :color="openAllPanelsDisabled ? 'grey' : 'black'"
                                 :ripple="false"
                                 @click="openAllPanels()">
-                                Expand
+                                {{ $t('searchPage.expand') }}
                                 <template v-slot:prepend>
                                     <v-icon size="x-large" icon="mdi-unfold-more-horizontal"></v-icon>
                                 </template>
