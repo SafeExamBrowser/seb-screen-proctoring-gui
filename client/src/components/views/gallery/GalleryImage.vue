@@ -2,8 +2,6 @@
     <!-----------gallery image---------->
     <v-hover v-slot="{isHovering, props}">
         <!--todo: add max height  -->
-        <!-- @keydow="setTabFocus($event)" -->
-
         <v-img
             eager
             tabindex="0"   
@@ -16,7 +14,6 @@
             @dblclick="openDialog()"
             :aspect-ratio="16/9"
             :class="{'on-hover': isHovering}"
-
             :src="liveService.getLatestImageLink(screenshot, timestamp.toString())">
 
             <div v-if="isHovering || galleryStore.focusedImageIndexes[index]" class="hover-overlay d-flex">
