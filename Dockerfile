@@ -2,7 +2,7 @@
 FROM node:18 as client-builder
 WORKDIR /app/client
 COPY client/package*.json ./
-RUN npm install
+RUN npm install --production
 COPY client/ .
 RUN npm run build
 
@@ -10,7 +10,7 @@ RUN npm run build
 FROM node:18 as server-builder
 WORKDIR /app/server
 COPY server/package*.json ./
-RUN npm install
+RUN npm install --production
 COPY server/ .
 RUN npm run build
 
