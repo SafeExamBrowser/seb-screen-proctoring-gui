@@ -5,6 +5,7 @@
             <v-data-table
                 item-value="item.name"
                 class="rounded-lg elevation-4"
+                :sort-by="[{key: 'creationTime', order: 'desc'}]"
                 :items-per-page="tableUtils.calcDefaultItemsPerPage(groups)"
                 :items-per-page-options="tableUtils.calcItemsPerPage(groups)"
                 :headers="headers"
@@ -81,7 +82,6 @@
     import * as tableUtils from "@/utils/table/tableUtils";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
 
-
     //stores
     const appBarStore = useAppBarStore();
     const tableStore = useTableStore();
@@ -90,10 +90,10 @@
     const groups = ref<Group[]>();
     const headerRefs = ref<any[]>();
     const headers = ref([
-        {title: "Exam", key: "exam.name"},
-        {title: "Name", key: "name"},
-        {title: "Description", key: "description"},
-        {title: "Start-Time", key: "creationTime"},
+        {title: "Exam", key: "exam.name", width: "15%"},
+        {title: "Name", key: "name", width: "15%"},
+        {title: "Description", key: "description", width: "15%"},
+        {title: "Start-Time", key: "creationTime", width: "15%"},
     ]);
 
     onBeforeMount(async () => {
@@ -116,8 +116,8 @@
     function addAddtionalExamHeaders(){
         tableStore.isExamExpand = true;
 
-        headers.value.splice(1, 0, {title: "Exam Start-Time", key: "exam.startTime"});
-        headers.value.splice(2, 0, {title: "Exam End-Time", key: "exam.endTime"});
+        headers.value.splice(1, 0, {title: "Exam Start-Time", key: "exam.startTime", width: "10%"});
+        headers.value.splice(2, 0, {title: "Exam End-Time", key: "exam.endTime", width: "10%"});
     }
 
     function removeAddtionalExamHeaders(){

@@ -100,12 +100,12 @@
 
                         <v-divider></v-divider>
 
-                        <v-list-item>
+                        <!-- <v-list-item>
                             <v-btn-toggle v-model="languageToggle" variant="text" mandatory>
                                 <v-btn>EN</v-btn>
                                 <v-btn>DE</v-btn>
                             </v-btn-toggle>
-                        </v-list-item>
+                        </v-list-item> -->
 
                         <v-list-item>
                             <v-btn-toggle v-model="themeToggle" variant="text" mandatory>
@@ -116,7 +116,7 @@
 
                         <v-divider></v-divider>
 
-                        <v-list-item class="text-decoration-underline text-blue mx-auto" @click="authStore.logout()">
+                        <v-list-item tabindex="0" class="text-decoration-underline text-blue mx-auto" @click="authStore.logout()">
                             <v-list-item-title class="mx-auto">{{ $t("navigation.signOut") }}</v-list-item-title>
                         </v-list-item>
 

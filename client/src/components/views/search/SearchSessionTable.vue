@@ -4,6 +4,7 @@
         show-expand
         item-value="sessionUUID" 
         class="elevation-1"
+        :sort-by="[{key: 'startTime', order: 'desc'}]"
         :items-per-page="tableUtils.calcDefaultItemsPerPage(sessions)" 
         :items-per-page-options="tableUtils.calcItemsPerPage(sessions)"
         :headers="[

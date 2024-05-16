@@ -8,6 +8,7 @@
         item-value="timelineScreenshotDataList[0].timestamp"
         class="elevation-5 mb-7"
         theme="tableTheme"
+        :sort-by="[{key: 'timestamp', order: 'asc'}]"
         :expanded="expandedItems"
         :items-per-page="tableUtils.calcDefaultItemsPerPage(timelineSearchResult?.timelineGroupDataList)" 
         :items-per-page-options="tableUtils.calcItemsPerPage(timelineSearchResult?.timelineGroupDataList)"
