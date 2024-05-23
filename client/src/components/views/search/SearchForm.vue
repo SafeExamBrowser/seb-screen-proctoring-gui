@@ -120,7 +120,7 @@
 
                                 <!------------Metatdata: Url------------->
                                 <v-row align="center">
-                                    <v-col cols="4" class="text-decoration-line-through">
+                                    <v-col cols="4">
                                         {{ $t('searchForm.url') }}:
                                     </v-col>
                                     <v-col cols="8">
