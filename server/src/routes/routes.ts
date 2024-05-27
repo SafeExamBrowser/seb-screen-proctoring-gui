@@ -17,6 +17,7 @@ router.get("/screenshot-data/:sessionId", screenshotDataController.getScreenshot
 router.get("/screenshot-data/:sessionId/:timestamp", screenshotDataController.getScreenshotDataByTimestamp);
 router.get("/screenshot-timestamps/:sessionId/:timestamp/:direction", screenshotDataController.getScreenshotTimestamps);
 
+router.get("/search/sessions/day", searchController.searchSessionsDay);
 router.get("/search/sessions", searchController.searchSessions);
 router.get("/search/screenshots", searchController.searchScreenshots);
 router.get("/search/timeline/:sessionId", searchController.searchTimeline);

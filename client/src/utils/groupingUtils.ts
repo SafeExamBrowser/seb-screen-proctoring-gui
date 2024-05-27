@@ -17,7 +17,7 @@ export function groupSessionsByDay(sessionSearchResults: SearchSessions): Sessio
 
     const uniqueDaysSet: Set<string> = new Set(
         sessionSearchResults.content.map(
-            session => timeUtils.formatTimestmapToDate(session.startTime)
+            session => timeUtils.formatTimestampToDate(session.startTime)
         )
     );
     const uniqueDays: string[] = [...uniqueDaysSet];
@@ -33,7 +33,7 @@ export function groupSessionsByDay(sessionSearchResults: SearchSessions): Sessio
     }
 
     for(var i = 0; i < sessionSearchResults.content.length; i++){
-        const day = timeUtils.formatTimestmapToDate(sessionSearchResults.content[i].startTime);
+        const day = timeUtils.formatTimestampToDate(sessionSearchResults.content[i].startTime);
         const index = dayToIndexMap[day];
         if (index !== undefined) {
             sessionsGrouped.content[index].sessions.push(sessionSearchResults.content[i]);

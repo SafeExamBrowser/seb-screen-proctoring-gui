@@ -28,8 +28,8 @@
                         @click="tableStore.isExamExpand ? emit('removeAddtionalExamHeaders') : emit('addAddtionalExamHeaders')">
                     </v-btn>
                 </template>
-
-                <template v-if="column.title == $t('searchSessionTable.loginName')">
+                
+                <template v-if="column.title == 'Login Name / IP'">
                     <v-btn 
                         :aria-label="tableStore.isIpDisplayList[tableUtils.getSessionListIndex(props.day!)].isIp ? 'show login name' : 'show IP'"
                         :icon="tableStore.isIpDisplayList[tableUtils.getSessionListIndex(props.day!)].isIp ? 'mdi-toggle-switch-outline' : 'mdi-toggle-switch-off-outline'" 
@@ -92,7 +92,7 @@
         //     return "";
         // }
 
-        console.log(column)
+        // console.log(column)
 
         let headerDesc: string = `Header: ${column.title}, sort order: `
 

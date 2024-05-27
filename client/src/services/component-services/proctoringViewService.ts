@@ -37,8 +37,8 @@ export async function getScreenshotTimestamps(sessionId: string, timestamp: stri
 export function getScreenshotMetadata(sliderTime: number, currentScreenshotMetadata: MetaData | null, additionalMetadataInfo: string, total: string): object{
     return {
         "Total:": total,
-        "Date:": timeUtils.formatTimestmapToDate(sliderTime),
-        "Time:": timeUtils.formatTimestmapToTime(sliderTime),
+        "Date:": timeUtils.formatTimestampToDate(sliderTime),
+        "Time:": timeUtils.formatTimestampToTime(sliderTime),
         "Url:": currentScreenshotMetadata?.screenProctoringMetadataURL,
         "Window Title:": currentScreenshotMetadata?.screenProctoringMetadataWindowTitle,
         //temp solution
