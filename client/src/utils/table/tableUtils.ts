@@ -30,7 +30,6 @@ export function calcItemsPerPage(itemList: any): { value: number, title: string 
 
     let maxLength: number = 0;
     if(typeof itemList == "number"){
-        // console.log("it got here items per page")
         maxLength = itemList;
     }else{
         maxLength = itemList.length;
@@ -38,14 +37,14 @@ export function calcItemsPerPage(itemList: any): { value: number, title: string 
 
     if (maxLength < 5) {
         return [
-            { value: maxLength, title: 'All' }
+            { value: maxLength, title: maxLength.toString() }
         ];
     }
 
     if (maxLength < 10) {
         return [
             { value: 5, title: '5' },
-            { value: maxLength, title: 'All' }
+            { value: maxLength, title: maxLength.toString() }
         ];
     }
 
@@ -53,7 +52,7 @@ export function calcItemsPerPage(itemList: any): { value: number, title: string 
         return [
             { value: 5, title: '5' },
             { value: 10, title: '10' },
-            { value: maxLength, title: 'All' }
+            { value: maxLength, title: maxLength.toString() }
         ];
     }
 
@@ -61,7 +60,6 @@ export function calcItemsPerPage(itemList: any): { value: number, title: string 
         { value: 5, title: '5' },
         { value: 10, title: '10' },
         { value: 15, title: '15' },
-        // { value: maxLength, title: 'All' }
     ];
 }
 

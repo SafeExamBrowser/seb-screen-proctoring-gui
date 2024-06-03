@@ -1,14 +1,9 @@
 <template>
-        <!--  -->
-        <!-- :items-per-page="tableUtils.calcDefaultItemsPerPage(sessions?.content)"  -->
-        <!--  -->
-
     <v-data-table-server
         show-expand
         item-value="sessionUUID" 
         class="elevation-1"
         @update:options="loadItems"
-        :sort-by="[{key: 'startTime', order: 'desc'}]"
         :loading="isLoading"
         loading-text="Loading... Please wait"
         :items="sessions?.content"
@@ -105,6 +100,8 @@
 
 
     //table
+    const isOnLoad = ref<boolean>(true);
+    const defaultSort: {key: string, order: string}[] = [{key: 'startTime', order: 'desc'}];
     const sessionTableHeadersRef = ref<any[]>();
     const sessionTableHeaders = ref([
         {title: "Start-Time", key: "startTime", width: "10%"},
@@ -113,19 +110,23 @@
         {title: "Group Name", key: "groupName", width: "20%"},
         {title: "Exam Name", key: "exam.name", width: "20%"},
         {title: "Slides", key: "nrOfScreenshots"},
-        {title: "Video", key: "proctoringViewLink"},
+        {title: "Video", key: "proctoringViewLink", sortable: false}
     ]);                 
 
     async function loadItems(serverTablePaging: ServerTablePaging){
-        console.log("--------start-------")
         isLoading.value = true;
+        //current solution to default sort the table
+        //sort-by in data-table-server tag breaks the sorting as the headers are in a seperate component
+        if(isOnLoad.value){
+            serverTablePaging.sortBy = defaultSort;
+        }
+
         let searchParameters: OptionalParSearchSessions = searchViewService.prepareSessionSearchParameters(props.day, props.searchParameters, serverTablePaging);
 
         console.log(searchParameters)
 
         const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(searchParameters);
         if(sessionSearchResponse == null){
-
             isLoading.value = false;
             return;
         }
@@ -133,8 +134,9 @@
         sessions.value = sessionSearchResponse;
         totalItems.value = sessionSearchResponse.numberOfPages * sessionSearchResponse.pageSize
 
+        isOnLoad.value = false;
         isLoading.value = false;
-        console.log("--------end-------")
+        console.log("--------end-------");
     }
 
 

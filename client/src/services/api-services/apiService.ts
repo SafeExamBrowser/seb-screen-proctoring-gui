@@ -16,8 +16,6 @@ export function createApi(){
 }
 
 export function createApiInterceptor(){
-    const ignoredUrls: string[] = getIgnoredUrls();
-
     const authStore = useAuthStore();
     const loadingStore = useLoadingStore();
 
@@ -25,42 +23,26 @@ export function createApiInterceptor(){
     let loadingEndTimeout: NodeJS.Timeout | null = null;
 
     api.interceptors.request.use(async (config) => {
-        //additional skip when url is used multiple times in differnet locations such as /group
-        if(!loadingStore.skipLoading && !loadingStore.isSessionsSearch){
-            loadingTimeout = setTimeout(() => {
-                loadingStore.isLoading = true;
-            }, 500);
+        const isIgnoredUrl: boolean = isUrlIgnorable(config.url);
 
-            loadingEndTimeout = setTimeout(() => {
-                resetLoadingState();
-            }, 10000);
-        }
-
-        if(loadingStore.isSessionsSearch){
-            loadingEndTimeout = setTimeout(() => {
-                loadingStore.isLoading = false;
-                loadingStore.isTimeout = true;
-                loadingStore.isSessionsSearch = false;
-            }, 15000);
-        }
-
-        const isIgnoredUrl: boolean = ignoredUrls.some(url => config.url?.includes(url));
-        if(isIgnoredUrl){
-            if (loadingTimeout) clearTimeout(loadingTimeout); 
+        if(loadingStore.skipLoading || isIgnoredUrl){
             return config;
         }
+
+        loadingTimeout = setTimeout(() => {
+            loadingStore.isLoading = true;
+        }, 500);
+
+        loadingEndTimeout = setTimeout(() => {
+            resetLoadingState();
+        }, 20000);
 
         return config;
     });
 
 
     api.interceptors.response.use(async response => {
-        if(loadingStore.isSessionsSearch){
-            if (loadingEndTimeout) clearTimeout(loadingEndTimeout); 
-        }else{
-            resetLoadingState();
-        }
-
+        resetLoadingState();
         return response;
 
     }, async error => {
@@ -93,10 +75,6 @@ export function createApiInterceptor(){
 
 
     function resetLoadingState(){
-        if(loadingStore.isSessionsSearch){
-            return;
-        }
-
         if (loadingTimeout) clearTimeout(loadingTimeout); 
         if (loadingEndTimeout) clearTimeout(loadingEndTimeout); 
 
@@ -131,6 +109,21 @@ function getIgnoredUrls(): string[]{
         "/screenshot-data/", 
         "/screenshot-timestamps/", 
         "/search/timeline", 
+        "/search/sessions",
         "/useraccount/me"
     ];
+}
+
+function isUrlIgnorable(url: string | undefined): boolean{
+    if(url == null){
+        return false;
+    } 
+
+    const ignoredUrls: string[] = getIgnoredUrls();
+
+    if(url == "/search/sessions/day"){
+        return false;
+    }
+
+    return ignoredUrls.some(urlFromList => url.includes(urlFromList))
 }

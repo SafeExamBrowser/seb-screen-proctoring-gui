@@ -1,15 +1,20 @@
 <template>
     <tr>
         <template v-for="(column, index) in props.columns">
-            
+    
             <th :aria-label="getHeaderDescription(column, isSorted)"> 
                 <span 
+                    v-if="column.sortable"
                     ref="headerRefs"
                     tabindex="0" 
                     class="mr-2 cursor-pointer font-weight-bold" 
                     role="button" 
                     @keydown="tableUtils.handleTabKeyEvent($event, 'sort', index, {headerRefs: headerRefs})" 
                     @click="() => props.toggleSort(column)">
+                    {{ column.title }}
+                </span>
+                <span 
+                    v-else>
                     {{ column.title }}
                 </span>
 

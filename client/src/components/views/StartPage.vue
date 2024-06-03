@@ -1,7 +1,6 @@
 <template>
     <v-row>
         <v-col>
-
             <v-data-table
                 item-value="item.name"
                 class="rounded-lg elevation-4"
