@@ -305,7 +305,7 @@
 
     const timePeriodField = ref<number>(1);
     const timePeriodRadio = ref<boolean>(true);
-    const timePeriodSelect = ref<number>(4);
+    const timePeriodSelect = ref<number>(2);
     const timeSelectionRadio = ref<boolean>(false);
     const timeSelectionPicker = ref(null);
 

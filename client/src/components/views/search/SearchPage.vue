@@ -68,7 +68,6 @@
                     </v-row>
                     <!----------------------------------->
 
-                    <!-- <v-expansion-panels v-model="sessionPanels" variant="popout" multiple> -->
                     <v-expansion-panels v-model="sessionPanels" multiple>
                         <v-expansion-panel
                             v-for="day in sessionsDays"
@@ -83,11 +82,6 @@
                                 <SearchSessionTable 
                                     :day="day"
                                     :search-parameters="searchParameters!">
-                                                      <!-- :metaData="{
-                                        screenProctoringMetadataWindowTitle: metadataSearchWindowTitle!, 
-                                        screenProctoringMetadataUserAction: metadataSearchAction!,
-                                        screenProctoringMetadataURL: metadataSearchUrl!,
-                                    }" -->
                                 </SearchSessionTable>
                             </v-expansion-panel-text>
 

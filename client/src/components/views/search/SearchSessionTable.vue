@@ -87,7 +87,6 @@
     const props = defineProps<{
         day: string;
         searchParameters: OptionalParSearchSessions
-        // metaData: MetaData
     }>();
 
     //items

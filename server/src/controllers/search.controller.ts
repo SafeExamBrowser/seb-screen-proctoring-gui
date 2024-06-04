@@ -3,7 +3,6 @@ import * as apiService from "../services/api.service";
 import * as searchService from '../services/search.service';
 
 export async function searchSessionsDay(req: Request, res: Response){
-
     try{
         const sessions: object = await searchService.searchSessionsDay(req.headers.authorization, req.query.optionalParamters);
 

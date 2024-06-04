@@ -8,7 +8,6 @@ export function calcDefaultItemsPerPage(itemList: any): number {
 
     let maxLength: number = 0;
     if(typeof itemList == "number"){
-        // console.log("it got here default items per page")
         maxLength = itemList;
     }else{
         maxLength = itemList.length;
@@ -75,7 +74,6 @@ export function handleTabKeyEvent(event: any, action: string, key: number, optio
         }
     }
 }
-
 
 export function sortTable(key: number, headerRefs: any){
     if(headerRefs.value != null){

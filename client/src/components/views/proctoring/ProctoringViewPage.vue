@@ -36,7 +36,6 @@
                         </v-btn>  
 
                         <!--pause / play-->
-                        <!-- @click="pausePlay()"  -->
                         <v-btn 
                             @click="isPlaying ? pause() : play()" 
                             size="small" 
