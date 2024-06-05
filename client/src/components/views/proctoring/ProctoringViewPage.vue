@@ -253,6 +253,7 @@
 
     //router params
     const sessionId: string = useRoute().params.sessionId.toString();
+    const searchTimestampOnLoad = ref<boolean>(false);
     const searchTimestamp: string | undefined = useRoute().query.searchTimestamp?.toString();
 
     //fullscreen
@@ -444,11 +445,15 @@
         }
         stopIntervalScreenshots();
 
-        isLiveSelected.value = true;
-        isPlaying.value = true;
-        isLiveButtonDisabled.value = true;
+        if(!searchTimestampOnLoad.value){
+            isLiveSelected.value = true;
+            isPlaying.value = true;
+            isLiveButtonDisabled.value = true;
 
-        sliderTime.value = sliderMax.value;
+            sliderTime.value = sliderMax.value;
+        }
+
+        searchTimestampOnLoad.value = false;
 
         startIntervalLiveImage();
         startIntervalRefresh();
@@ -545,6 +550,7 @@
 
     function setStartingSliderTime(){
         if(searchTimestamp){
+            searchTimestampOnLoad.value = true;
             sliderTime.value = parseInt(searchTimestamp);
         }else{
             sliderTime.value = sliderMin.value;
