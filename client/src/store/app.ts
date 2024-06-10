@@ -74,10 +74,9 @@ export const useGalleryStore = defineStore("gallery", () => {
 export const useLoadingStore = defineStore("loading", () => {
   const skipLoading = ref<boolean>(false);
   const isLoading = ref<boolean>(false);
-  const isSessionsSearch = ref<boolean>(false);
   const isTimeout = ref<boolean>(false);
 
-  return {skipLoading, isLoading, isSessionsSearch, isTimeout};
+  return {skipLoading, isLoading, isTimeout};
 });
 //-------------------------------------------------//
 

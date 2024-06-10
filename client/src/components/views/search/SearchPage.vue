@@ -64,40 +64,24 @@
                                     <v-icon size="x-large" icon="mdi-unfold-less-horizontal"></v-icon>
                                 </template>
                             </v-btn>
-                            <v-btn 
-                                variant="text"
-                                :color="openAllPanelsDisabled ? 'grey' : 'black'"
-                                :ripple="false"
-                                @click="openAllPanels()">
-                                {{ $t('searchPage.expand') }}
-                                <template v-slot:prepend>
-                                    <v-icon size="x-large" icon="mdi-unfold-more-horizontal"></v-icon>
-                                </template>
-                            </v-btn>
                         </v-col>
                     </v-row>
                     <!----------------------------------->
 
-                    <!-- <v-expansion-panels v-model="sessionPanels" variant="popout" multiple> -->
                     <v-expansion-panels v-model="sessionPanels" multiple>
                         <v-expansion-panel
-                            v-for="session in sessionsGrouped?.content"
-                            :key="session.day"
-                            :value="'sessionPanel' + session.day">
+                            v-for="day in sessionsDays"
+                            :key="day"
+                            :value="'sessionPanel' + day">
 
                             <v-expansion-panel-title class="font-weight-bold">
-                                {{ session.day }}
+                                {{ timeUtils.formatSqlDateToString(day) }}
                             </v-expansion-panel-title>
                             
                             <v-expansion-panel-text>
                                 <SearchSessionTable 
-                                    :day="session.day"
-                                    :sessions="session.sessions" 
-                                    :metaData="{
-                                        screenProctoringMetadataWindowTitle: metadataSearchWindowTitle!, 
-                                        screenProctoringMetadataUserAction: metadataSearchAction!,
-                                        screenProctoringMetadataURL: metadataSearchUrl!,
-                                    }">
+                                    :day="day"
+                                    :search-parameters="searchParameters!">
                                 </SearchSessionTable>
                             </v-expansion-panel-text>
 
@@ -133,25 +117,28 @@
     import SearchForm from "./SearchForm.vue";
     import SearchSessionTable from "./SearchSessionTable.vue";
     import * as groupingUtils from "@/utils/groupingUtils";
+    import * as timeUtils from "@/utils/timeUtils";
 
-    //reactive variables
+    //error handling
     const searchResultAvailable = ref<boolean>(false);
     const noResutsFound = ref<boolean>(false);
-    const sessionSearchResults = ref<SearchSessions>();
-    const sessionsGrouped = ref<SessionsGrouped>();
+    const errorAvailable = ref<boolean>();
 
-    const searchParameters = ref<OptionalParSearchSessions>();
+    //main data
+    const sessionsDays = ref<string[]>([]);
 
+    //ui control
     const isSearchDescending = ref<boolean>(true);
     const sessionPanels = ref<string[]>([]);
     const closeAllPanelsDisabled = ref<boolean>(true);
-    const openAllPanelsDisabled = ref<boolean>(false);
 
-    const errorAvailable = ref<boolean>();
-
-    //remaining
+    //store
     const appBarStore = useAppBarStore();
+    const tableStore = useTableStore();
+    const loadingStore = useLoadingStore();
 
+    //form data
+    const searchParameters = ref<OptionalParSearchSessions>();
     let examNameSearch: string | null;
     let groupNameSearch: string | null;
     let metadataSearchUrl: string | null;
@@ -161,10 +148,6 @@
     let ipAddressSearch: string | null;
     let machineNameSearch: string | null;
 
-    //store
-    const tableStore = useTableStore();
-    const loadingStore = useLoadingStore();
-
 
     onBeforeMount(async () => {
         appBarStore.title = "Search"
@@ -173,22 +156,14 @@
     watch(sessionPanels, () => {
         if(sessionPanels.value.length == 0){
             closeAllPanelsDisabled.value = true;
-            openAllPanelsDisabled.value = false;
-            return;
-        }
-
-        if(sessionPanels.value.length == sessionsGrouped.value?.content.length){
-            closeAllPanelsDisabled.value = false;
-            openAllPanelsDisabled.value = true;
             return;
         }
 
         closeAllPanelsDisabled.value = false;
-        openAllPanelsDisabled.value = false;
     });
 
     watch(isSearchDescending, () => {
-        sessionsGrouped.value?.content.reverse();
+        sessionsDays.value.reverse();
     });
 
     async function searchSessions(
@@ -231,101 +206,43 @@
             pageNumber: pageNumber
         }
 
-        //toggle sessions search on --> prevent multiple loading spinners as the search includes multiple api calls
-        startSessionSearchLoading();
-
-        const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(searchParameters.value);
+        const sessionSearchResponse: string[] | null = await searchViewService.searchSessionsDay(searchParameters.value);
         
         if(sessionSearchResponse == null){
             errorAvailable.value = true;
-            endSessionSearchLoading();
             return;
         }
 
-        sessionSearchResults.value = sessionSearchResponse;
+        sessionsDays.value = sessionSearchResponse;
 
-        if(sessionSearchResults.value.content.length == 0){
+        if(sessionsDays.value.length == 0){
             noResutsFound.value = true;
             searchResultAvailable.value = true;
-            endSessionSearchLoading();
             return;
-        }
-
-        await assignSessions();
-    }
-
-    async function assignSessions(){
-        if(sessionSearchResults.value == null){ 
-            return;
-        }
-
-        if(sessionSearchResults.value.numberOfPages > 1 && sessionSearchResults.value.pageNumber != sessionSearchResults.value.numberOfPages){
-            if(searchParameters.value != null && searchParameters.value.pageNumber != null){
-                searchParameters.value.pageNumber += 1;
-            }
-
-            const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(searchParameters.value);
-
-            if(sessionSearchResponse == null){
-                errorAvailable.value = true;
-                endSessionSearchLoading();
-                return;
-            }
-
-            sessionSearchResults.value.content.push(...sessionSearchResponse.content);
-            sessionSearchResults.value.pageNumber += 1;
-
-            await assignSessions();
-        }
-
-        sessionsGrouped.value = groupingUtils.groupSessionsByDay(sessionSearchResults.value);
-        if(isSearchDescending.value){
-            changeSessionsOrder();
         }
 
         loginNameIpToggleListFillUp();
-
+    
         searchResultAvailable.value = true;
-        endSessionSearchLoading();
     }
 
     function loginNameIpToggleListFillUp(){
-        if(sessionsGrouped.value == null){
+        if(sessionsDays.value == null){
             return;
         }
 
-        for(var i = 0; i < sessionsGrouped.value.content.length; i++){
+        for(var i = 0; i < sessionsDays.value.length; i++){
             tableStore.isIpDisplayList.push(
                 {
-                    day: sessionsGrouped.value.content[i].day,
+                    day: sessionsDays.value[i],
                     isIp: false
                 }
             );
         }
     }
 
-    function changeSessionsOrder(){
-        //reverse list so latest session comes first
-        sessionsGrouped.value?.content.reverse();
-    }
-
     function closeAllPanels(){
         sessionPanels.value = [];
-    }
-
-    function openAllPanels(){
-        sessionPanels.value = sessionsGrouped.value?.content.map((item) => "sessionPanel" + item.day)!;
-    }
-
-    function startSessionSearchLoading(){
-        loadingStore.isSessionsSearch = true;
-        loadingStore.isLoading = true;
-        loadingStore.isTimeout = false;
-    }
-
-    function endSessionSearchLoading(){
-        loadingStore.isSessionsSearch = false;
-        loadingStore.isLoading = false;
     }
 
 </script>

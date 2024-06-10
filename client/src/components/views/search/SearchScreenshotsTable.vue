@@ -29,7 +29,7 @@
         <template v-slot:item.timestamp="{internalItem}">
             <td>
                 <div>
-                    {{timeUtils.formatTimestmapToTime(internalItem.columns.timestamp)}}
+                    {{timeUtils.formatTimestampToTime(internalItem.columns.timestamp)}}
                 </div>
             </td>
         </template>
@@ -86,7 +86,7 @@
             <template v-for="screenshot in groupingUtils.groupScreenshotsByMetadata(item.timelineScreenshotDataList, true)!">
                 <tr>
                     <td>
-                        {{ timeUtils.formatTimestmapToTime(screenshot.timelineScreenshotDataList[0].timestamp)}}
+                        {{ timeUtils.formatTimestampToTime(screenshot.timelineScreenshotDataList[0].timestamp)}}
                     </td>
 
                     <td>

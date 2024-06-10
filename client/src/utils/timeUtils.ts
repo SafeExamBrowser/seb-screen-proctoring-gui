@@ -16,7 +16,7 @@ export function formatTimestampToFullDate(timestamp: string | any): string{
     return day + "." + month + "." + year + " " + hours + ":" + minutes + ":" + seconds; 
 }
 
-export function formatTimestmapToDate(timestamp: number): string{
+export function formatTimestampToDate(timestamp: number): string{
     if(timestamp == 0){
         return "";
     }
@@ -30,7 +30,7 @@ export function formatTimestmapToDate(timestamp: number): string{
     return day + "." + month + "." + year; 
 }
 
-export function formatTimestmapToTime(timestamp: number): string{
+export function formatTimestampToTime(timestamp: number): string{
     if(timestamp == 0){
         return "";
     }
@@ -74,4 +74,27 @@ export function secondsToTimeString(seconds: number): string{
     const secondsStr = String(seconds).padStart(2, '0');
 
     return `${hoursStr}:${minutesStr}:${secondsStr}`;
+}
+
+export function formatSqlDateToString(sqlDate: string): string{
+    if(sqlDate.length == 0){
+        return "";
+    }
+
+    if(!sqlDate.includes("-")){
+        return "";
+    }
+
+    const [year, month, day] = sqlDate.split('-');
+    return `${day}.${month}.${year}`;
+}
+
+export function getStartAndEndTimestampOfDay(sqlDate: string): {start: string, end: string}{
+    const startTime = new Date(`${sqlDate}T00:01:00.000Z`).getTime();
+    const endTime = new Date(`${sqlDate}T23:59:59.999Z`).getTime();
+
+    return {
+        start: startTime.toString(),
+        end: endTime.toString()
+    }
 }

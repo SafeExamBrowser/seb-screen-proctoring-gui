@@ -1,15 +1,20 @@
 <template>
     <tr>
         <template v-for="(column, index) in props.columns">
-            
+    
             <th :aria-label="getHeaderDescription(column, isSorted)"> 
                 <span 
+                    v-if="column.sortable"
                     ref="headerRefs"
                     tabindex="0" 
                     class="mr-2 cursor-pointer font-weight-bold" 
                     role="button" 
                     @keydown="tableUtils.handleTabKeyEvent($event, 'sort', index, {headerRefs: headerRefs})" 
                     @click="() => props.toggleSort(column)">
+                    {{ column.title }}
+                </span>
+                <span 
+                    v-else>
                     {{ column.title }}
                 </span>
 
@@ -28,8 +33,8 @@
                         @click="tableStore.isExamExpand ? emit('removeAddtionalExamHeaders') : emit('addAddtionalExamHeaders')">
                     </v-btn>
                 </template>
-
-                <template v-if="column.title == $t('searchSessionTable.loginName')">
+                
+                <template v-if="column.title == 'Login Name / IP'">
                     <v-btn 
                         :aria-label="tableStore.isIpDisplayList[tableUtils.getSessionListIndex(props.day!)].isIp ? 'show login name' : 'show IP'"
                         :icon="tableStore.isIpDisplayList[tableUtils.getSessionListIndex(props.day!)].isIp ? 'mdi-toggle-switch-outline' : 'mdi-toggle-switch-off-outline'" 
@@ -92,7 +97,7 @@
         //     return "";
         // }
 
-        console.log(column)
+        // console.log(column)
 
         let headerDesc: string = `Header: ${column.title}, sort order: `
 
