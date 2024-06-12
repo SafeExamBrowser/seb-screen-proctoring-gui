@@ -47,7 +47,7 @@
                                 class="mr-2"
                                 variant="text"
                                 :ripple="false"
-                                @click="isSearchDescending = !isSearchDescending">
+                                @click="changeSortOrder()">
                                 Date
                                 <template v-slot:prepend>
                                     <v-icon size="x-large" :icon="isSearchDescending ? 'mdi-chevron-down' : 'mdi-chevron-up'"></v-icon>
@@ -162,10 +162,6 @@
         closeAllPanelsDisabled.value = false;
     });
 
-    watch(isSearchDescending, () => {
-        sessionsDays.value.reverse();
-    });
-
     async function searchSessions(
         examName: string,
         groupName: string, 
@@ -224,6 +220,7 @@
         loginNameIpToggleListFillUp();
     
         searchResultAvailable.value = true;
+        isSearchDescending.value = true;
     }
 
     function loginNameIpToggleListFillUp(){
@@ -239,6 +236,11 @@
                 }
             );
         }
+    }
+
+    function changeSortOrder(){
+        isSearchDescending.value = !isSearchDescending.value;
+        sessionsDays.value.reverse();
     }
 
     function closeAllPanels(){
