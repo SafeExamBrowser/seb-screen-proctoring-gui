@@ -19,23 +19,32 @@ export function createApiInterceptor(){
     const authStore = useAuthStore();
     const loadingStore = useLoadingStore();
 
-    let loadingTimeout: NodeJS.Timeout | null = null;
-    let loadingEndTimeout: NodeJS.Timeout | null = null;
+    let loadingTimer: NodeJS.Timeout | null = null;
+    let loadingTimout: number = 500;
+    
+    let loadingEndTimer: NodeJS.Timeout | null = null;
 
     api.interceptors.request.use(async (config) => {
-        const isIgnoredUrl: boolean = isUrlIgnorable(config.url);
 
+        //check if url does not need loading spinner
+        const isIgnoredUrl: boolean = isUrlIgnorable(config.url);
         if(loadingStore.skipLoading || isIgnoredUrl){
             return config;
         }
 
-        loadingTimeout = setTimeout(() => {
+        //when loading spinner should be displayed
+        loadingTimer = setTimeout(() => {
             loadingStore.isLoading = true;
-        }, 500);
+        }, loadingTimout);
 
-        loadingEndTimeout = setTimeout(() => {
+
+        //until when loading spinner should be displayed (timeout)
+        let loadingEndTimout: number = 20000;
+        if(config.url == "/search/sessions/day") loadingEndTimout = 60000;
+
+        loadingEndTimer = setTimeout(() => {
             resetLoadingState();
-        }, 20000);
+        }, loadingEndTimout);
 
         return config;
     });
@@ -75,8 +84,8 @@ export function createApiInterceptor(){
 
 
     function resetLoadingState(){
-        if (loadingTimeout) clearTimeout(loadingTimeout); 
-        if (loadingEndTimeout) clearTimeout(loadingEndTimeout); 
+        if (loadingTimer) clearTimeout(loadingTimer); 
+        if (loadingEndTimer) clearTimeout(loadingEndTimer); 
 
         loadingStore.isLoading = false;
         loadingStore.skipLoading = false;
