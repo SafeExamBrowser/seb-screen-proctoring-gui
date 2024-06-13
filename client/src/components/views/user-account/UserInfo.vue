@@ -89,7 +89,7 @@
                             <!-------------timezone--------------->
                             <v-row align="center">
                                 <v-col cols="4">
-                                    Time zone:
+                                    Timezone:
                                 </v-col>
                                 <v-col cols="8">
                                     <v-text-field
@@ -248,7 +248,7 @@
             surname.value = userAccount.value.surname;
             username.value = userAccount.value.username;
             email.value = userAccount.value.email;
-            timezone.value = userAccount.value.name;
+            timezone.value = userAccount.value.timezone;
         }
     }
 

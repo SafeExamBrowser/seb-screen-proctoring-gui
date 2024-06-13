@@ -1,5 +1,5 @@
 import { useUserAccountStore } from "@/store/app";
-import { toZonedTime } from 'date-fns-tz';
+import { toZonedTime } from "date-fns-tz";
 
 
 export function formatTimestampToFullDate(timestamp: string | any): string{
@@ -7,11 +7,8 @@ export function formatTimestampToFullDate(timestamp: string | any): string{
         return "";
     }
 
-    const userAccountStore = useUserAccountStore();
     let date = new Date(timestamp);
-    if(userAccountStore.userAccount?.timezone){
-        date = convertUTCToTimeZone(timestamp, userAccountStore.userAccount?.timezone);
-    }
+    date = convertUTCToTimeZone(timestamp);
 
     const day = ("0" + date.getDate()).slice(-2);
     const month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -29,11 +26,8 @@ export function formatTimestampToDate(timestamp: number): string{
         return "";
     }
 
-    const userAccountStore = useUserAccountStore();
     let date = new Date(timestamp);
-    if(userAccountStore.userAccount?.timezone){
-        date = convertUTCToTimeZone(timestamp, userAccountStore.userAccount?.timezone);
-    }
+    date = convertUTCToTimeZone(timestamp);
 
     const day = ("0" + date.getDate()).slice(-2);
     const month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -47,11 +41,8 @@ export function formatTimestampToTime(timestamp: number): string{
         return "";
     }
 
-    const userAccountStore = useUserAccountStore();
     let date = new Date(timestamp);
-    if(userAccountStore.userAccount?.timezone){
-        date = convertUTCToTimeZone(timestamp, userAccountStore.userAccount?.timezone);
-    }
+    date = convertUTCToTimeZone(timestamp);
 
     const hours = ("0" + date.getHours()).slice(-2);
     const minutes = ("0" + date.getMinutes()).slice(-2);
@@ -115,11 +106,16 @@ export function getStartAndEndTimestampOfDay(sqlDate: string): {start: string, e
     }
 }
 
-function convertUTCToTimeZone(utcDate: number, timeZone: string): Date {
-    // Create a Date object from the UTC timestamp
-    const utcDateObject = new Date(utcDate);
+function convertUTCToTimeZone(utcDate: number): Date {
+    const userAccountStore = useUserAccountStore();
 
-    // Convert the UTC date to the desired timezone
-    const dateInTimeZone = toZonedTime(utcDateObject, timeZone);
-    return dateInTimeZone;
+    const utcDateObject = new Date(utcDate);
+    const timezone: string | undefined = userAccountStore.userAccount?.timezone;
+    if(timezone == null){
+        return utcDateObject;
+    }
+
+    const dateInTimezone = toZonedTime(utcDateObject, timezone);
+
+    return dateInTimezone;
 }

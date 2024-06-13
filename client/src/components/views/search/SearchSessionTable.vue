@@ -122,8 +122,6 @@
 
         let searchParameters: OptionalParSearchSessions = searchViewService.prepareSessionSearchParameters(props.day, props.searchParameters, serverTablePaging);
 
-        console.log(searchParameters)
-
         const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(searchParameters);
         if(sessionSearchResponse == null){
             isLoading.value = false;
@@ -135,7 +133,6 @@
 
         isOnLoad.value = false;
         isLoading.value = false;
-        console.log("--------end-------");
     }
 
 

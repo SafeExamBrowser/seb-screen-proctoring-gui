@@ -1,4 +1,3 @@
-
 export function getTimestampFromPeriodSelection(timePeriod: number, amount: number): string{
     const now = new Date();
 
@@ -21,4 +20,4 @@ export function getTimestampFromPeriodSelection(timePeriod: number, amount: numb
     }
 
     return now.getTime().toString();
-}
+}       
