@@ -13,7 +13,7 @@ type UserAccount = {
     username: string;
     email: string;
     language: string;
-    timeZone: string;
+    timezone: string;
     roles: string[];
     creationTime: number;
     lastUpdateTime: number;

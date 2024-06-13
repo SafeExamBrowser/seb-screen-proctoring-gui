@@ -89,7 +89,7 @@
                             <!-------------timezone--------------->
                             <v-row align="center">
                                 <v-col cols="4">
-                                    Time zone:
+                                    Timezone:
                                 </v-col>
                                 <v-col cols="8">
                                     <v-text-field
@@ -97,7 +97,7 @@
                                         hide-details
                                         density="compact"
                                         variant="outlined"
-                                        v-model="timeZone">
+                                        v-model="timezone">
                                     </v-text-field>
                                 </v-col>
                             </v-row>
@@ -205,7 +205,7 @@
     const surname = ref<string>("");
     const username = ref<string>("");
     const email = ref<string>();
-    const timeZone = ref<string>();
+    const timezone = ref<string>();
     const password = ref<string>("");
     const confirmPassword = ref<string>("");
 
@@ -248,7 +248,7 @@
             surname.value = userAccount.value.surname;
             username.value = userAccount.value.username;
             email.value = userAccount.value.email;
-            timeZone.value = userAccount.value.name;
+            timezone.value = userAccount.value.timezone;
         }
     }
 

@@ -1,9 +1,14 @@
+import { useUserAccountStore } from "@/store/app";
+import { toZonedTime } from "date-fns-tz";
+
+
 export function formatTimestampToFullDate(timestamp: string | any): string{
     if(timestamp == "0" || timestamp == null){
         return "";
     }
 
-    const date = new Date(timestamp);
+    let date = new Date(timestamp);
+    date = convertUTCToTimeZone(timestamp);
 
     const day = ("0" + date.getDate()).slice(-2);
     const month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -21,7 +26,8 @@ export function formatTimestampToDate(timestamp: number): string{
         return "";
     }
 
-    const date = new Date(timestamp);
+    let date = new Date(timestamp);
+    date = convertUTCToTimeZone(timestamp);
 
     const day = ("0" + date.getDate()).slice(-2);
     const month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -35,7 +41,8 @@ export function formatTimestampToTime(timestamp: number): string{
         return "";
     }
 
-    const date = new Date(timestamp);
+    let date = new Date(timestamp);
+    date = convertUTCToTimeZone(timestamp);
 
     const hours = ("0" + date.getHours()).slice(-2);
     const minutes = ("0" + date.getMinutes()).slice(-2);
@@ -97,4 +104,18 @@ export function getStartAndEndTimestampOfDay(sqlDate: string): {start: string, e
         start: startTime.toString(),
         end: endTime.toString()
     }
+}
+
+function convertUTCToTimeZone(utcDate: number): Date {
+    const userAccountStore = useUserAccountStore();
+
+    const utcDateObject = new Date(utcDate);
+    const timezone: string | undefined = userAccountStore.userAccount?.timezone;
+    if(timezone == null){
+        return utcDateObject;
+    }
+
+    const dateInTimezone = toZonedTime(utcDateObject, timezone);
+
+    return dateInTimezone;
 }
