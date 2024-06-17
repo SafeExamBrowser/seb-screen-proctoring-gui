@@ -1,8 +1,6 @@
 <template>
-    <!-- class="d-sm-flex" -->
-    <v-navigation-drawer v-model="drawer">
-    <!-- <v-navigation-drawer v-model="drawer" class="d-md-flex"> -->
-        <!--page title with logo-->
+    <v-navigation-drawer v-model="drawer" :permanent="true">
+
         <v-sheet class="pa-4">
             <a href="/start" class="text-decoration-none text-black">
                 <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Logo ETH Zürich"></v-img>
@@ -10,7 +8,6 @@
             </a>
         </v-sheet>
 
-        <!--navigation items-->
         <v-list>
             <v-list-item v-for="[title, link] in navigationLinks" :key="title" :to="link" link>
                 <v-list-item-title>{{ title }}</v-list-item-title>
@@ -107,12 +104,12 @@
                             </v-btn-toggle>
                         </v-list-item> -->
 
-                        <v-list-item>
+                        <!-- <v-list-item>
                             <v-btn-toggle v-model="themeToggle" variant="text" mandatory>
                                 <v-btn icon="mdi-white-balance-sunny"></v-btn>
                                 <v-btn icon="mdi-weather-night"></v-btn>
                             </v-btn-toggle>
-                        </v-list-item>
+                        </v-list-item> -->
 
                         <v-divider></v-divider>
 
