@@ -5,18 +5,16 @@ import {openUrlInNewTab} from "@/router/navigation";
 import * as metadataUtils from "@/utils/metadataUtils";
 
 //=============api==============
-export async function getGroup(groupUuid: string, currentWindow: number, pageSize: number): Promise<GroupUuid | null>{
+export async function getGroup(groupUuid: string, currentWindow: number, pageSize: number, sortOrder: SortOrder): Promise<GroupUuid | null>{
     try {
         const groupUuidResponse: GroupUuid = await groupService.getGroupByUuid(groupUuid, 
             {   
-                // sortOrder: SortOrder.asc,
-                // sortBy: "clientName",
                 pageNumber: currentWindow+=1, 
-                pageSize: Math.pow(pageSize, 2)
+                pageSize: Math.pow(pageSize, 2),
+                sortOrder: sortOrder
+                // sortBy: "clientName",
             }
         );
-
-        // groupUuidResponse.screenshots = filterLiveSessions(groupUuidResponse.screenshots);
 
         return groupUuidResponse;
 
@@ -33,15 +31,6 @@ export async function getLatestScreenshotData(sessionUuid: string, timestamp: nu
         console.error(error);
         return null;
     }
-}
-
-//===========filter=========
-export function filterLiveSessions(screenshotData: ScreenshotData[]): ScreenshotData[]{
-    const screenshotDataOnlyLive: ScreenshotData[] = screenshotData.filter((screenshot) => {
-        return screenshot.active;
-    }); 
-
-    return screenshotDataOnlyLive;
 }
 
 //=============index============
