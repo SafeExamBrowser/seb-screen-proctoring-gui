@@ -38,6 +38,8 @@
     import { useAppBarStore, useLoadingStore } from "@/store/app";
     import { storeToRefs } from "pinia";
     import GalleryImage from "./GalleryImage.vue";
+    import { SortOrder } from "@/models/sortOrderEnum";
+import { SourceTextModule } from "vm";
 
 
     //reactive variables
@@ -45,7 +47,8 @@
     const noScreenshotData = ref<boolean>(false);
     const timestamp = ref(Date.now());
     const maxPages = ref<number>(1);
-    const currentWindow = ref<number>(0);   
+    const currentWindow = ref<number>(0);  
+    const sortOrder = ref<SortOrder>(SortOrder.asc); 
 
     //time constants
     const GROUP_INTERVAL: number = 2 * 1000;
@@ -66,7 +69,7 @@
     onBeforeMount(async () => {
         //todo: add error handling
         loadingStore.skipLoading = true;
-        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
+        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value, sortOrder.value);
 
         if(group.value){
             appBarStore.title = "Group: " + group.value.name;
@@ -86,7 +89,7 @@
 
     watch(appBarStoreRef.galleryGridSize, async () => {
         loadingStore.skipLoading = true;
-        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
+        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value, sortOrder.value);
         assignData();
         currentWindow.value = 0;
     });
@@ -100,6 +103,21 @@
         if(appBarStore.galleryCurrentPage > appBarStore.galleryMaxPages){
             currentWindow.value -= 1;
         }
+    });
+
+    watch(appBarStoreRef.galleryIsNameSortAsc, async () => {
+        if(appBarStoreRef.galleryIsNameSortAsc.value){
+            console.log("isasc")
+            sortOrder.value = SortOrder.asc;
+        }else{
+            console.log("isdesc")
+            sortOrder.value = SortOrder.desc;
+        }
+
+        loadingStore.skipLoading = true;
+        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value, sortOrder.value);
+        assignData();
+        currentWindow.value = 0;
     });
 
     function assignData() {
@@ -137,7 +155,7 @@
 
     //=====window functions======
     async function windowChange() {
-        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
+        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value, sortOrder.value);
         assignData();
     }
 
@@ -157,7 +175,7 @@
     function startIntervalGroup() {
         intervalGroup = setInterval(async () => {
             loadingStore.skipLoading = true;
-            group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
+            group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value, sortOrder.value);
             assignData();
 
         }, GROUP_INTERVAL);

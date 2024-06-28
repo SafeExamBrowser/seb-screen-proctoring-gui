@@ -45,6 +45,7 @@ export const useAppBarStore = defineStore("appBar", () => {
     const galleryLiveSessions = ref<number>(0)
     const galleryAmountOfSessions = ref<number>(0);
     const galleryDescription = ref<string>("");
+    const galleryIsNameSortAsc = ref<boolean>(true);
 
     return {
         title,      
@@ -56,7 +57,8 @@ export const useAppBarStore = defineStore("appBar", () => {
         galleryMaxPages, 
         galleryLiveSessions,
         galleryAmountOfSessions,
-        galleryDescription
+        galleryDescription,
+        galleryIsNameSortAsc
     };
 });
 //-------------------------------------------------//
@@ -159,5 +161,5 @@ export const useTableStore = defineStore("table", () => {
     const isIpDisplayList = ref<{day: string, isIp: boolean}[]>([]);
   
     return {isExamExpand, isIpDisplayList};
-  });
-  //-------------------------------------------------//
+});
+//-------------------------------------------------//

@@ -29,18 +29,15 @@
             <template v-if="useRoute().name == 'GalleryViewPage'">
 
                 <div>
-                    <v-chip class="session-info-item">
+                    <v-chip class="app-bar-item-margin">
                         Page: {{ appBarStore.galleryCurrentPage }} / {{ appBarStore.galleryMaxPages }}
                     </v-chip>
-                    <v-chip class="session-info-item">
+                    <v-chip class="app-bar-item-margin">
                         Sessions: {{ appBarStore.galleryLiveSessions }} / {{ appBarStore.galleryAmountOfSessions }}
                     </v-chip>
-                    <!-- <v-chip class="session-info-item">
-                        Description: {{ appBarStore.galleryDescription }}
-                    </v-chip> -->
                 </div>
 
-                <div class="grid-size-container">
+                <div class="app-bar-item-margin">
                     <v-menu>
                         <template v-slot:activator="{ props }">
                             <v-btn v-bind="props" rounded="sm" color="primary" variant="flat">
@@ -69,11 +66,24 @@
                             <v-list-item>
                                 <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.galleryIsNameEnabled" hide-details></v-switch>
                                 <v-switch class="mx-auto" label="Show IP" color="primary" v-model="appBarStore.galleryIsIpEnabled" hide-details></v-switch>
-                                <!-- <v-switch class="mx-auto" label="Show Metadata" color="primary" v-model="appBarStore.galleryIsMetadataEnabled" hide-details></v-switch> -->
+                            </v-list-item>
+
+                            <v-divider></v-divider>
+
+                            <v-list-item>
+                                <v-btn
+                                    variant="outlined"
+                                    @click="appBarStore.galleryIsNameSortAsc = !appBarStore.galleryIsNameSortAsc">
+                                    Sort by Name
+                                    <template v-slot:append>
+                                        <v-icon size="x-large" :icon="appBarStore.galleryIsNameSortAsc ? 'mdi-chevron-up' : 'mdi-chevron-down'"></v-icon>
+                                    </template>
+                                </v-btn>
                             </v-list-item>
                         </v-list>
                     </v-menu>
                 </div>
+
             </template>
             <!-------–--------------------->
 
@@ -202,11 +212,7 @@
         text-align: center;
     }
 
-    .session-info-item{
-        margin-right: 10px;
-    }
-
-    .grid-size-container{
+    .app-bar-item-margin{
         margin-right: 10px;
     }
 
