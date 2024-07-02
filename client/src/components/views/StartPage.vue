@@ -1,7 +1,20 @@
 <template>
-    <v-row>
-        <v-col>
 
+    <v-row>
+        <v-col v-if="noRunningExams">
+            <v-sheet 
+                elevation="4"
+                class="rounded-lg pa-4"
+                title="No running exams available">
+                <v-row>
+                    <v-col align="left" class="text-h6">
+                        No running exams available
+                    </v-col>
+                </v-row>
+            </v-sheet>
+        </v-col>
+
+        <v-col v-else>
             <v-data-table
                 item-value="item.name"
                 class="rounded-lg elevation-4"
@@ -69,7 +82,6 @@
                 </template>
 
             </v-data-table>
-            
         </v-col>
     </v-row>
 </template>
@@ -90,15 +102,19 @@
     const groups = ref<Group[]>();
     const headerRefs = ref<any[]>();
     const headers = ref([
-        {title: "Exam", key: "exam.name", width: "15%"},
-        {title: "Name", key: "name", width: "15%"},
+        {title: "Exam", key: "exam.name", width: "10%"},
+        {title: "Group", key: "name", width: "15%"},
         {title: "Description", key: "description", width: "15%"},
-        {title: "Start-Time", key: "creationTime", width: "15%"},
+        // {title: "Start-Time", key: "creationTime", width: "15%"},
     ]);
+    const noRunningExams = ref<boolean>(false);
 
     onBeforeMount(async () => {
-        appBarStore.title = "Active SEB Groups"
+        appBarStore.title = "Running Exams";
         groups.value = await groupService.getGroups({pageSize: 500});
+
+        removeNonRunningExams();
+        addAddtionalExamHeaders();
     });
 
     onUnmounted(() => {
@@ -111,6 +127,16 @@
         }
 
         return "";
+    }
+
+    function removeNonRunningExams(){
+        groups.value = groups.value?.filter((group => {
+            return group.exam.isRunning;
+        }));
+
+        if(groups.value?.length == 0){
+            noRunningExams.value = true;
+        }
     }
 
     function addAddtionalExamHeaders(){
