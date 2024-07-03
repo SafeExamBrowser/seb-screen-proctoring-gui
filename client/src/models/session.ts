@@ -35,9 +35,9 @@ type Session = {
 }
 
 type MetaData = {
-    screenProctoringMetadataURL?: string;
-    screenProctoringMetadataWindowTitle?: string,
-    screenProctoringMetadataUserAction?: string,
     screenProctoringMetadataApplication?: string,
     screenProctoringMetadataBrowser?: string
+    screenProctoringMetadataUserAction?: string,
+    screenProctoringMetadataURL?: string;
+    screenProctoringMetadataWindowTitle?: string,
 }

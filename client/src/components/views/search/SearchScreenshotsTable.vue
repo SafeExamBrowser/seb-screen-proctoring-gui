@@ -75,10 +75,6 @@
 
                     <td>
                     </td>
-
-                    <td>
-                        {{ screenshot.timelineScreenshotDataList[0].metaData.screenProctoringMetadataWindowTitle }}
-                    </td>
                     
                     <td>
                         {{ screenshot.timelineScreenshotDataList[0].metaData.screenProctoringMetadataBrowser }}
@@ -134,7 +130,6 @@
         {title: "Capture-Time", key: "timestamp", value: "timelineScreenshotDataList[0].timestamp", width: "10%"},
         {title: "Application / Website", key: "groupName", width: "20%"},
 
-        {title: "Window Title", key: "windowTitle", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataWindowTitle"},
         {title: "Browser Title", key: "browserTitle", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataBrowser"},
         {title: "Activity Details", key: "activityDetails", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataUserAction"},
         {title: "URL", key: "url", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataURL"},
