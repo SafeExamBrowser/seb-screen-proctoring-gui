@@ -41,8 +41,7 @@ export function getScreenshotMetadata(sliderTime: number, currentScreenshotMetad
         "Time:": timeUtils.formatTimestampToTime(sliderTime),
         "Url:": currentScreenshotMetadata?.screenProctoringMetadataURL,
         "Window Title:": currentScreenshotMetadata?.screenProctoringMetadataWindowTitle,
-        //temp solution
-        "Activity Details:": metadataUtils.filterOutLetters(currentScreenshotMetadata?.screenProctoringMetadataUserAction + " " + additionalMetadataInfo)
+        "Activity Details:": currentScreenshotMetadata?.screenProctoringMetadataUserAction + " " + additionalMetadataInfo
     };
 }
 

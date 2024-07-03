@@ -59,6 +59,6 @@ export function getScreenshotMetadata(currentScreenshotMetadata: MetaData | null
         "Url:": currentScreenshotMetadata?.screenProctoringMetadataURL,
         "Window Title:": currentScreenshotMetadata?.screenProctoringMetadataWindowTitle,
         //temp solution
-        "Activity Details:": metadataUtils.filterOutLetters(currentScreenshotMetadata?.screenProctoringMetadataUserAction)
+        "Activity Details:": currentScreenshotMetadata?.screenProctoringMetadataUserAction
     };
 }

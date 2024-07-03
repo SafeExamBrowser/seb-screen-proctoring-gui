@@ -42,22 +42,6 @@
             </td>
         </template>
 
-        <template v-slot:item.activityDetails="{item}">
-            <td>
-                <div>
-                    {{metadataUtils.filterOutLetters(item.timelineScreenshotDataList[0].metaData.screenProctoringMetadataUserAction)}}
-                </div>
-            </td>
-        </template>
-
-        <template v-slot:item.url="{item}">
-            <td>
-                <div>
-                    {{item.timelineScreenshotDataList[0].metaData.screenProctoringMetadataURL}}
-                </div>
-            </td>
-        </template>
-
         <template v-slot:item.proctoringViewLink="{internalItem}">
             <v-btn 
                 @click="searchViewService.openProctoringView(timelineSearchResult!.sessionUUID, internalItem.columns.timestamp)" 
@@ -93,7 +77,15 @@
                     </td>
 
                     <td>
-                        {{ metadataUtils.filterOutLetters(screenshot.groupName + "(" + screenshot.timelineScreenshotDataList.length + ")") }}
+                        {{ screenshot.timelineScreenshotDataList[0].metaData.screenProctoringMetadataWindowTitle }}
+                    </td>
+                    
+                    <td>
+                        {{ screenshot.timelineScreenshotDataList[0].metaData.screenProctoringMetadataBrowser }}
+                    </td>
+
+                    <td>
+                        {{ screenshot.timelineScreenshotDataList[0].metaData.screenProctoringMetadataUserAction }}
                     </td>
 
                     <td>
@@ -128,7 +120,6 @@
     import * as searchViewService from "@/services/component-services/searchViewService";
     import * as groupingUtils from "@/utils/groupingUtils";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
-    import * as metadataUtils from "@/utils/metadataUtils";
 
     const props = defineProps<{
         timelineSearchResult: SearchTimeline
@@ -142,8 +133,12 @@
     const screenshotTableHeaders = ref([
         {title: "Capture-Time", key: "timestamp", value: "timelineScreenshotDataList[0].timestamp", width: "10%"},
         {title: "Application / Website", key: "groupName", width: "20%"},
+
+        {title: "Window Title", key: "windowTitle", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataWindowTitle"},
+        {title: "Browser Title", key: "browserTitle", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataBrowser"},
         {title: "Activity Details", key: "activityDetails", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataUserAction"},
         {title: "URL", key: "url", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataURL"},
+
         {title: "Video", key: "proctoringViewLink", width: "1%"},
         {title: "", key: "data-table-expand"}
     ]);
