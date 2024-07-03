@@ -39,7 +39,6 @@
     import { storeToRefs } from "pinia";
     import GalleryImage from "./GalleryImage.vue";
     import { SortOrder } from "@/models/sortOrderEnum";
-import { SourceTextModule } from "vm";
 
 
     //reactive variables

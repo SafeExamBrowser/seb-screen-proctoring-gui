@@ -23,7 +23,7 @@
                 </template>
 
                 <!--todo: checking should not be done via title-->
-                <template v-if="column.title == 'Exam'">
+                <template v-if="column.title == 'Exam Start-Time'">
                     <v-btn 
                         :aria-label="tableStore.isExamExpand ? 'hide exam details' : 'show exam details'"
                         :icon="tableStore.isExamExpand ? 'mdi-arrow-expand-left' : 'mdi-arrow-expand-right'" 

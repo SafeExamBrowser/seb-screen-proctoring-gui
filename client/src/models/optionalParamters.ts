@@ -5,6 +5,13 @@ type OptionalParGeneric = {
     filterCriteria?: string;
 }
 
+type OptionalParGroups = {
+    pageNumber?: number;
+    pageSize?: number;
+    sort?: string;
+    excludeInactiveGroups?: boolean | null;
+}
+
 type OptionalParGroupByUuid = {
     pageNumber?: number;
     pageSize?: number;
