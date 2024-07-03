@@ -25,6 +25,29 @@
         <v-app-bar-title>{{ appBarStore.title }}</v-app-bar-title>
 
         <template v-slot:append>
+
+        <!--start page specfic items-->
+        <template v-if="useRoute().name == 'StartPage'">
+            <div>
+                <v-menu :close-on-content-click="false">
+                    <template v-slot:activator="{ props }">
+                        <v-btn 
+                            icon="mdi-cog" 
+                            v-bind="props"
+                            color="primary">
+                        </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-item>
+                            <v-switch class="mx-auto" label="Exclude finished exams" color="primary" v-model="appBarStore.startPageExcludeInactiveGroups" hide-details></v-switch>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
+            </div>
+
+            </template>
+            <!-------–--------------------->
+        
             <!--gallery view specfic items-->
             <template v-if="useRoute().name == 'GalleryViewPage'">
 

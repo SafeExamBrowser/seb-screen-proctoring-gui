@@ -18,7 +18,7 @@
             <v-data-table
                 item-value="item.name"
                 class="rounded-lg elevation-4"
-                :sort-by="[{key: 'creationTime', order: 'desc'}]"
+                :sort-by="[{key: 'exam.startTime', order: 'desc'}]"
                 :items-per-page="tableUtils.calcDefaultItemsPerPage(groups)"
                 :items-per-page-options="tableUtils.calcItemsPerPage(groups)"
                 :headers="headers"
@@ -73,10 +73,10 @@
                     </td>
                 </template>
 
-                <template v-slot:item.creationTime="{item}">
+                <template v-slot:item.terminationTime="{item}">
                     <td>
                         <div>
-                            {{timeUtils.formatTimestampToFullDate(item.creationTime)}}
+                            {{timeUtils.formatTimestampToFullDate(item.terminationTime)}}
                         </div>
                     </td>
                 </template>
@@ -87,38 +87,42 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, onBeforeMount, onUnmounted } from "vue";
+    import { ref, onBeforeMount, onUnmounted, watch } from "vue";
     import * as groupService from "@/services/api-services/groupService";
     import { useAppBarStore, useTableStore } from "@/store/app";
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/table/tableUtils";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
+    import { storeToRefs } from "pinia";
+
 
     //stores
     const appBarStore = useAppBarStore();
+    const appBarStoreRef = storeToRefs(appBarStore);
     const tableStore = useTableStore();
 
     //table
     const groups = ref<Group[]>();
     const headerRefs = ref<any[]>();
     const headers = ref([
-        {title: "Exam", key: "exam.name", width: "10%"},
+        {title: "Exam", key: "exam.name", width: "5%"},
+        {title: "Exam Start-Time", key: "exam.startTime", width: "8%"},
         {title: "Group", key: "name", width: "15%"},
-        {title: "Description", key: "description", width: "15%"},
-        // {title: "Start-Time", key: "creationTime", width: "15%"},
+        {title: "Description", key: "description", width: "10%"},
     ]);
     const noRunningExams = ref<boolean>(false);
 
     onBeforeMount(async () => {
         appBarStore.title = "Running Exams";
-        groups.value = await groupService.getGroups({pageSize: 500});
-
-        removeNonRunningExams();
-        addAddtionalExamHeaders();
+        groups.value = await groupService.getGroups({pageSize: 500, excludeInactiveGroups: appBarStore.startPageExcludeInactiveGroups});
     });
 
     onUnmounted(() => {
         tableStore.isExamExpand = false;
+    });
+
+    watch(appBarStoreRef.startPageExcludeInactiveGroups, async () => {
+        groups.value = await groupService.getGroups({pageSize: 500, excludeInactiveGroups: appBarStore.startPageExcludeInactiveGroups});
     });
 
     function getGalleryViewLink(index: number) {
@@ -129,27 +133,17 @@
         return "";
     }
 
-    function removeNonRunningExams(){
-        groups.value = groups.value?.filter((group => {
-            return group.exam.isRunning;
-        }));
-
-        if(groups.value?.length == 0){
-            noRunningExams.value = true;
-        }
-    }
-
     function addAddtionalExamHeaders(){
         tableStore.isExamExpand = true;
 
-        headers.value.splice(1, 0, {title: "Exam Start-Time", key: "exam.startTime", width: "10%"});
-        headers.value.splice(2, 0, {title: "Exam End-Time", key: "exam.endTime", width: "10%"});
+        headers.value.splice(2, 0, {title: "Exam End-Time", key: "exam.endTime", width: "8%"});
+        headers.value.splice(3, 0, {title: "Group Termination-Time", key: "terminationTime", width: "8%"});
     }
 
     function removeAddtionalExamHeaders(){
         tableStore.isExamExpand = false;
 
-        headers.value.splice(1, 2);
+        headers.value.splice(2, 2);
     }
 
 </script>

@@ -33,6 +33,8 @@ export const useSettingsStore = defineStore("settings", () => {
 export const useAppBarStore = defineStore("appBar", () => {
     const title = ref<string>("Example Title");
 
+    const startPageExcludeInactiveGroups = ref<boolean>(true);
+
     const galleryGridSize = ref<GridSize>({
         title: "3x3",
         value: 3
@@ -49,6 +51,7 @@ export const useAppBarStore = defineStore("appBar", () => {
 
     return {
         title,      
+        startPageExcludeInactiveGroups,
         galleryGridSize, 
         galleryIsNameEnabled, 
         galleryIsIpEnabled, 
