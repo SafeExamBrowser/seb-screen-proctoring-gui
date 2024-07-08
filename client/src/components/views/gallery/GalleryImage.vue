@@ -122,14 +122,21 @@
 
                                         </v-expansion-panel-title>
                                         <v-expansion-panel-text>
-                                            <v-row v-for="(value, key) in galleryViewService.getScreenshotMetadata(screenshot.metaData)" :key="key" no-gutters>
-                                                <v-col>
-                                                    {{key}}
-                                                </v-col>
-                                                <v-col>
-                                                    {{value}}
-                                                </v-col>
-                                            </v-row>
+                                            <div class="metadata-container">
+                                                <v-table density="compact">
+                                                    <tbody>
+                                                        <tr v-for="(value, key) in galleryViewService.getScreenshotMetadata(screenshot.metaData)" 
+                                                            :key="key">
+                                                            <td>
+                                                                {{key}}
+                                                            </td>
+                                                            <td align="right">
+                                                                {{value}}
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </v-table>
+                                            </div>
                                         </v-expansion-panel-text>
                                     </v-expansion-panel>
                                 </v-expansion-panels>
@@ -273,6 +280,11 @@
 
     .content-filler{
         visibility: hidden;
+    }
+
+    .metadata-container{
+        margin: auto;
+        width: 60%;
     }
 
 </style>
