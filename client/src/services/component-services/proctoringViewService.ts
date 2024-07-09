@@ -32,16 +32,18 @@ export async function getScreenshotTimestamps(sessionId: string, timestamp: stri
 }
 //==============================
 
-
 //=============metadata=========
 export function getScreenshotMetadata(sliderTime: number, currentScreenshotMetadata: MetaData | null, additionalMetadataInfo: string, total: string): object{
     return {
         "Total:": total,
         "Date:": timeUtils.formatTimestampToDate(sliderTime),
         "Time:": timeUtils.formatTimestampToTime(sliderTime),
+
+        "Application:": currentScreenshotMetadata?.screenProctoringMetadataApplication,
+        "Browser Title:": currentScreenshotMetadata?.screenProctoringMetadataBrowser,
+        "Activity Details:": currentScreenshotMetadata?.screenProctoringMetadataUserAction + " " + additionalMetadataInfo,
         "Url:": currentScreenshotMetadata?.screenProctoringMetadataURL,
         "Window Title:": currentScreenshotMetadata?.screenProctoringMetadataWindowTitle,
-        "Activity Details:": currentScreenshotMetadata?.screenProctoringMetadataUserAction + " " + additionalMetadataInfo
     };
 }
 
