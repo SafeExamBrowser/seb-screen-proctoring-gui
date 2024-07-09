@@ -141,9 +141,12 @@
     const searchParameters = ref<OptionalParSearchSessions>();
     let examNameSearch: string | null;
     let groupNameSearch: string | null;
+
+    let metadataSearchApplication: string | null;
+    let metadataSearchBrowserTitle: string | null;
+    let metadataSearchActivityDetails: string | null;
     let metadataSearchUrl: string | null;
-    let metadataSearchWindowTitle: string | null;
-    let metadataSearchAction: string | null;
+
     let loginNameSearch: string | null;
     let ipAddressSearch: string | null;
     let machineNameSearch: string | null;
@@ -168,9 +171,12 @@
         loginName: string, 
         ipAddress: string,
         machineName: string, 
-        metadataUrl: string, 
-        metadataWindowTitle: string, 
-        metadataUserAction: string, 
+
+        metadataApplication: string,
+        metadataBrowserTitle: string,
+        metadataActivityDetails: string,
+        metadataUrl: string,
+
         fromTime: string, 
         toTime: string,
         pageNumber: number
@@ -180,9 +186,12 @@
 
         examNameSearch = examName == "" ? null : examName;
         groupNameSearch = groupName == "" ? null : groupName;
+
+        metadataSearchApplication = metadataApplication == "" ? null : metadataApplication;
+        metadataSearchBrowserTitle = metadataBrowserTitle == "" ? null : metadataBrowserTitle;
+        metadataSearchActivityDetails = metadataActivityDetails == "" ? null : metadataActivityDetails;
         metadataSearchUrl = metadataUrl == "" ? null : metadataUrl;
-        metadataSearchWindowTitle = metadataWindowTitle == "" ? null : metadataWindowTitle;
-        metadataSearchAction = metadataUserAction == "" ? null : metadataUserAction;
+
         loginNameSearch = loginName == "" ? null : loginName;
         ipAddressSearch = ipAddress == "" ? null : ipAddress;
         machineNameSearch = machineName == "" ? null : machineName;
@@ -193,9 +202,12 @@
             clientName: loginNameSearch,
             clientIp: ipAddressSearch,
             clientMachineName: machineNameSearch,
+
+            screenProctoringMetadataApplication: metadataSearchApplication,
+            screenProctoringMetadataBrowser: metadataSearchBrowserTitle,
+            screenProctoringMetadataUserAction: metadataSearchActivityDetails,
             screenProctoringMetadataURL: metadataSearchUrl,
-            screenProctoringMetadataWindowTitle: metadataSearchWindowTitle,
-            screenProctoringMetadataUserAction: metadataSearchAction,
+
             fromTime: fromTime, 
             toTime: toTime,
             pageSize: 500,

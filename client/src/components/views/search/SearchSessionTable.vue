@@ -143,8 +143,9 @@
 
         const timelineSearchResponse: SearchTimeline | null = await searchViewService.searchTimeline(
             item.raw.sessionUUID, 
-            {
-                screenProctoringMetadataWindowTitle: props.searchParameters.screenProctoringMetadataWindowTitle, 
+            {   
+                screenProctoringMetadataApplication: props.searchParameters.screenProctoringMetadataApplication,
+                screenProctoringMetadataBrowser: props.searchParameters.screenProctoringMetadataBrowser,
                 screenProctoringMetadataUserAction: props.searchParameters.screenProctoringMetadataUserAction,
                 screenProctoringMetadataURL: props.searchParameters.screenProctoringMetadataURL
             });
