@@ -149,7 +149,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(value, key) in sessionInfodata" :key="key">
-                                <td>{{ key }}</td>
+                                <th>{{ key }}</th>
                                 <td align="right">{{ value }}</td>
                             </tr>
                         </tbody>
@@ -162,7 +162,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(value, key) in screenshotMetadata" :key="key">
-                                <td>{{ key }}</td>
+                                <th>{{ key }}</th>
                                 <td align="right">{{ value }}</td>
                             </tr>
                         </tbody>
