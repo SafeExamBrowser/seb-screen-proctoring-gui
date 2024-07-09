@@ -79,7 +79,7 @@
                                             density="compact"
                                             variant="outlined"
                                             v-model="ipAddressField"
-                                            :aria-label="$t('searchForm.loginName')">
+                                            :aria-label="$t('searchForm.ipAddress')">
                                         </v-text-field>
                                     </v-col>
                                 </v-row>

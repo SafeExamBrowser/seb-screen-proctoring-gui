@@ -32,7 +32,8 @@
                             @click="backwards()" 
                             size="small" 
                             variant="text" 
-                            icon="mdi-step-backward">
+                            icon="mdi-step-backward"
+                            aria-label="backwards">
                         </v-btn>  
 
                         <!--pause / play-->
@@ -40,7 +41,8 @@
                             @click="isPlaying ? pause() : play()" 
                             size="small" 
                             variant="text" 
-                            :icon="isPlaying ? 'mdi-pause' : 'mdi-play'">
+                            :icon="isPlaying ? 'mdi-pause' : 'mdi-play'"
+                            :aria-label="isPlaying ? 'pause' : 'play'">
                         </v-btn>
 
                         <!--forwards-->
@@ -49,14 +51,16 @@
                             @click="forwards()" 
                             size="small" 
                             variant="text" 
-                            icon="mdi-step-forward">
+                            icon="mdi-step-forward"
+                            aria-label="forwards">
                         </v-btn>
 
                         <!--live button-->
                         <v-btn 
                             v-if="isLive"
                             variant="text"
-                            @click="goLive()">
+                            @click="goLive()"
+                            aria-label="Go Live">
                             <template v-slot:prepend>
                                 <v-badge 
                                     dot
@@ -77,7 +81,8 @@
                                     :disabled="isLiveSelected"
                                     variant="text"
                                     icon="mdi-cog" 
-                                    v-bind="props">
+                                    v-bind="props"
+                                    aria-label="Playback Speed Selection">
                                 </v-btn>
                             </template>
                             <v-list>
@@ -106,7 +111,7 @@
                         <v-chip v-else variant="outlined">
                             {{ currentTimeString }} / {{ endTimeString }}
                         </v-chip>
-                        <v-btn @click="toggle" variant="text" icon="mdi-fullscreen"></v-btn>
+                        <v-btn @click="toggle" variant="text" icon="mdi-fullscreen" aria-label="Fullscreen"></v-btn>
                     </template>
                     <!-------------------------->
 
@@ -119,14 +124,18 @@
         <!-------------------------->
 
         <!-----------info box---------->
-        <v-col cols="4" v-if="isMetadataInfo">
+        <v-col 
+            v-if="isMetadataInfo" 
+            cols="4">
             <v-card
                 class="mx-auto">
                 <template v-slot:title>
                     <v-btn
                         @click="hideShowMetadataInfo()"
                         variant="text"
-                        icon="mdi-information">
+                        icon="mdi-information"
+                        aria-label="Details"
+                        :aria-expanded="isMetadataInfo">
                     </v-btn>
                     Details
                 </template>
@@ -168,7 +177,9 @@
                     variant="text"
                     size="x-large"
                     density="default"
-                    icon="mdi-information">
+                    icon="mdi-information"
+                    aria-label="Details"
+                    :aria-expanded="isMetadataInfo">
                 </v-btn>
             </v-card>
         </v-col>

@@ -106,7 +106,7 @@
     const headerRefs = ref<any[]>();
     const headers = ref([
         {title: "Exam", key: "exam.name", width: "5%"},
-        {title: "Exam Start-Time", key: "exam.startTime", width: "8%"},
+        {title: "Exam Start-Time", key: "exam.startTime", width: "10%"},
         {title: "Group", key: "name", width: "15%"},
         {title: "Description", key: "description", width: "10%"},
     ]);

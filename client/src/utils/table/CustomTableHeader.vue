@@ -1,20 +1,21 @@
 <template>
     <tr>
         <template v-for="(column, index) in props.columns">
-    
-            <th :aria-label="getHeaderDescription(column, isSorted)"> 
+            
+            <!-- <th :aria-label="getHeaderDescription(column, isSorted)">  -->
+            <th> 
                 <span 
                     v-if="column.sortable"
                     ref="headerRefs"
                     tabindex="0" 
                     class="mr-2 cursor-pointer font-weight-bold" 
                     role="button" 
+                    :aria-label="getHeaderDescription(column, isSorted)"
                     @keydown="tableUtils.handleTabKeyEvent($event, 'sort', index, {headerRefs: headerRefs})" 
                     @click="() => props.toggleSort(column)">
                     {{ column.title }}
                 </span>
-                <span 
-                    v-else>
+                <span v-else>
                     {{ column.title }}
                 </span>
 
@@ -93,17 +94,14 @@
     }
 
     function getHeaderDescription(column: any, isSorted: any): any{
-        // if(column.sortable){
-        //     return "";
-        // }
-
-        // console.log(column)
+        console.log(column.title)
+        console.log(isSorted(column))
 
         let headerDesc: string = `Header: ${column.title}, sort order: `
 
         if(!isSorted(column)){
             return `${headerDesc} none`;
-    }
+        }
 
         if(props.getSortIcon(column) == "$sortAsc"){
             return `${headerDesc} ascending`;
