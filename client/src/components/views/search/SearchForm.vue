@@ -118,25 +118,7 @@
                         :title="$t('searchForm.metadataTitle')">
                             <v-expansion-panel-text>
 
-                                <!------------Metatdata: Url------------->
-                                <v-row align="center">
-                                    <v-col cols="4">
-                                        {{ $t('searchForm.url') }}:
-                                    </v-col>
-                                    <v-col cols="8">
-                                        <v-text-field
-                                            single-line
-                                            hide-details
-                                            density="compact"
-                                            variant="outlined"
-                                            v-model="metadataUrlField"
-                                            :aria-label="$t('searchForm.url')"
-                                        ></v-text-field>
-                                    </v-col>
-                                </v-row>
-                                <!----------------------------------->
-
-                                <!------------Metatdata: Window Title------------->
+                                <!------------Metatdata: Application / Website------------->
                                 <v-row align="center">
                                     <v-col cols="4">
                                         {{ $t('searchForm.applicationWebsite') }}:
@@ -147,8 +129,26 @@
                                             hide-details
                                             density="compact"
                                             variant="outlined"
-                                            v-model="metadataWindowTitleField"
+                                            v-model="metadataApplicationField"
                                             :aria-label="$t('searchForm.applicationWebsite')">
+                                        </v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <!----------------------------------->
+
+                                <!------------Metatdata: Broswer Title------------->
+                                <v-row align="center">
+                                    <v-col cols="4">
+                                        Browser Title:
+                                    </v-col>
+                                    <v-col cols="8">
+                                        <v-text-field
+                                            single-line
+                                            hide-details
+                                            density="compact"
+                                            variant="outlined"
+                                            v-model="metadataBrowserTitleField"
+                                            aria-label="Browser Title">
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
@@ -165,9 +165,27 @@
                                             hide-details
                                             density="compact"
                                             variant="outlined"
-                                            v-model="metadataUserActionField"
+                                            v-model="metadataActivityDetailsField"
                                             :aria-label="$t('searchForm.activityDetails')">
                                         </v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <!----------------------------------->
+
+                                <!------------Metatdata: Url------------->
+                                <v-row align="center">
+                                    <v-col cols="4">
+                                        {{ $t('searchForm.url') }}:
+                                    </v-col>
+                                    <v-col cols="8">
+                                        <v-text-field
+                                            single-line
+                                            hide-details
+                                            density="compact"
+                                            variant="outlined"
+                                            v-model="metadataUrlField"
+                                            :aria-label="$t('searchForm.url')"
+                                        ></v-text-field>
                                     </v-col>
                                 </v-row>
                                 <!----------------------------------->
@@ -281,9 +299,12 @@
             loginName: string,
             ipAddress: string,
             machineName: string,
+
+            metadataApplication: string,
+            metadataBrowserTitle: string,
+            metadataActivityDetails: string,
             metadataUrl: string,
-            metadataWindowTitle: string,
-            metadataUserAction: string,
+
             fromTime: string,
             toTime: string,
             pageNumber: number
@@ -299,9 +320,10 @@
     const ipAddressField = ref<string>("");
     const machineNameField = ref<string>("");
 
+    const metadataApplicationField = ref<string>("");
+    const metadataBrowserTitleField = ref<string>("");
+    const metadataActivityDetailsField = ref<string>("");
     const metadataUrlField = ref<string>("");
-    const metadataWindowTitleField = ref<string>("");
-    const metadataUserActionField = ref<string>("");
 
     const timePeriodField = ref<number>(1);
     const timePeriodRadio = ref<boolean>(true);
@@ -327,9 +349,12 @@
             loginNameField.value, 
             ipAddressField.value,
             machineNameField.value, 
+
+            metadataApplicationField.value,
+            metadataBrowserTitleField.value, 
+            metadataActivityDetailsField.value, 
             metadataUrlField.value, 
-            metadataWindowTitleField.value, 
-            metadataUserActionField.value, 
+
             fromTime, 
             toTime,
             1
@@ -342,9 +367,12 @@
         loginNameField.value = "";
         ipAddressField.value = "";
         machineNameField.value = ""; 
+
+        metadataApplicationField.value = ""; 
+        metadataBrowserTitleField.value = "";  
+        metadataActivityDetailsField.value = ""; 
         metadataUrlField.value = ""; 
-        metadataWindowTitleField.value = "";
-        metadataUserActionField.value = "";
+        
         timePeriodField.value = 1;
         timePeriodRadio.value = true;
         timePeriodSelect.value = 2;
