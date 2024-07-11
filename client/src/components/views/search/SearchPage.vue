@@ -38,8 +38,8 @@
 
                     <!------------title and buttons------------->
                     <v-row>
-                        <v-col align="left" class="text-h6">
-                            {{ $t('searchPage.title') }}
+                        <v-col align="left">
+                            <h3>{{ $t('searchPage.title') }}</h3>
                         </v-col>
 
                         <v-col align="right" class="mb-2">

@@ -55,6 +55,7 @@
                                     variant="outlined" 
                                     icon="mdi-arrow-expand"
                                     size="small"
+                                    aria-label="Expand Image"
                                     @click="openDialog()">
                                 </v-btn>
 
@@ -65,6 +66,7 @@
                                     class="ml-2"
                                     icon="mdi-video"
                                     size="small"
+                                    aria-label="Open Proctoring View"
                                     @click="galleryViewService.navigateToProctoringView(screenshot, groupUuid)">
                                 </v-btn>
                             </span>
@@ -116,6 +118,7 @@
                                                     rounded="sm"
                                                     icon="mdi-arrow-collapse"
                                                     size="small"
+                                                    aria-label="Collapse Image"
                                                     @click="closeDialog()">
                                                 </v-btn>
                                             </template>
@@ -159,6 +162,7 @@
                                         class="ml-2"
                                         icon="mdi-video"
                                         size="small"
+                                        aria-label="Open Proctoring View"
                                         @click="galleryViewService.navigateToProctoringView(screenshot, groupUuid)">
                                     </v-btn>
                                 </span>

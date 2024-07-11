@@ -3,7 +3,7 @@
 
         <v-sheet class="pa-4">
             <a href="/start" class="text-decoration-none text-black">
-                <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Logo ETH Zürich"></v-img>
+                <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Screen Proctoring Homepage"></v-img>
                 <div class="app-title text-h6 text-title">{{ $t("navigation.title") }}</div>
             </a>
         </v-sheet>
@@ -18,7 +18,7 @@
 
     <v-app-bar>
         <!--menu icon-->
-        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer">
+        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer" aria-label="Navigation Bar" :aria-expanded="drawer">
         </v-app-bar-nav-icon>
 
         <!--current site title-->
@@ -50,7 +50,8 @@
         
             <!--gallery view specfic items-->
             <template v-if="useRoute().name == 'GalleryViewPage'">
-
+                
+                <!--session infos-->
                 <div>
                     <v-chip class="app-bar-item-margin">
                         Page: {{ appBarStore.galleryCurrentPage }} / {{ appBarStore.galleryMaxPages }}
@@ -60,6 +61,7 @@
                     </v-chip>
                 </div>
 
+                <!--change grid size-->
                 <div class="app-bar-item-margin">
                     <v-menu>
                         <template v-slot:activator="{ props }">
@@ -76,7 +78,8 @@
                     </v-menu>
                 </div>
 
-                <div>
+                <!--settings-->
+                <div aria-label="Gallery View Settings">
                     <v-menu :close-on-content-click="false">
                         <template v-slot:activator="{ props }">
                             <v-btn 
@@ -111,9 +114,8 @@
             <!-------–--------------------->
 
             <!--profile icon menu-->
-            <div class="profile-icon-container">
-                <v-menu
-                    :close-on-content-click="false">
+            <div class="profile-icon-container" aria-label="Profile">
+                <v-menu :close-on-content-click="false">
 
                     <template v-slot:activator="{ props }">
                         <v-btn v-bind="props" color="primary" icon="mdi-account-circle" size="x-large" @click="userMenuOpened()"></v-btn>
