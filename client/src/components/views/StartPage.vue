@@ -36,25 +36,14 @@
                     </CustomTableHeader>
                 </template>
 
-                <template v-slot:item.name="{item, index, internalItem}">
-                    <td>
-                        <div 
-                            role="button"
-                            tabindex="0"
-                            @keydown="tableUtils.handleTabKeyEvent($event, 'navigate', internalItem.index, {path: getGalleryViewLink(internalItem.index)})">
-                            <router-link class="default-color" :to="getGalleryViewLink(internalItem.index)">{{item.name}}</router-link>
-                        </div>
-                    </td>
-                </template>
-
                 <template v-slot:item.exam.name="{item}">
-                    <td>
+                    <th>
                         <div v-if="item.exam.name != '' && item.exam.name != null">
                             <v-chip :color="item.exam.isRunning ? 'green' : 'red'">
                                 {{ item.exam.name }}
                             </v-chip>
                         </div>
-                    </td>
+                    </th>
                 </template>
 
                 <template v-slot:item.exam.startTime="{item}">
@@ -77,6 +66,17 @@
                     <td>
                         <div>
                             {{timeUtils.formatTimestampToFullDate(item.terminationTime)}}
+                        </div>
+                    </td>
+                </template>
+
+                <template v-slot:item.name="{item, index, internalItem}">
+                    <td>
+                        <div 
+                            role="button"
+                            tabindex="0"
+                            @keydown="tableUtils.handleTabKeyEvent($event, 'navigate', internalItem.index, {path: getGalleryViewLink(internalItem.index)})">
+                            <router-link class="default-color" :to="getGalleryViewLink(internalItem.index)">{{item.name}}</router-link>
                         </div>
                     </td>
                 </template>

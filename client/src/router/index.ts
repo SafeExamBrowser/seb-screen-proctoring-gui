@@ -13,7 +13,7 @@ import { useAuthStore, useSettingsStore } from "@/store/app";
 import {navigateTo} from "@/router/navigation";
 import * as userAccountViewService from "@/services/component-services/userAccountViewService";
 
-
+const defaultPageTitle: string = " | SEB Screen Proctoring";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -73,31 +73,49 @@ const routes: Array<RouteRecordRaw> = [
         path: "/start",
         name: "StartPage",
         component: StartPage,
+        meta: {
+            title: "Start Page" + defaultPageTitle
+        }
       },
       {
         path: "/search",
         name: "Search",
-        component: SearchPage
+        component: SearchPage,
+        meta: {
+            title: "Search" + defaultPageTitle
+        }
       },
       {
         path: "/galleryView/:uuid",
         name: "GalleryViewPage",
-        component: GalleryViewPage
+        component: GalleryViewPage,
+        meta: {
+            title: "Gallery View" + defaultPageTitle
+        }
       },
       {
         path: "/recording/:sessionId",
         name: "ProctoringViewPage",
         component: ProctoringViewPage,
+        meta: {
+            title: "Proctoring" + defaultPageTitle
+        }
       },
       {
         path: "/account",
         name: "UserAccountPage",
         component: UserAccountPage,
+        meta: {
+            title: "User Accounts" + defaultPageTitle
+        }
       },
       {
         path: "/account/:accountId",
         name: "SingleUserAccount",
-        component: UserInfo
+        component: UserInfo,
+        meta: {
+            title: "User Account" + defaultPageTitle
+        }
       }
 
     ]
@@ -117,6 +135,10 @@ router.beforeEach(async (to) => {
     await userAccountViewService.setPersonalUserAccount();
     await settingsStore.setIsSebServerIntegratedMode();
   }
+
+  const defaultTitle: string = "SEB Screen Proctoring";
+  //@ts-ignore
+  document.title = to.meta.title || defaultTitle;
 });
 
 export default router;

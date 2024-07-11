@@ -94,9 +94,6 @@
     }
 
     function getHeaderDescription(column: any, isSorted: any): any{
-        console.log(column.title)
-        console.log(isSorted(column))
-
         let headerDesc: string = `Header: ${column.title}, sort order: `
 
         if(!isSorted(column)){
