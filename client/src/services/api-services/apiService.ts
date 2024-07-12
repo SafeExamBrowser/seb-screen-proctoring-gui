@@ -80,6 +80,8 @@ export function createApiInterceptor(){
             }
             
         }
+
+        throw error;
     });
 
 
