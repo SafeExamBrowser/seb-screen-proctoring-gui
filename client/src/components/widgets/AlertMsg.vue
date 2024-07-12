@@ -39,6 +39,10 @@
             value: "No live sessions available"
         },
         {
+            key: "no-group",
+            value: "Group doesn't exist or is not active"
+        },
+        {
             key: "api-error",
             value: "Something went wrong, please try again"
         },

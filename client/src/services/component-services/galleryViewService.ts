@@ -2,7 +2,6 @@ import * as groupService from "@/services/api-services/groupService";
 import * as screenshotDataService from "@/services/api-services/screenshotDataService";
 import { SortOrder } from "@/models/sortOrderEnum";
 import {openUrlInNewTab} from "@/router/navigation";
-import * as metadataUtils from "@/utils/metadataUtils";
 
 //=============api==============
 export async function getGroup(groupUuid: string, currentWindow: number, pageSize: number, sortOrder: SortOrder): Promise<GroupUuid | null>{
@@ -18,8 +17,11 @@ export async function getGroup(groupUuid: string, currentWindow: number, pageSiz
 
         return groupUuidResponse;
 
-    } catch (error) {
-        console.error(error);
+    } catch (error: any) {
+        if(error.response){
+            return error.response.data;
+        }
+
         return null;
     }
 }

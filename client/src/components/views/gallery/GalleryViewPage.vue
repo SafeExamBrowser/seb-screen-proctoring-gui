@@ -21,7 +21,7 @@
             <AlertMsg 
                 v-else 
                 :alertProps="{
-                    textKey: 'no-live-data',
+                    textKey: alertMsgKey,
                     color: 'warning',
                     type: 'alert',
                 }">
@@ -43,11 +43,14 @@
 
     //reactive variables
     const group = ref<GroupUuid | null>();
-    const noScreenshotData = ref<boolean>(false);
     const timestamp = ref(Date.now());
     const maxPages = ref<number>(1);
     const currentWindow = ref<number>(0);  
     const sortOrder = ref<SortOrder>(SortOrder.asc); 
+
+    //error handling
+    const noScreenshotData = ref<boolean>(false);
+    const alertMsgKey = ref<string>("no-live-data");
 
     //time constants
     const GROUP_INTERVAL: number = 2 * 1000;
@@ -120,6 +123,14 @@
     });
 
     function assignData() {
+        //@ts-ignore
+        if(typeof group.value.message === "string"){
+            noScreenshotData.value = true;
+            stopIntervalGroup();
+            alertMsgKey.value = "no-group"
+            return;
+        }
+
         calcAmountOfWindows();
         noScreenshotData.value = false;
 
