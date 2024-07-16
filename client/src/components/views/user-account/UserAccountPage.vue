@@ -60,6 +60,7 @@
     import {navigateTo} from "@/router/navigation";
     import ActivateUserAccountDialog from "./ActivateUserAccountDialog.vue";
     import AddUserAccountDialog from "./AddUserAccountDialog.vue";
+    import * as constants from "@/utils/constants";
 
     //reactive variables
     const isLoading = ref<boolean>(true);
@@ -84,7 +85,7 @@
         await userAccountViewService.setPersonalUserAccount();
 
         if(!userAccountStore.userAccount?.roles.includes('ADMIN')){
-            navigateTo("/account/" + userAccountStore.userAccount?.id);
+            navigateTo(constants.ACCOUNT_VIEW_ROUTE + "/" + userAccountStore.userAccount?.id);
         }
 
         isLoading.value = false;
@@ -93,7 +94,7 @@
 
     //=====action-icons event listeners======
     function viewUserAccount(){
-        navigateTo("/account/" + userAccountStore.selectedAccountId);
+        navigateTo(constants.ACCOUNT_VIEW_ROUTE + "/" + userAccountStore.selectedAccountId);
     }
 
     function openActivateDialog(){

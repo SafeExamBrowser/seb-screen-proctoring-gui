@@ -193,6 +193,7 @@
     import { useRoute } from "vue-router";
     import {navigateTo} from "@/router/navigation";
     import ChangePasswordDialog from "./ChangePasswordDialog.vue";
+    import * as constants from "@/utils/constants";
 
 
     //stores
@@ -264,7 +265,7 @@
 
     function navigateBack(){
         userAccountStore.isAccountSelected = false;
-        navigateTo('/account');
+        navigateTo(constants.ACCOUNT_VIEW_ROUTE);
     }
 
 

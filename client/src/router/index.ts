@@ -12,11 +12,12 @@ import * as authenticationService from "@/services/api-services/authenticationSe
 import { useAuthStore, useSettingsStore } from "@/store/app";
 import {navigateTo} from "@/router/navigation";
 import * as userAccountViewService from "@/services/component-services/userAccountViewService";
+import * as constants from "@/utils/constants";
 
 const defaultPageTitle: string = " | SEB Screen Proctoring";
 const routes: Array<RouteRecordRaw> = [
   {
-    path: "/",
+    path: constants.DEFAULT_ROUTE,
     name: "LoginPage",
     component: LoginPage,
     meta: {requiresAuth: false},
@@ -26,7 +27,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: "/register",
+    path: constants.REGISTER_ROUTE,
     name: "RegisterPage",
     component: RegisterPage,
     meta: {requiresAuth: false},
@@ -34,7 +35,7 @@ const routes: Array<RouteRecordRaw> = [
       const settingsStore = useSettingsStore();
 
       if(settingsStore.isSebServerIntegratedMode){
-        navigateTo("/");
+        navigateTo(constants.DEFAULT_ROUTE);
         return false;
       }else{
         return true;
@@ -42,7 +43,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: "/jwt",
+    path: constants.JWT_LOGIN_ROUTE,
     meta: {requiresAuth: false},
     beforeEnter: async (to, from) => {
       const authStore = useAuthStore();
@@ -65,20 +66,20 @@ const routes: Array<RouteRecordRaw> = [
     component: LoginPage
   },
   {
-    path: "/",
+    path: constants.DEFAULT_ROUTE,
     component: ContainerLayout,
     meta: {requiresAuth: true},
     children: [
       {
-        path: "/start",
+        path: constants.START_PAGE_ROUTE,
         name: "StartPage",
         component: StartPage,
         meta: {
-            title: "Start Page" + defaultPageTitle
+            title: "Running Exams" + defaultPageTitle
         }
       },
       {
-        path: "/search",
+        path: constants.SEARCH_ROUTE,
         name: "Search",
         component: SearchPage,
         meta: {
@@ -86,7 +87,7 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: "/galleryView/:uuid",
+        path: constants.GALLERY_VIEW_ROUTE + "/:uuid",
         name: "GalleryViewPage",
         component: GalleryViewPage,
         meta: {
@@ -94,7 +95,7 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: "/recording/:sessionId",
+        path: constants.PROCTORING_VIEW_ROUTE + "/:sessionId",
         name: "ProctoringViewPage",
         component: ProctoringViewPage,
         meta: {
@@ -102,7 +103,7 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: "/account",
+        path: constants.ACCOUNT_VIEW_ROUTE,
         name: "UserAccountPage",
         component: UserAccountPage,
         meta: {
@@ -110,7 +111,7 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: "/account/:accountId",
+        path: constants.ACCOUNT_VIEW_ROUTE + "/:accountId",
         name: "SingleUserAccount",
         component: UserInfo,
         meta: {
@@ -129,16 +130,13 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
-  if(to.meta.requiresAuth){
-    const settingsStore = useSettingsStore();
+    if(to.meta.requiresAuth){
+        await userAccountViewService.setPersonalUserAccount();
+    }
 
-    await userAccountViewService.setPersonalUserAccount();
-    await settingsStore.setIsSebServerIntegratedMode();
-  }
-
-  const defaultTitle: string = "SEB Screen Proctoring";
-  //@ts-ignore
-  document.title = to.meta.title || defaultTitle;
+    const defaultTitle: string = "SEB Screen Proctoring";
+    //@ts-ignore
+    document.title = to.meta.title || defaultTitle;
 });
 
 export default router;

@@ -143,7 +143,7 @@
                             role="button"
                             tabindex="0"
                             @keydown="handleTabKeyEvent($event, 'navigate')">
-                            <router-link to="/">Login</router-link>
+                            <router-link :to=constants.DEFAULT_ROUTE>Login</router-link>
                         </span>
                     </div>
 
@@ -159,6 +159,7 @@
     import { ref } from "vue";
     import * as userAccountService from "@/services/api-services/userAccountService";
     import {navigateTo} from "@/router/navigation";
+    import * as constants from "@/utils/constants";
 
     //form fields
     const name = ref<string>("");
@@ -199,7 +200,7 @@
         if (event.key == 'Enter' || event.key == ' ') {
 
             if(action == "navigate"){
-                navigateTo("/");
+                navigateTo(constants.DEFAULT_ROUTE);
             }
         }
     }

@@ -83,7 +83,7 @@
                             role="button" 
                             tabindex="0" 
                             @keydown="handleTabKeyEvent($event, 'navigate')">
-                            <router-link to="/register">Register</router-link>
+                            <router-link :to=constants.REGISTER_ROUTE>Register</router-link>
                         </span>
                     </div>
 
@@ -101,6 +101,8 @@
     import {navigateTo} from "@/router/navigation";
     import { useLoadingStore, useAuthStore, useSettingsStore } from "@/store/app";
     import { useTheme } from "vuetify";
+    import * as constants from "@/utils/constants";
+
 
     const username = ref("");
     const password = ref("");
@@ -119,7 +121,6 @@
     theme.global.name.value = localStorageTheme ?? theme.global.name.value ?? "light";
     const isDark = computed<boolean>(() => theme.global.current.value.dark);
 
-    
     async function signIn(){
         loginError.value = false;
         loadingStore.isTimeout = false;
@@ -138,7 +139,7 @@
         if (event.key == 'Enter' || event.key == ' ') {
 
             if(action == "navigate"){
-                navigateTo("/register");
+                navigateTo(constants.REGISTER_ROUTE);
             }
         }
     }

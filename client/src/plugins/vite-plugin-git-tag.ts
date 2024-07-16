@@ -15,7 +15,6 @@ export function gitTagPlugin(): Plugin {
     name: "vite-plugin-git-tag",
     config: () => {
       const gitTag = getGitTag();
-      console.log(gitTag)
       return {
         define: {
           __GIT_TAG__: JSON.stringify(gitTag),

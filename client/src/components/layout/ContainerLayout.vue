@@ -2,7 +2,7 @@
     <v-navigation-drawer v-model="drawer" :permanent="true">
 
         <v-sheet class="pa-4">
-            <a href="/start" class="text-decoration-none text-black">
+            <a :href=constants.START_PAGE_ROUTE class="text-decoration-none text-black">
                 <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Screen Proctoring Homepage"></v-img>
                 <div class="app-title text-h6 text-title">{{ $t("navigation.title") }}</div>
             </a>
@@ -126,7 +126,7 @@
                             <v-list-item-title>{{ $t('navigation.loggedInAs') }}: {{ userAccountStore.userAccount?.name }}</v-list-item-title>
                         </v-list-item>
 
-                        <v-list-item class="d-flex" to="/account">
+                        <v-list-item class="d-flex" :to=constants.ACCOUNT_VIEW_ROUTE>
                             <v-list-item-title>{{ $t('navigation.accountSettings') }}</v-list-item-title>
                         </v-list-item>
 
@@ -152,11 +152,11 @@
                             <v-list-item-title class="mx-auto">{{ $t("navigation.signOut") }}</v-list-item-title>
                         </v-list-item>
 
-                        <v-divider></v-divider>
+                        <!-- <v-divider></v-divider>
 
                         <v-list-item class="d-flex">
                             <v-list-item-title>GUI Version: {{ gitTag }}</v-list-item-title>
-                        </v-list-item>
+                        </v-list-item> -->
 
 
                     </v-list>
@@ -183,12 +183,13 @@
     import { useRoute } from "vue-router";
     import { useTheme } from "vuetify";
     import { useI18n } from "vue-i18n";
+    import * as constants from "@/utils/constants";
 
     //navigation
     const drawer = ref();
     const navigationLinks = [
-        ["SEB Groups Proctoring", "/start"],
-        ["Search", "/search"],
+        ["SEB Groups Proctoring", constants.START_PAGE_ROUTE],
+        ["Search", constants.SEARCH_ROUTE],
     ];
 
     //stores
@@ -219,7 +220,7 @@
     
     //git tag
     //@ts-ignore
-    const gitTag = __GIT_TAG__;
+    // const gitTag = __GIT_TAG__;
 
     //watchers
     watch(languageToggle, () => {

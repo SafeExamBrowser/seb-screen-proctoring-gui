@@ -4,6 +4,7 @@ import {navigateTo} from "@/router/navigation";
 import * as userAccountViewService from "@/services/component-services/userAccountViewService";
 import * as authenticationService from "@/services/api-services/authenticationService";
 import * as settingsService from "@/services/api-services/settingsService";
+import * as constants from "@/utils/constants";
 
 
 //-------------------settings------------------------------//
@@ -90,17 +91,17 @@ export const useLoadingStore = defineStore("loading", () => {
 export const useAuthStore = defineStore("auth", () => {
   const redirectRoute: string = "";
 
-  async function login(accessTokenString: string, refershTokenString: string){
+  async function login(accessTokenString: string, refreshTokenString: string){
     setAccessToken(accessTokenString);
-    setRefreshToken(refershTokenString);
+    setRefreshToken(refreshTokenString);
+
+    await userAccountViewService.setPersonalUserAccount();
 
     if(useAuthStore().redirectRoute == ""){
-        navigateTo("/start");
+        navigateTo(constants.START_PAGE_ROUTE);
     }else{
         navigateTo(useAuthStore().redirectRoute);
     }
-
-    await userAccountViewService.setPersonalUserAccount();
   }
 
   async function loginWithJwt(accessTokenString: string, refershTokenString: string, redirect: string){
@@ -119,7 +120,7 @@ export const useAuthStore = defineStore("auth", () => {
     setRefreshToken("");
     useUserAccountStore().userAccount = null;
 
-    navigateTo("/");
+    navigateTo(constants.DEFAULT_ROUTE);
   }
   
   function setAccessToken(accessTokenString: string){

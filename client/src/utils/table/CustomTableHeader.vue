@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, onBeforeMount } from "vue";
+    import { ref, onBeforeMount, onBeforeUnmount } from "vue";
     import * as tableUtils from "@/utils/table/tableUtils";
     import { useAppBarStore, useTableStore } from "@/store/app";
 
@@ -59,7 +59,7 @@
     const tableStore = useTableStore();
 
     //header reactivity
-    const headerRefs = ref<any[]>();
+    const headerRefs = ref<any[] | null>();
 
     //props
     const props = defineProps<{
@@ -77,9 +77,12 @@
         removeAddtionalExamHeaders: any;
     }>();
 
-
     onBeforeMount(() => {
         headerRefs.value = props.headerRefsProp;
+    });
+
+    onBeforeUnmount(() => {
+        headerRefs.value = null;
     });
 
     function toggleNameIpSwitch(){

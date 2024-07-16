@@ -23,7 +23,7 @@ export default defineConfig({
     VueI18nPlugin({
       include: fileURLToPath(new URL("./src/i18n/locales/**", import.meta.url)),
     }),
-    gitTagPlugin()
+    // gitTagPlugin()
   ],
   define: { 
     "process.env": {},

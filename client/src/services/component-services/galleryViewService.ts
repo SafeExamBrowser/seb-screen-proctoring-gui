@@ -2,6 +2,7 @@ import * as groupService from "@/services/api-services/groupService";
 import * as screenshotDataService from "@/services/api-services/screenshotDataService";
 import { SortOrder } from "@/models/sortOrderEnum";
 import {openUrlInNewTab} from "@/router/navigation";
+import * as constants from "@/utils/constants";
 
 //=============api==============
 export async function getGroup(groupUuid: string, currentWindow: number, pageSize: number, sortOrder: SortOrder): Promise<GroupUuid | null>{
@@ -51,7 +52,7 @@ export function currentIndexExists(screenshots: ScreenshotData[] | undefined, in
 //=============links============
 export function navigateToProctoringView(screenshot: ScreenshotData | undefined, groupUuid: string) {
     if (screenshot != null) {
-        openUrlInNewTab("/recording/" + screenshot.uuid);
+        openUrlInNewTab(constants.PROCTORING_VIEW_ROUTE + "/" + screenshot.uuid);
     }
 }
 

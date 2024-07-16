@@ -94,6 +94,7 @@
     import * as tableUtils from "@/utils/table/tableUtils";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
     import { storeToRefs } from "pinia";
+    import * as constants from "@/utils/constants";
 
 
     //stores
@@ -127,7 +128,7 @@
 
     function getGalleryViewLink(index: number) {
         if(groups.value != null){
-            return "/galleryView/" + groups.value[index].uuid;
+            return constants.GALLERY_VIEW_ROUTE + "/" + groups.value[index].uuid;
         }
 
         return "";

@@ -221,7 +221,6 @@
     });                                                         
 
     function setTabFocus(event: any){   
-        // console.log(event)
         if(lastKeyPressed.value != "Tab" || lastKeyPressed.value == null){
             return;
         }

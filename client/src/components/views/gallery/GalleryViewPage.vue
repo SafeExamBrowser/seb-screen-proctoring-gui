@@ -109,10 +109,8 @@
 
     watch(appBarStoreRef.galleryIsNameSortAsc, async () => {
         if(appBarStoreRef.galleryIsNameSortAsc.value){
-            console.log("isasc")
             sortOrder.value = SortOrder.asc;
         }else{
-            console.log("isdesc")
             sortOrder.value = SortOrder.desc;
         }
 

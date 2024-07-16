@@ -1,8 +1,8 @@
 import * as searchService from "@/services/api-services/searchService";
 import * as timeUtils from "@/utils/timeUtils";
 import * as tableUtils from "@/utils/table/tableUtils";
-import router from "@/router";
 import {openUrlInNewTab} from "@/router/navigation";
+import * as constants from "@/utils/constants";
 
 //=============api==============
 export async function searchSessionsDay(optionalParamters?: OptionalParSearchSessions): Promise<string[] | null>{
@@ -54,10 +54,10 @@ export function prepareSessionSearchParameters(day: string, searchParameters: Op
 
 //=============window===========
 export function openProctoringView(sessionId: string, timestamp?: string){
-    let url: string = "/recording/" + sessionId;
+    let url: string = constants.PROCTORING_VIEW_ROUTE + "/" + sessionId;
     
     if(timestamp){
-        url = "/recording/" + sessionId + "?searchTimestamp=" + timestamp;
+        url = constants.PROCTORING_VIEW_ROUTE + "/" + sessionId + "?searchTimestamp=" + timestamp;
     }
 
     openUrlInNewTab(url);

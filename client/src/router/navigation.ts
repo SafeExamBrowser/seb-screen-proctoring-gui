@@ -2,6 +2,7 @@ import router from "@/router";
 import navigation from "@/router";
 
 export function navigateTo(navPath: string){
+    console.log("navigate to: " + navPath)
     router.push({
         path: navPath
     });

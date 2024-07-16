@@ -4,8 +4,6 @@ import { useUserAccountStore } from "@/store/app";
 export async function setPersonalUserAccount(): Promise<UserAccount | null>{
     const userAccountStore = useUserAccountStore();
 
-    // console.log(userAccountStore.userAccount)
-
     try{
         if(userAccountStore.userAccount == null){
             userAccountStore.userAccount = await userAccountService.getPersonalUserAccount();
