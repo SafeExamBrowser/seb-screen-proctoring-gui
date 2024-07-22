@@ -2,7 +2,7 @@
     <v-navigation-drawer v-model="drawer" :permanent="true">
 
         <v-sheet class="pa-4">
-            <a :href=constants.START_PAGE_ROUTE class="text-decoration-none text-black">
+            <a :href=constants.RUNNING_EXAMS_ROUTE class="text-decoration-none text-black">
                 <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Screen Proctoring Homepage"></v-img>
                 <div class="app-title text-h6 text-title">{{ $t("navigation.title") }}</div>
             </a>
@@ -26,8 +26,8 @@
 
         <template v-slot:append>
 
-        <!--start page specfic items-->
-        <template v-if="useRoute().name == 'StartPage'">
+        <!--exams overview specfic items-->
+        <template v-if="useRoute().name == 'ExamsOverview'">
             <div>
                 <v-menu :close-on-content-click="false">
                     <template v-slot:activator="{ props }">
@@ -39,7 +39,22 @@
                     </template>
                     <v-list>
                         <v-list-item>
-                            <v-switch class="mx-auto" label="Exclude finished exams" color="primary" v-model="appBarStore.startPageExcludeInactiveGroups" hide-details></v-switch>
+                            <v-switch 
+                                hide-details
+                                class="mx-auto" 
+                                label="Show past exams" 
+                                color="primary" 
+                                v-model="appBarStore.examOverviewShowPastExams">
+                            </v-switch>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-switch 
+                                hide-details
+                                class="mx-auto" 
+                                label="Show upcoming exams" 
+                                color="primary" 
+                                v-model="appBarStore.examOverviewShowUpcomingExams">
+                            </v-switch>
                         </v-list-item>
                     </v-list>
                 </v-menu>
@@ -178,7 +193,7 @@
 
 <script setup lang="ts">
     import { ref, watch } from "vue"
-    import { useAppBarStore, useAuthStore, useUserAccountStore } from "@/store/app";
+    import { useAppBarStore, useAuthStore, useUserAccountStore } from "@/store/store";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
     import { useTheme } from "vuetify";
@@ -188,7 +203,7 @@
     //navigation
     const drawer = ref();
     const navigationLinks = [
-        ["SEB Groups Proctoring", constants.START_PAGE_ROUTE],
+        ["Running Exams", constants.RUNNING_EXAMS_ROUTE],
         ["Search", constants.SEARCH_ROUTE],
     ];
 

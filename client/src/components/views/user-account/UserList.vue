@@ -36,7 +36,7 @@
 
 <script setup lang="ts">
     import { ref, onBeforeMount, watch } from "vue";
-    import { useAppBarStore, useUserAccountStore } from "@/store/app";
+    import { useAppBarStore, useUserAccountStore } from "@/store/store";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import * as tableUtils from "@/utils/table/tableUtils";
     import { Status } from "@/models/statusEnum";

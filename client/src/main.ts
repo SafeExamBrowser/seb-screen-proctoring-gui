@@ -1,5 +1,5 @@
-import App from "./App.vue"
-import { createApp } from "vue"
+import App from "./App.vue";
+import { createApp } from "vue";
 import { registerPlugins } from "@/plugins"
 import AlertMsg from "@/components/widgets/AlertMsg.vue";
 import i18n from "./i18n";

@@ -9,7 +9,8 @@ type OptionalParGroups = {
     pageNumber?: number;
     pageSize?: number;
     sort?: string;
-    excludeInactiveGroups?: boolean | null;
+    includePastExams?: boolean | null;
+    includeUpcomingExams?: boolean | null;
 }
 
 type OptionalParGroupByUuid = {

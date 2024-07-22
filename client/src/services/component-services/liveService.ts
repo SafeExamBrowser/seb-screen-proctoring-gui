@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/store/app";
+import { useAuthStore } from "@/store/store";
 
 export function getLatestImageLink(screenshot: ScreenshotData | undefined, timestamp: string): string {
     const authStore = useAuthStore();

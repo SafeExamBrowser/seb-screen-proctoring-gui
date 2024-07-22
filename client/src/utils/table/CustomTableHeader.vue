@@ -2,7 +2,6 @@
     <tr>
         <template v-for="(column, index) in props.columns">
             
-            <!-- <th :aria-label="getHeaderDescription(column, isSorted)">  -->
             <th> 
                 <span 
                     v-if="column.sortable"
@@ -24,7 +23,7 @@
                 </template>
 
                 <!--todo: checking should not be done via title-->
-                <template v-if="column.title == 'Exam Start-Time'">
+                <!-- <template v-if="column.title == 'Exam Start-Time'">
                     <v-btn 
                         :aria-label="tableStore.isExamExpand ? 'hide exam details' : 'show exam details'"
                         :icon="tableStore.isExamExpand ? 'mdi-arrow-expand-left' : 'mdi-arrow-expand-right'" 
@@ -33,7 +32,7 @@
                         size="small"
                         @click="tableStore.isExamExpand ? emit('removeAddtionalExamHeaders') : emit('addAddtionalExamHeaders')">
                     </v-btn>
-                </template>
+                </template> -->
                 
                 <template v-if="column.title == 'Login Name / IP'">
                     <v-btn 
@@ -52,7 +51,7 @@
 <script setup lang="ts">
     import { ref, onBeforeMount, onBeforeUnmount } from "vue";
     import * as tableUtils from "@/utils/table/tableUtils";
-    import { useAppBarStore, useTableStore } from "@/store/app";
+    import { useAppBarStore, useTableStore } from "@/store/store";
 
     //stores
     const appBarStore = useAppBarStore();

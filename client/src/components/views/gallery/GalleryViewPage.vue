@@ -35,7 +35,7 @@
     import { ref, onBeforeMount, onBeforeUnmount, watch, computed } from "vue";
     import { useRoute } from "vue-router";
     import * as galleryViewService from "@/services/component-services/galleryViewService";
-    import { useAppBarStore, useLoadingStore } from "@/store/app";
+    import { useAppBarStore, useLoadingStore } from "@/store/store";
     import { storeToRefs } from "pinia";
     import GalleryImage from "./GalleryImage.vue";
     import { SortOrder } from "@/models/sortOrderEnum";

@@ -11,7 +11,7 @@
 <script setup lang="ts">
     import Loading from 'vue-loading-overlay';
     import 'vue-loading-overlay/dist/css/index.css';
-    import { useLoadingStore, useSettingsStore } from "@/store/app";
+    import { useLoadingStore, useSettingsStore } from "@/store/store";
     import { onBeforeMount } from "vue";
 
     const loadingStore = useLoadingStore();

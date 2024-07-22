@@ -34,7 +34,8 @@ export const useSettingsStore = defineStore("settings", () => {
 export const useAppBarStore = defineStore("appBar", () => {
     const title = ref<string>("Example Title");
 
-    const startPageExcludeInactiveGroups = ref<boolean>(true);
+    const examOverviewShowPastExams = ref<boolean>(false);
+    const examOverviewShowUpcomingExams = ref<boolean>(false);
 
     const galleryGridSize = ref<GridSize>({
         title: "3x3",
@@ -51,8 +52,9 @@ export const useAppBarStore = defineStore("appBar", () => {
     const galleryIsNameSortAsc = ref<boolean>(true);
 
     return {
-        title,      
-        startPageExcludeInactiveGroups,
+        title,     
+        examOverviewShowPastExams,
+        examOverviewShowUpcomingExams,
         galleryGridSize, 
         galleryIsNameEnabled, 
         galleryIsIpEnabled, 
@@ -98,7 +100,7 @@ export const useAuthStore = defineStore("auth", () => {
     await userAccountViewService.setPersonalUserAccount();
 
     if(useAuthStore().redirectRoute == ""){
-        navigateTo(constants.START_PAGE_ROUTE);
+        navigateTo(constants.RUNNING_EXAMS_ROUTE);
     }else{
         navigateTo(useAuthStore().redirectRoute);
     }
