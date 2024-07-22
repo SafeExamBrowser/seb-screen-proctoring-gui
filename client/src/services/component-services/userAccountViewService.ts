@@ -6,7 +6,15 @@ export async function setPersonalUserAccount(): Promise<UserAccount | null>{
 
     try{
         if(userAccountStore.userAccount == null){
-            userAccountStore.userAccount = await userAccountService.getPersonalUserAccount();
+            //request id of user first
+            const accountTemp: UserAccount | null = await userAccountService.getPersonalUserAccount();
+            if(accountTemp == null){
+                return null;
+            }
+
+            //request user details via id as /me sometimes caches values
+            const userAccount: UserAccount | null = await userAccountService.getUserAccountById(accountTemp?.uuid); 
+            userAccountStore.userAccount = userAccount;
 
             if(userAccountStore.userAccount != null){
                 return userAccountStore.userAccount;
