@@ -73,6 +73,11 @@
                     </v-chip>
                     <v-chip class="app-bar-item-margin">
                         Sessions: {{ appBarStore.galleryLiveSessions }} / {{ appBarStore.galleryAmountOfSessions }}
+                        <v-tooltip
+                            activator="parent"
+                            location="bottom">
+                            currently live / total amount of sessions
+                        </v-tooltip>
                     </v-chip>
                 </div>
 
