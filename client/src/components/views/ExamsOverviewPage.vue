@@ -25,9 +25,9 @@
                 :items="groups">
 
                 <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
+                    <!-- @addAddtionalExamHeaders="addAddtionalExamHeaders"
+                    @removeAddtionalExamHeaders="removeAddtionalExamHeaders" -->
                     <CustomTableHeader
-                        @addAddtionalExamHeaders="addAddtionalExamHeaders"
-                        @removeAddtionalExamHeaders="removeAddtionalExamHeaders"
                         :columns="columns"
                         :is-sorted="isSorted"
                         :get-sort-icon="getSortIcon"
@@ -39,7 +39,7 @@
                 <template v-slot:item.exam.name="{item}">
                     <th>
                         <div v-if="item.exam.name != '' && item.exam.name != null">
-                            <v-chip :color="item.exam.isRunning ? 'green' : 'red'">
+                            <v-chip :color="getExamNameColor(item)">
                                 {{ item.exam.name }}
                             </v-chip>
                         </div>
@@ -89,7 +89,7 @@
 <script setup lang="ts">
     import { ref, onBeforeMount, onUnmounted, watch } from "vue";
     import * as groupService from "@/services/api-services/groupService";
-    import { useAppBarStore, useTableStore } from "@/store/app";
+    import { useAppBarStore, useTableStore } from "@/store/store";
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/table/tableUtils";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
@@ -106,25 +106,37 @@
     const groups = ref<Group[]>();
     const headerRefs = ref<any[]>();
     const headers = ref([
-        {title: "Exam", key: "exam.name", width: "5%"},
-        {title: "Exam Start-Time", key: "exam.startTime", width: "10%"},
-        {title: "Group", key: "name", width: "15%"},
-        {title: "Description", key: "description", width: "10%"},
+        {title: "Exam", key: "exam.name", width: "25%"},
+        {title: "Exam Start-Time", key: "exam.startTime", width: "25%"},
+        {title: "Exam End-Time", key: "exam.endTime", width: "25%"},
+        {title: "Group", key: "name", width: "25%"}
     ]);
     const noRunningExams = ref<boolean>(false);
 
     onBeforeMount(async () => {
         appBarStore.title = "Running Exams";
-        groups.value = await groupService.getGroups({pageSize: 500, excludeInactiveGroups: appBarStore.startPageExcludeInactiveGroups});
+        await getGroups();
     });
 
     onUnmounted(() => {
         tableStore.isExamExpand = false;
     });
 
-    watch(appBarStoreRef.startPageExcludeInactiveGroups, async () => {
-        groups.value = await groupService.getGroups({pageSize: 500, excludeInactiveGroups: appBarStore.startPageExcludeInactiveGroups});
+    watch(appBarStoreRef.examOverviewShowPastExams, async () => {
+        await getGroups();
     });
+
+    watch(appBarStoreRef.examOverviewShowUpcomingExams, async () => {
+        await getGroups();
+    });
+
+    async function getGroups(){
+        groups.value = await groupService.getGroups({
+            pageSize: 500, 
+            includePastExams: appBarStore.examOverviewShowPastExams,
+            includeUpcomingExams: appBarStore.examOverviewShowUpcomingExams
+        });
+    }
 
     function getGalleryViewLink(index: number) {
         if(groups.value != null){
@@ -134,18 +146,32 @@
         return "";
     }
 
-    function addAddtionalExamHeaders(){
-        tableStore.isExamExpand = true;
+    function getExamNameColor(group: Group): string{
+        if(group.terminationTime != null){
+            return "red";
+        }
 
-        headers.value.splice(2, 0, {title: "Exam End-Time", key: "exam.endTime", width: "8%"});
-        headers.value.splice(3, 0, {title: "Group Termination-Time", key: "terminationTime", width: "8%"});
+        if(group.exam.startTime > Date.now()){
+            return "orange"
+        }
+
+        return "green";
     }
 
-    function removeAddtionalExamHeaders(){
-        tableStore.isExamExpand = false;
 
-        headers.value.splice(2, 2);
-    }
+
+    // function addAddtionalExamHeaders(){
+    //     tableStore.isExamExpand = true;
+
+    //     headers.value.splice(2, 0, {title: "Exam End-Time", key: "exam.endTime", width: "8%"});
+    //     headers.value.splice(3, 0, {title: "Group Termination-Time", key: "terminationTime", width: "8%"});
+    // }
+
+    // function removeAddtionalExamHeaders(){
+    //     tableStore.isExamExpand = false;
+
+    //     headers.value.splice(2, 2);
+    // }
 
 </script>
 

@@ -1,5 +1,5 @@
 import {navigateTo} from "@/router/navigation";
-import {useTableStore} from "@/store/app";
+import {useTableStore} from "@/store/store";
 
 export function calcDefaultItemsPerPage(itemList: any): number {
     if (itemList == null || itemList.length == 0) {

@@ -1,18 +1,18 @@
-import { createRouter, RouteRecordRaw, createWebHistory } from "vue-router"
-import ContainerLayout from "@/components/layout/ContainerLayout.vue"
-import LoginPage from "@/components/views/LoginPage.vue"
-import RegisterPage from "@/components/views/RegisterPage.vue"
-import StartPage from "@/components/views/StartPage.vue"
-import SearchPage from "@/components/views/search/SearchPage.vue"
-import GalleryViewPage from "@/components/views/gallery/GalleryViewPage.vue"
-import ProctoringViewPage from "@/components/views/proctoring/ProctoringViewPage.vue"
-import UserAccountPage from "@/components/views/user-account/UserAccountPage.vue"
-import UserInfo from "@/components/views/user-account/UserInfo.vue"
+import { createRouter, RouteRecordRaw, createWebHistory } from "vue-router";
+import ContainerLayout from "@/components/layout/ContainerLayout.vue";
+import LoginPage from "@/components/views/LoginPage.vue";
+import RegisterPage from "@/components/views/RegisterPage.vue";
+import SearchPage from "@/components/views/search/SearchPage.vue";
+import GalleryViewPage from "@/components/views/gallery/GalleryViewPage.vue";
+import ProctoringViewPage from "@/components/views/proctoring/ProctoringViewPage.vue";
+import UserAccountPage from "@/components/views/user-account/UserAccountPage.vue";
+import UserInfo from "@/components/views/user-account/UserInfo.vue";
 import * as authenticationService from "@/services/api-services/authenticationService";
-import { useAuthStore, useSettingsStore } from "@/store/app";
+import { useAuthStore, useSettingsStore } from "@/store/store";
 import {navigateTo} from "@/router/navigation";
 import * as userAccountViewService from "@/services/component-services/userAccountViewService";
 import * as constants from "@/utils/constants";
+import ExamsOverviewPage from "@/components/views/ExamsOverviewPage.vue";
 
 const defaultPageTitle: string = " | SEB Screen Proctoring";
 const routes: Array<RouteRecordRaw> = [
@@ -71,9 +71,9 @@ const routes: Array<RouteRecordRaw> = [
     meta: {requiresAuth: true},
     children: [
       {
-        path: constants.START_PAGE_ROUTE,
-        name: "StartPage",
-        component: StartPage,
+        path: constants.RUNNING_EXAMS_ROUTE,
+        name: "ExamsOverview",
+        component: ExamsOverviewPage,
         meta: {
             title: "Running Exams" + defaultPageTitle
         }

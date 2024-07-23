@@ -1,5 +1,5 @@
 import * as userAccountService from "@/services/api-services/userAccountService";
-import { useUserAccountStore } from "@/store/app";
+import { useUserAccountStore } from "@/store/store";
 
 export async function setPersonalUserAccount(): Promise<UserAccount | null>{
     const userAccountStore = useUserAccountStore();

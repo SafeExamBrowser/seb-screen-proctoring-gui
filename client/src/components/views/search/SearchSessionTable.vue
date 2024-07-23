@@ -78,7 +78,7 @@
     import SearchScreenshotsTable from "./SearchScreenshotsTable.vue";
     import * as searchViewService from "@/services/component-services/searchViewService";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
-    import { useTableStore } from "@/store/app";
+    import { useTableStore } from "@/store/store";
 
     //store
     const tableStore = useTableStore();

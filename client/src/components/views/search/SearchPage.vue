@@ -112,7 +112,7 @@
 
 <script setup lang="ts">
     import { ref, onBeforeMount, watch } from "vue";
-    import { useAppBarStore, useTableStore, useLoadingStore } from "@/store/app";
+    import { useAppBarStore, useTableStore, useLoadingStore } from "@/store/store";
     import * as searchViewService from "@/services/component-services/searchViewService";
     import SearchForm from "./SearchForm.vue";
     import SearchSessionTable from "./SearchSessionTable.vue";

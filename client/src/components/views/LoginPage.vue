@@ -99,7 +99,7 @@
     import { ref, computed } from "vue";
     import * as authenticationService from "@/services/api-services/authenticationService";
     import {navigateTo} from "@/router/navigation";
-    import { useLoadingStore, useAuthStore, useSettingsStore } from "@/store/app";
+    import { useLoadingStore, useAuthStore, useSettingsStore } from "@/store/store";
     import { useTheme } from "vuetify";
     import * as constants from "@/utils/constants";
 
@@ -134,7 +134,6 @@
         }
     }
 
-    //todo: extract this function into a global file
     function handleTabKeyEvent(event: any, action: string){
         if (event.key == 'Enter' || event.key == ' ') {
 

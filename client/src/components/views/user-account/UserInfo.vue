@@ -188,7 +188,7 @@
 
 <script setup lang="ts">
     import { ref, onBeforeMount } from "vue";
-    import { useAppBarStore, useUserAccountStore, useSettingsStore } from "@/store/app";
+    import { useAppBarStore, useUserAccountStore, useSettingsStore } from "@/store/store";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
     import {navigateTo} from "@/router/navigation";

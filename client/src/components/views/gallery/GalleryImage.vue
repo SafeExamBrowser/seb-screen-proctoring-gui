@@ -182,7 +182,7 @@
     import { ref, computed, onBeforeMount } from "vue";
     import * as galleryViewService from "@/services/component-services/galleryViewService";
     import * as liveService from "@/services/component-services/liveService";
-    import { useAppBarStore, useGalleryStore } from "@/store/app";
+    import { useAppBarStore, useGalleryStore } from "@/store/store";
 
     //props
     const props = defineProps<{
