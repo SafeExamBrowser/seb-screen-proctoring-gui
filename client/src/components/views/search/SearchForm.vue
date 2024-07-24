@@ -203,7 +203,11 @@
                         {{ $t('searchForm.period') }}:
                     </v-col>
                     <v-col cols="1">
-                        <v-radio v-model="timePeriodRadio" @click="radioButtonEvent('period')"></v-radio>
+                        <v-radio    
+                            :aria-label="$t('searchForm.period')"
+                            v-model="timePeriodRadio" 
+                            @click="radioButtonEvent('period')">
+                        </v-radio>
                     </v-col>
                     <v-col cols="1">
                         {{ $t('searchForm.last') }}
@@ -244,7 +248,10 @@
                         {{ $t('searchForm.between') }}:
                     </v-col>
                     <v-col cols="1">
-                        <v-radio v-model="timeSelectionRadio" @click="radioButtonEvent('selection')">
+                        <v-radio 
+                            :aria-label="$t('searchForm.between')"
+                            v-model="timeSelectionRadio" 
+                            @click="radioButtonEvent('selection')">
                         </v-radio>
                     </v-col>
                     <v-col cols="7">

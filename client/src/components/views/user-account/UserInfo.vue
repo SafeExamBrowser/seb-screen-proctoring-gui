@@ -20,13 +20,14 @@
                         <v-form :disabled="!userAccountStore.isEditMode">
                         <!-------------name--------------->
                             <v-row align="center">
-                                <v-col cols="4" align="end">
+                                <v-col cols="4">
                                     Name:
                                 </v-col>
                                 <v-col cols="8">
                                     <v-text-field
                                         single-line
                                         hide-details
+                                        aria-label="Name"
                                         density="compact"
                                         variant="outlined"
                                         v-model="name">
@@ -44,6 +45,7 @@
                                     <v-text-field
                                         single-line
                                         hide-details
+                                        aria-label="Surname"
                                         density="compact"
                                         variant="outlined"
                                         v-model="surname">
@@ -61,6 +63,7 @@
                                     <v-text-field
                                         single-line
                                         hide-details
+                                        aria-label="Username"
                                         density="compact"
                                         variant="outlined"
                                         v-model="username">
@@ -78,6 +81,7 @@
                                     <v-text-field
                                         single-line
                                         hide-details
+                                        aria-label="Email"
                                         density="compact"
                                         variant="outlined"
                                         v-model="email">
@@ -95,6 +99,7 @@
                                     <v-text-field
                                         single-line
                                         hide-details
+                                        aria-label="Timezone"
                                         density="compact"
                                         variant="outlined"
                                         v-model="timezone">

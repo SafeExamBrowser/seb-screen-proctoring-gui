@@ -137,13 +137,15 @@
                         aria-label="Details"
                         :aria-expanded="isMetadataInfo">
                     </v-btn>
-                    Details
+                    <h2 class="title-inherit-styling title-no-line-break">Details</h2>
                 </template>
                 <v-card-text>
                     <v-table density="comfortable" class="text-caption">
                         <thead>
                             <tr>
-                                <th class="text-left text-no-wrap">SEB Session Info</th>
+                                <th class="text-left text-no-wrap">
+                                    <h3 class="title-inherit-styling text-subtitle-2">SEB Session Info</h3>
+                                </th>
                                 <th class="text-left"></th>
                             </tr>
                         </thead>
@@ -156,7 +158,9 @@
 
                         <thead>
                             <tr>
-                                <th class="text-left text-no-wrap">Screenshot Metadata</th>
+                                <th class="text-left text-no-wrap">
+                                    <h3 class="title-inherit-styling text-subtitle-2">Screenshot Metadata</h3>
+                                </th>
                                 <th class="text-left"></th>
                             </tr>
                         </thead>

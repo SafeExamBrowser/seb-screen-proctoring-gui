@@ -24,7 +24,19 @@
 </script>
 
 <style>
-  .text-decoration-underline a:visited {
-      color: #2196F3 !important;
-  }
+
+    .text-decoration-underline a:visited {
+        color: #2196F3 !important;
+    }
+
+    .title-inherit-styling{
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+    }
+
+    .title-no-line-break{
+        display: inline;
+    }
+
 </style>

@@ -22,7 +22,9 @@
         </v-app-bar-nav-icon>
 
         <!--current site title-->
-        <v-app-bar-title>{{ appBarStore.title }}</v-app-bar-title>
+        <v-app-bar-title>
+            <h1 class="title-inherit-styling">{{ appBarStore.title }}</h1>
+        </v-app-bar-title>
 
         <template v-slot:append>
 
@@ -32,6 +34,7 @@
                 <v-menu :close-on-content-click="false">
                     <template v-slot:activator="{ props }">
                         <v-btn 
+                            aria-label="Running Exams Settings"
                             icon="mdi-cog" 
                             v-bind="props"
                             color="primary">
@@ -67,19 +70,19 @@
             <template v-if="useRoute().name == 'GalleryViewPage'">
                 
                 <!--session infos-->
-                <div>
-                    <v-chip class="app-bar-item-margin">
-                        Page: {{ appBarStore.galleryCurrentPage }} / {{ appBarStore.galleryMaxPages }}
-                    </v-chip>
-                    <v-chip class="app-bar-item-margin">
-                        Sessions: {{ appBarStore.galleryLiveSessions }} / {{ appBarStore.galleryAmountOfSessions }}
-                        <v-tooltip
-                            activator="parent"
-                            location="bottom">
-                            currently live / total amount of sessions
-                        </v-tooltip>
-                    </v-chip>
-                </div>
+                <v-chip class="app-bar-item-margin" role="none">
+                    Page: {{ appBarStore.galleryCurrentPage }} / {{ appBarStore.galleryMaxPages }}
+                </v-chip>
+                <v-chip class="app-bar-item-margin" role="none">
+                    Sessions: {{ appBarStore.galleryLiveSessions }} / {{ appBarStore.galleryAmountOfSessions }}
+                    <v-tooltip
+                        role="none"
+                        activator="parent"
+                        location="bottom"
+                        aria-label="currently live / total amount of sessions">
+                        currently live / total amount of sessions
+                    </v-tooltip>
+                </v-chip>
 
                 <!--change grid size-->
                 <div class="app-bar-item-margin">
@@ -99,10 +102,11 @@
                 </div>
 
                 <!--settings-->
-                <div aria-label="Gallery View Settings">
+                <div>
                     <v-menu :close-on-content-click="false">
                         <template v-slot:activator="{ props }">
                             <v-btn 
+                                aria-label="Gallery View Settings"
                                 icon="mdi-cog" 
                                 v-bind="props"
                                 color="primary">
@@ -134,11 +138,18 @@
             <!-------–--------------------->
 
             <!--profile icon menu-->
-            <div class="profile-icon-container" aria-label="Profile">
+            <div class="profile-icon-container">
                 <v-menu :close-on-content-click="false">
 
                     <template v-slot:activator="{ props }">
-                        <v-btn v-bind="props" color="primary" icon="mdi-account-circle" size="x-large" @click="userMenuOpened()"></v-btn>
+                        <v-btn 
+                            aria-label="Profile"
+                            v-bind="props" 
+                            color="primary" 
+                            icon="mdi-account-circle" 
+                            size="x-large" 
+                            @click="userMenuOpened()">
+                        </v-btn>
                     </template>
 
                     <v-list>
@@ -280,4 +291,5 @@
         margin-top: 20px;
         margin-right: 10px;
     }
+
 </style>

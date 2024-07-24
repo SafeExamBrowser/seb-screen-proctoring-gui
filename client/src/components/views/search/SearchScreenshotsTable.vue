@@ -1,6 +1,6 @@
 <template>
     <div class="text-h6 my-7">
-        Screenshots
+        <h3 class="title-inherit-styling">Screenshots</h3>
     </div>
 
     <v-data-table

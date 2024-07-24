@@ -39,7 +39,7 @@
                     <!------------title and buttons------------->
                     <v-row>
                         <v-col align="left">
-                            <h3>{{ $t('searchPage.title') }}</h3>
+                            <h2 class="title-inherit-styling text-h6">{{ $t('searchPage.title') }}</h2>
                         </v-col>
 
                         <v-col align="right" class="mb-2">

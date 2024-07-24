@@ -75,8 +75,8 @@
     //action lists
     const actionItems: {text: string, icon: string, action: string, event: Function}[] = [
         { text: "View", icon: "mdi-account-eye", action: "view", event: viewUserAccount},
-        { text: "De/ -Activate", icon: "mdi-account-sync", action: "activate", event: openActivateDialog},
-        { text: "Add", icon: "mdi-account-plus", action: "add", event: openAddDialog},
+        // { text: "De/ -Activate", icon: "mdi-account-sync", action: "activate", event: openActivateDialog},
+        // { text: "Add", icon: "mdi-account-plus", action: "add", event: openAddDialog},
     ];
 
 
