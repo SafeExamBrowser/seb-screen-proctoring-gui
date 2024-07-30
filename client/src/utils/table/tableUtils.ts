@@ -36,14 +36,14 @@ export function calcItemsPerPage(itemList: any): { value: number, title: string 
 
     if (maxLength < 5) {
         return [
-            { value: maxLength, title: maxLength.toString() }
+            { value: maxLength, title: "All" }
         ];
     }
 
     if (maxLength < 10) {
         return [
             { value: 5, title: '5' },
-            { value: maxLength, title: maxLength.toString() }
+            { value: maxLength, title: "All" }
         ];
     }
 
@@ -51,7 +51,7 @@ export function calcItemsPerPage(itemList: any): { value: number, title: string 
         return [
             { value: 5, title: '5' },
             { value: 10, title: '10' },
-            { value: maxLength, title: maxLength.toString() }
+            { value: maxLength, title: "All" }
         ];
     }
 
