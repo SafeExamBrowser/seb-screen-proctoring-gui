@@ -2,6 +2,7 @@ import * as screenshotDataService from "@/services/api-services/screenshotDataSe
 import * as timeUtils from "@/utils/timeUtils";
 import { SortOrder } from "@/models/sortOrderEnum";
 import * as metadataUtils from "@/utils/metadataUtils";
+import * as constants from "@/utils/constants";
 
 //=============api==================
 export async function getScreenshotDataBySessionId(sessionId: string): Promise<ScreenshotData | null>{
@@ -39,11 +40,11 @@ export function getScreenshotMetadata(sliderTime: number, currentScreenshotMetad
         "Date:": timeUtils.formatTimestampToDate(sliderTime),
         "Time:": timeUtils.formatTimestampToTime(sliderTime),
 
-        "Application:": currentScreenshotMetadata?.screenProctoringMetadataApplication,
-        "Browser Title:": currentScreenshotMetadata?.screenProctoringMetadataBrowser,
-        "Activity Details:": currentScreenshotMetadata?.screenProctoringMetadataUserAction + " " + additionalMetadataInfo,
-        "Url:": currentScreenshotMetadata?.screenProctoringMetadataURL,
-        "Window Title:": currentScreenshotMetadata?.screenProctoringMetadataWindowTitle,
+        [constants.APPLICATION_METADATA + ":"]: currentScreenshotMetadata?.screenProctoringMetadataApplication,
+        [constants.SEB_BROWSER_TITLE_METADATA + ":"]: currentScreenshotMetadata?.screenProctoringMetadataBrowser,
+        [constants.ACTIVITY_DETAILS_METADATA + ":"]: currentScreenshotMetadata?.screenProctoringMetadataUserAction + " " + additionalMetadataInfo,
+        [constants.SEB_BROWSER_URL_METADATA + ":"]: currentScreenshotMetadata?.screenProctoringMetadataURL,
+        [constants.WINDOW_TITLE_METADATA + ":"]: currentScreenshotMetadata?.screenProctoringMetadataWindowTitle,
     };
 }
 

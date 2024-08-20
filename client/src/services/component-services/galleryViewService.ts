@@ -59,10 +59,10 @@ export function navigateToProctoringView(screenshot: ScreenshotData | undefined,
 //=============metadata=========
 export function getScreenshotMetadata(currentScreenshotMetadata: MetaData | null | undefined): object{
     return {
-        "Application": currentScreenshotMetadata?.screenProctoringMetadataApplication,
-        "Browser Title": currentScreenshotMetadata?.screenProctoringMetadataBrowser,
-        "Activity Details:": currentScreenshotMetadata?.screenProctoringMetadataUserAction,
-        "Url:": currentScreenshotMetadata?.screenProctoringMetadataURL,
-        "Window Title:": currentScreenshotMetadata?.screenProctoringMetadataWindowTitle,
+        [constants.APPLICATION_METADATA + ":"]: currentScreenshotMetadata?.screenProctoringMetadataApplication,
+        [constants.SEB_BROWSER_TITLE_METADATA + ":"]: currentScreenshotMetadata?.screenProctoringMetadataBrowser,
+        [constants.ACTIVITY_DETAILS_METADATA + ":"]: currentScreenshotMetadata?.screenProctoringMetadataUserAction,
+        [constants.SEB_BROWSER_URL_METADATA + ":"]: currentScreenshotMetadata?.screenProctoringMetadataURL,
+        [constants.WINDOW_TITLE_METADATA + ":"]: currentScreenshotMetadata?.screenProctoringMetadataWindowTitle
     };
 }
