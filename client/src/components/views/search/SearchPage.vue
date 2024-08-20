@@ -145,7 +145,7 @@
     let metadataSearchApplication: string | null;
     let metadataSearchBrowserTitle: string | null;
     let metadataSearchActivityDetails: string | null;
-    let metadataSearchUrl: string | null;
+    let metadataSearchWindowTitle: string | null;
 
     let loginNameSearch: string | null;
     let ipAddressSearch: string | null;
@@ -175,7 +175,7 @@
         metadataApplication: string,
         metadataBrowserTitle: string,
         metadataActivityDetails: string,
-        metadataUrl: string,
+        metadataWindowTitle: string,
 
         fromTime: string, 
         toTime: string,
@@ -190,7 +190,7 @@
         metadataSearchApplication = metadataApplication == "" ? null : metadataApplication;
         metadataSearchBrowserTitle = metadataBrowserTitle == "" ? null : metadataBrowserTitle;
         metadataSearchActivityDetails = metadataActivityDetails == "" ? null : metadataActivityDetails;
-        metadataSearchUrl = metadataUrl == "" ? null : metadataUrl;
+        metadataSearchWindowTitle = metadataWindowTitle == "" ? null : metadataWindowTitle;
 
         loginNameSearch = loginName == "" ? null : loginName;
         ipAddressSearch = ipAddress == "" ? null : ipAddress;
@@ -206,7 +206,7 @@
             screenProctoringMetadataApplication: metadataSearchApplication,
             screenProctoringMetadataBrowser: metadataSearchBrowserTitle,
             screenProctoringMetadataUserAction: metadataSearchActivityDetails,
-            screenProctoringMetadataURL: metadataSearchUrl,
+            screenProctoringMetadataWindowTitle: metadataSearchWindowTitle,
 
             fromTime: fromTime, 
             toTime: toTime,

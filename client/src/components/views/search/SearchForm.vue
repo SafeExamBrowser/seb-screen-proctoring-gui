@@ -118,10 +118,10 @@
                         :title="$t('searchForm.metadataTitle')">
                             <v-expansion-panel-text>
 
-                                <!------------Metatdata: Application / Website------------->
+                                <!------------Metatdata: Focused Application------------->
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        {{ $t('searchForm.applicationWebsite') }}:
+                                        {{ constants.APPLICATION_METADATA }}:
                                     </v-col>
                                     <v-col cols="8">
                                         <v-text-field
@@ -130,16 +130,16 @@
                                             density="compact"
                                             variant="outlined"
                                             v-model="metadataApplicationField"
-                                            :aria-label="$t('searchForm.applicationWebsite')">
+                                            :aria-label="constants.APPLICATION_METADATA">
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
                                 <!----------------------------------->
 
-                                <!------------Metatdata: Broswer Title------------->
+                                <!------------Metatdata: SEB-Broswer Title------------->
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        Browser Title:
+                                        {{constants.SEB_BROWSER_TITLE_METADATA}}:
                                     </v-col>
                                     <v-col cols="8">
                                         <v-text-field
@@ -148,16 +148,16 @@
                                             density="compact"
                                             variant="outlined"
                                             v-model="metadataBrowserTitleField"
-                                            aria-label="Browser Title">
+                                            :aria-label="constants.SEB_BROWSER_TITLE_METADATA">
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
                                 <!----------------------------------->
 
-                                <!------------Metatdata: User Action------------->
+                                <!------------Metatdata: Activity Details------------->
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        {{ $t('searchForm.activityDetails') }}:
+                                        {{ constants.ACTIVITY_DETAILS_METADATA }}:
                                     </v-col>
                                     <v-col cols="8">
                                         <v-text-field
@@ -166,16 +166,16 @@
                                             density="compact"
                                             variant="outlined"
                                             v-model="metadataActivityDetailsField"
-                                            :aria-label="$t('searchForm.activityDetails')">
+                                            :aria-label="constants.ACTIVITY_DETAILS_METADATA">
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
                                 <!----------------------------------->
 
-                                <!------------Metatdata: Url------------->
+                                <!------------Metatdata: Focused Window------------->
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        {{ $t('searchForm.url') }}:
+                                        {{ constants.WINDOW_TITLE_METADATA }}:
                                     </v-col>
                                     <v-col cols="8">
                                         <v-text-field
@@ -183,9 +183,9 @@
                                             hide-details
                                             density="compact"
                                             variant="outlined"
-                                            v-model="metadataUrlField"
-                                            :aria-label="$t('searchForm.url')"
-                                        ></v-text-field>
+                                            v-model="metadataWindowTitleField"
+                                            :aria-label="constants.WINDOW_TITLE_METADATA">
+                                        </v-text-field>
                                     </v-col>
                                 </v-row>
                                 <!----------------------------------->
@@ -294,6 +294,7 @@
 
 <script setup lang="ts">
     import { ref, onBeforeMount } from "vue";
+    import * as constants from "@/utils/constants";
     import VueDatePicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css'
     import * as timePeriodUtils from "@/utils/timePeriodUtils";
@@ -310,7 +311,7 @@
             metadataApplication: string,
             metadataBrowserTitle: string,
             metadataActivityDetails: string,
-            metadataUrl: string,
+            metadataWindowTitle: string,
 
             fromTime: string,
             toTime: string,
@@ -330,7 +331,7 @@
     const metadataApplicationField = ref<string>("");
     const metadataBrowserTitleField = ref<string>("");
     const metadataActivityDetailsField = ref<string>("");
-    const metadataUrlField = ref<string>("");
+    const metadataWindowTitleField = ref<string>("");
 
     const timePeriodField = ref<number>(1);
     const timePeriodRadio = ref<boolean>(true);
@@ -360,7 +361,7 @@
             metadataApplicationField.value,
             metadataBrowserTitleField.value, 
             metadataActivityDetailsField.value, 
-            metadataUrlField.value, 
+            metadataWindowTitleField.value, 
 
             fromTime, 
             toTime,
@@ -378,7 +379,7 @@
         metadataApplicationField.value = ""; 
         metadataBrowserTitleField.value = "";  
         metadataActivityDetailsField.value = ""; 
-        metadataUrlField.value = ""; 
+        metadataWindowTitleField.value = ""; 
         
         timePeriodField.value = 1;
         timePeriodRadio.value = true;
