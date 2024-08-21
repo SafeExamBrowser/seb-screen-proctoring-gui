@@ -25,6 +25,7 @@ export default defineConfig({
     }),
     // gitTagPlugin()
   ],
+  base: "/sps-gui/",
   define: { 
     "process.env": {},
     _global: ({}) 
