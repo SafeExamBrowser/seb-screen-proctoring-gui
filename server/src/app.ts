@@ -24,7 +24,7 @@ if(ENV.NODE_ENV === "dev"){
   // app.use(cors())
 }
 
-app.use("/sps-gui", express.static(path));
+app.use("/sps-gui/", express.static(path));
 app.use(bodyParser.json());
 app.use(apiRequestLogger);
 
@@ -32,11 +32,11 @@ app.use(authorizationRoutes);
 app.use(routes);
 
 
-app.get("/sps-gui/", (req: Request, res: Response) => {
+app.get("/", (req: Request, res: Response) => {
   res.sendFile(path + "index.html");
 });
 
-app.get("/sps-gui/*", (req: Request, res: Response) => {
+app.get("*", (req: Request, res: Response) => {
   res.sendFile(path + "index.html");
 });
 
