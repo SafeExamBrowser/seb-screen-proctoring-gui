@@ -125,7 +125,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory("/sps-gui/"),
   routes
 });
 
