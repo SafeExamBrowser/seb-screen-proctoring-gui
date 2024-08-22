@@ -31,6 +31,13 @@ export default defineConfig({
     // gitTagPlugin()
   ],
   base: process.env.VITE_BASE_PATH,
+  build: {
+    rollupOptions: {
+        input: {
+            main: 'index.html',
+        },
+    },
+  },
   define: { 
     "process.env": {},
     _global: ({}) 
