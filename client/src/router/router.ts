@@ -13,6 +13,7 @@ import {navigateTo} from "@/router/navigation";
 import * as userAccountViewService from "@/services/component-services/userAccountViewService";
 import * as constants from "@/utils/constants";
 import ExamsOverviewPage from "@/components/views/ExamsOverviewPage.vue";
+import * as ENV from "@/config/envConfig";
 
 const defaultPageTitle: string = " | SEB Screen Proctoring";
 const routes: Array<RouteRecordRaw> = [
@@ -125,7 +126,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHistory("/sps-gui/"),
+  history: createWebHistory(ENV.BASE_PATH),
   routes
 });
 
