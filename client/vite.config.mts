@@ -3,8 +3,6 @@ import vue from "@vitejs/plugin-vue"
 import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
 import { gitTagPlugin } from "./src/plugins/vite-plugin-git-tag";
-import * as ENV from "./src/config/envConfig";
-
 
 // Utilities
 import { defineConfig } from "vite"
