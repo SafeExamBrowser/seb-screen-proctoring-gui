@@ -11,39 +11,32 @@ import {LOG} from "./logging/logger";
 import {apiRequestLogger} from "./logging/api-request-logger";
 import * as ENV from "./config/envConfig";
 
+
 const app: Express = express();
 
 const port: string = ENV.SERVER_PORT;
-const viewPath: string = __dirname + "/views/";
-const distPath: string = __dirname + "/dist/";
+const path: string = __dirname + "/views/";
 
-// Get environment mode for local dev and set CORS options
+//get environment mode for local dev and set cors options
 LOG.info("env mode: " + ENV.NODE_ENV);
 if(ENV.NODE_ENV === "dev"){
   app.use(cors(getCorstOptions()))
-  // app.use(cors())
 }
 
-app.use(express.static(viewPath));
-app.use('/sps-gui', express.static(distPath));
-
+app.use(express.static(path));
 app.use(bodyParser.json());
-
 app.use(apiRequestLogger);
+
 app.use(authorizationRoutes);
 app.use(routes);
 
-// Serve the index.html for the root path
-app.get("/", (req: Request, res: Response) => {
-  res.sendFile(viewPath + "index.html");
-});
 
-app.get("/sps-gui/*", (req: Request, res: Response) => {
-  res.sendFile(distPath + "index.html");
+app.get("/", (req: Request, res: Response) => {
+  res.sendFile(path + "index.html");
 });
 
 app.get("*", (req: Request, res: Response) => {
-  res.sendFile(viewPath + "index.html");
+  res.sendFile(path + "index.html");
 });
 
 app.listen(port, () => {
