@@ -22,6 +22,12 @@ export default defineConfig({
     VueI18nPlugin({
       include: fileURLToPath(new URL("./src/i18n/locales/**", import.meta.url)),
     }),
+    {
+        name: "html-transform",
+        transformIndexHtml(html) {
+            return html.replace(/%VITE_BASE_PATH%/g, process.env.VITE_BASE_PATH || '');
+        },
+    },
     // gitTagPlugin()
   ],
   base: process.env.VITE_BASE_PATH,
