@@ -3,8 +3,11 @@
         <v-container class="fill-height d-flex align-center justify-center">
 
             <v-card class="pa-10">
-                <div class="d-flex ml-15 mr-15">
-                    <img src="/img/logo.svg" alt="Logo ETH Zürich" />
+                <div class="d-flex ml-15 mr-15 justify-center">
+                    <img class="logo-img" src="/img/seb-logo-no-border.png" alt="SEB Logo" />
+                </div>
+                <div class="d-flex ml-15 mr-15 mt-5 justify-center">
+                    <div class="text-h6">SEB Screen Proctoring</div>
                 </div>
 
                 <div class="mt-10">
@@ -209,5 +212,11 @@
 
 
 <style scoped>
+
+    .logo-img {
+        max-width: 150px;
+        width: 100%;
+        height: auto; 
+    }
 
 </style>
