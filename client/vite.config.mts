@@ -37,6 +37,7 @@ export default defineConfig({
             main: 'index.html',
         },
     },
+    chunkSizeWarningLimit: 2000
   },
   define: { 
     "process.env": {},
