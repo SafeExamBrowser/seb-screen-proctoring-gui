@@ -19,7 +19,9 @@ const distPath: string = __dirname + "/dist/";
 
 // Get environment mode for local dev and set CORS options
 LOG.info("env mode: " + ENV.NODE_ENV);
+LOG.info("teeeeest");
 LOG.info("pase bath: " + ENV.BASE_PATH);
+
 if(ENV.NODE_ENV === "dev"){
   app.use(cors(getCorstOptions()))
 }
