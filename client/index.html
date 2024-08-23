@@ -5,7 +5,28 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="/img/seb-logo-no-border.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="/sps-gui/env.js"></script>
+
+    <script>
+        console.log("teeeeeeeeeest");
+        console.log(window.location.href);
+        console.log(window.location.pathname);
+
+        let path = window.location.pathname;
+
+        console.log(path[path.length-1])
+
+        if (path.length >= 1 && path[path.length-1] == "/"){
+            path = "";
+        }
+
+        // Dynamically set the src of the script
+        const script = document.createElement('script');
+        script.src = `${path}/env.js`;
+        document.head.appendChild(script);
+    </script>
+
+    
+
     <title>SEB Screen Proctoring</title>
 </head>
 
