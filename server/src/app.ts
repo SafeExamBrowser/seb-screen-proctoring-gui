@@ -27,7 +27,7 @@ if(ENV.NODE_ENV === "dev"){
 
 
 //static files config
-app.use(express.static(path));
+app.use(ENV.BASE_PATH, express.static(path));
 app.use(bodyParser.json());
 
 
