@@ -46,7 +46,7 @@ app.get("/", (req: Request, res: Response) => {
 
 });
 
-app.get("*", (req: Request, res: Response) => {
+app.get(ENV.BASE_PATH + "*", (req: Request, res: Response) => {
     res.sendFile(mainIndexPath);
 });
 
