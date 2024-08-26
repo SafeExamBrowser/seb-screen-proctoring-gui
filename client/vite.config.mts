@@ -37,7 +37,7 @@ export default defineConfig({
     // gitTagPlugin()
   ],
 
-  base: process.env.VITE_BASE_PATH,
+  base: "/sps-gui",
 
   build: {
     chunkSizeWarningLimit: 2000
