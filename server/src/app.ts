@@ -117,12 +117,12 @@ async function renameCopyFile(){
 async function modifyBaseHTML(){
     const file: string = fs.readFileSync(mainIndexPath, { encoding: 'utf8' });
 
-    let scriptTag: string = `<script src="/env.js"></script>`;
+    let path: string = "";
     if(ENV.BASE_PATH != undefined && ENV.BASE_PATH != null && ENV.BASE_PATH != ""){
-        scriptTag = `<script src="${ENV.BASE_PATH}/env.js"></script>`;
+        path = ENV.BASE_PATH;
     }
 
-    const modifiedHtml = file.replace('{{SCRIPT_PATH}}', scriptTag);
+    const modifiedHtml = file.replace('{{SCRIPT_PATH}}', path);
 
     fs.writeFile(mainIndexPath, modifiedHtml, 'utf-8', function (err) {
         if(err){
