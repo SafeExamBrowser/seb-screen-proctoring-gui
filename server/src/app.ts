@@ -4,6 +4,7 @@ dotenv.config();
 import express, {Express, Request, Response} from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import fs from "fs";
 
 import authorizationRoutes from "./routes/authorization.routes";
 import routes from "./routes/routes";
@@ -14,48 +15,60 @@ import * as ENV from "./config/envConfig";
 const app: Express = express();
 
 const port: string = ENV.SERVER_PORT;
-const viewPath: string = __dirname + "/views/";
-const distPath: string = __dirname + "/dist/";
+const path: string = __dirname + "/views/";
 
-// Get environment mode for local dev and set CORS options
-LOG.info("env mode: " + ENV.NODE_ENV);
-LOG.info("teeeeest");
-LOG.info("pase bath: " + ENV.BASE_PATH);
+const mainIndexPath: string = path + "index.html";
+const copyIndexPath: string = path + "index_copy.html";
 
+//get environment mode for local dev and set cors options
 if(ENV.NODE_ENV === "dev"){
   app.use(cors(getCorstOptions()))
 }
 
-//server static files
-app.use(express.static(viewPath));
-app.use(ENV.BASE_PATH, express.static(distPath));
 
-//parse incoming requests
+//static files config
+app.use(express.static(path));
 app.use(bodyParser.json());
 
-//middleware and routes config
+
+//middleware
 app.use(apiRequestLogger);
+
+
+//api routes
 app.use(authorizationRoutes);
 app.use(routes);
 
-// Serve the index.html for the root path
+
+//static files routes
 app.get("/", (req: Request, res: Response) => {
-  res.sendFile(viewPath + "index.html");
+    res.sendFile(mainIndexPath);
+
 });
 
-// Serve the index.html for custom path
-app.get(ENV.BASE_PATH + "/*", (req: Request, res: Response) => {
-  res.sendFile(distPath + "index.html");
-});
-
-//fallback route, SPA routing
 app.get("*", (req: Request, res: Response) => {
-  res.sendFile(viewPath + "index.html");
+    res.sendFile(mainIndexPath);
 });
 
-app.listen(port, () => {
-  LOG.info(`⚡️[server]: Server is running at 0.0.0.0 ${port}`);
+//server startup
+app.listen(port, async () => {
+    //reset the main index file to its original state
+    //this is needed to have an empty placerholder for potential changes in the "BASE_PATH" env-var
+    await resetMainIndex();
+
+    //create a copy of the original placeholder file
+    await copyBaseHTML();
+
+    //replace the placeholder in index.html with the actual path of env.js
+    await modifyBaseHTML();
+
+    LOG.info(`⚡️[server]: Server is running at : ${port}`);
+    LOG.info("env mode: " + ENV.NODE_ENV);
+    LOG.info("is seb-server integrated: " + ENV.SEB_SERVER_INTEGRATED_MODE);
+    LOG.info("base path: " + ENV.BASE_PATH);
+    LOG.info(`screen-proctoring-server: ${ENV.PROCTOR_SERVER_URL}${ENV.PROCTOR_SERVER_PORT}`)
 });
+
 
 function getCorstOptions(): object{
   return {
@@ -64,4 +77,56 @@ function getCorstOptions(): object{
     methods: "GET, POST",
     credentials: true,
   };
+}
+
+//index files functions
+async function resetMainIndex(){
+    const file: string = fs.readFileSync(mainIndexPath, { encoding: 'utf8' });
+
+    if(file.includes("{{SCRIPT_PATH}}")){
+        return;
+    }
+
+    fs.unlink(mainIndexPath, (err) => {
+        if (err) {
+            throw err;
+        }
+    });
+
+    renameCopyFile();
+}
+
+async function copyBaseHTML(){
+    const file: string = fs.readFileSync(mainIndexPath, { encoding: 'utf8' });
+
+    fs.writeFile(copyIndexPath, file, async (err) => {
+        if (err) {
+            throw err;
+        }
+    });
+}
+
+async function renameCopyFile(){
+    fs.rename(copyIndexPath, mainIndexPath, (err) => {
+        if(err){
+            throw err;
+        }
+    });
+}
+
+async function modifyBaseHTML(){
+    const file: string = fs.readFileSync(mainIndexPath, { encoding: 'utf8' });
+
+    let scriptTag: string = `<script src="/env.js"></script>`;
+    if(ENV.BASE_PATH != undefined && ENV.BASE_PATH != null && ENV.BASE_PATH != ""){
+        scriptTag = `<script src="${ENV.BASE_PATH}/env.js"></script>`;
+    }
+
+    const modifiedHtml = file.replace('{{SCRIPT_PATH}}', scriptTag);
+
+    fs.writeFile(mainIndexPath, modifiedHtml, 'utf-8', function (err) {
+        if(err){
+            throw err;
+        } 
+    });
 }
