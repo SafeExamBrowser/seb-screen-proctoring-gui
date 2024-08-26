@@ -6,67 +6,70 @@ import { gitTagPlugin } from "./src/plugins/vite-plugin-git-tag";
 import fs from "fs/promises";
 
 // Utilities
-import { defineConfig } from "vite"
-import { fileURLToPath, URL } from "node:url"
+import { defineConfig, loadEnv } from "vite";
+import { fileURLToPath, URL } from "node:url";
 
 
-export default defineConfig({
-  plugins: [
+export default ({ mode }) => {
+    process.env = {...process.env, ...loadEnv(mode, process.cwd())};
+    return defineConfig({
+        plugins: [
 
-    vue({ 
-      template: { transformAssetUrls }
-    }),
+            vue({ 
+            template: { transformAssetUrls }
+            }),
 
-    vuetify({
-      autoImport: true,
-    }),
+            vuetify({
+            autoImport: true,
+            }),
 
-    VueI18nPlugin({
-      include: fileURLToPath(new URL("./src/i18n/locales/**", import.meta.url)),
-    }),
+            VueI18nPlugin({
+            include: fileURLToPath(new URL("./src/i18n/locales/**", import.meta.url)),
+            }),
 
-    {
-        name: 'index-html-env',
-        async transformIndexHtml() {
-          if (process.env.NODE_ENV !== 'production') {
-            return await fs.readFile('index.dev.html', 'utf8')
-          }
-        }
-    },
+            {
+                name: 'index-html-env',
+                async transformIndexHtml() {
+                if (process.env.NODE_ENV !== 'production') {
+                    return await fs.readFile('index.dev.html', 'utf8')
+                }
+                }
+            },
 
-    // gitTagPlugin()
-  ],
+            // gitTagPlugin()
+        ],
 
-  base: process.env.VITE_BASE_PATH,
+        base: process.env.VITE_BASE_PATH,    
 
-  build: {
-    chunkSizeWarningLimit: 2000
-  },
+        build: {
+            chunkSizeWarningLimit: 2000
+        },
 
-  define: { 
-    "process.env": {},
-    _global: ({}) 
-  },
+        define: { 
+            "process.env": {},
+            _global: ({}) 
+        },
 
-  resolve: {
+        resolve: {
 
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url))
-    },
+            alias: {
+            "@": fileURLToPath(new URL("./src", import.meta.url))
+            },
 
-    extensions: [
-      ".js",
-      ".json",
-      ".jsx",
-      ".mjs",
-      ".ts",
-      ".tsx",
-      ".vue",
-    ],
-  },
+            extensions: [
+            ".js",
+            ".json",
+            ".jsx",
+            ".mjs",
+            ".ts",
+            ".tsx",
+            ".vue",
+            ],
+        },
 
-  server: {
-    port: 8081,
-  },
+        server: {
+            port: 8081,
+        },
 
-})
+    });
+}
