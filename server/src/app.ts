@@ -41,7 +41,7 @@ app.use(routes);
 
 
 //static files routes
-app.get("/", (req: Request, res: Response) => {
+app.get(ENV.BASE_PATH + "/", (req: Request, res: Response) => {
     res.sendFile(mainIndexPath);
 
 });

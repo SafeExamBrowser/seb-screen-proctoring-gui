@@ -13,11 +13,18 @@ export const PROCTOR_SERVER_PASSWORD = process.env.PROCTOR_SERVER_PASSWORD;
 
 export const SEB_SERVER_INTEGRATED_MODE = process.env.SEB_SERVER_INTEGRATED_MODE;
 
-export const BASE_PATH = process.env.VITE_BASE_PATH;
+export const BASE_PATH = getBasePath();
 
 function getServerPort(){
     if(!process.env.PROCTOR_SERVER_PORT){
         return "";
     }
     return ":" + process.env.PROCTOR_SERVER_PORT;
+};
+
+function getBasePath(){
+    if(!process.env.VITE_BASE_PATH){
+        return "";
+    }
+    return process.env.VITE_BASE_PATH;
 };
