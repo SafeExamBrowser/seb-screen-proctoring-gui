@@ -42,7 +42,16 @@ export default ({ mode }) => {
         base: process.env.VITE_BASE_PATH,    
 
         build: {
-            chunkSizeWarningLimit: 2000
+            chunkSizeWarningLimit: 2000,
+            rollupOptions: {
+                onwarn(warning, warn) {
+                    if (warning.code === 'UNRESOLVED_IMPORT') {
+                        return;  // Ignore this specific warning
+                    }
+                    // Use default behavior for other warnings
+                    warn(warning);
+                },
+            }
         },
 
         define: { 

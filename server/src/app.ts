@@ -122,7 +122,7 @@ async function modifyBaseHTML(){
         path = ENV.BASE_PATH;
     }
 
-    const modifiedHtml = file.replace('{{SCRIPT_PATH}}', path);
+    const modifiedHtml = file.replace(/{{SCRIPT_PATH}}/g, path);
 
     fs.writeFile(mainIndexPath, modifiedHtml, 'utf-8', function (err) {
         if(err){
