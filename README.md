@@ -14,13 +14,13 @@ The client uses the following technologies:
 #### [VueJs Version 3.3.*](https://vuejs.org/)
  - Composition API and Script Setup Syntax
  - Typescript
- - [Vuetify](https://vuetifyjs.com/en/) as CSS Framework
+ - [Vuetify](https://vuetifyjs.com/en/) as the componenet framework
 
 ### Server
 
 The server uses the following technologies:
 
-#### [ExpressJs Version 4.18.*](https://expressjs.com/)
+#### [ExpressJs Version 4.19.*](https://expressjs.com/)
  - Typescript
  - Axios as API-Request library
  
@@ -40,6 +40,10 @@ Instructions on how to get a local development environment up and running.
  - Optional: [Docker](https://www.docker.com/) for building and deploying the application
 
 
+Refer to the [seb-server-setup project](https://github.com/SafeExamBrowser/seb-server-setup/tree/development) to get a description on the environment variables. 
+(Hier bitte noch den richtigen Link zum docker-compose File hinzufügen)
+
+
 #### Steps to follow
 
  1. Clone this repo to your local machine
@@ -55,7 +59,7 @@ Instructions on how to get a local development environment up and running.
  5. if everything worked correctly, you should see an output in your terminal similar this one:
      ```
     VITE v4.4.9  ready in 281 ms
-    ➜  Local:   http://localhost:8010/
+    ➜  Local:   http://localhost:8081/
     ➜  Network: use --host to expose
     ➜  press h to show help
     ```
@@ -64,20 +68,19 @@ Instructions on how to get a local development environment up and running.
    - add the following content:
     ```
     NODE_ENV="dev"
-    #NODE_ENV="prod"
     SERVER_PORT=3000
     
     PROCTOR_SERVER_URL="http://localhost"
     PROCTOR_SERVER_PORT="8090"
     PROCTOR_DEFAULT_URL="/admin-api/v1"
     
-   DEV_SERVER_URL="http://localhost"
-   DEV_SERVER_PORT="8080"
+    DEV_SERVER_URL="http://localhost"
+    DEV_SERVER_PORT="8080"
    
-   PROCTOR_SERVER_USERNAME="{username for oauth}"
-   PROCTOR_SERVER_PASSWORD="{pw for oauth}"
+    PROCTOR_SERVER_USERNAME="{username for oauth}"
+    PROCTOR_SERVER_PASSWORD="{pw for oauth}"
 
-   SEB_SERVER_INTEGRATED_MODE="true"
+    SEB_SERVER_INTEGRATED_MODE="true"
     ```
   7. run `npm install`
   8. run `npm run dev`
