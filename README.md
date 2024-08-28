@@ -11,7 +11,7 @@ This project consists of two parts. A client component and a server component. T
 
 The client uses the following technologies:
 
-#### [VueJs Version 3.3.*](https://vuejs.org/)
+#### [VueJs Version 3.4.*](https://vuejs.org/)
  - Composition API and Script Setup Syntax
  - Typescript
  - [Vuetify](https://vuetifyjs.com/en/) as the componenet framework
