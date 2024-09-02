@@ -5,6 +5,14 @@ type OptionalParGeneric = {
     filterCriteria?: string;
 }
 
+type OptionalParGroups = {
+    pageNumber?: number;
+    pageSize?: number;
+    sort?: string;
+    includePastExams?: boolean | null;
+    includeUpcomingExams?: boolean | null;
+}
+
 type OptionalParGroupByUuid = {
     pageNumber?: number;
     pageSize?: number;
@@ -25,9 +33,13 @@ type OptionalParSearchSessions = {
     clientMachineName?: string | null,
     clientOsName?: string,
     clientVersion?: string,
+
+    screenProctoringMetadataApplication?: string | null,
+    screenProctoringMetadataBrowser?: string | null,
+    screenProctoringMetadataUserAction?: string | null,
     screenProctoringMetadataURL?: string | null,
     screenProctoringMetadataWindowTitle?: string | null,
-    screenProctoringMetadataUserAction?: string | null,
+
     pageNumber?: number,
     pageSize?: number,
     sort?: string
@@ -44,16 +56,22 @@ type OptionalParSearchScreenshots = {
     clientMachineName?: string,
     clientOsName?: string,
     clientVersion?: string,
+
+    screenProctoringMetadataApplication?: string | null,
+    screenProctoringMetadataBrowser?: string | null,
+    screenProctoringMetadataUserAction?: string | null,
     screenProctoringMetadataURL?: string | null,
     screenProctoringMetadataWindowTitle?: string | null,
-    screenProctoringMetadataUserAction?: string | null,
+
     pageNumber?: number,
     pageSize?: number,
     sort?: string
 }
 
 type OptionalParSearchTimeline = {
+    screenProctoringMetadataApplication?: string | null,
+    screenProctoringMetadataBrowser?: string | null,
+    screenProctoringMetadataUserAction?: string | null,
     screenProctoringMetadataURL?: string | null,
     screenProctoringMetadataWindowTitle?: string | null,
-    screenProctoringMetadataUserAction?: string | null,
 }

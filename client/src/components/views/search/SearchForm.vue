@@ -8,7 +8,7 @@
             <!------------Exam Name------------->
             <v-row align="center">
                 <v-col cols="4">
-                    Exam Name:
+                    {{ $t('searchForm.examName') }}:
                 </v-col>
                 <v-col cols="8">
                     <v-text-field
@@ -17,6 +17,7 @@
                         density="compact"
                         variant="outlined"
                         v-model="examNameField"
+                        :aria-label="$t('searchForm.examName')"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -25,7 +26,7 @@
             <!------------Group Name------------->
             <v-row align="center">
                 <v-col cols="4">
-                    Group Name:
+                    {{ $t('searchForm.groupName') }}:
                 </v-col>
                 <v-col cols="8">
                     <v-text-field
@@ -34,6 +35,7 @@
                         density="compact"
                         variant="outlined"
                         v-model="groupNameField"
+                        :aria-label="$t('searchForm.groupName')"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -44,13 +46,13 @@
                 <v-col>
                     <v-expansion-panels>
                         <v-expansion-panel
-                            title="Login- / Machinename">
+                            :title="$t('searchForm.loginMachineTitle')">
                             <v-expansion-panel-text>
 
                                 <!------------Login Name------------->
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        Login Name:
+                                        {{ $t('searchForm.loginName') }}:
                                     </v-col>
                                     <v-col cols="8">
                                         <v-text-field
@@ -58,7 +60,8 @@
                                             hide-details
                                             density="compact"
                                             variant="outlined"
-                                            v-model="loginNameField">
+                                            v-model="loginNameField"
+                                            :aria-label="$t('searchForm.loginName')">
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
@@ -67,7 +70,7 @@
                                 <!------------IP-Address------------->
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        IP-Address:
+                                        {{ $t('searchForm.ipAddress') }}:
                                     </v-col>
                                     <v-col cols="8">
                                         <v-text-field
@@ -75,7 +78,8 @@
                                             hide-details
                                             density="compact"
                                             variant="outlined"
-                                            v-model="ipAddressField">
+                                            v-model="ipAddressField"
+                                            :aria-label="$t('searchForm.ipAddress')">
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
@@ -84,7 +88,7 @@
                                 <!------------Machine Name------------->
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        Machine Name:
+                                    {{ $t('searchForm.machineName') }}:
                                     </v-col>
                                     <v-col cols="8">
                                         <v-text-field
@@ -92,7 +96,8 @@
                                             hide-details
                                             density="compact"
                                             variant="outlined"
-                                            v-model="machineNameField">
+                                            v-model="machineNameField"
+                                            :aria-label="$t('searchForm.machineName')">
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
@@ -110,13 +115,13 @@
                 <v-col>
                     <v-expansion-panels>
                         <v-expansion-panel
-                            title="Metadata">
+                        :title="$t('searchForm.metadataTitle')">
                             <v-expansion-panel-text>
 
-                                <!------------Metatdata: Url------------->
+                                <!------------Metatdata: Focused Application------------->
                                 <v-row align="center">
-                                    <v-col cols="4" class="text-decoration-line-through">
-                                        Url:
+                                    <v-col cols="4">
+                                        {{ constants.APPLICATION_METADATA }}:
                                     </v-col>
                                     <v-col cols="8">
                                         <v-text-field
@@ -124,17 +129,53 @@
                                             hide-details
                                             density="compact"
                                             variant="outlined"
-                                            v-model="metadataUrlField"
-                                            :disabled=true
-                                        ></v-text-field>
+                                            v-model="metadataApplicationField"
+                                            :aria-label="constants.APPLICATION_METADATA">
+                                        </v-text-field>
                                     </v-col>
                                 </v-row>
                                 <!----------------------------------->
 
-                                <!------------Metatdata: Window Title------------->
+                                <!------------Metatdata: SEB-Broswer Title------------->
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        Application / Website:
+                                        {{constants.SEB_BROWSER_TITLE_METADATA}}:
+                                    </v-col>
+                                    <v-col cols="8">
+                                        <v-text-field
+                                            single-line
+                                            hide-details
+                                            density="compact"
+                                            variant="outlined"
+                                            v-model="metadataBrowserTitleField"
+                                            :aria-label="constants.SEB_BROWSER_TITLE_METADATA">
+                                        </v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <!----------------------------------->
+
+                                <!------------Metatdata: Activity Details------------->
+                                <v-row align="center">
+                                    <v-col cols="4">
+                                        {{ constants.ACTIVITY_DETAILS_METADATA }}:
+                                    </v-col>
+                                    <v-col cols="8">
+                                        <v-text-field
+                                            single-line
+                                            hide-details
+                                            density="compact"
+                                            variant="outlined"
+                                            v-model="metadataActivityDetailsField"
+                                            :aria-label="constants.ACTIVITY_DETAILS_METADATA">
+                                        </v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <!----------------------------------->
+
+                                <!------------Metatdata: Focused Window------------->
+                                <v-row align="center">
+                                    <v-col cols="4">
+                                        {{ constants.WINDOW_TITLE_METADATA }}:
                                     </v-col>
                                     <v-col cols="8">
                                         <v-text-field
@@ -143,24 +184,8 @@
                                             density="compact"
                                             variant="outlined"
                                             v-model="metadataWindowTitleField"
-                                        ></v-text-field>
-                                    </v-col>
-                                </v-row>
-                                <!----------------------------------->
-
-                                <!------------Metatdata: User Action------------->
-                                <v-row align="center">
-                                    <v-col cols="4">
-                                        Activity Details:
-                                    </v-col>
-                                    <v-col cols="8">
-                                        <v-text-field
-                                            single-line
-                                            hide-details
-                                            density="compact"
-                                            variant="outlined"
-                                            v-model="metadataUserActionField"
-                                        ></v-text-field>
+                                            :aria-label="constants.WINDOW_TITLE_METADATA">
+                                        </v-text-field>
                                     </v-col>
                                 </v-row>
                                 <!----------------------------------->
@@ -175,13 +200,17 @@
             <!------------Time Period------------->
             <v-row align="center">
                     <v-col cols="4">
-                        Period:
+                        {{ $t('searchForm.period') }}:
                     </v-col>
                     <v-col cols="1">
-                        <v-radio v-model="timePeriodRadio" @click="radioButtonEvent('period')"></v-radio>
+                        <v-radio    
+                            :aria-label="$t('searchForm.period')"
+                            v-model="timePeriodRadio" 
+                            @click="radioButtonEvent('period')">
+                        </v-radio>
                     </v-col>
                     <v-col cols="1">
-                        Last
+                        {{ $t('searchForm.last') }}
                     </v-col>
                     <v-col cols="2">
                         <v-text-field
@@ -191,15 +220,21 @@
                             density="compact"
                             variant="solo"
                             v-model="timePeriodField"
-                            :disabled="!timePeriodRadio"> 
+                            :disabled="!timePeriodRadio"
+                            :aria-label="$t('searchForm.last')"> 
                         </v-text-field> 
                     </v-col>
                     <v-col cols="4">
                         <v-select
                             hide-details
-                            variant="outlined"
+                            variant="outlined"  
                             v-model="timePeriodSelect"
-                            :items="timePeriodSelectValues"
+                            :items="[
+                                {title: $t('timePeriod.day'), value: 1},
+                                {title: $t('timePeriod.week'), value: 2},
+                                {title: $t('timePeriod.month'), value: 3},
+                                {title: $t('timePeriod.year'), value: 4}
+                            ]"   
                             :disabled="!timePeriodRadio">
                         </v-select>
                     </v-col>
@@ -210,10 +245,13 @@
                 <!------------Time Selection------------->
                 <v-row align="center">
                     <v-col cols="4">
-                        Between:
+                        {{ $t('searchForm.between') }}:
                     </v-col>
                     <v-col cols="1">
-                        <v-radio v-model="timeSelectionRadio" @click="radioButtonEvent('selection')">
+                        <v-radio 
+                            :aria-label="$t('searchForm.between')"
+                            v-model="timeSelectionRadio" 
+                            @click="radioButtonEvent('selection')">
                         </v-radio>
                     </v-col>
                     <v-col cols="7">
@@ -236,7 +274,7 @@
                         color="black" 
                         variant="outlined"
                         @click="clearForm()">
-                        Cancel
+                        {{ $t('searchForm.cancel') }}
                     </v-btn>
 
                     <v-btn 
@@ -245,7 +283,7 @@
                         variant="flat" 
                         class="ml-2"
                         @click="searchSessions()">
-                        Search
+                        {{ $t('searchForm.search') }}
                     </v-btn>
 
                 </v-col>
@@ -256,9 +294,9 @@
 
 <script setup lang="ts">
     import { ref, onBeforeMount } from "vue";
+    import * as constants from "@/utils/constants";
     import VueDatePicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css'
-    import { TimePeriod } from "@/models/timePeriodEnum";
     import * as timePeriodUtils from "@/utils/timePeriodUtils";
 
     //emits (parent functions)
@@ -269,15 +307,19 @@
             loginName: string,
             ipAddress: string,
             machineName: string,
-            metadataUrl: string,
+
+            metadataApplication: string,
+            metadataBrowserTitle: string,
+            metadataActivityDetails: string,
             metadataWindowTitle: string,
-            metadataUserAction: string,
+
             fromTime: string,
             toTime: string,
             pageNumber: number
-        ]
+        ];
+        closeAllPanels: any;
     }>();
-
+    
     //form fields
     const groupNameField = ref<string>("");
     const examNameField = ref<string>("");
@@ -286,21 +328,15 @@
     const ipAddressField = ref<string>("");
     const machineNameField = ref<string>("");
 
-    const metadataUrlField = ref<string>("");
+    const metadataApplicationField = ref<string>("");
+    const metadataBrowserTitleField = ref<string>("");
+    const metadataActivityDetailsField = ref<string>("");
     const metadataWindowTitleField = ref<string>("");
-    const metadataUserActionField = ref<string>("");
 
-    const timePeriodField = ref<number>(5);
-    const timePeriodRadio = ref<boolean>(false);
-    const timePeriodSelect = ref<number>(1);
-    const timePeriodSelectValues: {title: string, value: number}[] = [
-        {title: TimePeriod.day, value: 1},
-        {title: TimePeriod.week, value: 2},
-        {title: TimePeriod.month, value: 3},
-        {title: TimePeriod.year, value: 4},
-    ];
-
-    const timeSelectionRadio = ref<boolean>(true);
+    const timePeriodField = ref<number>(1);
+    const timePeriodRadio = ref<boolean>(true);
+    const timePeriodSelect = ref<number>(2);
+    const timeSelectionRadio = ref<boolean>(false);
     const timeSelectionPicker = ref(null);
 
     onBeforeMount(async () => {
@@ -308,6 +344,7 @@
     });
 
     async function searchSessions(){
+        emit("closeAllPanels");
         let fromTime: string = "";
         let toTime: string = "";
         if(timePeriodRadio.value) [fromTime, toTime] = calcTimePeriod();
@@ -320,9 +357,12 @@
             loginNameField.value, 
             ipAddressField.value,
             machineNameField.value, 
-            metadataUrlField.value, 
+
+            metadataApplicationField.value,
+            metadataBrowserTitleField.value, 
+            metadataActivityDetailsField.value, 
             metadataWindowTitleField.value, 
-            metadataUserActionField.value, 
+
             fromTime, 
             toTime,
             1
@@ -335,14 +375,19 @@
         loginNameField.value = "";
         ipAddressField.value = "";
         machineNameField.value = ""; 
-        metadataUrlField.value = ""; 
-        metadataWindowTitleField.value = "";
-        metadataUserActionField.value = "";
-        timePeriodField.value = 5;
-        timePeriodRadio.value = false;
-        timePeriodSelect.value = 1;
-        timeSelectionRadio.value = true;
+
+        metadataApplicationField.value = ""; 
+        metadataBrowserTitleField.value = "";  
+        metadataActivityDetailsField.value = ""; 
+        metadataWindowTitleField.value = ""; 
+        
+        timePeriodField.value = 1;
+        timePeriodRadio.value = true;
+        timePeriodSelect.value = 2;
+        timeSelectionRadio.value = false;
         timeSelectionPicker.value = null;
+
+        searchSessions();
     }
 
     function calcTimePeriod(): [string, string]{
@@ -372,9 +417,6 @@
     }
 
 </script>
-
-
-
 
 <style scoped>
     .form-container{

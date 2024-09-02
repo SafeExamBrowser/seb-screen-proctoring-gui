@@ -39,6 +39,10 @@
             value: "No live sessions available"
         },
         {
+            key: "no-group",
+            value: "Group doesn't exist or is not active"
+        },
+        {
             key: "api-error",
             value: "Something went wrong, please try again"
         },
@@ -49,6 +53,10 @@
         {
             key: "register-error",
             value: "Please try again."
+        },
+        {
+            key: "timeout-error",
+            value: "The connection to the remote server timed out. Please try again"
         },
         {
             key: "register-success",

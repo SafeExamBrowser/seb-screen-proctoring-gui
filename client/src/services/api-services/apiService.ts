@@ -2,8 +2,7 @@ import axios, { AxiosInstance } from "axios";
 import * as authenticationService from "@/services/api-services/authenticationService";
 import {navigateTo} from "@/router/navigation";
 import * as ENV from "@/config/envConfig";
-import { useLoadingStore, useAuthStore } from "@/store/app";
-import router from "@/router";
+import { useLoadingStore, useAuthStore } from "@/store/store";
 
 
 export let api: AxiosInstance;
@@ -16,31 +15,35 @@ export function createApi(){
 }
 
 export function createApiInterceptor(){
-    const ignoredUrls: string[] = getIgnoredUrls();
-
     const authStore = useAuthStore();
     const loadingStore = useLoadingStore();
 
-    let loadingTimeout: NodeJS.Timeout | null = null;
-    let loadingEndTimeout: NodeJS.Timeout | null = null;
+    let loadingTimer: NodeJS.Timeout | null = null;
+    let loadingTimout: number = 500;
+    
+    let loadingEndTimer: NodeJS.Timeout | null = null;
 
     api.interceptors.request.use(async (config) => {
-        //additional skip when url is used nmultiple times in differnet locations such as /group
-        if(!loadingStore.skipLoading){
-            loadingTimeout = setTimeout(() => {
-                loadingStore.isLoading = true;
-            }, 500);
 
-            loadingEndTimeout = setTimeout(() => {
-                loadingStore.isLoading = false;
-            }, 10000);
-        }
-
-        const isIgnoredUrl: boolean = ignoredUrls.some(url => config.url?.includes(url));
-        if(isIgnoredUrl){
-            if (loadingTimeout) clearTimeout(loadingTimeout); 
+        //check if url does not need loading spinner
+        const isIgnoredUrl: boolean = isUrlIgnorable(config.url);
+        if(loadingStore.skipLoading || isIgnoredUrl){
             return config;
         }
+
+        //when loading spinner should be displayed
+        loadingTimer = setTimeout(() => {
+            loadingStore.isLoading = true;
+        }, loadingTimout);
+
+
+        //until when loading spinner should be displayed (timeout)
+        let loadingEndTimout: number = 20000;
+        if(config.url == "/search/sessions/day") loadingEndTimout = 60000;
+
+        loadingEndTimer = setTimeout(() => {
+            resetLoadingState();
+        }, loadingEndTimout);
 
         return config;
     });
@@ -68,7 +71,12 @@ export function createApiInterceptor(){
                 return api(originalRequest);
 
             }catch(error){
-                authStore.redirectRoute = router.currentRoute.value.fullPath;
+                let redirectRoute: string = "/";
+                if(window.location.pathname != null){
+                    redirectRoute = window.location.pathname;
+                }
+
+                authStore.redirectRoute = redirectRoute;
 
                 navigateTo("/");
 
@@ -76,12 +84,14 @@ export function createApiInterceptor(){
             }
             
         }
+
+        throw error;
     });
 
 
     function resetLoadingState(){
-        if (loadingTimeout) clearTimeout(loadingTimeout); 
-        if (loadingEndTimeout) clearTimeout(loadingEndTimeout); 
+        if (loadingTimer) clearTimeout(loadingTimer); 
+        if (loadingEndTimer) clearTimeout(loadingEndTimer); 
 
         loadingStore.isLoading = false;
         loadingStore.skipLoading = false;
@@ -114,6 +124,21 @@ function getIgnoredUrls(): string[]{
         "/screenshot-data/", 
         "/screenshot-timestamps/", 
         "/search/timeline", 
+        "/search/sessions",
         "/useraccount/me"
     ];
+}
+
+function isUrlIgnorable(url: string | undefined): boolean{
+    if(url == null){
+        return false;
+    } 
+
+    const ignoredUrls: string[] = getIgnoredUrls();
+
+    if(url == "/search/sessions/day"){
+        return false;
+    }
+
+    return ignoredUrls.some(urlFromList => url.includes(urlFromList))
 }

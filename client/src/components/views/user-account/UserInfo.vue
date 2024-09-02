@@ -20,13 +20,14 @@
                         <v-form :disabled="!userAccountStore.isEditMode">
                         <!-------------name--------------->
                             <v-row align="center">
-                                <v-col cols="4" align="end">
+                                <v-col cols="4">
                                     Name:
                                 </v-col>
                                 <v-col cols="8">
                                     <v-text-field
                                         single-line
                                         hide-details
+                                        aria-label="Name"
                                         density="compact"
                                         variant="outlined"
                                         v-model="name">
@@ -44,6 +45,7 @@
                                     <v-text-field
                                         single-line
                                         hide-details
+                                        aria-label="Surname"
                                         density="compact"
                                         variant="outlined"
                                         v-model="surname">
@@ -61,6 +63,7 @@
                                     <v-text-field
                                         single-line
                                         hide-details
+                                        aria-label="Username"
                                         density="compact"
                                         variant="outlined"
                                         v-model="username">
@@ -78,6 +81,7 @@
                                     <v-text-field
                                         single-line
                                         hide-details
+                                        aria-label="Email"
                                         density="compact"
                                         variant="outlined"
                                         v-model="email">
@@ -89,15 +93,16 @@
                             <!-------------timezone--------------->
                             <v-row align="center">
                                 <v-col cols="4">
-                                    Time zone:
+                                    Timezone:
                                 </v-col>
                                 <v-col cols="8">
                                     <v-text-field
                                         single-line
                                         hide-details
+                                        aria-label="Timezone"
                                         density="compact"
                                         variant="outlined"
-                                        v-model="timeZone">
+                                        v-model="timezone">
                                     </v-text-field>
                                 </v-col>
                             </v-row>
@@ -188,11 +193,12 @@
 
 <script setup lang="ts">
     import { ref, onBeforeMount } from "vue";
-    import { useAppBarStore, useUserAccountStore, useSettingsStore } from "@/store/app";
+    import { useAppBarStore, useUserAccountStore, useSettingsStore } from "@/store/store";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import { useRoute } from "vue-router";
     import {navigateTo} from "@/router/navigation";
     import ChangePasswordDialog from "./ChangePasswordDialog.vue";
+    import * as constants from "@/utils/constants";
 
 
     //stores
@@ -205,7 +211,7 @@
     const surname = ref<string>("");
     const username = ref<string>("");
     const email = ref<string>();
-    const timeZone = ref<string>();
+    const timezone = ref<string>();
     const password = ref<string>("");
     const confirmPassword = ref<string>("");
 
@@ -248,7 +254,7 @@
             surname.value = userAccount.value.surname;
             username.value = userAccount.value.username;
             email.value = userAccount.value.email;
-            timeZone.value = userAccount.value.name;
+            timezone.value = userAccount.value.timezone;
         }
     }
 
@@ -264,7 +270,7 @@
 
     function navigateBack(){
         userAccountStore.isAccountSelected = false;
-        navigateTo('/account');
+        navigateTo(constants.ACCOUNT_VIEW_ROUTE);
     }
 
 

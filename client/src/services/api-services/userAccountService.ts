@@ -11,7 +11,7 @@ export async function register(
     newPassword: string,
     confirmNewPassword: string,
     email?: string,
-    timeZone?: string,
+    timezone?: string,
 ): Promise<UserAccount | any> {
 
     try {
@@ -24,7 +24,7 @@ export async function register(
             newPassword,
             confirmNewPassword,
             email,
-            timeZone
+            timezone
         });
 
         if (status === 200) {

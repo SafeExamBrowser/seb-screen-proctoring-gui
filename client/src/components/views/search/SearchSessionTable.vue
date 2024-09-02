@@ -1,13 +1,15 @@
 <template>
-
-    <v-data-table
+    <v-data-table-server
         show-expand
         item-value="sessionUUID" 
         class="elevation-1"
-        :items-per-page="tableUtils.calcDefaultItemsPerPage(sessions)" 
-        :items-per-page-options="tableUtils.calcItemsPerPage(sessions)"
-        :headers="sessionTableHeaders"
-        :items="sessions">
+        @update:options="loadItems"
+        :loading="isLoading"
+        loading-text="Loading... Please wait"
+        :items="sessions?.content"
+        :items-length="totalItems"
+        :items-per-page-options="tableUtils.calcItemsPerPage(totalItems)"
+        :headers="sessionTableHeaders">
 
         <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
             <CustomTableHeader
@@ -23,7 +25,7 @@
         <template v-slot:item.startTime="{item}">
             <td>
                 <div>
-                    {{timeUtils.formatTimestmapToTime(item.startTime)}}
+                    {{timeUtils.formatTimestampToTime(item.startTime)}}
                 </div>
             </td>
         </template>
@@ -65,18 +67,18 @@
             </tr>
         </template>
 
-    </v-data-table>
+    </v-data-table-server>
 </template>
 
 
 <script setup lang="ts">
     import { ref, onBeforeMount } from "vue";
     import * as timeUtils from "@/utils/timeUtils";
-    import * as tableUtils from "@/utils/table/tableUtils"
+    import * as tableUtils from "@/utils/table/tableUtils";
     import SearchScreenshotsTable from "./SearchScreenshotsTable.vue";
     import * as searchViewService from "@/services/component-services/searchViewService";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
-    import { useTableStore } from "@/store/app";
+    import { useTableStore } from "@/store/store";
 
     //store
     const tableStore = useTableStore();
@@ -84,14 +86,21 @@
     //props
     const props = defineProps<{
         day: string;
-        sessions: Session[],
-        metaData: MetaData
+        searchParameters: OptionalParSearchSessions
     }>();
 
-    //reactive variables
+    //items
+    const sessions = ref<SearchSessions>();
     const timelineSearchResults = ref<SearchTimeline[]>([]);
 
+    //table - pagination, item size
+    const isLoading = ref<boolean>(true);
+    const totalItems = ref<number>(10);
+
+
     //table
+    const isOnLoad = ref<boolean>(true);
+    const defaultSort: {key: string, order: string}[] = [{key: 'startTime', order: 'desc'}];
     const sessionTableHeadersRef = ref<any[]>();
     const sessionTableHeaders = ref([
         {title: "Start-Time", key: "startTime", width: "10%"},
@@ -100,17 +109,46 @@
         {title: "Group Name", key: "groupName", width: "20%"},
         {title: "Exam Name", key: "exam.name", width: "20%"},
         {title: "Slides", key: "nrOfScreenshots"},
-        {title: "Video", key: "proctoringViewLink"},
+        {title: "Video", key: "proctoringViewLink", sortable: false}
     ]);                 
+
+    async function loadItems(serverTablePaging: ServerTablePaging){
+        isLoading.value = true;
+        //current solution to default sort the table
+        //sort-by in data-table-server tag breaks the sorting as the headers are in a seperate component
+        if(isOnLoad.value){
+            serverTablePaging.sortBy = defaultSort;
+        }
+
+        let searchParameters: OptionalParSearchSessions = searchViewService.prepareSessionSearchParameters(props.day, props.searchParameters, serverTablePaging);
+
+        const sessionSearchResponse: SearchSessions | null = await searchViewService.searchSessions(searchParameters);
+        if(sessionSearchResponse == null){
+            isLoading.value = false;
+            return;
+        }
+
+        sessions.value = sessionSearchResponse;
+        totalItems.value = sessionSearchResponse.numberOfPages * sessionSearchResponse.pageSize
+
+        isOnLoad.value = false;
+        isLoading.value = false;
+    }
 
 
     async function searchTimeline(item: any, isExpanded: Function, toggleExpand: Function){
-
         if(removeTableItemFromRefs(item, isExpanded, toggleExpand)){
             return;
         }
 
-        const timelineSearchResponse: SearchTimeline | null = await searchViewService.searchTimeline(item.raw.sessionUUID, {screenProctoringMetadataWindowTitle: props.metaData.screenProctoringMetadataWindowTitle, screenProctoringMetadataUserAction: props.metaData.screenProctoringMetadataUserAction});
+        const timelineSearchResponse: SearchTimeline | null = await searchViewService.searchTimeline(
+            item.raw.sessionUUID, 
+            {   
+                screenProctoringMetadataApplication: props.searchParameters.screenProctoringMetadataApplication,
+                screenProctoringMetadataBrowser: props.searchParameters.screenProctoringMetadataBrowser,
+                screenProctoringMetadataUserAction: props.searchParameters.screenProctoringMetadataUserAction,
+                screenProctoringMetadataWindowTitle: props.searchParameters.screenProctoringMetadataWindowTitle
+            });
 
         if(timelineSearchResponse == null){
             return;

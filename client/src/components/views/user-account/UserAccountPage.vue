@@ -54,12 +54,13 @@
 
 <script setup lang="ts">
     import { ref, onBeforeMount, computed } from "vue";
-    import { useAppBarStore, useUserAccountStore } from "@/store/app";
+    import { useAppBarStore, useUserAccountStore } from "@/store/store";
     import * as userAccountViewService from "@/services/component-services/userAccountViewService";
     import UserList from "./UserList.vue";
     import {navigateTo} from "@/router/navigation";
     import ActivateUserAccountDialog from "./ActivateUserAccountDialog.vue";
     import AddUserAccountDialog from "./AddUserAccountDialog.vue";
+    import * as constants from "@/utils/constants";
 
     //reactive variables
     const isLoading = ref<boolean>(true);
@@ -74,8 +75,8 @@
     //action lists
     const actionItems: {text: string, icon: string, action: string, event: Function}[] = [
         { text: "View", icon: "mdi-account-eye", action: "view", event: viewUserAccount},
-        { text: "De/ -Activate", icon: "mdi-account-sync", action: "activate", event: openActivateDialog},
-        { text: "Add", icon: "mdi-account-plus", action: "add", event: openAddDialog},
+        // { text: "De/ -Activate", icon: "mdi-account-sync", action: "activate", event: openActivateDialog},
+        // { text: "Add", icon: "mdi-account-plus", action: "add", event: openAddDialog},
     ];
 
 
@@ -84,7 +85,7 @@
         await userAccountViewService.setPersonalUserAccount();
 
         if(!userAccountStore.userAccount?.roles.includes('ADMIN')){
-            navigateTo("/account/" + userAccountStore.userAccount?.id);
+            navigateTo(constants.ACCOUNT_VIEW_ROUTE + "/" + userAccountStore.userAccount?.id);
         }
 
         isLoading.value = false;
@@ -93,7 +94,7 @@
 
     //=====action-icons event listeners======
     function viewUserAccount(){
-        navigateTo("/account/" + userAccountStore.selectedAccountId);
+        navigateTo(constants.ACCOUNT_VIEW_ROUTE + "/" + userAccountStore.selectedAccountId);
     }
 
     function openActivateDialog(){

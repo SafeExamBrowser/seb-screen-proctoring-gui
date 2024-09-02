@@ -10,6 +10,7 @@
                             :screenshot="group?.screenshots[galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value)]"
                             :timestamp="timestamp"
                             :group-uuid="groupUuid"
+                            :index="galleryViewService.calcIndex(i, n, appBarStore.galleryGridSize.value)"
                         >
                         </GalleryImage>
 
@@ -20,7 +21,7 @@
             <AlertMsg 
                 v-else 
                 :alertProps="{
-                    textKey: 'no-live-data',
+                    textKey: alertMsgKey,
                     color: 'warning',
                     type: 'alert',
                 }">
@@ -34,20 +35,25 @@
     import { ref, onBeforeMount, onBeforeUnmount, watch, computed } from "vue";
     import { useRoute } from "vue-router";
     import * as galleryViewService from "@/services/component-services/galleryViewService";
-    import { useAppBarStore, useLoadingStore } from "@/store/app";
+    import { useAppBarStore, useLoadingStore } from "@/store/store";
     import { storeToRefs } from "pinia";
     import GalleryImage from "./GalleryImage.vue";
+    import { SortOrder } from "@/models/sortOrderEnum";
 
 
     //reactive variables
     const group = ref<GroupUuid | null>();
-    const noScreenshotData = ref<boolean>(false);
     const timestamp = ref(Date.now());
     const maxPages = ref<number>(1);
-    const currentWindow = ref<number>(0);   
+    const currentWindow = ref<number>(0);  
+    const sortOrder = ref<SortOrder>(SortOrder.asc); 
+
+    //error handling
+    const noScreenshotData = ref<boolean>(false);
+    const alertMsgKey = ref<string>("no-live-data");
 
     //time constants
-    const GROUP_INTERVAL: number = 5 * 1000;
+    const GROUP_INTERVAL: number = 2 * 1000;
     const SCREENSHOT_INTERVAL: number = 1 * 1000;
 
     //store
@@ -64,14 +70,13 @@
     //=============lifecycle and watchers==================
     onBeforeMount(async () => {
         //todo: add error handling
-
         loadingStore.skipLoading = true;
-        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
+        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value, sortOrder.value);
 
         if(group.value){
-            appBarStore.title = "Gallery View of Group: " + group.value.name;
-            appBarStore.gallerNumberOfSessions = group.value.numberOfSessions;
-            appBarStore.galleryDescription = group.value.description;
+            appBarStore.title = "Group: " + group.value.name;
+            updateInfoData();
+            // appBarStore.galleryDescription = group.value.description;
         }
 
         assignData();
@@ -86,33 +91,57 @@
 
     watch(appBarStoreRef.galleryGridSize, async () => {
         loadingStore.skipLoading = true;
-        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
+        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value, sortOrder.value);
         assignData();
+        currentWindow.value = 0;
     });
 
     watch(currentWindow, () => {
         appBarStore.galleryCurrentPage = currentWindow.value;
-        appBarStore.galleryCurrentPage+=1;
+        appBarStore.galleryCurrentPage += 1;
     });
 
     watch(appBarStoreRef.galleryMaxPages, () => {
-        if (appBarStore.galleryCurrentPage > appBarStore.galleryMaxPages) {
-            currentWindow.value = 1;
+        if(appBarStore.galleryCurrentPage > appBarStore.galleryMaxPages){
+            currentWindow.value -= 1;
         }
     });
 
+    watch(appBarStoreRef.galleryIsNameSortAsc, async () => {
+        if(appBarStoreRef.galleryIsNameSortAsc.value){
+            sortOrder.value = SortOrder.asc;
+        }else{
+            sortOrder.value = SortOrder.desc;
+        }
+
+        loadingStore.skipLoading = true;
+        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value, sortOrder.value);
+        assignData();
+        currentWindow.value = 0;
+    });
+
     function assignData() {
+        //@ts-ignore
+        if(typeof group.value.message === "string"){
+            noScreenshotData.value = true;
+            stopIntervalGroup();
+            alertMsgKey.value = "no-group"
+            return;
+        }
+
         calcAmountOfWindows();
         noScreenshotData.value = false;
 
         if (group.value?.screenshots == null || group.value?.screenshots.length == 0) {
             noScreenshotData.value = true;
+            updateInfoData();
             return;
         }
 
+        //filter out null values
         group.value.screenshots = group.value?.screenshots.flatMap(f => f ? [f] : []);
-        appBarStore.gallerNumberOfSessions = group.value.numberOfSessions;
-        appBarStore.galleryMaxPages = maxPages.value;
+
+        updateInfoData();
 
         if (group.value.screenshots.length == 0) {
             noScreenshotData.value = true;
@@ -120,10 +149,21 @@
     }
     //==============================
 
+    //=====general======
+    function updateInfoData(){
+        if(group.value){
+            appBarStore.galleryLiveSessions = group.value.numberOfLiveSessions;
+            appBarStore.galleryAmountOfSessions = group.value.numberOfSessions;
+
+            appBarStore.galleryMaxPages = maxPages.value;
+        }
+    }
+
+    //==============================
 
     //=====window functions======
     async function windowChange() {
-        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
+        group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value, sortOrder.value);
         assignData();
     }
 
@@ -133,7 +173,8 @@
             return;
         }
 
-        maxPages.value = Math.ceil(group.value?.numberOfSessions / Math.pow(appBarStore.galleryGridSize.value, 2));
+        const maxPagesCalc: number = Math.ceil(group.value.numberOfLiveSessions / Math.pow(appBarStore.galleryGridSize.value, 2));
+        maxPages.value = maxPagesCalc > 0 ? maxPagesCalc : 1;
     }
     //==============================
 
@@ -142,7 +183,7 @@
     function startIntervalGroup() {
         intervalGroup = setInterval(async () => {
             loadingStore.skipLoading = true;
-            group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value);
+            group.value = await galleryViewService.getGroup(groupUuid, currentWindow.value, appBarStore.galleryGridSize.value, sortOrder.value);
             assignData();
 
         }, GROUP_INTERVAL);

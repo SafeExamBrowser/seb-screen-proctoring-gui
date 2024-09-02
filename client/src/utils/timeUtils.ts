@@ -1,9 +1,14 @@
+import { useUserAccountStore } from "@/store/store";
+import { toZonedTime } from "date-fns-tz";
+
+
 export function formatTimestampToFullDate(timestamp: string | any): string{
     if(timestamp == "0" || timestamp == null){
         return "";
     }
 
-    const date = new Date(timestamp);
+    let date = new Date(timestamp);
+    date = convertUTCToTimeZone(timestamp);
 
     const day = ("0" + date.getDate()).slice(-2);
     const month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -16,12 +21,13 @@ export function formatTimestampToFullDate(timestamp: string | any): string{
     return day + "." + month + "." + year + " " + hours + ":" + minutes + ":" + seconds; 
 }
 
-export function formatTimestmapToDate(timestamp: number): string{
+export function formatTimestampToDate(timestamp: number): string{
     if(timestamp == 0){
         return "";
     }
 
-    const date = new Date(timestamp);
+    let date = new Date(timestamp);
+    date = convertUTCToTimeZone(timestamp);
 
     const day = ("0" + date.getDate()).slice(-2);
     const month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -30,12 +36,13 @@ export function formatTimestmapToDate(timestamp: number): string{
     return day + "." + month + "." + year; 
 }
 
-export function formatTimestmapToTime(timestamp: number): string{
+export function formatTimestampToTime(timestamp: number): string{
     if(timestamp == 0){
         return "";
     }
 
-    const date = new Date(timestamp);
+    let date = new Date(timestamp);
+    date = convertUTCToTimeZone(timestamp);
 
     const hours = ("0" + date.getHours()).slice(-2);
     const minutes = ("0" + date.getMinutes()).slice(-2);
@@ -74,4 +81,41 @@ export function secondsToTimeString(seconds: number): string{
     const secondsStr = String(seconds).padStart(2, '0');
 
     return `${hoursStr}:${minutesStr}:${secondsStr}`;
+}
+
+export function formatSqlDateToString(sqlDate: string): string{
+    if(sqlDate.length == 0){
+        return "";
+    }
+
+    if(!sqlDate.includes("-")){
+        return "";
+    }
+
+    const [year, month, day] = sqlDate.split('-');
+    return `${day}.${month}.${year}`;
+}
+
+export function getStartAndEndTimestampOfDay(sqlDate: string): {start: string, end: string}{
+    const startTime = new Date(`${sqlDate}T00:01:00.000Z`).getTime();
+    const endTime = new Date(`${sqlDate}T23:59:59.999Z`).getTime();
+
+    return {
+        start: startTime.toString(),
+        end: endTime.toString()
+    }
+}
+
+function convertUTCToTimeZone(utcDate: number): Date {
+    const userAccountStore = useUserAccountStore();
+
+    const utcDateObject = new Date(utcDate);
+    const timezone: string | undefined = userAccountStore.userAccount?.timezone;
+    if(timezone == null){
+        return utcDateObject;
+    }
+
+    const dateInTimezone = toZonedTime(utcDateObject, timezone);
+
+    return dateInTimezone;
 }

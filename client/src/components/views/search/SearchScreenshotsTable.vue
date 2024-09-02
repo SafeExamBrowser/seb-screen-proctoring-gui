@@ -1,6 +1,6 @@
 <template>
     <div class="text-h6 my-7">
-        Screenshots
+        <h3 class="title-inherit-styling">Screenshots</h3>
     </div>
 
     <v-data-table
@@ -8,6 +8,7 @@
         item-value="timelineScreenshotDataList[0].timestamp"
         class="elevation-5 mb-7"
         theme="tableTheme"
+        :sort-by="[{key: 'timestamp', order: 'asc'}]"
         :expanded="expandedItems"
         :items-per-page="tableUtils.calcDefaultItemsPerPage(timelineSearchResult?.timelineGroupDataList)" 
         :items-per-page-options="tableUtils.calcItemsPerPage(timelineSearchResult?.timelineGroupDataList)"
@@ -28,7 +29,7 @@
         <template v-slot:item.timestamp="{internalItem}">
             <td>
                 <div>
-                    {{timeUtils.formatTimestmapToTime(internalItem.columns.timestamp)}}
+                    {{timeUtils.formatTimestampToTime(internalItem.columns.timestamp)}}
                 </div>
             </td>
         </template>
@@ -37,14 +38,6 @@
             <td>
                 <div>
                     {{item.groupName}} ({{ item.timelineScreenshotDataList.length }})
-                </div>
-            </td>
-        </template>
-
-        <template v-slot:item.activityDetails="{item}">
-            <td>
-                <div>
-                    {{metadataUtils.filterOutLetters(item.timelineScreenshotDataList[0].metaData.screenProctoringMetadataUserAction)}}
                 </div>
             </td>
         </template>
@@ -77,14 +70,22 @@
             <template v-for="screenshot in groupingUtils.groupScreenshotsByMetadata(item.timelineScreenshotDataList, true)!">
                 <tr>
                     <td>
-                        {{ timeUtils.formatTimestmapToTime(screenshot.timelineScreenshotDataList[0].timestamp)}}
+                        {{ timeUtils.formatTimestampToTime(screenshot.timelineScreenshotDataList[0].timestamp)}}
                     </td>
 
                     <td>
                     </td>
+                    
+                    <td>
+                        {{ screenshot.timelineScreenshotDataList[0].metaData.screenProctoringMetadataBrowser }}
+                    </td>
 
                     <td>
-                        {{ metadataUtils.filterOutLetters(screenshot.groupName + "(" + screenshot.timelineScreenshotDataList.length + ")") }}
+                        {{ screenshot.timelineScreenshotDataList[0].metaData.screenProctoringMetadataUserAction }}
+                    </td>
+
+                    <td>
+                        {{ screenshot.timelineScreenshotDataList[0].metaData.screenProctoringMetadataWindowTitle }}
                     </td>
 
                     <td>
@@ -115,7 +116,7 @@
     import * as searchViewService from "@/services/component-services/searchViewService";
     import * as groupingUtils from "@/utils/groupingUtils";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
-    import * as metadataUtils from "@/utils/metadataUtils";
+    import * as constants from "@/utils/constants";
 
     const props = defineProps<{
         timelineSearchResult: SearchTimeline
@@ -128,16 +129,18 @@
     const screenshotTableHeadersRef = ref<any[]>();
     const screenshotTableHeaders = ref([
         {title: "Capture-Time", key: "timestamp", value: "timelineScreenshotDataList[0].timestamp", width: "10%"},
-        {title: "Application / Website", key: "groupName", width: "20%"},
-        {title: "Activity Details", key: "activityDetails", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataUserAction"},
+        {title: constants.APPLICATION_METADATA, key: "groupName", width: "15%"},
+
+        {title: constants.SEB_BROWSER_TITLE_METADATA, key: "browserTitle", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataBrowser"},
+        {title: constants.ACTIVITY_DETAILS_METADATA, key: "activityDetails", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataUserAction"},
+        {title: constants.WINDOW_TITLE_METADATA, key: "windowTitle", value: "timelineScreenshotDataList[0].metaData.screenProctoringMetadataWindowTitle"},
+
         {title: "Video", key: "proctoringViewLink", width: "1%"},
         {title: "", key: "data-table-expand"}
     ]);
 
     onBeforeMount(() => {
         timelineSearchResult.value = props.timelineSearchResult;
-
-        // console.log(timelineSearchResult)
     });
 
     watch(timelineSearchResult, (newList) => {

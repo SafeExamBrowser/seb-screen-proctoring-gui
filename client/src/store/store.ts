@@ -4,6 +4,7 @@ import {navigateTo} from "@/router/navigation";
 import * as userAccountViewService from "@/services/component-services/userAccountViewService";
 import * as authenticationService from "@/services/api-services/authenticationService";
 import * as settingsService from "@/services/api-services/settingsService";
+import * as constants from "@/utils/constants";
 
 
 //-------------------settings------------------------------//
@@ -31,31 +32,59 @@ export const useSettingsStore = defineStore("settings", () => {
 
 //--------------------app bar-----------------------------//
 export const useAppBarStore = defineStore("appBar", () => {
-  const title = ref<string>("Example Title");
+    const title = ref<string>("Example Title");
 
-  const galleryGridSize = ref<GridSize>({
-    title: "3x3",
-    value: 3
-  });
-  const galleryIsNameEnabled = ref<boolean>(true);
-  const galleryIsIpEnabled = ref<boolean>(false);
-  const galleryIsMetadataEnabled = ref<boolean>(false);
-  const galleryCurrentPage = ref<number>(1);
-  const galleryMaxPages = ref<number>(1);
-  const gallerNumberOfSessions = ref<number>(0);
-  const galleryDescription = ref<string>("");
+    const examOverviewShowPastExams = ref<boolean>(false);
+    const examOverviewShowUpcomingExams = ref<boolean>(false);
 
-  return {title, galleryGridSize, galleryIsNameEnabled, galleryIsIpEnabled, galleryIsMetadataEnabled, galleryCurrentPage, galleryMaxPages, gallerNumberOfSessions, galleryDescription};
+    const galleryGridSize = ref<GridSize>({
+        title: "3x3",
+        value: 3
+    });
+    const galleryIsNameEnabled = ref<boolean>(true);
+    const galleryIsIpEnabled = ref<boolean>(false);
+    const galleryIsMetadataEnabled = ref<boolean>(false);
+    const galleryCurrentPage = ref<number>(1);
+    const galleryMaxPages = ref<number>(1);
+    const galleryLiveSessions = ref<number>(0)
+    const galleryAmountOfSessions = ref<number>(0);
+    const galleryDescription = ref<string>("");
+    const galleryIsNameSortAsc = ref<boolean>(true);
+
+    return {
+        title,     
+        examOverviewShowPastExams,
+        examOverviewShowUpcomingExams,
+        galleryGridSize, 
+        galleryIsNameEnabled, 
+        galleryIsIpEnabled, 
+        galleryIsMetadataEnabled, 
+        galleryCurrentPage, 
+        galleryMaxPages, 
+        galleryLiveSessions,
+        galleryAmountOfSessions,
+        galleryDescription,
+        galleryIsNameSortAsc
+    };
 });
 //-------------------------------------------------//
+
+//----------------------gallery---------------------------//
+export const useGalleryStore = defineStore("gallery", () => {
+    const focusedImageIndexes = ref<boolean[]>([]);
+  
+    return {focusedImageIndexes};
+  });
+  //-------------------------------------------------//
 
 
 //----------------------loading---------------------------//
 export const useLoadingStore = defineStore("loading", () => {
   const skipLoading = ref<boolean>(false);
   const isLoading = ref<boolean>(false);
+  const isTimeout = ref<boolean>(false);
 
-  return {skipLoading, isLoading};
+  return {skipLoading, isLoading, isTimeout};
 });
 //-------------------------------------------------//
 
@@ -64,17 +93,17 @@ export const useLoadingStore = defineStore("loading", () => {
 export const useAuthStore = defineStore("auth", () => {
   const redirectRoute: string = "";
 
-  async function login(accessTokenString: string, refershTokenString: string){
+  async function login(accessTokenString: string, refreshTokenString: string){
     setAccessToken(accessTokenString);
-    setRefreshToken(refershTokenString);
-
-    if(useAuthStore().redirectRoute == ""){
-      navigateTo("/start");
-    }else{
-      navigateTo(useAuthStore().redirectRoute);
-    }
+    setRefreshToken(refreshTokenString);
 
     await userAccountViewService.setPersonalUserAccount();
+
+    if(useAuthStore().redirectRoute == ""){
+        navigateTo(constants.RUNNING_EXAMS_ROUTE);
+    }else{
+        navigateTo(useAuthStore().redirectRoute);
+    }
   }
 
   async function loginWithJwt(accessTokenString: string, refershTokenString: string, redirect: string){
@@ -93,7 +122,7 @@ export const useAuthStore = defineStore("auth", () => {
     setRefreshToken("");
     useUserAccountStore().userAccount = null;
 
-    navigateTo("/");
+    navigateTo(constants.DEFAULT_ROUTE);
   }
   
   function setAccessToken(accessTokenString: string){
@@ -138,5 +167,5 @@ export const useTableStore = defineStore("table", () => {
     const isIpDisplayList = ref<{day: string, isIp: boolean}[]>([]);
   
     return {isExamExpand, isIpDisplayList};
-  });
-  //-------------------------------------------------//
+});
+//-------------------------------------------------//

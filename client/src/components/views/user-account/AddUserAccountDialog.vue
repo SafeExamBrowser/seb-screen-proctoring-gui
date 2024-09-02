@@ -70,7 +70,7 @@
                     density="compact"
                     placeholder="Time zone"
                     variant="outlined"
-                    v-model="timeZone">
+                    v-model="timezone">
                 </v-text-field>
 
                 <!--password-->
@@ -158,7 +158,7 @@
     const surname = ref<string>("");
     const username = ref<string>("");
     const email = ref<string>();
-    const timeZone = ref<string>();
+    const timezone = ref<string>();
     const password = ref<string>("");
     const confirmPassword = ref<string>("");
 
@@ -176,7 +176,7 @@
         addSuccess.value = false;
 
         try{
-            const userAccount: UserAccount = await userAccountService.register(name.value, surname.value, username.value, password.value, confirmPassword.value, email.value, timeZone.value);
+            const userAccount: UserAccount = await userAccountService.register(name.value, surname.value, username.value, password.value, confirmPassword.value, email.value, timezone.value);
             addSuccess.value = true;
 
             closeAddDialog(userAccount)

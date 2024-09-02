@@ -3,8 +3,11 @@
         <v-container class="fill-height d-flex align-center justify-center">
 
             <v-card class="pa-10">
-                <div class="d-flex ml-15 mr-15">
-                    <img src="/img/logo.svg" :class="isDark ? 'invert' : ''" alt="Logo ETH Zürich" />
+                <div class="d-flex ml-15 mr-15 justify-center">
+                    <img class="logo-img" src="/img/seb-logo-no-border.png" alt="SEB Logo" />
+                </div>
+                <div class="d-flex ml-15 mr-15 mt-5 justify-center">
+                    <div class="text-h6">SEB Screen Proctoring</div>
                 </div>
 
                 <div class="mt-10">
@@ -14,6 +17,14 @@
                             color: 'error',
                             type: 'alert',
                             textKey: 'login-error'
+                        }">
+                    </AlertMsg>
+                    <AlertMsg 
+                        v-if="loadingStore.isTimeout"
+                        :alertProps="{
+                            color: 'error',
+                            type: 'alert',
+                            textKey: 'timeout-error'
                         }">
                     </AlertMsg>
                 </div>
@@ -75,7 +86,7 @@
                             role="button" 
                             tabindex="0" 
                             @keydown="handleTabKeyEvent($event, 'navigate')">
-                            <router-link to="/register">Register</router-link>
+                            <router-link :to=constants.REGISTER_ROUTE>Register</router-link>
                         </span>
                     </div>
 
@@ -91,8 +102,10 @@
     import { ref, computed } from "vue";
     import * as authenticationService from "@/services/api-services/authenticationService";
     import {navigateTo} from "@/router/navigation";
-    import { useLoadingStore, useAuthStore, useSettingsStore } from "@/store/app";
+    import { useLoadingStore, useAuthStore, useSettingsStore } from "@/store/store";
     import { useTheme } from "vuetify";
+    import * as constants from "@/utils/constants";
+
 
     const username = ref("");
     const password = ref("");
@@ -111,11 +124,9 @@
     theme.global.name.value = localStorageTheme ?? theme.global.name.value ?? "light";
     const isDark = computed<boolean>(() => theme.global.current.value.dark);
 
-    
     async function signIn(){
-
-        loadingStore.isLoading = true;
         loginError.value = false;
+        loadingStore.isTimeout = false;
 
         try{
             const tokenObject: Token = await authenticationService.login(username.value, password.value);
@@ -124,17 +135,13 @@
         }catch(error){
             loginError.value = true;
         }
-
-        loadingStore.isLoading = false;
-
     }
 
-    //todo: extract this function into a global file
     function handleTabKeyEvent(event: any, action: string){
         if (event.key == 'Enter' || event.key == ' ') {
 
             if(action == "navigate"){
-                navigateTo("/register");
+                navigateTo(constants.REGISTER_ROUTE);
             }
         }
     }
@@ -142,7 +149,15 @@
 </script>
   
 <style scoped>
-.invert{
-    filter: invert(1);
-}
+
+    .invert{
+        filter: invert(1);
+    }
+
+    .logo-img {
+        max-width: 150px;
+        width: 100%;
+        height: auto; 
+    }
+
 </style>

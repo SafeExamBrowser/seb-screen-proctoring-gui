@@ -3,8 +3,11 @@
         <v-container class="fill-height d-flex align-center justify-center">
 
             <v-card class="pa-10">
-                <div class="d-flex ml-15 mr-15">
-                    <img src="/img/logo.svg" alt="Logo ETH Zürich" />
+                <div class="d-flex ml-15 mr-15 justify-center">
+                    <img class="logo-img" src="/img/seb-logo-no-border.png" alt="SEB Logo" />
+                </div>
+                <div class="d-flex ml-15 mr-15 mt-5 justify-center">
+                    <div class="text-h6">SEB Screen Proctoring</div>
                 </div>
 
                 <div class="mt-10">
@@ -80,7 +83,7 @@
                             density="compact"
                             placeholder="Time zone"
                             variant="outlined"
-                            v-model="timeZone">
+                            v-model="timezone">
                         </v-text-field>
 
                         <!--password-->
@@ -143,7 +146,7 @@
                             role="button"
                             tabindex="0"
                             @keydown="handleTabKeyEvent($event, 'navigate')">
-                            <router-link to="/">Login</router-link>
+                            <router-link :to=constants.DEFAULT_ROUTE>Login</router-link>
                         </span>
                     </div>
 
@@ -159,13 +162,14 @@
     import { ref } from "vue";
     import * as userAccountService from "@/services/api-services/userAccountService";
     import {navigateTo} from "@/router/navigation";
+    import * as constants from "@/utils/constants";
 
     //form fields
     const name = ref<string>("");
     const surname = ref<string>("");
     const username = ref<string>("");
     const email = ref<string>();
-    const timeZone = ref<string>();
+    const timezone = ref<string>();
     const password = ref<string>("");
     const confirmPassword = ref<string>("");
 
@@ -183,7 +187,7 @@
         registerSuccess.value = false;
 
         try{
-            const userAccount: object = await userAccountService.register(name.value, surname.value, username.value, password.value, confirmPassword.value, email.value, timeZone.value);
+            const userAccount: object = await userAccountService.register(name.value, surname.value, username.value, password.value, confirmPassword.value, email.value, timezone.value);
             registerSuccess.value = true;
 
         }catch(error){
@@ -199,7 +203,7 @@
         if (event.key == 'Enter' || event.key == ' ') {
 
             if(action == "navigate"){
-                navigateTo("/");
+                navigateTo(constants.DEFAULT_ROUTE);
             }
         }
     }
@@ -208,5 +212,11 @@
 
 
 <style scoped>
+
+    .logo-img {
+        max-width: 150px;
+        width: 100%;
+        height: auto; 
+    }
 
 </style>

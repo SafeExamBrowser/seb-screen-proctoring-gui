@@ -1,15 +1,20 @@
 <template>
     <tr>
         <template v-for="(column, index) in props.columns">
-            <td>
+            
+            <th> 
                 <span 
+                    v-if="column.sortable"
                     ref="headerRefs"
                     tabindex="0" 
                     class="mr-2 cursor-pointer font-weight-bold" 
                     role="button" 
+                    :aria-label="getHeaderDescription(column, isSorted)"
                     @keydown="tableUtils.handleTabKeyEvent($event, 'sort', index, {headerRefs: headerRefs})" 
-                    @click="() => props.toggleSort(column)"
-                >
+                    @click="() => props.toggleSort(column)">
+                    {{ column.title }}
+                </span>
+                <span v-else>
                     {{ column.title }}
                 </span>
 
@@ -18,42 +23,42 @@
                 </template>
 
                 <!--todo: checking should not be done via title-->
-                <template v-if="column.title == 'Exam'">
+                <!-- <template v-if="column.title == 'Exam Start-Time'">
                     <v-btn 
+                        :aria-label="tableStore.isExamExpand ? 'hide exam details' : 'show exam details'"
                         :icon="tableStore.isExamExpand ? 'mdi-arrow-expand-left' : 'mdi-arrow-expand-right'" 
                         rounded="sm" 
                         variant="flat" 
                         size="small"
-                        @click="tableStore.isExamExpand ? emit('removeAddtionalExamHeaders') : emit('addAddtionalExamHeaders')"
-                        >
+                        @click="tableStore.isExamExpand ? emit('removeAddtionalExamHeaders') : emit('addAddtionalExamHeaders')">
                     </v-btn>
-                </template>
-
+                </template> -->
+                
                 <template v-if="column.title == 'Login Name / IP'">
                     <v-btn 
+                        :aria-label="tableStore.isIpDisplayList[tableUtils.getSessionListIndex(props.day!)].isIp ? 'show login name' : 'show IP'"
                         :icon="tableStore.isIpDisplayList[tableUtils.getSessionListIndex(props.day!)].isIp ? 'mdi-toggle-switch-outline' : 'mdi-toggle-switch-off-outline'" 
                         rounded="sm" 
                         variant="flat" 
-                        @click="toggleNameIpSwitch()"
-                        >
+                        @click="toggleNameIpSwitch()">
                     </v-btn>
                 </template>
-            </td>
+            </th>
         </template>
     </tr>
 </template>
 
 <script setup lang="ts">
-    import { ref, onBeforeMount, onMounted } from "vue";
+    import { ref, onBeforeMount, onBeforeUnmount } from "vue";
     import * as tableUtils from "@/utils/table/tableUtils";
-    import { useAppBarStore, useTableStore } from "@/store/app";
+    import { useAppBarStore, useTableStore } from "@/store/store";
 
     //stores
     const appBarStore = useAppBarStore();
     const tableStore = useTableStore();
 
     //header reactivity
-    const headerRefs = ref<any[]>();
+    const headerRefs = ref<any[] | null>();
 
     //props
     const props = defineProps<{
@@ -71,18 +76,12 @@
         removeAddtionalExamHeaders: any;
     }>();
 
-
     onBeforeMount(() => {
         headerRefs.value = props.headerRefsProp;
     });
 
-    onMounted(() => {
-        //if page = start page --> sort by start-time desc
-        //todo: checking should not be done via title
-        if(appBarStore.title == "Active SEB Groups"){
-            tableUtils.sortTable(3, headerRefs);
-            tableUtils.sortTable(3, headerRefs);
-        }
+    onBeforeUnmount(() => {
+        headerRefs.value = null;
     });
 
     function toggleNameIpSwitch(){
@@ -94,6 +93,24 @@
         }
 
         tableStore.isIpDisplayList[index].isIp = true;
+    }
+
+    function getHeaderDescription(column: any, isSorted: any): any{
+        let headerDesc: string = `Header: ${column.title}, sort order: `
+
+        if(!isSorted(column)){
+            return `${headerDesc} none`;
+        }
+
+        if(props.getSortIcon(column) == "$sortAsc"){
+            return `${headerDesc} ascending`;
+        }
+
+        if(props.getSortIcon(column) == "$sortDesc"){
+            return `${headerDesc} descending`;
+        }
+
+        return `${headerDesc} none`;
     }
 
 </script>
