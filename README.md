@@ -2,6 +2,8 @@
 
 GUI component for Safe Exam Browser screen proctoring project.
 
+This is a sub-project of SEB Server. For full usage and installation, please visit the [SEB Server page](https://github.com/SafeExamBrowser/seb-server)
+
 ## Overview
 
 This project consists of two parts. A client component and a server component. The server contains no businesses logic but serves as a lightweight api-gateway between the client and the [SP-Server](https://github.com/SafeExamBrowser/seb-screen-proctoring-server). The easiest way to build and deploy the project is via docker. 
