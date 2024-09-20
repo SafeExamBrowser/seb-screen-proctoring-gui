@@ -13,6 +13,8 @@ export const PROCTOR_SERVER_PASSWORD = process.env.PROCTOR_SERVER_PASSWORD;
 
 export const SEB_SERVER_INTEGRATED_MODE = process.env.SEB_SERVER_INTEGRATED_MODE;
 
+export const LOG_LEVEL = process.env.LOG_LEVEL || "info";
+
 function getServerPort(){
     if(!process.env.PROCTOR_SERVER_PORT){
         return "";

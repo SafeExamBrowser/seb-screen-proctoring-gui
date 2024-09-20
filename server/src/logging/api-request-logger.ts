@@ -5,7 +5,7 @@ export const apiRequestLogger = morgan(
     ':method :url :status :res[content-length] - :response-time ms',
     {
       stream: {
-        write: (message) => LOG.info(message.trim()),
+        write: (message) => LOG.debug(message.trim()),
       },
     }
   );
