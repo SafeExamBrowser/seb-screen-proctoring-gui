@@ -1,6 +1,8 @@
 <template>
     <v-data-table-server
         show-expand
+        show-select
+        select-strategy="page"
         item-value="sessionUUID" 
         class="elevation-1"
         @update:options="loadItems"
@@ -11,14 +13,15 @@
         :items-per-page-options="tableUtils.calcItemsPerPage(totalItems)"
         :headers="sessionTableHeaders">
 
-        <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
+        <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort, selectAll }">
             <CustomTableHeader
                 :columns="columns"
                 :is-sorted="isSorted"
                 :get-sort-icon="getSortIcon"
                 :toggle-sort="toggleSort"
                 :header-refs-prop="sessionTableHeadersRef"
-                :day="props.day">
+                :day="props.day"
+                :selectAll="selectAll">
             </CustomTableHeader>
         </template>
 
@@ -61,7 +64,6 @@
         <template v-slot:expanded-row="{ columns, item }">
             <tr>
                 <td :colspan="columns.length">
-                    <!--@vue-ignore-->
                     <SearchScreenshotsTable :timelineSearchResult="timelineSearchResults.find(i => i.sessionUUID == item.sessionUUID)"></SearchScreenshotsTable>
                 </td>
             </tr>
