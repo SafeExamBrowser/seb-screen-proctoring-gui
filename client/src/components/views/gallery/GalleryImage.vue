@@ -22,7 +22,7 @@
                         <div v-if="appBarStore.galleryIsMetadataEnabled">
                             <v-expansion-panels color="#404040">
                                 <v-expansion-panel  
-                                    title="Metadata">
+                                    :title="i18n.t('galleryView.metadata')">
                                     <v-expansion-panel-text>
                                         <v-row v-for="(value, key) in galleryViewService.getScreenshotMetadata(screenshot.metaData)" :key="key" no-gutters>
                                             <v-col>
@@ -55,7 +55,7 @@
                                     variant="outlined" 
                                     icon="mdi-arrow-expand"
                                     size="small"
-                                    aria-label="Expand Image"
+                                    :aria-label="i18n.t('galleryView.screenReader.expandImage')"
                                     @click="openDialog()">
                                 </v-btn>
 
@@ -66,7 +66,7 @@
                                     class="ml-2"
                                     icon="mdi-video"
                                     size="small"
-                                    aria-label="Open Proctoring View"
+                                    :aria-label="i18n.t('galleryView.screenReader.openProcotringView')"
                                     @click="galleryViewService.navigateToProctoringView(screenshot, groupUuid)">
                                 </v-btn>
                             </span>
@@ -108,7 +108,7 @@
                                                     class="mr-2"
                                                     :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'">
                                                 </v-icon>
-                                                Metadata
+                                                {{ $t('galleryView.metadata') }}
                                             </template>
                                             
                                             <template v-slot:actions="{ expanded }">
@@ -118,7 +118,7 @@
                                                     rounded="sm"
                                                     icon="mdi-arrow-collapse"
                                                     size="small"
-                                                    aria-label="Collapse Image"
+                                                    :aria-label="i18n.t('galleryView.screenReader.collapseImage')"
                                                     @click="closeDialog()">
                                                 </v-btn>
                                             </template>
@@ -162,7 +162,7 @@
                                         class="ml-2"
                                         icon="mdi-video"
                                         size="small"
-                                        aria-label="Open Proctoring View"
+                                        :aria-label="i18n.t('galleryView.screenReader.openProcotringView')"
                                         @click="galleryViewService.navigateToProctoringView(screenshot, groupUuid)">
                                     </v-btn>
                                 </span>
@@ -183,6 +183,7 @@
     import * as galleryViewService from "@/services/component-services/galleryViewService";
     import * as liveService from "@/services/component-services/liveService";
     import { useAppBarStore, useGalleryStore } from "@/store/store";
+    import { useI18n } from "vue-i18n";
 
     //props
     const props = defineProps<{
@@ -196,6 +197,8 @@
     const appBarStore = useAppBarStore();
     const galleryStore = useGalleryStore();
 
+    //i18n
+    const i18n = useI18n();
 
     //dialog - expanded image
     const dialog = ref(false);
