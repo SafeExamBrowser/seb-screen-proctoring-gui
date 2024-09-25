@@ -4,6 +4,11 @@ WORKDIR /app/client
 COPY client/package*.json ./
 RUN npm install
 COPY client/ .
+
+# Inject environment variables for Vue.js
+ARG VUE_APP_MY_ENV_VAR
+RUN echo "VITE_SUB_PATH=$VITE_SUB_PATH" > .env
+
 RUN npm run build
 
 # Stage 2: Build the Express server
