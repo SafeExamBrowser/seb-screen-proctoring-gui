@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        path_name: ["", "/sps-gui", "/proctoring-gui"],
-        tag_suffix: ["", "single-host", "single-host2"],
+        path_name: ["", "/sps-gui", "/proctoring-gui"]
+        tag_suffix: ["", "single-host", "single-host2"]
 
     steps:
     - name: Set env for dynamic tag
