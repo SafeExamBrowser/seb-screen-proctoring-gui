@@ -4,6 +4,7 @@ import LoginPage from "@/components/views/LoginPage.vue";
 import RegisterPage from "@/components/views/RegisterPage.vue";
 import SearchPage from "@/components/views/search/SearchPage.vue";
 import GalleryViewPage from "@/components/views/gallery/GalleryViewPage.vue";
+import ApplicationsViewPage from "@/components/views/applications/ApplicationsViewPage.vue";
 import ProctoringViewPage from "@/components/views/proctoring/ProctoringViewPage.vue";
 import UserAccountPage from "@/components/views/user-account/UserAccountPage.vue";
 import UserInfo from "@/components/views/user-account/UserInfo.vue";
@@ -84,6 +85,14 @@ const routes: Array<RouteRecordRaw> = [
         component: SearchPage,
         meta: {
             title: "Search" + defaultPageTitle
+        }
+      },
+      {
+        path: constants.APPLICATIONS_ROUTE,
+        name: "Applications",
+        component: ApplicationsViewPage,
+        meta: {
+            title: "Applications" + defaultPageTitle
         }
       },
       {

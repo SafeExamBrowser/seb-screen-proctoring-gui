@@ -228,6 +228,7 @@
     const navigationLinks = [
         [i18n.t("navigation.routeNames.runningExams"), constants.RUNNING_EXAMS_ROUTE],
         [i18n.t("navigation.routeNames.search"), constants.SEARCH_ROUTE],
+        [i18n.t("navigation.routeNames.applications"), constants.APPLICATIONS_ROUTE]
     ];
 
     //stores

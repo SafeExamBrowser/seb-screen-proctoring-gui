@@ -5,6 +5,7 @@ export const JWT_LOGIN_ROUTE = "/jwt";
 
 export const RUNNING_EXAMS_ROUTE = "/running-exams";
 export const SEARCH_ROUTE = "/search";
+export const APPLICATIONS_ROUTE = "/applications";
 export const GALLERY_VIEW_ROUTE = "/gallery-view";
 export const PROCTORING_VIEW_ROUTE = "/recording";
 export const ACCOUNT_VIEW_ROUTE = "/account";
