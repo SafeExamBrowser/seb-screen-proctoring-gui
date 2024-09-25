@@ -40,5 +40,4 @@ jobs:
         context: .
         push: true
         tags: docker.io/naritter/seb-sps-gui:${{ env.TAG_NAME }}
-      build-args: 
-          VITE_SUB_PATH: ${{ matrix.path_name }}
+        build-args: VITE_SUB_PATH=${{ matrix.path_name }}
