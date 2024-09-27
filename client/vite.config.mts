@@ -60,7 +60,23 @@ export default ({ mode }) => {
             port: 8081,
         },
 
-        base: "/" || process.env.VITE_SUB_PATH
+        base: getSubPath()
 
     });
+
+    function getSubPath(){
+        console.log("it got here 1::::::::")
+        console.log(process.env.VITE_SUB_PATH)
+
+        if(process.env.VITE_SUB_PATH == null){
+            console.log("it got here 2::::::::")
+            return "/";
+        }
+
+        console.log("it got here 3::::::::")
+
+
+        return process.env.VITE_SUB_PATH;
+    }
 }
+
