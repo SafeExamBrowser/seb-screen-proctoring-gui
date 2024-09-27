@@ -4,6 +4,7 @@ import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
 import { gitTagPlugin } from "./src/plugins/vite-plugin-git-tag";
 import { defineConfig, loadEnv } from "vite";
 import { fileURLToPath, URL } from "node:url";
+import { createHtmlPlugin } from "vite-plugin-html";
 
 
 export default ({ mode }) => {
@@ -18,6 +19,14 @@ export default ({ mode }) => {
             vuetify({
                 autoImport: true,
             }),
+
+            createHtmlPlugin({
+                inject: {
+                  data: {
+                    VITE_SUB_PATH: mode === "development" ? "" : process.env.VITE_SUB_PATH,
+                  },
+                },
+              }),
 
             // gitTagPlugin()
         ],
