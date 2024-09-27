@@ -125,7 +125,8 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.VITE_SUB_PATH),
+//   history: createWebHistory(process.env.VITE_SUB_PATH),
+  history: createWebHistory(import.meta.env.VITE_SUB_PATH),
   routes
 });
 
