@@ -60,7 +60,7 @@ export default ({ mode }) => {
             port: 8081,
         },
 
-        base: "" || process.env.VITE_SUB_PATH
+        base: "/" || process.env.VITE_SUB_PATH
 
     });
 }
