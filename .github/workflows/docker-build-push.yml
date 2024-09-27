@@ -13,14 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        tag_suffix: ["", "-single-host", "-single-host2"]
+        tag_suffix: ["", "-single-host"]
         include:
           - tag_suffix: ""
             path_name: ""
           - tag_suffix: "-single-host"
             path_name: "/sps-gui"
-          - tag_suffix: "-single-host2"
-            path_name: "/proctoring-gui"
 
     steps:
     - name: Set env for dynamic tag
@@ -46,5 +44,4 @@ jobs:
         context: .
         push: true
         tags: docker.io/naritter/seb-sps-gui:${{ env.TAG_NAME }}
-        #build-args: VITE_SUB_PATH=${{ matrix.path_name }}
-        build-args: VITE_SUB_PATH=/sps-gui
+        build-args: VITE_SUB_PATH=${{ matrix.path_name }}
