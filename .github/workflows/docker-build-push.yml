@@ -14,16 +14,16 @@ jobs:
     strategy:
       matrix:
         path_name: ["", "/sps-gui", "/proctoring-gui"]
-        tag_suffix: ["", "single-host", "single-host2"]
+        tag_suffix: ["", "-single-host", "-single-host2"]
 
     steps:
     - name: Set env for dynamic tag
       if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')      
-      run: echo "TAG_NAME=${GITHUB_REF#refs/*/}-${{ matrix.tag_suffix }}" >> $GITHUB_ENV
+      run: echo "TAG_NAME=${GITHUB_REF#refs/*/}${{ matrix.tag_suffix }}" >> $GITHUB_ENV
 
     - name: Set env manual
       if: github.event_name == 'workflow_dispatch'
-      run: echo "TAG_NAME=default_version-${{ matrix.tag_suffix }}" >> $GITHUB_ENV
+      run: echo "TAG_NAME=default_version${{ matrix.tag_suffix }}" >> $GITHUB_ENV
     
     - name: Checkout code
       uses: actions/checkout@v4.1.1
