@@ -20,13 +20,17 @@ export default ({ mode }) => {
                 autoImport: true,
             }),
 
+            VueI18nPlugin({
+                include: fileURLToPath(new URL("./src/i18n/locales/**", import.meta.url)),
+            }),
+
             createHtmlPlugin({
                 inject: {
                   data: {
                     VITE_SUB_PATH: mode === "development" ? "" : process.env.VITE_SUB_PATH,
                   },
                 },
-              }),
+            }),
 
             // gitTagPlugin()
         ],

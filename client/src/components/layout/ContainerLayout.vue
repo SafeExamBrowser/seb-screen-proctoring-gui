@@ -2,7 +2,7 @@
     <v-navigation-drawer v-model="drawer" :permanent="true">
 
         <v-sheet class="pa-4">
-            <a :href=constants.RUNNING_EXAMS_ROUTE class="text-decoration-none text-black">
+            <a :href="getHomePageRoute()" class="text-decoration-none text-black">
                 <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Screen Proctoring Homepage"></v-img>
                 <div class="app-title text-h6 text-title">{{ $t("navigation.title") }}</div>
             </a>
@@ -216,6 +216,7 @@
     import { useI18n } from "vue-i18n";
     import * as constants from "@/utils/constants";
 
+
     //navigation
     const drawer = ref();
     const navigationLinks = [
@@ -273,6 +274,15 @@
     async function userMenuOpened(){
         await userAccountViewService.setPersonalUserAccount();
     }
+
+    function getHomePageRoute(){
+        if(process.env.VITE_SUB_PATH == null){
+            return constants.RUNNING_EXAMS_ROUTE;
+        }
+
+        return process.env.VITE_SUB_PATH + constants.RUNNING_EXAMS_ROUTE;
+    }
+
 </script>  
 
 <style scoped>
