@@ -102,7 +102,14 @@ export const useAuthStore = defineStore("auth", () => {
     if(useAuthStore().redirectRoute == ""){
         navigateTo(constants.RUNNING_EXAMS_ROUTE);
     }else{
-        navigateTo(useAuthStore().redirectRoute);
+        let route: string = useAuthStore().redirectRoute;
+        let subPath: string | null = import.meta.env.VITE_SUB_PATH;
+
+        if(subPath != null && route.includes(subPath)){
+            route = route.replace(subPath, "");
+        }
+
+        navigateTo(route);
     }
   }
 
