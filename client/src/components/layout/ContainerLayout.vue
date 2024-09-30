@@ -276,14 +276,9 @@
     }
 
     function getHomePageRoute(){
-        console.log(import.meta.env.VITE_SUB_PATH)
         if(import.meta.env.VITE_SUB_PATH == null){
-            console.log("it got here 1")
             return constants.RUNNING_EXAMS_ROUTE;
         }
-
-        console.log("it got here 2")
-
 
         return import.meta.env.VITE_SUB_PATH + constants.RUNNING_EXAMS_ROUTE;
     }

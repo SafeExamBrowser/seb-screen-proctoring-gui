@@ -105,9 +105,6 @@ export const useAuthStore = defineStore("auth", () => {
         let route: string = useAuthStore().redirectRoute;
         let subPath: string | null = import.meta.env.VITE_SUB_PATH;
 
-        console.log("route: " + route);
-        console.log("subPath: " + subPath)
-
         if(subPath != null && route.includes(subPath)){
             route = route.replace(subPath, "");
         }
