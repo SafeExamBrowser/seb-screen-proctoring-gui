@@ -4,6 +4,7 @@ import * as screenshotDataController from '../controllers/screenshot-data.contro
 import * as searchController from '../controllers/search.controller';
 import * as userAccountController from '../controllers/user-account.controller';
 import * as settingsController from '../controllers/settings.controller';
+import * as applicationController from '../controllers/application.controller';
 import * as authorizationAdditional from '../middleware/authorizationAdditional';
 
 const router: Router = express.Router();
@@ -21,6 +22,9 @@ router.get("/search/sessions/day", searchController.searchSessionsDay);
 router.get("/search/sessions", searchController.searchSessions);
 router.get("/search/screenshots", searchController.searchScreenshots);
 router.get("/search/timeline/:sessionId", searchController.searchTimeline);
+
+router.get("/applications/exams-started", applicationController.getExamsStarted)
+
 
 router.get("/useraccount/me", userAccountController.getPersonalUserAccount)
 router.get("/useraccount/:accountId", userAccountController.getUserAccountById)

@@ -75,3 +75,8 @@ type OptionalParSearchTimeline = {
     screenProctoringMetadataURL?: string | null,
     screenProctoringMetadataWindowTitle?: string | null,
 }
+
+type OptionalParSearchExams = {
+    fromTime?: string,
+    toTime?: string,
+}
