@@ -119,7 +119,7 @@
     import * as constants from "@/utils/constants";
 
     const props = defineProps<{
-        timelineSearchResult: SearchTimeline
+        timelineSearchResult: any
     }>();
 
     const timelineSearchResult = ref<SearchTimeline>();
