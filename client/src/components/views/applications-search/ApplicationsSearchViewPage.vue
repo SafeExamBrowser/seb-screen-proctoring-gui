@@ -10,7 +10,7 @@
 
                 <v-form 
                     class="form-container"
-                    @keyup.enter="searchExams()"
+                    @keyup.enter="getExamsStarted()"
                     @keyup.esc="clearForm()">
 
                     <!------------Time Period------------->
@@ -98,7 +98,7 @@
                                 color="primary" 
                                 variant="flat" 
                                 class="ml-2"
-                                @click="searchExams()">
+                                @click="getExamsStarted()">
                                 {{ $t('searchForm.search') }}
                             </v-btn>
 
@@ -154,8 +154,8 @@
     import { ref, onBeforeMount, watch } from "vue";
     import { useAppBarStore, useTableStore, useLoadingStore } from "@/store/store";
     import VueDatePicker from '@vuepic/vue-datepicker';
-    import * as applicationViewService from "@/services/component-services/applicationViewService";
-    import ApplicationsExamList from "./ApplicationsExamList.vue";
+    import * as applicationViewService from "@/services/component-services/applicationsSearchViewService";
+    import ApplicationsExamList from "./ApplicationsSearchExamList.vue";
 
     //store
     const appBarStore = useAppBarStore();
@@ -180,17 +180,26 @@
 
     onBeforeMount(async () => {
         appBarStore.title = "Applications";
-        searchExams();
+        getExamsStarted();
+
+
+        // console.log(await applicationViewService.getGroupIdsForExam(13))
+        // console.log(await applicationViewService.getDistinctMetadataAppForExam("13"))
+        // console.log(await applicationViewService.getDistinctMetadataWindowForExam("13", "SEB (Bundle ID: org.safeexambrowser.ios.seb)"))
+        // console.log(await applicationViewService.getUserListForApplicationSearch("13", "SEB (Bundle ID: org.safeexambrowser.ios.seb)", "quiz Dany | Testserver Exam-Moodle (Test)"))
+
+
+
     });
 
 
 
 
-    async function searchExams(){
+    async function getExamsStarted(){
         errorAvailable.value = false;
         noResutsFound.value = false;
 
-        const examList: Exam[] | null = await applicationViewService.searchExams();
+        const examList: Exam[] | null = await applicationViewService.getExamsStarted();
 
         if(examList == null){  
             errorAvailable.value = true;
@@ -216,7 +225,7 @@
         timeSelectionRadio.value = false;
         timeSelectionPicker.value = null;
 
-        searchExams();
+        getExamsStarted();
     }
 
 
