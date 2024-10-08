@@ -24,7 +24,6 @@ export async function searchSessions(req: Request, res: Response){
     }
 }
 
-
 export async function searchScreenshots(req: Request, res: Response){
     try{
         const screenshots: object = await searchService.searchScreenshots(req.headers.authorization, req.query.optionalParamters);

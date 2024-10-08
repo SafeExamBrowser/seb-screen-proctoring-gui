@@ -23,8 +23,12 @@
                 </template>
 
                 <template v-if="column.key == 'data-table-select' && props.selectAll != null" class="ma-0 pa-0">
-                    <!-- <v-btn @click="props.selectAll(true)">test</v-btn> -->
-                    <v-checkbox-btn></v-checkbox-btn>
+                    <v-checkbox-btn 
+                        v-model="props.allSelected"
+                        :indeterminate="someSelected && !allSelected"
+                        @click="props.selectAll(props.allSelected ? false : true)">
+                    
+                    </v-checkbox-btn>
                 </template>
   
                 <!--todo: checking should not be done via title-->
@@ -80,6 +84,8 @@
         headerRefsProp: any;
         day?: string;
         selectAll?: (value: boolean) => void;
+        allSelected?: boolean;
+        someSelected?: boolean;
     }>();
 
     //custom: start page
@@ -124,5 +130,15 @@
 
         return `${headerDesc} none`;
     }
+
+    function checkboxHeaderFullSelection(): boolean{
+        if(props.allSelected){
+            return false;
+        }
+
+        return true;
+    }
+
+
 
 </script>

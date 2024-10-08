@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import * as ENV from "../config/envConfig";
 import {Request, Response} from "express";
-import {LOG} from '../logging/logger';
+import {LOG} from "../logging/logger";
 
 export const api: AxiosInstance = axios.create({
     baseURL: ENV.PROCTOR_SERVER_URL + ENV.PROCTOR_SERVER_PORT + ENV.PROCTOR_DEFAULT_URL,

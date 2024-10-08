@@ -126,22 +126,7 @@
         </v-col>
         
         <v-col v-else>
-            <v-sheet 
-                elevation="4"
-                class="rounded-lg pa-4"
-                title="test1234">
-
-                <v-row>
-                    <v-col align="left">
-                        <h2 class="title-inherit-styling text-h6">Exams</h2>
-                    </v-col>
-                </v-row>
-
-                <ApplicationsExamList :exams="exams"></ApplicationsExamList>
-
-            </v-sheet>
-
-
+            <ApplicationsExamList :exams="exams"></ApplicationsExamList>
         </v-col>
     </v-row>
 
