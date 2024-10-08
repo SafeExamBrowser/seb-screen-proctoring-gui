@@ -1,8 +1,7 @@
 <template>
 
-
     <v-expansion-panels v-model="panels">
-        <v-expansion-panel value="panel">
+        <v-expansion-panel class="rounded-lg" value="panel">
 
             <v-expansion-panel-title class="font-weight-bold">
                 Exams
@@ -11,10 +10,11 @@
             <v-expansion-panel-text>
                 <v-data-table
                     show-select
+                    v-model="selectedExamIds"
                     select-strategy="page"
-                    class="rounded-lg elevation-4 mt-4 form-container"
-                    :sort-by="[{key: 'exam.startTime', order: 'desc'}]"
-                    :items-per-page="tableUtils.calcDefaultItemsPerPage(exams)"
+                    class="rounded-lg mt-4 form-container"
+                    :sort-by="[{key: 'startTime', order: 'desc'}]"
+                    items-per-page="5"
                     :items-per-page-options="tableUtils.calcItemsPerPage(exams)"
                     :headers="headers"
                     :items="exams">
@@ -40,6 +40,23 @@
                         </td>
                     </template>
                 </v-data-table>
+
+                <v-row>
+                    <v-col align="right">
+                        <div class="form-container">
+                            <v-btn 
+                                :disabled="selectedExamIds == null || selectedExamIds?.length == 0"
+                                rounded="sm" 
+                                color="primary" 
+                                variant="flat" 
+                                class="mt-2"
+                                @click="getGroupIdsForExam()">
+                                Go!
+                            </v-btn>
+                        </div>
+                    </v-col>
+                </v-row>
+
             </v-expansion-panel-text>
 
         </v-expansion-panel>
@@ -51,7 +68,7 @@
 
 
 <script setup lang="ts">
-    import { ref } from "vue";
+    import { ref, watch, watchEffect } from "vue";
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/table/tableUtils";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
@@ -62,16 +79,43 @@
         exams: Exam[]
     }>();
 
+    //emits (parent functions)
+    const emit = defineEmits<{
+        getGroupIdsForExam: [
+            selectedExams: Exam[],
+        ];
+    }>();
+
     //panel
     const panels = ref<string[]>(["panel"]);
 
     //table
+    const selectedExamIds = ref<number[]>();
     const headerRefs = ref<any[]>();
     const headers = ref([
         {title: "Exam", key: "name", width: "50%"},
         {title: "Exam Start-Time", key: "startTime", width: "50%"}
     ]);
 
+
+    watchEffect(() => {
+        //props.exam has to be accessed to make sure the panel always opens
+        const placeHolderVar = props.exams;
+        selectedExamIds.value = [];
+        panels.value = ["panel"];
+    });
+
+
+
+    async function getGroupIdsForExam(){
+        if(selectedExamIds.value == null) return;
+
+        panels.value = [];
+
+        let selectedExams: Exam[] = props.exams.filter(exam => selectedExamIds.value!.includes(exam.id));
+
+        emit("getGroupIdsForExam", selectedExams);
+    }
 
 
 

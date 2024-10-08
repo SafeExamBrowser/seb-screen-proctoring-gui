@@ -14,7 +14,7 @@ export async function getExamsStarted(optionalParamters?: OptionalParGetExamsSta
     }
 }
 
-export async function getGroupIdsForExam(examId: number): Promise<number[] | any>{
+export async function getGroupIdsForExam(examId: number): Promise<number[] | null>{
     try{
         return await applicationService.getGroupIdsForExam(examId);        
     }catch(error){
@@ -23,7 +23,7 @@ export async function getGroupIdsForExam(examId: number): Promise<number[] | any
     }
 }
 
-export async function getDistinctMetadataAppForExam(groupIds: string): Promise<string[] | any>{
+export async function getDistinctMetadataAppForExam(groupIds: string): Promise<string[] | null>{
     try{
         return await applicationService.getDistinctMetadataAppForExam(groupIds);        
     }catch(error){
@@ -32,7 +32,7 @@ export async function getDistinctMetadataAppForExam(groupIds: string): Promise<s
     }
 }
 
-export async function getDistinctMetadataWindowForExam(groupIds: string, screenProctoringMetadataApplication: string): Promise<DistinctMetadataWindowForExamRecord | any>{
+export async function getDistinctMetadataWindowForExam(groupIds: string, screenProctoringMetadataApplication: string): Promise<DistinctMetadataWindowForExamRecord | null>{
     try{
         return await applicationService.getDistinctMetadataWindowForExam(groupIds, screenProctoringMetadataApplication);        
     }catch(error){
@@ -41,7 +41,7 @@ export async function getDistinctMetadataWindowForExam(groupIds: string, screenP
     }
 }
 
-export async function getUserListForApplicationSearch(groupIds: string, screenProctoringMetadataApplication: string, screenProctoringMetadataWindowTitle: string): Promise<UserListForApplicationSearchRecord | any>{
+export async function getUserListForApplicationSearch(groupIds: string, screenProctoringMetadataApplication: string, screenProctoringMetadataWindowTitle: string): Promise<UserListForApplicationSearchRecord | null>{
     try{
         return await applicationService.getUserListForApplicationSearch(groupIds, screenProctoringMetadataApplication, screenProctoringMetadataWindowTitle);        
     }catch(error){

@@ -95,7 +95,7 @@
 
                             <v-btn 
                                 rounded="sm" 
-                                color="primary" 
+                                color="primary"     
                                 variant="flat" 
                                 class="ml-2"
                                 @click="getExamsStarted()">
@@ -111,7 +111,7 @@
         </v-col>
     </v-row>
 
-    <v-row v-if="searchResultAvailable">
+    <v-row v-if="examListAvailable">
         <v-col v-if="noResutsFound">
             <v-sheet 
                 elevation="4"
@@ -126,9 +126,31 @@
         </v-col>
         
         <v-col v-else>
-            <ApplicationsExamList :exams="exams"></ApplicationsExamList>
+            <ApplicationsExamList 
+                elevation="4" 
+                :exams="examsTable"
+                @getGroupIdsForExam="getGroupIdsForExam"
+            >
+            </ApplicationsExamList>
         </v-col>
     </v-row>
+
+
+    <template v-if="metadataAvailable">
+        <v-sheet 
+            v-for="exam in exams"
+            elevation="4"
+            class="rounded-lg pa-4 mt-4"
+            :title="exam.name">
+
+            <ApplicationSearchMetadata
+                :exam=exam
+            >
+            </ApplicationSearchMetadata>
+
+        </v-sheet>
+    </template>
+
 
     <AlertMsg 
         v-if="errorAvailable"
@@ -154,8 +176,11 @@
     import { ref, onBeforeMount, watch } from "vue";
     import { useAppBarStore, useTableStore, useLoadingStore } from "@/store/store";
     import VueDatePicker from '@vuepic/vue-datepicker';
-    import * as applicationViewService from "@/services/component-services/applicationsSearchViewService";
+    import * as applicationsSearchViewService from "@/services/component-services/applicationsSearchViewService";
     import ApplicationsExamList from "./ApplicationsSearchExamList.vue";
+    import ApplicationSearchMetadata from "./ApplicationSearchMetadata.vue";
+    import * as timeUtils from "@/utils/timeUtils";
+
 
     //store
     const appBarStore = useAppBarStore();
@@ -165,41 +190,45 @@
     //form fields
     const timePeriodField = ref<number>(1);
     const timePeriodRadio = ref<boolean>(true);
-    const timePeriodSelect = ref<number>(2);
+    const timePeriodSelect = ref<number>(3);
     const timeSelectionRadio = ref<boolean>(false);
     const timeSelectionPicker = ref(null);
 
     //error handling
-    const searchResultAvailable = ref<boolean>(false);
+    const examListAvailable = ref<boolean>(false);
+    const metadataAvailable = ref<boolean>(false);
     const noResutsFound = ref<boolean>(false);
     const errorAvailable = ref<boolean>();
 
     //main data
+    const examsTable = ref<Exam[]>([]);
     const exams = ref<Exam[]>([]);
 
 
     onBeforeMount(async () => {
         appBarStore.title = "Applications";
-        getExamsStarted();
+        await getExamsStarted();
 
 
-        // console.log(await applicationViewService.getGroupIdsForExam(13))
-        // console.log(await applicationViewService.getDistinctMetadataAppForExam("13"))
-        // console.log(await applicationViewService.getDistinctMetadataWindowForExam("13", "SEB (Bundle ID: org.safeexambrowser.ios.seb)"))
-        // console.log(await applicationViewService.getUserListForApplicationSearch("13", "SEB (Bundle ID: org.safeexambrowser.ios.seb)", "quiz Dany | Testserver Exam-Moodle (Test)"))
-
-
+        // console.log(await applicationsSearchViewService.getGroupIdsForExam(13))
+        // console.log(await applicationsSearchViewService.getDistinctMetadataAppForExam("13"))
+        // console.log(await applicationsSearchViewService.getDistinctMetadataWindowForExam("13", "SEB (Bundle ID: org.safeexambrowser.ios.seb)"))
+        // console.log(await applicationsSearchViewService.getUserListForApplicationSearch("13", "SEB (Bundle ID: org.safeexambrowser.ios.seb)", "quiz Dany | Testserver Exam-Moodle (Test)"))
 
     });
 
 
-
-
+    //-------------------------------data fetching------------------------------------
     async function getExamsStarted(){
         errorAvailable.value = false;
         noResutsFound.value = false;
 
-        const examList: Exam[] | null = await applicationViewService.getExamsStarted();
+        let fromTime: string = "";
+        let toTime: string = "";
+        if(timePeriodRadio.value) [fromTime, toTime] = timeUtils.calcTimePeriod(timePeriodSelect.value, timePeriodField.value);
+        if(timeSelectionRadio.value) [fromTime, toTime] = timeUtils.calcTimeSelection(timeSelectionPicker);
+
+        const examList: Exam[] | null = await applicationsSearchViewService.getExamsStarted({fromTime: fromTime, toTime: toTime});
 
         if(examList == null){  
             errorAvailable.value = true;
@@ -208,14 +237,29 @@
 
         if(examList.length == 0){
             noResutsFound.value = true;
-            searchResultAvailable.value = true;
+            examListAvailable.value = true;
             return;
         }
 
-        searchResultAvailable.value = true;
-        exams.value = examList;
+        examListAvailable.value = true;
+        examsTable.value = examList;
     }
 
+    async function getGroupIdsForExam(selectedExams: Exam[]){
+        console.log("selectedExams")
+        console.log(selectedExams)
+
+        exams.value = selectedExams;
+
+        metadataAvailable.value = true;
+
+
+
+
+
+    
+    }
+    //--------------------------------------------------------------------------------
 
 
     function clearForm(){
@@ -227,6 +271,9 @@
 
         getExamsStarted();
     }
+
+
+
 
 
 
