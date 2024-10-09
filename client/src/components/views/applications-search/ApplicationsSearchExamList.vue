@@ -112,7 +112,7 @@
 
         panels.value = [];
 
-        let selectedExams: Exam[] = props.exams.filter(exam => selectedExamIds.value!.includes(exam.id));
+        const selectedExams: Exam[] = props.exams.filter(exam => selectedExamIds.value!.includes(exam.id));
 
         emit("getGroupIdsForExam", selectedExams);
     }

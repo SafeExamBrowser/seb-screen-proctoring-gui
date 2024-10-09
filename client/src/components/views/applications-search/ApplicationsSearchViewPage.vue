@@ -138,15 +138,15 @@
 
     <template v-if="metadataAvailable">
         <v-sheet 
-            v-for="exam in exams"
+            v-for="examObject in examObjects"
             elevation="4"
             class="rounded-lg pa-4 mt-4"
-            :title="exam.name">
+            :title="examObject.exam.name">
 
-            <ApplicationSearchMetadata
-                :exam=exam
+            <ApplicationsSearchMetadata
+                :examObject=examObject
             >
-            </ApplicationSearchMetadata>
+            </ApplicationsSearchMetadata>
 
         </v-sheet>
     </template>
@@ -178,8 +178,9 @@
     import VueDatePicker from '@vuepic/vue-datepicker';
     import * as applicationsSearchViewService from "@/services/component-services/applicationsSearchViewService";
     import ApplicationsExamList from "./ApplicationsSearchExamList.vue";
-    import ApplicationSearchMetadata from "./ApplicationSearchMetadata.vue";
+    import ApplicationsSearchMetadata from "./ApplicationsSearchMetadata.vue";
     import * as timeUtils from "@/utils/timeUtils";
+    import * as generalUtils from "@/utils/generalUtils";
 
 
     //store
@@ -190,7 +191,7 @@
     //form fields
     const timePeriodField = ref<number>(1);
     const timePeriodRadio = ref<boolean>(true);
-    const timePeriodSelect = ref<number>(3);
+    const timePeriodSelect = ref<number>(4);
     const timeSelectionRadio = ref<boolean>(false);
     const timeSelectionPicker = ref(null);
 
@@ -202,13 +203,16 @@
 
     //main data
     const examsTable = ref<Exam[]>([]);
-    const exams = ref<Exam[]>([]);
+    const examObjects = ref<{
+        exam: Exam, 
+        metadataAppList: string[],
+        groupIds: number[]
+        }[]>([]);
 
 
     onBeforeMount(async () => {
         appBarStore.title = "Applications";
         await getExamsStarted();
-
 
         // console.log(await applicationsSearchViewService.getGroupIdsForExam(13))
         // console.log(await applicationsSearchViewService.getDistinctMetadataAppForExam("13"))
@@ -222,6 +226,9 @@
     async function getExamsStarted(){
         errorAvailable.value = false;
         noResutsFound.value = false;
+        metadataAvailable.value = false;
+        examListAvailable.value = false;
+
 
         let fromTime: string = "";
         let toTime: string = "";
@@ -246,18 +253,25 @@
     }
 
     async function getGroupIdsForExam(selectedExams: Exam[]){
-        console.log("selectedExams")
-        console.log(selectedExams)
+        examObjects.value.length = 0;
+        for(let i = 0; i < selectedExams.length; i++){
+            //fetch groupdIds for the selected exams
+            const groupIds: number[] | null = await applicationsSearchViewService.getGroupIdsForExam(selectedExams[i].id);
+            if(groupIds == null) continue;
 
-        exams.value = selectedExams;
+            //fetch metadataAppList for the selected exams
+            const metadataAppList: string[] | null = await applicationsSearchViewService.getDistinctMetadataAppForExam(generalUtils.createStringIdList(groupIds));
+            if(metadataAppList == null) continue;
 
+            examObjects.value.push({
+                exam: selectedExams[i],
+                metadataAppList: metadataAppList,
+                groupIds: groupIds
+            });
+        }
+
+        loadingStore.isLoading = false;
         metadataAvailable.value = true;
-
-
-
-
-
-    
     }
     //--------------------------------------------------------------------------------
 

@@ -41,7 +41,7 @@ export async function getDistinctMetadataWindowForExam(groupIds: string, screenP
     }
 }
 
-export async function getUserListForApplicationSearch(groupIds: string, screenProctoringMetadataApplication: string, screenProctoringMetadataWindowTitle: string): Promise<UserListForApplicationSearchRecord | null>{
+export async function getUserListForApplicationSearch(groupIds: string, screenProctoringMetadataApplication: string, screenProctoringMetadataWindowTitle: string): Promise<UserListForApplicationSearchRecord[] | null>{
     try{
         return await applicationService.getUserListForApplicationSearch(groupIds, screenProctoringMetadataApplication, screenProctoringMetadataWindowTitle);        
     }catch(error){

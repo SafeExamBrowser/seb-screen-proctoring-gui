@@ -61,7 +61,7 @@ export async function getDistinctMetadataWindowForExam(groupIds: string, screenP
     }
 }
 
-export async function getUserListForApplicationSearch(groupIds: string, screenProctoringMetadataApplication: string, screenProctoringMetadataWindowTitle: string): Promise<UserListForApplicationSearchRecord | any> {
+export async function getUserListForApplicationSearch(groupIds: string, screenProctoringMetadataApplication: string, screenProctoringMetadataWindowTitle: string): Promise<UserListForApplicationSearchRecord[] | any> {
     try {
         const url: string = "/search/applications/users";
         const { data, status }: AxiosResponse = await apiService.api.get(url, { headers: apiService.getHeaders(), params: { groupIds, screenProctoringMetadataApplication, screenProctoringMetadataWindowTitle } });
