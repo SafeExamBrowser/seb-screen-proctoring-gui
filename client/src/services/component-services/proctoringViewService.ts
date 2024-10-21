@@ -36,15 +36,15 @@ export async function getScreenshotTimestamps(sessionId: string, timestamp: stri
 //=============metadata=========
 export function getScreenshotMetadata(sliderTime: number, currentScreenshotMetadata: MetaData | null, additionalMetadataInfo: string, total: string): object{
     return {
-        "Total:": total,
-        "Date:": timeUtils.formatTimestampToDate(sliderTime),
-        "Time:": timeUtils.formatTimestampToTime(sliderTime),
+        "Total": total,
+        "Date": timeUtils.formatTimestampToDate(sliderTime),
+        "Time": timeUtils.formatTimestampToTime(sliderTime),
 
-        [constants.APPLICATION_METADATA + ":"]: currentScreenshotMetadata?.screenProctoringMetadataApplication,
-        [constants.SEB_BROWSER_TITLE_METADATA + ":"]: currentScreenshotMetadata?.screenProctoringMetadataBrowser,
-        [constants.ACTIVITY_DETAILS_METADATA + ":"]: currentScreenshotMetadata?.screenProctoringMetadataUserAction + " " + additionalMetadataInfo,
-        [constants.SEB_BROWSER_URL_METADATA + ":"]: currentScreenshotMetadata?.screenProctoringMetadataURL,
-        [constants.WINDOW_TITLE_METADATA + ":"]: currentScreenshotMetadata?.screenProctoringMetadataWindowTitle,
+        [constants.APPLICATION_METADATA]: currentScreenshotMetadata?.screenProctoringMetadataApplication,
+        [constants.SEB_BROWSER_TITLE_METADATA]: currentScreenshotMetadata?.screenProctoringMetadataBrowser,
+        [constants.ACTIVITY_DETAILS_METADATA]: currentScreenshotMetadata?.screenProctoringMetadataUserAction + " " + additionalMetadataInfo,
+        [constants.SEB_BROWSER_URL_METADATA]: currentScreenshotMetadata?.screenProctoringMetadataURL,
+        [constants.WINDOW_TITLE_METADATA]: currentScreenshotMetadata?.screenProctoringMetadataWindowTitle,
     };
 }
 

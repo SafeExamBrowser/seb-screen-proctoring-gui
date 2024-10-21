@@ -8,6 +8,7 @@ export const SEARCH_ROUTE = "/search";
 export const APPLICATIONS_ROUTE = "/applications";
 export const GALLERY_VIEW_ROUTE = "/gallery-view";
 export const PROCTORING_VIEW_ROUTE = "/recording";
+export const PROCTORING_APPLICATION_SEARCH_ROUTE = "/recording/application-search";
 export const ACCOUNT_VIEW_ROUTE = "/account";
 
 //metadata

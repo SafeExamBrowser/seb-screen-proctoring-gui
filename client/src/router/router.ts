@@ -6,6 +6,7 @@ import SearchPage from "@/components/views/search/SearchPage.vue";
 import GalleryViewPage from "@/components/views/gallery/GalleryViewPage.vue";
 import ApplicationsSearchViewPage from "@/components/views/applications-search/ApplicationsSearchViewPage.vue";
 import ProctoringViewPage from "@/components/views/proctoring/ProctoringViewPage.vue";
+import ProctoringApplicationSearchPage from "@/components/views/proctoring/ProctoringApplicationSearchPage.vue";
 import UserAccountPage from "@/components/views/user-account/UserAccountPage.vue";
 import UserInfo from "@/components/views/user-account/UserInfo.vue";
 import * as authenticationService from "@/services/api-services/authenticationService";
@@ -107,6 +108,14 @@ const routes: Array<RouteRecordRaw> = [
         path: constants.PROCTORING_VIEW_ROUTE + "/:sessionId",
         name: "ProctoringViewPage",
         component: ProctoringViewPage,
+        meta: {
+            title: "Proctoring" + defaultPageTitle
+        }
+      },
+      {
+        path: constants.PROCTORING_APPLICATION_SEARCH_ROUTE + "/:sessionId/:metadataApp/:metadataWindow",
+        name: "ProctoringApplicationSearchPage",
+        component: ProctoringApplicationSearchPage,
         meta: {
             title: "Proctoring" + defaultPageTitle
         }

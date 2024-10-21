@@ -28,6 +28,8 @@ router.get("/search/applications/groupIds/:examId", applicationSearchController.
 router.get("/search/applications/metadata/app", applicationSearchController.getDistinctMetadataAppForExam);
 router.get("/search/applications/metadata/window", applicationSearchController.getDistinctMetadataWindowForExam);
 router.get("/search/applications/users", applicationSearchController.getUserListForApplicationSearch);
+router.get("/search/applications/timestamps", applicationSearchController.getTimestampListForApplicationSearch);
+
 
 router.get("/useraccount/me", userAccountController.getPersonalUserAccount);
 router.get("/useraccount/:accountId", userAccountController.getUserAccountById);

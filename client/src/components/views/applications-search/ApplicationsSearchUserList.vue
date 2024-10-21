@@ -10,6 +10,14 @@
             <template v-slot:append>
                 <!--todo: maybe move openProctoringView to general utils file-->
                 <v-btn 
+                    @click="searchViewService.openProctoringApplicationSearch(
+                        userItem.sessionUuid, 
+                        props.metadataApp,
+                        props.metadataWindow)" 
+                    variant="text" 
+                    icon="mdi-movie-play">
+                </v-btn>
+                <v-btn 
                     @click="searchViewService.openProctoringView(
                         userItem.sessionUuid, 
                         userItem.firstScreenshotCaptureTime.toString())" 
@@ -62,6 +70,18 @@
     function getSubtile(count: number): string{
         return "Total: " + count;
     }
+
+
+    // async function testApi(sessionUUID: string){
+    //     const timestamps: number[] | null = 
+    //         await applicationsSearchViewService.getTimestampListForApplicationSearch(
+    //             sessionUUID,
+    //             props.metadataApp,
+    //             props.metadataWindow
+    //         );
+
+    //     console.log(timestamps)
+    // }
 
 
 </script>

@@ -14,7 +14,7 @@
             @dblclick="openDialog()"
             :aspect-ratio="16/9"
             :class="{'on-hover': isHovering}"
-            :src="liveService.getLatestImageLink(screenshot, timestamp.toString())">
+            :src="linkService.getLatestImageLink(screenshot, timestamp.toString())">
 
             <div v-if="isHovering || galleryStore.focusedImageIndexes[index]" class="hover-overlay d-flex">
                 <v-row>
@@ -80,7 +80,7 @@
             eager
             class="content-filler"
             :aspect-ratio="16/9"
-            :src="liveService.getLatestImageLink(screenshot, timestamp.toString())">
+            :src="linkService.getLatestImageLink(screenshot, timestamp.toString())">
         </v-img>
     </v-hover>
     <!-------------------------->
@@ -181,7 +181,7 @@
 <script setup lang="ts">
     import { ref, computed, onBeforeMount } from "vue";
     import * as galleryViewService from "@/services/component-services/galleryViewService";
-    import * as liveService from "@/services/component-services/liveService";
+    import * as linkService from "@/services/component-services/linkService";
     import { useAppBarStore, useGalleryStore } from "@/store/store";
     import { useI18n } from "vue-i18n";
 
@@ -220,7 +220,7 @@
     }
 
     const expandedScreenshotLink = computed<string>(() => {
-        return liveService.getLatestImageLink(props.screenshot, props.timestamp.toString());
+        return linkService.getLatestImageLink(props.screenshot, props.timestamp.toString());
     });                                                         
 
     function setTabFocus(event: any){   

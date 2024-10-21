@@ -75,3 +75,18 @@ export async function getUserListForApplicationSearch(groupIds: string, screenPr
         throw error;
     }
 }
+
+export async function getTimestampListForApplicationSearch(sessionUUID: string, screenProctoringMetadataApplication: string, screenProctoringMetadataWindowTitle: string): Promise<number[] | any> {
+    try {
+        const url: string = "/search/applications/timestamps";
+        const { data, status }: AxiosResponse = await apiService.api.get(url, { headers: apiService.getHeaders(), params: { sessionUUID, screenProctoringMetadataApplication, screenProctoringMetadataWindowTitle } });
+
+        if (status === 200) {
+            return data;
+        }
+
+
+    } catch (error) {
+        throw error;
+    }
+}

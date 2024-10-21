@@ -49,3 +49,12 @@ export async function getUserListForApplicationSearch(groupIds: string, screenPr
         return null;
     }
 }
+
+export async function getTimestampListForApplicationSearch(sessionUUID: string, screenProctoringMetadataApplication: string, screenProctoringMetadataWindowTitle: string): Promise<number[] | null>{
+    try{
+        return await applicationService.getTimestampListForApplicationSearch(sessionUUID, screenProctoringMetadataApplication, screenProctoringMetadataWindowTitle);        
+    }catch(error){
+        console.error(error);
+        return null;
+    }
+}

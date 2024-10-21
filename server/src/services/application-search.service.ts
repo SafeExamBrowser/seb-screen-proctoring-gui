@@ -37,3 +37,10 @@ export async function getUserListForApplicationSearch(token: string, params: {})
 
     return data;
 }
+
+export async function getTimestampListForApplicationSearch(token: string, params: {}): Promise<object>{
+    const url: string = applicationSearchUrl + "/timestamps";
+    const {data, status} = await apiService.api.get(url, {headers: apiService.getHeaders(token), params: params});
+
+    return data;
+}

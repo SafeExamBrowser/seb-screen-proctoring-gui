@@ -19,7 +19,7 @@
 
                 <!-----------slider---------->
                 <!-- <v-slider class="mt-4" :min="sliderMin" :max="lastScreenshotTime" :step="1000" v-model="sliderTime" thumb-label> -->
-                <v-slider class="mt-4" :min="sliderMin" :max="sliderMax" :step="1000" v-model="sliderTime" @update:focused="updateSliderManually()" thumb-label>
+                <v-slider class="mt-4" :min="sliderMin" :max="sliderMax" :step="1000" v-model="sliderTime" thumb-label>
                     <template v-slot:thumb-label>
                         {{currentTimeString}}
                     </template>
@@ -28,7 +28,6 @@
                     <template v-slot:prepend>
                         <!--backwards-->
                         <v-btn 
-                            :disabled="isLiveSelected"
                             @click="backwards()" 
                             size="small" 
                             variant="text" 
@@ -47,7 +46,6 @@
 
                         <!--forwards-->
                         <v-btn 
-                            :disabled="isLiveSelected"
                             @click="forwards()" 
                             size="small" 
                             variant="text" 
@@ -55,21 +53,6 @@
                             aria-label="forwards">
                         </v-btn>
 
-                        <!--live button-->
-                        <v-btn 
-                            v-if="isLive"
-                            variant="text"
-                            @click="goLive()"
-                            aria-label="Go Live">
-                            <template v-slot:prepend>
-                                <v-badge 
-                                    dot
-                                    inline 
-                                    :color="isLiveSelected ? 'error' : ''">
-                                </v-badge>
-                            </template>
-                            LIVE
-                        </v-btn>
                     </template>
                     <!-------------------------->
                     
@@ -78,7 +61,6 @@
                         <v-menu>
                             <template v-slot:activator="{ props }">
                                 <v-btn 
-                                    :disabled="isLiveSelected"
                                     variant="text"
                                     icon="mdi-cog" 
                                     v-bind="props"
@@ -105,10 +87,7 @@
                             </v-list>
                         </v-menu>
 
-                        <v-chip v-if="isLive" variant="outlined">
-                            {{ liveSessionTime }}
-                        </v-chip>
-                        <v-chip v-else variant="outlined">
+                        <v-chip variant="outlined">
                             {{ currentTimeString }} / {{ endTimeString }}
                         </v-chip>
                         <v-btn @click="toggle" variant="text" icon="mdi-fullscreen" aria-label="Fullscreen"></v-btn>
@@ -165,10 +144,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(value, key) in screenshotMetadata" :key="key">
-                                <th>{{ key }}:</th>
-                                <td align="right">{{ value }}</td>
-                            </tr>
+                            <template v-for="(value, key) in screenshotMetadata" :key="key">
+                                <tr :class="[key == constants.APPLICATION_METADATA || key == constants.WINDOW_TITLE_METADATA ? 'metadata-color' : '']">
+                                    <th>{{ key }}:</th>
+                                    <td align="right">{{ value }}</td>
+                                </tr>
+                            </template>
                         </tbody>
                     </v-table>
                 </v-card-text>
@@ -203,15 +184,14 @@
 
 <script setup lang="ts">
     import { useRoute } from "vue-router";
-    import { ref, onBeforeMount, onBeforeUnmount, watch, computed } from "vue";
+    import { ref, onBeforeMount, onBeforeUnmount, watch, computed, onMounted, onUpdated } from "vue";
     import * as proctoringViewService from "@/services/component-services/proctoringViewService";
     import * as timeUtils from "@/utils/timeUtils";
-    import * as groupingUtils from "@/utils/groupingUtils";
-    import { useAppBarStore, useAuthStore } from "@/store/store";
-    import * as searchViewService from "@/services/component-services/searchViewService";
+    import { useAppBarStore } from "@/store/store";
     import { useFullscreen } from "@vueuse/core";
     import * as linkService from "@/services/component-services/linkService";
-    import { SortOrder } from "@/models/sortOrderEnum";
+    import * as applicationsSearchViewService from "@/services/component-services/applicationsSearchViewService";
+    import * as constants from "@/utils/constants";
 
     //slider
     const sliderTime = ref<number>();
@@ -221,30 +201,12 @@
     //screenshots
     const isPlaying = ref<boolean>(false);
     const currentScreenshot = ref<ScreenshotData>();
-    const firstScreenshotTime = ref<number>();
-    
     const imageLink = ref<string>("");
-    const showError = ref<boolean>(false);
-    const searchTimeline = ref<SearchTimeline | null>();
-
-    //live 
-    const isLive = ref<boolean>(false);
-    const isLiveSelected = ref<boolean>(false);
-    const isLiveButtonDisabled = ref<boolean>(false);
-    const liveTimestamp = ref<number>(Date.now());
-    const liveSessionTime = ref<string>();
 
     //screenshot list
-    const allScreenshotTimestampsNotLive = ref<number[]>([]);
     const screenshotTimestamps = ref<number[]>([]);
     const screenshotTimestampsFloored = ref<number[]>([]);
     const timestampsIndex = ref<number>(0);
-    const backwardsFirstTime = ref<boolean>(true);
-    const forwardsFirstTime = ref<boolean>(true);
-
-    //time constants
-    const LIVE_INTERVAL: number = 1 * 1000;
-    const REFRESH_INTERVAL: number = 1 * 1000;
 
     //playback speed
     const SLOW_PLAYBACK_SPEED: number = 1 * 2000;
@@ -260,63 +222,60 @@
 
     //intervals
     let intervalScreenshots: any | null = null;
-    let intervalLiveImage: any | null = null;
-    let intervalRefresh: any | null = null;
 
     //store
     const appBarStore = useAppBarStore();
 
     //router params
     const sessionId: string = useRoute().params.sessionId.toString();
-    const searchTimestampOnLoad = ref<boolean>(false);
-    const searchTimestamp: string | undefined = useRoute().query.searchTimestamp?.toString();
+    const metadataApp: string = useRoute().params.metadataApp.toString();
+    const metadataWindow: string = useRoute().params.metadataWindow.toString();
 
     //fullscreen
     const videoPlayer = ref(null);
-    const { isFullscreen, enter, exit, toggle } = useFullscreen(videoPlayer);
+    const { toggle } = useFullscreen(videoPlayer);
 
     //metadata
     const isMetadataInfo = ref<boolean>(true);
-    const totalAmountOfScreenshots = ref<number>();
+
+    //error handling
+    const showError = ref<boolean>(false);
 
 
     //=============lifecycle and watchers==================
     onBeforeMount(async () => {
         await initialize();
-
-        setStartingSliderTime();
-        await setTimestampsList(SortOrder.asc);
-
-        if(currentScreenshot.value?.active){
-            goLive();       
-        }else{
-            totalAmountOfScreenshots.value = await calcTotalNrOfScreenshots()
-        }
-
         appBarStore.title = "Proctoring: " + currentScreenshot.value?.clientName;
     });
 
     onBeforeUnmount(() => {
         stopIntervalScreenshots();  
-        stopIntervalLiveImage();
-        stopIntervalRefresh();
     });
+
+    async function initialize(){
+        await setTimestampsList();
+        await assignScreenshotDataByTimestamp(screenshotTimestamps.value[0].toString());
+
+        if(currentScreenshot.value == null){ 
+            showError.value = true; 
+            return;
+        }
+
+        setSliderMin(screenshotTimestamps.value[0]);
+        setStartingSliderTime();
+
+        setSliderMax(screenshotTimestamps.value[screenshotTimestamps.value.length-1]);
+    }
 
     watch(sliderTime, async () => {
         if(sliderTime.value == null){
             return;
-        } 
+        }           
         
         if(sliderTime.value != sliderMax.value && !intervalScreenshots){
             pause();
-            isLiveButtonDisabled.value = false;
         }
         
-        
-        if(isLiveSelected.value) {
-            return;
-        }
-
         const sliderTimeForIndex: number = Math.floor(sliderTime.value/1000); 
         if(screenshotTimestampsFloored.value.includes(sliderTimeForIndex)){
             timestampsIndex.value = screenshotTimestampsFloored.value.indexOf(sliderTimeForIndex);
@@ -324,78 +283,42 @@
             return;
         }
 
-        const screenshotTimestampsShortend: number[] = screenshotTimestamps.value.map(timestamp => Math.floor(timestamp / 10000));
-        const sliderTimeForIndexShortend: number = Math.floor(sliderTime.value / 10000);
+        const screenshotTimestampsShortend: number[] = screenshotTimestamps.value.map(timestamp => Math.floor(timestamp / 1000));
+        const sliderTimeForIndexShortend: number = Math.floor(sliderTime.value / 1000);
+
+        console.log(screenshotTimestampsShortend + " --> " + sliderTimeForIndexShortend)
 
         if(screenshotTimestampsShortend.includes(sliderTimeForIndexShortend)){
             timestampsIndex.value = screenshotTimestampsShortend.indexOf(sliderTimeForIndexShortend);
 
-        }else{
-            await setTimestampsList(SortOrder.asc);
         }
 
         assignScreenshotDataByTimestamp(sliderTime.value.toString());
     });
-
-    watch(liveTimestamp, async () => {
-        if(isLive.value && isLiveSelected.value){
-            setImageLink(Date.now().toString());
-            assignScreenshotData();
-            return;
-        }
-
-        if(isLive.value){
-            assignScreenshotDataByTimestamp(sliderTime.value?.toString());
-            return;
-        }
-    });
-
-    watch(currentScreenshot, () => {
-        if(currentScreenshot.value) {
-            liveSessionTime.value = timeUtils.toTimeString(currentScreenshot.value?.endTime - currentScreenshot.value?.startTime);
-            isLive.value = currentScreenshot.value.active;
-        }
-    });
-
-    watch(isLive, async () => {
-        if(!isLive.value){
-            isLiveSelected.value = false;
-            stopIntervalLiveImage();
-            totalAmountOfScreenshots.value = await calcTotalNrOfScreenshots()
-            return;
-        }
-    });
-
-    async function initialize(){
-        await assignScreenshotData();
-        if(currentScreenshot.value == null){ 
-            showError.value = true; 
-            return;
-        }
-
-        setSliderMax(currentScreenshot.value.timestamp);
-        searchTimeline.value = await searchViewService.searchTimeline(sessionId);
-
-        await assignScreenshotDataByTimestamp(currentScreenshot.value?.startTime.toString());
-
-        if(currentScreenshot.value == null) return;
-
-        setSliderMin(currentScreenshot.value.timestamp);
-        firstScreenshotTime.value = currentScreenshot.value.timestamp;
-        setImageLink(Date.now().toString());
-    }
     //==============================
 
 
     //=============screenshot list logic==================
-    async function setTimestampsList(sortOrder: SortOrder){
-        if(sliderTime.value == null) return;
+    async function setTimestampsList(){
+        const timestamps: number[] | null = 
+            await applicationsSearchViewService.getTimestampListForApplicationSearch(
+                sessionId,
+                metadataApp,
+                metadataWindow
+            );
 
-        const timestampsResponse: number[] | null = await proctoringViewService.getScreenshotTimestamps(sessionId, sliderTime.value.toString(), sortOrder);
-        if(timestampsResponse != null){
-            screenshotTimestamps.value = timestampsResponse;
-            screenshotTimestampsFloored.value = timestampsResponse.map(timestamp => Math.floor(timestamp / 1000));
-        } 
+        if(timestamps == null){
+            showError.value = true;
+            return; 
+        }
+
+        console.log(timestamps)
+
+        screenshotTimestamps.value = timestamps;
+        screenshotTimestampsFloored.value = timestamps.map(timestamp => Math.floor(timestamp / 1000));
+
+        console.log(screenshotTimestamps.value)
+        console.log(screenshotTimestampsFloored.value)
 
         timestampsIndex.value = 0;
     }
@@ -405,12 +328,6 @@
     }
     
     //=============screenshot logic==================
-    async function assignScreenshotData(){
-        const screenshotDataResponse: ScreenshotData | null = await proctoringViewService.getScreenshotDataBySessionId(sessionId);
-        if(screenshotDataResponse) currentScreenshot.value = screenshotDataResponse;
-    }
-
-
     async function assignScreenshotDataByTimestamp(timestamp: string | undefined){
         if(timestamp == null) return;
 
@@ -440,8 +357,8 @@
     });
 
     const endTimeString = computed<string>(() => {
-        if(currentScreenshot.value != null && sliderMin.value != null){
-            return timeUtils.toTimeString(currentScreenshot.value.endTime - sliderMin.value);
+        if(sliderMin.value != null){
+            return timeUtils.toTimeString(screenshotTimestamps.value[screenshotTimestamps.value.length-1] - sliderMin.value);
         }
 
         return "";
@@ -452,79 +369,20 @@
     });
     //==============================
 
-    //=========live=================
-    function goLive(){
-        if(isLiveSelected.value){
-            isLiveSelected.value = false;
-            return;
-        }
-        stopIntervalScreenshots();
-
-        if(!searchTimestampOnLoad.value){
-            isLiveSelected.value = true;
-            isPlaying.value = true;
-            isLiveButtonDisabled.value = true;
-
-            sliderTime.value = sliderMax.value;
-        }
-
-        searchTimestampOnLoad.value = false;
-
-        startIntervalLiveImage();
-        startIntervalRefresh();
-    }
-
-    function startIntervalLiveImage(){
-        intervalLiveImage = setInterval(() => {
-            liveTimestamp.value = Date.now();
-            setSliderMax(liveTimestamp.value);
-            
-        }, LIVE_INTERVAL);
-    } 
-
-    function stopIntervalLiveImage(){
-        if(intervalLiveImage){
-            clearInterval(intervalLiveImage);
-        }
-    }
-    //==============================
-
-
     //=========interval=============
-    function startIntervalRefresh(){
-        if(currentScreenshot.value?.active){
-            intervalRefresh = setInterval(() => {
-                if(currentScreenshot.value != null && !isLive.value){
-                    setSliderMax(currentScreenshot.value?.endTime);
-                } 
-
-                if(sliderTime.value != null && isLiveSelected.value){
-                    sliderTime.value = sliderMax.value;
-                }
-
-            }, REFRESH_INTERVAL);
-        }
-    }
-
     function startIntervalScreenshots(){
-        backwardsFirstTime.value = true;
-
         intervalScreenshots = setInterval(async () => {
-            if(currentScreenshot.value != null && 
-                sliderTime.value != null && 
-                timeUtils.toSeconds(sliderTime.value) == timeUtils.toSeconds(currentScreenshot.value?.endTime) && 
-                !isLive.value
-            ){
+            console.log("timestampsIndex.value: " + timestampsIndex.value)
+            // console.log("screenshotTimestamps.value.length: " + screenshotTimestamps.value.length)
+
+            if(timestampsIndex.value == screenshotTimestamps.value.length-1){
                 stopIntervalScreenshots();
                 isPlaying.value = false;
                 return;
             }
 
-            if(sliderTime.value != null) {
-                sliderTime.value += DEFAULT_PLAYBACK_SPEED;
-            }
-            // setImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
-            timestampsIndex.value += 1;
+            sliderTime.value! += DEFAULT_PLAYBACK_SPEED;
+            // timestampsIndex.value += 1;
 
         }, PLAYBACK_SPEED.value);
     }
@@ -534,22 +392,10 @@
             clearInterval(intervalScreenshots);
         }
     }
-
-    function stopIntervalRefresh(){
-        if (intervalRefresh) {
-            clearInterval(intervalRefresh);
-        }
-    }
     //==============================
 
 
     //======video intercation=======
-    function updateSliderManually(){
-        if(isLive.value){
-            pause();
-        }
-    }
-
     function changePlaybackSpeed(id: number) {
         stopIntervalScreenshots();
         selectedSpeedId.value = id;
@@ -564,65 +410,32 @@
     }
 
     function setStartingSliderTime(){
-        if(searchTimestamp){
-            searchTimestampOnLoad.value = true;
-            sliderTime.value = parseInt(searchTimestamp);
-        }else{
-            sliderTime.value = sliderMin.value;
-        }
+        sliderTime.value = sliderMin.value;
     }
 
     async function backwards(){
         pause();
-        forwardsFirstTime.value = true;
 
         if(currentScreenshot.value == null || sliderTime.value == null || sliderTime.value == currentScreenshot.value.startTime){
             return;
         }
 
-        if(backwardsFirstTime.value){
-            await setTimestampsList(SortOrder.desc);
-            timestampsIndex.value = 1;
-            
-            setImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
-            sliderTime.value -= DEFAULT_PLAYBACK_SPEED;
-
-            backwardsFirstTime.value = false;
-            return;
-        }
-
-        timestampsIndex.value += 1;
         setImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
         sliderTime.value -= DEFAULT_PLAYBACK_SPEED;
     }
 
     async function forwards(){
         pause();
-        backwardsFirstTime.value = true;
 
         if(currentScreenshot.value == null || sliderTime.value == null || sliderTime.value == currentScreenshot.value.startTime){
             return;
         }
 
-        if(forwardsFirstTime.value){
-            await setTimestampsList(SortOrder.asc);
-            timestampsIndex.value = 1;
-            
-            setImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
-            sliderTime.value += DEFAULT_PLAYBACK_SPEED;
-
-            forwardsFirstTime.value = false;
-            return;
-        }
-
-
-        timestampsIndex.value += 1;
         setImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
         sliderTime.value += DEFAULT_PLAYBACK_SPEED;
     }
 
     function pause(){
-        isLiveSelected.value = false;
         isPlaying.value = false;
         stopIntervalScreenshots();
     }
@@ -636,70 +449,20 @@
     //=============metadata==================
     const screenshotMetadata = computed<object>(() => {
         if(currentScreenshot.value){
-            return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, currentScreenshot.value.metaData, additionalMetadataInfo.value, screenshotDisplay.value);
+            return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, currentScreenshot.value.metaData, "", screenshotDisplay.value);
         }
 
-        return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, null, additionalMetadataInfo.value, screenshotDisplay.value);
-    });
-
-    const additionalMetadataInfo = computed<string>(() => {
-        let result: string = "";
-
-        searchTimeline.value?.timelineGroupDataList.forEach((timelineGroupData, firstIndex) => {
-            const screenshotsGrouped: ScreenshotsGrouped[] | null = groupingUtils.groupScreenshotsByMetadata(timelineGroupData.timelineScreenshotDataList, false);
-
-            if (screenshotsGrouped!= null){
-                for(let i = 0; i < screenshotsGrouped.length; i++){
-                    const index: number = screenshotsGrouped[i].timelineScreenshotDataList.findIndex((group) => timeUtils.toTimeString(group.timestamp) == timeUtils.toTimeString(sliderTime.value!));
-
-                    if(index !== -1){
-                        result = `(${index+1}/${screenshotsGrouped[i].timelineScreenshotDataList?.length})`;
-                        break;
-                    }
-                }
-            }
-
-        });
-
-        return result;
+        return proctoringViewService.getScreenshotMetadata(sliderTime.value || 0, null, "", screenshotDisplay.value);
     });
 
     const screenshotDisplay = computed<string>(() => {
-        if(currentScreenshot.value == null || firstScreenshotTime.value == null || sliderTime.value == null || sliderMax.value == null){
-            return "";
-        }
-
-        if(isLive.value){
-            return "-";
-        }
-
-        var currentScreenshotIndex: number = allScreenshotTimestampsNotLive.value.indexOf(currentScreenshot.value.timestamp);
-
-        if(currentScreenshotIndex == -1){
-            currentScreenshotIndex = 0;
-        }
-
-        currentScreenshotIndex += 1;
-
-        return currentScreenshotIndex + " / " + totalAmountOfScreenshots.value;
+        return timestampsIndex.value + " / " + screenshotTimestamps.value.length;
     });
 
     function hideShowMetadataInfo(){
         isMetadataInfo.value ? isMetadataInfo.value = false : isMetadataInfo.value = true;
     }
-
-    async function calcTotalNrOfScreenshots(): Promise<number>{
-        if(!firstScreenshotTime.value) return 0;
-
-        const screenshotTimestamps: number[] | null = await proctoringViewService.getScreenshotTimestamps(sessionId, firstScreenshotTime.value.toString(), SortOrder.asc);
-        if(screenshotTimestamps == null) return 0;
-
-        allScreenshotTimestampsNotLive.value = screenshotTimestamps;
-
-        return allScreenshotTimestampsNotLive.value.length;
-    }
     //==============================
-
 
 </script>
 
@@ -709,4 +472,7 @@
         transition: transform 0.3s ease-in-out;
     }
 
+    .metadata-color{
+        background: #e2ecf7
+    }
 </style>
