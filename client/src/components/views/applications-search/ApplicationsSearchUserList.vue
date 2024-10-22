@@ -71,19 +71,6 @@
         return "Total: " + count;
     }
 
-
-    // async function testApi(sessionUUID: string){
-    //     const timestamps: number[] | null = 
-    //         await applicationsSearchViewService.getTimestampListForApplicationSearch(
-    //             sessionUUID,
-    //             props.metadataApp,
-    //             props.metadataWindow
-    //         );
-
-    //     console.log(timestamps)
-    // }
-
-
 </script>
 
 
