@@ -183,12 +183,6 @@
                             <v-list-item-title class="mx-auto">{{ $t("navigation.signOut") }}</v-list-item-title>
                         </v-list-item>
 
-                        <!-- <v-divider></v-divider>
-
-                        <v-list-item class="d-flex">
-                            <v-list-item-title>GUI Version: {{ gitTag }}</v-list-item-title>
-                        </v-list-item> -->
-
 
                     </v-list>
                 </v-menu>

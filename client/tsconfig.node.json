@@ -5,5 +5,5 @@
     "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true
   },
-  "include": ["vite.config.mts", "./src/plugins/vite-plugin-git-tag.ts"]
+  "include": ["vite.config.mts"]
 }
