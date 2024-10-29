@@ -62,8 +62,6 @@
         </v-expansion-panel>
     </v-expansion-panels>
 
-    
-
 </template>
 
 
@@ -72,7 +70,6 @@
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/table/tableUtils";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
-
 
     //props
     const props = defineProps<{
@@ -97,15 +94,12 @@
         {title: "Exam Start-Time", key: "startTime", width: "50%"}
     ]);
 
-
     watchEffect(() => {
         //props.exam has to be accessed to make sure the panel always opens
         const placeHolderVar = props.exams;
         selectedExamIds.value = [];
         panels.value = ["panel"];
     });
-
-
 
     async function getGroupIdsForExam(){
         if(selectedExamIds.value == null) return;
@@ -116,9 +110,6 @@
 
         emit("getGroupIdsForExam", selectedExams);
     }
-
-
-
 
 </script>
 

@@ -6,8 +6,6 @@ export function groupScreenshotsByMetadata(screenshotGroupList: ScreenshotGroup[
     //todo: extract metadata from par
     // const metadataGroupPar: string = "screenProctoringMetadataUserAction"
 
-    console.log(screenshotGroupList)
-
     if(screenshotGroupList == null || screenshotGroupList.length == 0){
         return null;
     }
