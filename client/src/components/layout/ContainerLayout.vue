@@ -2,8 +2,8 @@
     <v-navigation-drawer v-model="drawer" :permanent="true">
 
         <v-sheet class="pa-4">
-            <a :href=constants.RUNNING_EXAMS_ROUTE class="text-decoration-none text-black">
-                <v-img max-height="100" src="/img/seb-logo-no-border.png" alt="Screen Proctoring Homepage"></v-img>
+            <a :href="getHomePageRoute()" class="text-decoration-none text-black">
+                <v-img max-height="100" src="/img/seb-logo-no-border.png" :alt="i18n.t('navigation.screenReader.titleImage')"></v-img>
                 <div class="app-title text-h6 text-title">{{ $t("navigation.title") }}</div>
             </a>
         </v-sheet>
@@ -18,7 +18,7 @@
 
     <v-app-bar>
         <!--menu icon-->
-        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer" aria-label="Navigation Bar" :aria-expanded="drawer">
+        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer" :aria-label="i18n.t('navigation.screenReader.navigationBar')" :aria-expanded="drawer">
         </v-app-bar-nav-icon>
 
         <!--current site title-->
@@ -71,16 +71,16 @@
                 
                 <!--session infos-->
                 <v-chip class="app-bar-item-margin" role="none">
-                    Page: {{ appBarStore.galleryCurrentPage }} / {{ appBarStore.galleryMaxPages }}
+                    {{ $t("galleryView.generalInfo.page") }}: {{ appBarStore.galleryCurrentPage }} / {{ appBarStore.galleryMaxPages }}
                 </v-chip>
                 <v-chip class="app-bar-item-margin" role="none">
-                    Sessions: {{ appBarStore.galleryLiveSessions }} / {{ appBarStore.galleryAmountOfSessions }}
+                    {{ $t("galleryView.generalInfo.sessions") }}: {{ appBarStore.galleryLiveSessions }} / {{ appBarStore.galleryAmountOfSessions }}
                     <v-tooltip
                         role="none"
                         activator="parent"
                         location="bottom"
-                        aria-label="currently live / total amount of sessions">
-                        currently live / total amount of sessions
+                        :aria-label="i18n.t('galleryView.generalInfo.sessionsTooltip')">
+                        {{ $t("galleryView.generalInfo.sessionsTooltip") }}
                     </v-tooltip>
                 </v-chip>
 
@@ -90,7 +90,7 @@
                         <template v-slot:activator="{ props }">
                             <v-btn v-bind="props" rounded="sm" color="primary" variant="flat">
                                 <v-icon start icon="mdi-chevron-down" size="x-large"></v-icon>
-                                Grid Size: {{ appBarStore.galleryGridSize.title }}
+                                {{ $t("galleryView.gridSize") }}: {{ appBarStore.galleryGridSize.title }}
                             </v-btn>
                         </template>
                         <v-list>
@@ -106,7 +106,7 @@
                     <v-menu :close-on-content-click="false">
                         <template v-slot:activator="{ props }">
                             <v-btn 
-                                aria-label="Gallery View Settings"
+                                :aria-label="i18n.t('galleryView.screenReader.settings')"
                                 icon="mdi-cog" 
                                 v-bind="props"
                                 color="primary">
@@ -114,8 +114,8 @@
                         </template>
                         <v-list>
                             <v-list-item>
-                                <v-switch class="mx-auto" label="Show Name" color="primary" v-model="appBarStore.galleryIsNameEnabled" hide-details></v-switch>
-                                <v-switch class="mx-auto" label="Show IP" color="primary" v-model="appBarStore.galleryIsIpEnabled" hide-details></v-switch>
+                                <v-switch class="mx-auto" :label="i18n.t('galleryView.showName')" color="primary" v-model="appBarStore.galleryIsNameEnabled" hide-details></v-switch>
+                                <v-switch class="mx-auto" :label="i18n.t('galleryView.showIp')" color="primary" v-model="appBarStore.galleryIsIpEnabled" hide-details></v-switch>
                             </v-list-item>
 
                             <v-divider></v-divider>
@@ -124,7 +124,7 @@
                                 <v-btn
                                     variant="outlined"
                                     @click="appBarStore.galleryIsNameSortAsc = !appBarStore.galleryIsNameSortAsc">
-                                    Sort by Name
+                                    {{ $t("galleryView.sortByName") }}
                                     <template v-slot:append>
                                         <v-icon size="x-large" :icon="appBarStore.galleryIsNameSortAsc ? 'mdi-chevron-up' : 'mdi-chevron-down'"></v-icon>
                                     </template>
@@ -143,7 +143,7 @@
 
                     <template v-slot:activator="{ props }">
                         <v-btn 
-                            aria-label="Profile"
+                            :aria-label="i18n.t('navigation.screenReader.profile')"
                             v-bind="props" 
                             color="primary" 
                             icon="mdi-account-circle" 
@@ -216,11 +216,18 @@
     import { useI18n } from "vue-i18n";
     import * as constants from "@/utils/constants";
 
+    //i18n
+    const { locale } = useI18n();
+    const i18n = useI18n();
+    const localStorageLocale: string | null = localStorage.getItem("locale");
+    locale.value = localStorageLocale ?? "en";
+    const languageToggle = ref<number>(locale.value === "en" ? 0 : 1);
+
     //navigation
     const drawer = ref();
     const navigationLinks = [
-        ["Running Exams", constants.RUNNING_EXAMS_ROUTE],
-        ["Search", constants.SEARCH_ROUTE],
+        [i18n.t("navigation.routeNames.runningExams"), constants.RUNNING_EXAMS_ROUTE],
+        [i18n.t("navigation.routeNames.search"), constants.SEARCH_ROUTE],
     ];
 
     //stores
@@ -243,12 +250,6 @@
         // {title: "6x6", value: 6},
     ];
 
-    //i18n
-    const { locale } = useI18n();
-    const localStorageLocale: string | null = localStorage.getItem("locale");
-    locale.value = localStorageLocale ?? "en";
-    const languageToggle = ref<number>(locale.value === "en" ? 0 : 1);
-    
     //git tag
     //@ts-ignore
     // const gitTag = __GIT_TAG__;
@@ -273,6 +274,15 @@
     async function userMenuOpened(){
         await userAccountViewService.setPersonalUserAccount();
     }
+
+    function getHomePageRoute(){
+        if(import.meta.env.VITE_SUB_PATH == null){
+            return constants.RUNNING_EXAMS_ROUTE;
+        }
+
+        return import.meta.env.VITE_SUB_PATH + constants.RUNNING_EXAMS_ROUTE;
+    }
+
 </script>  
 
 <style scoped>
