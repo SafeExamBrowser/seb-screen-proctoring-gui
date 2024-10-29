@@ -14,7 +14,7 @@
                     :aria-label="getHeaderDescription(column, isSorted)"
                     @keydown="tableUtils.handleTabKeyEvent($event, 'sort', index, {headerRefs: headerRefs})" 
                     @click="() => props.toggleSort(column)">
-                    {{ column.title }}
+                    {{ column.title }}  
                 </span>
                 <span v-else>
                     {{ column.title }}
@@ -49,9 +49,14 @@
                 </template>
                 <!----------------------------------------------------------------->
 
-                <!------------------------selection-------------------------------->
-                <template v-if="column.key == 'data-table-select' && index == props.columns.length-1">
-                    <v-icon class="pr-4" icon="mdi-delete"></v-icon>
+                <!------------------------selection - delete----------------------->
+                <template v-if="column.key == 'data-table-expand' && tableKey == 'session'">
+                    <v-btn 
+                        class="pr-4"
+                        icon="mdi-delete" 
+                        variant="text"
+                        @click="emit('deleteSessions')">
+                    </v-btn>
                 </template>
                 <!----------------------------------------------------------------->
 
@@ -95,12 +100,14 @@
         selectAll?: (value: boolean) => void;
         allSelected?: boolean;
         someSelected?: boolean;
+        tableKey?: string
     }>();
 
     //custom: start page
     const emit = defineEmits<{
         addAddtionalExamHeaders: any;
         removeAddtionalExamHeaders: any;
+        deleteSessions: any;
     }>();
 
     onBeforeMount(() => {

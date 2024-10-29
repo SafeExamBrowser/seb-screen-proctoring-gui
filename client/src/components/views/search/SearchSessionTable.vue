@@ -2,6 +2,7 @@
     <v-data-table-server
         show-expand
         show-select
+        v-model="selectedSessionUuids"
         select-strategy="page"
         item-value="sessionUUID" 
         class="elevation-1"
@@ -13,7 +14,7 @@
         :items-per-page-options="tableUtils.calcItemsPerPage(totalItems)"
         :headers="sessionTableHeaders">
 
-        <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort, selectAll }">
+        <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort, selectAll, allSelected, someSelected }">
             <CustomTableHeader
                 :columns="columns"
                 :is-sorted="isSorted"
@@ -21,7 +22,11 @@
                 :toggle-sort="toggleSort"
                 :header-refs-prop="sessionTableHeadersRef"
                 :day="props.day"
-                :selectAll="selectAll">
+                :selectAll="selectAll"
+                :allSelected="allSelected"
+                :someSelected="someSelected"
+                tableKey="session"
+                @deleteSessions="deleteSessions">
             </CustomTableHeader>
         </template>
 
@@ -51,14 +56,14 @@
         </template>
 
         <template v-slot:item.data-table-expand="{internalItem, isExpanded, toggleExpand}">
-            <v-icon 
+            <v-btn 
                 tabindex="0" 
                 variant="text" 
                 @keydown.native.enter="searchTimeline(internalItem, isExpanded, toggleExpand)"
                 @keydown.native.space="searchTimeline(internalItem, isExpanded, toggleExpand)"
                 @click="searchTimeline(internalItem, isExpanded, toggleExpand)"
                 :icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
-            </v-icon>
+            </v-btn>
         </template>
 
         <template v-slot:expanded-row="{ columns, item }">
@@ -101,6 +106,7 @@
 
 
     //table
+    const selectedSessionUuids = ref<string[]>();
     const isOnLoad = ref<boolean>(true);
     const defaultSort: {key: string, order: string}[] = [{key: 'startTime', order: 'desc'}];
     const sessionTableHeadersRef = ref<any[]>();
@@ -159,6 +165,12 @@
         addTableItemToRefs(timelineSearchResponse, toggleExpand, item);
     }
 
+    async function deleteSessions(){
+        
+
+        console.log(selectedSessionUuids.value)
+    }
+
 
     function addTableItemToRefs(timelineSearchResponse: SearchTimeline, toggleExpand: Function, item: any){
         timelineSearchResults.value.push(timelineSearchResponse);
@@ -167,7 +179,6 @@
 
 
     function removeTableItemFromRefs(item: any, isExpanded: Function, toggleExpand: Function): boolean{
-        
         if(isExpanded(item)){
             toggleExpand(item);
             const index: number = timelineSearchResults.value.findIndex(i => i.sessionUUID == item.sessionUUID);

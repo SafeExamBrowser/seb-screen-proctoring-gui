@@ -45,3 +45,14 @@ export async function searchTimeline(req: Request, res: Response){
         apiService.handleGenericApiError(error, res);
     }
 }
+
+export async function deleteSessions(req: Request, res: Response){
+    try{
+        const response: object = await searchService.deleteSessions(req.headers.authorization, req.query.modelIds);
+
+        return res.status(200).json(response);
+
+    }catch(error){
+        apiService.handleGenericApiError(error, res);
+    }
+}

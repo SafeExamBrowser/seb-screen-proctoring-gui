@@ -54,7 +54,7 @@
 
         <!------------content------------>
         <template v-slot:item.data-table-expand="{internalItem, item, isExpanded, toggleExpand}">
-            <v-icon 
+            <v-btn 
                 v-if="item.timelineScreenshotDataList.length > 1"
                 tabindex="0" 
                 variant="text" 
@@ -62,7 +62,7 @@
                 @keydown.native.space="toggleExpand(internalItem)"
                 @click="toggleExpand(internalItem)"
                 :icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
-            </v-icon>
+            </v-btn>
         </template>
                     
         <template v-slot:expanded-row="{ columns, item, index }">

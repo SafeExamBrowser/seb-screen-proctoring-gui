@@ -118,6 +118,20 @@ export function getPostHeaders(): object{
     };
 }
 
+export function createSessionDeleteUrlSuffix(sessionUuids: string[]): string{
+    let urlSuffix = "?modelIds=";
+
+    for(let i = 0; i < sessionUuids.length; i++){
+        urlSuffix += sessionUuids[i];
+
+        if(i != sessionUuids.length-1){
+            urlSuffix += "&modelIds=";
+        }
+    }
+
+    return urlSuffix;
+}
+
 function getIgnoredUrls(): string[]{
     return [
         "/screenshot/", 
