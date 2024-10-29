@@ -55,6 +55,7 @@ export function groupScreenshotsByMetadata(screenshotGroupList: ScreenshotGroup[
         groups.shift();
     }
     
+    console.log(groups)
 
     return groups;
 }

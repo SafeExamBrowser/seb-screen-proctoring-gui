@@ -3,6 +3,8 @@
         <template v-for="(column, index) in props.columns">
 
             <th :class="[column.key == 'data-table-select' ? 'pl-2' : '']"> 
+                
+                <!------------------------sorting---------------------------------->
                 <span 
                     v-if="column.sortable"
                     ref="headerRefs"
@@ -21,12 +23,20 @@
                 <template v-if="props.isSorted(column)">
                     <v-icon :icon="props.getSortIcon(column)"></v-icon>
                 </template>
+                <!----------------------------------------------------------------->
 
+                <!------------------------selection-------------------------------->
                 <template v-if="column.key == 'data-table-select' && props.selectAll != null" class="ma-0 pa-0">
-                    <!-- <v-btn @click="props.selectAll(true)">test</v-btn> -->
-                    <v-checkbox-btn></v-checkbox-btn>
+                    <v-checkbox-btn 
+                        v-model="props.allSelected"
+                        :indeterminate="someSelected && !allSelected"
+                        @click="props.selectAll(props.allSelected ? false : true)">
+                    
+                    </v-checkbox-btn>
                 </template>
+                <!----------------------------------------------------------------->
   
+                <!------------------------show name / ip--------------------------->
                 <!--todo: checking should not be done via title-->
                 <template v-if="column.title == 'Login Name / IP'">
                     <v-btn 
@@ -37,10 +47,13 @@
                         @click="toggleNameIpSwitch()">
                     </v-btn>
                 </template>
+                <!----------------------------------------------------------------->
 
-                <template v-if="index == props.columns.length-1">
+                <!------------------------selection-------------------------------->
+                <template v-if="column.key == 'data-table-select' && index == props.columns.length-1">
                     <v-icon class="pr-4" icon="mdi-delete"></v-icon>
                 </template>
+                <!----------------------------------------------------------------->
 
 
                 <!-- <template v-if="column.title == 'Exam Start-Time'">
@@ -80,6 +93,8 @@
         headerRefsProp: any;
         day?: string;
         selectAll?: (value: boolean) => void;
+        allSelected?: boolean;
+        someSelected?: boolean;
     }>();
 
     //custom: start page

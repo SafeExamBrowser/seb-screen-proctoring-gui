@@ -295,9 +295,9 @@
 <script setup lang="ts">
     import { ref, onBeforeMount } from "vue";
     import * as constants from "@/utils/constants";
-    import VueDatePicker from '@vuepic/vue-datepicker';
-    import '@vuepic/vue-datepicker/dist/main.css'
-    import * as timePeriodUtils from "@/utils/timePeriodUtils";
+    import VueDatePicker from "@vuepic/vue-datepicker";
+    import "@vuepic/vue-datepicker/dist/main.css";
+    import * as timeUtils from "@/utils/timeUtils";
 
     //emits (parent functions)
     const emit = defineEmits<{
@@ -347,8 +347,8 @@
         emit("closeAllPanels");
         let fromTime: string = "";
         let toTime: string = "";
-        if(timePeriodRadio.value) [fromTime, toTime] = calcTimePeriod();
-        if(timeSelectionRadio.value) [fromTime, toTime] = calcTimeSelection();
+        if(timePeriodRadio.value) [fromTime, toTime] = timeUtils.calcTimePeriod(timePeriodSelect.value, timePeriodField.value);
+        if(timeSelectionRadio.value) [fromTime, toTime] = timeUtils.calcTimeSelection(timeSelectionPicker);
 
         emit(
         "searchSessions", 
@@ -389,20 +389,6 @@
 
         searchSessions();
     }
-
-    function calcTimePeriod(): [string, string]{
-        return [timePeriodUtils.getTimestampFromPeriodSelection(timePeriodSelect.value, timePeriodField.value), Date.now().toString()];
-    }
-
-    function calcTimeSelection(): [string, string]{
-        if(timeSelectionPicker.value == null){
-            return ["", ""];
-        }
-        
-        //@ts-ignore
-        return [timeSelectionPicker.value[0].getTime(), timeSelectionPicker.value[1].getTime()];
-    }
-
 
     function radioButtonEvent(button: string){
         if(button == "period"){
