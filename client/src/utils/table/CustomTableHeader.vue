@@ -1,8 +1,10 @@
 <template>
     <tr>
         <template v-for="(column, index) in props.columns">
-            
-            <th> 
+
+            <th :class="[column.key == 'data-table-select' ? 'pl-2' : '']"> 
+                
+                <!------------------------sorting---------------------------------->
                 <span 
                     v-if="column.sortable"
                     ref="headerRefs"
@@ -21,8 +23,39 @@
                 <template v-if="props.isSorted(column)">
                     <v-icon :icon="props.getSortIcon(column)"></v-icon>
                 </template>
+                <!----------------------------------------------------------------->
 
+                <!------------------------selection-------------------------------->
+                <template v-if="column.key == 'data-table-select' && props.selectAll != null" class="ma-0 pa-0">
+                    <v-checkbox-btn 
+                        v-model="props.allSelected"
+                        :indeterminate="someSelected && !allSelected"
+                        @click="props.selectAll(props.allSelected ? false : true)">
+                    
+                    </v-checkbox-btn>
+                </template>
+                <!----------------------------------------------------------------->
+  
+                <!------------------------show name / ip--------------------------->
                 <!--todo: checking should not be done via title-->
+                <template v-if="column.title == 'Login Name / IP'">
+                    <v-btn 
+                        :aria-label="tableStore.isIpDisplayList[tableUtils.getSessionListIndex(props.day!)].isIp ? 'show login name' : 'show IP'"
+                        :icon="tableStore.isIpDisplayList[tableUtils.getSessionListIndex(props.day!)].isIp ? 'mdi-toggle-switch-outline' : 'mdi-toggle-switch-off-outline'" 
+                        rounded="sm" 
+                        variant="flat" 
+                        @click="toggleNameIpSwitch()">
+                    </v-btn>
+                </template>
+                <!----------------------------------------------------------------->
+
+                <!------------------------selection-------------------------------->
+                <template v-if="column.key == 'data-table-select' && index == props.columns.length-1">
+                    <v-icon class="pr-4" icon="mdi-delete"></v-icon>
+                </template>
+                <!----------------------------------------------------------------->
+
+
                 <!-- <template v-if="column.title == 'Exam Start-Time'">
                     <v-btn 
                         :aria-label="tableStore.isExamExpand ? 'hide exam details' : 'show exam details'"
@@ -33,18 +66,9 @@
                         @click="tableStore.isExamExpand ? emit('removeAddtionalExamHeaders') : emit('addAddtionalExamHeaders')">
                     </v-btn>
                 </template> -->
-                
-                <template v-if="column.title == 'Login Name / IP'">
-                    <v-btn 
-                        :aria-label="tableStore.isIpDisplayList[tableUtils.getSessionListIndex(props.day!)].isIp ? 'show login name' : 'show IP'"
-                        :icon="tableStore.isIpDisplayList[tableUtils.getSessionListIndex(props.day!)].isIp ? 'mdi-toggle-switch-outline' : 'mdi-toggle-switch-off-outline'" 
-                        rounded="sm" 
-                        variant="flat" 
-                        @click="toggleNameIpSwitch()">
-                    </v-btn>
-                </template>
             </th>
         </template>
+
     </tr>
 </template>
 
@@ -68,6 +92,9 @@
         toggleSort: (column: any) => void;
         headerRefsProp: any;
         day?: string;
+        selectAll?: (value: boolean) => void;
+        allSelected?: boolean;
+        someSelected?: boolean;
     }>();
 
     //custom: start page

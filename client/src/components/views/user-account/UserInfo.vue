@@ -144,6 +144,7 @@
                     <v-card-title>Actions</v-card-title>
                     <v-list density="compact">
 
+                        <!-- @vue-ignore -->
                         <v-list-item
                             v-for="(item, i) in actionItems"
                             :key="i"

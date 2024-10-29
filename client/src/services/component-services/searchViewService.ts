@@ -62,4 +62,9 @@ export function openProctoringView(sessionId: string, timestamp?: string){
 
     openUrlInNewTab(url);
 }
+
+export function openProctoringApplicationSearch(sessionId: string, metadataApp: string, metadataWindow: string){
+    const url: string = constants.PROCTORING_APPLICATION_SEARCH_ROUTE + "/" + sessionId + "/" + metadataApp + "/" + metadataWindow;
+    openUrlInNewTab(url);
+}
 //==============================
