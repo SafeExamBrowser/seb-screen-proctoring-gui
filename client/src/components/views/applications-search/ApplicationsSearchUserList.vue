@@ -26,7 +26,6 @@
                 </v-btn>
             </template>
 
-
         </v-list-item>        
     </v-list>
 </template>
@@ -62,9 +61,6 @@
         }
 
         userList.value = userListLocal;
-
-        console.log(userListLocal)
-
     });
 
     function getSubtile(count: number): string{
