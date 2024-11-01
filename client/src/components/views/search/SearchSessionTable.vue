@@ -26,7 +26,7 @@
                 :allSelected="allSelected"
                 :someSelected="someSelected"
                 tableKey="session"
-                @deleteSessions="deleteSessions">
+                @openDeleteSessionsDialog="openDeleteSessionsDialog">
             </CustomTableHeader>
         </template>
 
@@ -75,6 +75,58 @@
         </template>
 
     </v-data-table-server>
+
+
+    <!-----------delete sessions confirmation---------->      
+    <v-dialog v-model="dialog" max-width="400">
+        <v-sheet elevation="2" class="pa-4 rounded-lg">
+
+            <v-row justify="end">
+                <v-col>
+                    <div class="text-h6">
+                        Delete selected sessions
+                    </div>
+                </v-col>
+            </v-row>
+
+            <v-row>
+                <v-col>
+                    <v-list>
+                        <v-list-item v-for="sessionUuid in selectedSessionUuids"
+                            :title="sessions?.content.find(i => i.sessionUUID == sessionUuid)?.clientName"
+                            :subtitle="timeUtils.formatTimestampToTime(sessions?.content.find(i => i.sessionUUID == sessionUuid)?.startTime!)"
+                            >
+                        </v-list-item>
+                    </v-list>
+                </v-col>
+            </v-row>
+            
+            
+            <v-row>
+                <v-col align="right">
+                    <v-btn 
+                        rounded="sm" 
+                        color="black" 
+                        variant="outlined"
+                        @click="closeDialog()">
+                        Cancel
+                    </v-btn>
+
+                    <v-btn 
+                        rounded="sm" 
+                        color="error" 
+                        variant="flat" 
+                        class="ml-2"
+                        @click="deleteSessions()">
+                        Delete
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </v-sheet>
+    </v-dialog>
+    <!------------------------------------------------->
+
+
 </template>
 
 
@@ -118,8 +170,13 @@
         {title: "Exam Name", key: "exam.name", width: "20%"},
         {title: "Slides", key: "nrOfScreenshots"},
         {title: "Video", key: "proctoringViewLink", sortable: false}
-    ]);                 
+    ]);           
+    
+    //dialog - delete sessions
+    const dialog = ref(false);
 
+
+    //===========================data fetching=======================
     async function loadItems(serverTablePaging: ServerTablePaging){
         isLoading.value = true;
         //current solution to default sort the table
@@ -164,14 +221,48 @@
 
         addTableItemToRefs(timelineSearchResponse, toggleExpand, item);
     }
+    //===============================================================
+
+
+    //===========================session deletion=======================
+    function openDeleteSessionsDialog(){
+        openDialog()
+    }
 
     async function deleteSessions(){
-        
+        if(selectedSessionUuids.value == null){
+            return;
+        }
 
-        console.log(selectedSessionUuids.value)
+        const response: object = await searchViewService.deleteSessions(selectedSessionUuids.value);
+
+        if(response == null){
+            //todo: add error handling
+            return;
+        }
+
+        for(let i = 0; i < selectedSessionUuids.value.length; i++){
+            const index: number | any = sessions.value?.content.findIndex(y => y.sessionUUID == selectedSessionUuids.value![i]);
+            sessions.value?.content.splice(index, 1);
+        }
+
+        selectedSessionUuids.value = [];
+        closeDialog();
     }
 
 
+
+    function openDialog(){
+        dialog.value = true;
+    }
+
+    function closeDialog(){
+        dialog.value = false;
+    }
+    //===============================================================
+
+
+    //===========================table=======================
     function addTableItemToRefs(timelineSearchResponse: SearchTimeline, toggleExpand: Function, item: any){
         timelineSearchResults.value.push(timelineSearchResponse);
         toggleExpand(item);
@@ -191,6 +282,11 @@
 
         return false;
     }
+    //===============================================================
 
 
 </script>
+
+<style scoped>
+
+</style>

@@ -63,7 +63,7 @@ export async function deleteSessions(sessionUuids: string[]): Promise<SearchTime
     try {
         const url: string = "/search/sessions/delete" + apiService.createSessionDeleteUrlSuffix(sessionUuids);
         const {data, status}: AxiosResponse = await apiService.api.delete(url, {headers: apiService.getHeaders()});
-    
+
         if (status === 200) {
             return data;
         }

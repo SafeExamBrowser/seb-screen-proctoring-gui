@@ -31,7 +31,6 @@
                         v-model="props.allSelected"
                         :indeterminate="someSelected && !allSelected"
                         @click="props.selectAll(props.allSelected ? false : true)">
-                    
                     </v-checkbox-btn>
                 </template>
                 <!----------------------------------------------------------------->
@@ -55,7 +54,8 @@
                         class="pr-4"
                         icon="mdi-delete" 
                         variant="text"
-                        @click="emit('deleteSessions')">
+                        :disabled="!someSelected"
+                        @click="emit('openDeleteSessionsDialog')">
                     </v-btn>
                 </template>
                 <!----------------------------------------------------------------->
@@ -107,7 +107,7 @@
     const emit = defineEmits<{
         addAddtionalExamHeaders: any;
         removeAddtionalExamHeaders: any;
-        deleteSessions: any;
+        openDeleteSessionsDialog: any;
     }>();
 
     onBeforeMount(() => {
