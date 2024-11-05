@@ -5,11 +5,11 @@ import * as apiService from "../services/api.service";
 
 export async function getGroups(req: Request, res: Response){
     try{
-        const groups: object = await groupService.getGroups(req.headers.authorization, req.query.optionalParamters);
-
-        return res.status(200).json(groups);
+        const [groups, status] = await groupService.getGroups(req.headers.authorization, req.query.optionalParamters);
+        return res.status(status).json(groups);
 
     }catch(error){
+        console.log("it got here into the controller catch")
         apiService.handleGenericApiError(error, res);
     }
 }
@@ -17,9 +17,8 @@ export async function getGroups(req: Request, res: Response){
 
 export async function getGroupByUuid(req: Request, res: Response){
     try{
-        const group: object = await groupService.getGroupByUuid(req.headers.authorization, req.params.uuid, req.query.optionalParamters);
-
-        return res.status(200).json(group);
+        const [group, status] = await groupService.getGroupByUuid(req.headers.authorization, req.params.uuid, req.query.optionalParamters);
+        return res.status(status).json(group);
 
     }catch(error){
         apiService.handleGenericApiError(error, res);

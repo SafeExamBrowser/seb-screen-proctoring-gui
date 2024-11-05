@@ -1,4 +1,4 @@
-type GroupResponse  = {
+type GroupObject  = {
     numberOfPages: number;
     pageNumber: number;
     pageSize: number;

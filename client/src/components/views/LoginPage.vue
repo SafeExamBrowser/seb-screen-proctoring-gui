@@ -77,7 +77,7 @@
 
                     </v-form>
 
-                    <div v-if="!settingsStore.isSebServerIntegratedMode" class="text-center mt-7">
+                    <!-- <div v-if="!settingsStore.isSebServerIntegratedMode" class="text-center mt-7">
                         <span>
                             No Account? 
                         </span>
@@ -88,7 +88,7 @@
                             @keydown="handleTabKeyEvent($event, 'navigate')">
                             <router-link :to=constants.REGISTER_ROUTE>Register</router-link>
                         </span>
-                    </div>
+                    </div> -->
 
                 </v-card-text>
 

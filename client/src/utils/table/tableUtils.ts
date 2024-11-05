@@ -13,8 +13,7 @@ export function calcDefaultItemsPerPage(itemList: any): number {
         maxLength = itemList.length;
     }
 
-    if (maxLength < 5) return maxLength;
-    if (maxLength < 10) return 5;
+    if (maxLength < 10) return maxLength;
     if (maxLength < 15) return 10;
 
     return 15;
@@ -34,31 +33,32 @@ export function calcItemsPerPage(itemList: any): { value: number, title: string 
         maxLength = itemList.length;
     }
 
-    if (maxLength < 5) {
+    if (maxLength <= 10) {
         return [
             { value: maxLength, title: "All" }
         ];
     }
 
-    if (maxLength < 10) {
+    if (maxLength <= 15) {
         return [
-            { value: 5, title: '5' },
-            { value: maxLength, title: "All" }
-        ];
-    }
-
-    if (maxLength < 15) {
-        return [
-            { value: 5, title: '5' },
             { value: 10, title: '10' },
             { value: maxLength, title: "All" }
         ];
     }
 
+    if (maxLength <= 20) {
+        return [
+            { value: 10, title: '10' },
+            { value: 15, title: '10' },
+            { value: maxLength, title: "All" }
+        ];
+    }
+
     return [
-        { value: 5, title: '5' },
         { value: 10, title: '10' },
         { value: 15, title: '15' },
+        { value: 20, title: '20' },
+        { value: maxLength, title: "All" }
     ];
 }
 

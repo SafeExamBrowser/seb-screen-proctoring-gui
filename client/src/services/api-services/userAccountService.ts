@@ -14,26 +14,16 @@ export async function register(
     timezone?: string,
 ): Promise<UserAccount | any> {
 
-    try {
-        const url: string = ENV.SERVER_URL + ENV.SERVER_PORT + userAccountUrl + "/register";
-
-        const { data, status }: AxiosResponse = await axios.post(url, {
-            name,
-            surname,
-            username,
-            newPassword,
-            confirmNewPassword,
-            email,
-            timezone
-        });
-
-        if (status === 200) {
-            return data;
-        }
-
-    } catch (error) {
-        throw error;
-    }
+    const url: string = ENV.SERVER_URL + ENV.SERVER_PORT + userAccountUrl + "/register";
+    return (await axios.post(url, {
+        name,
+        surname,
+        username,
+        newPassword,
+        confirmNewPassword,
+        email,
+        timezone
+    })).data;
 }
 
 export async function changePassword(
@@ -43,9 +33,7 @@ export async function changePassword(
     confirmNewPassword: string,
 ): Promise<UserAccount | any> {
     try {
-
         const url: string = userAccountUrl + "/changePassword";
-
         const { data, status }: AxiosResponse = await apiService.api.post(url, { uuid, password, newPassword, confirmNewPassword }, { headers: apiService.getPostHeaders() });
 
         if (status === 200) {
@@ -59,31 +47,13 @@ export async function changePassword(
 
 
 export async function getPersonalUserAccount(): Promise<UserAccount | any> {
-    try {
-        const url: string = userAccountUrl + "/me";
-        const { data, status }: AxiosResponse = await apiService.api.get(url, { headers: apiService.getHeaders() });
-
-        if (status === 200) {
-            return data;
-        }
-
-    } catch (error) {
-        throw error;
-    }
+    const url: string = userAccountUrl + "/me";
+    return (await apiService.api.get(url, { headers: apiService.getHeaders() })).data;
 }
 
 export async function getUserAccountById(accountId: string): Promise<UserAccount | any> {
-    try {
-        const url: string = userAccountUrl + "/" + accountId;
-        const { data, status }: AxiosResponse = await apiService.api.get(url, { headers: apiService.getHeaders() });
-
-        if (status === 200) {
-            return data;
-        }
-
-    } catch (error) {
-        throw error;
-    }
+    const url: string = userAccountUrl + "/" + accountId;
+    return (await apiService.api.get(url, { headers: apiService.getHeaders() })).data;
 }
 
 export async function getUserAccounts(optionalParamters?: OptionalParGeneric): Promise<UserAccountResponse[] | any> {

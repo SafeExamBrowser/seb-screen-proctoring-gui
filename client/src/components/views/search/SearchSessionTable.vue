@@ -11,6 +11,7 @@
         loading-text="Loading... Please wait"
         :items="sessions?.content"
         :items-length="totalItems"
+        :items-per-page="tableUtils.calcDefaultItemsPerPage(totalItems)"
         :items-per-page-options="tableUtils.calcItemsPerPage(totalItems)"
         :headers="sessionTableHeaders">
 
@@ -126,6 +127,14 @@
     </v-dialog>
     <!------------------------------------------------->
 
+    <AlertMsg 
+        v-if="errorAvailable"
+        :alertProps="{
+            color: 'error',
+            type: 'snackbar',
+            textKey: 'api-error'
+        }">
+    </AlertMsg>
 
 </template>
 
@@ -156,7 +165,6 @@
     const isLoading = ref<boolean>(true);
     const totalItems = ref<number>(10);
 
-
     //table
     const selectedSessionUuids = ref<string[]>();
     const isOnLoad = ref<boolean>(true);
@@ -174,6 +182,9 @@
     
     //dialog - delete sessions
     const dialog = ref(false);
+
+    //error handling
+    const errorAvailable = ref<boolean>();
 
 
     //===========================data fetching=======================
@@ -226,10 +237,11 @@
 
     //===========================session deletion=======================
     function openDeleteSessionsDialog(){
-        openDialog()
+        openDialog();
     }
 
     async function deleteSessions(){
+        errorAvailable.value = false;
         if(selectedSessionUuids.value == null){
             return;
         }
@@ -237,7 +249,7 @@
         const response: object = await searchViewService.deleteSessions(selectedSessionUuids.value);
 
         if(response == null){
-            //todo: add error handling
+            errorAvailable.value = true;
             return;
         }
 

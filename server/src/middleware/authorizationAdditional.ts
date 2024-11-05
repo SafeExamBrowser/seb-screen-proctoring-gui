@@ -13,7 +13,7 @@ export async function isUserAccountOperationAllowed(req: Request, res: Response,
             return;
         }
 
-        const userAccount = await userAccountService.getPersonalUserAccount(req.headers.authorization);
+        const [userAccount, status] = await userAccountService.getPersonalUserAccount(req.headers.authorization);
         if(userAccount.roles.includes("ADMIN")){
             next();
             return;

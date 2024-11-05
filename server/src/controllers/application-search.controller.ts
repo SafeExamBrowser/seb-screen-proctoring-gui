@@ -4,9 +4,8 @@ import * as applicationSearchService from "../services/application-search.servic
 
 export async function getExamsStarted(req: Request, res: Response){
     try{
-        const exams: object = await applicationSearchService.getExamsStarted(req.headers.authorization, req.query.optionalParamters);
-
-        return res.status(200).json(exams);
+        const [exams, status] = await applicationSearchService.getExamsStarted(req.headers.authorization, req.query.optionalParamters);
+        return res.status(status).json(exams);
 
     }catch(error){
         apiService.handleGenericApiError(error, res);
@@ -15,9 +14,8 @@ export async function getExamsStarted(req: Request, res: Response){
 
 export async function getGroupIdsForExam(req: Request, res: Response){
     try{
-        const exams: object = await applicationSearchService.getGroupIdsForExam(req.headers.authorization, req.params.examId);
-
-        return res.status(200).json(exams);
+        const [ids, status] = await applicationSearchService.getGroupIdsForExam(req.headers.authorization, req.params.examId);
+        return res.status(status).json(ids);
 
     }catch(error){
         apiService.handleGenericApiError(error, res);
@@ -26,9 +24,8 @@ export async function getGroupIdsForExam(req: Request, res: Response){
 
 export async function getDistinctMetadataAppForExam(req: Request, res: Response){
     try{
-        const exams: object = await applicationSearchService.getDistinctMetadataAppForExam(req.headers.authorization, req.query.groupIds);
-
-        return res.status(200).json(exams);
+        const [metadataApps, status] = await applicationSearchService.getDistinctMetadataAppForExam(req.headers.authorization, req.query.groupIds);
+        return res.status(status).json(metadataApps);
 
     }catch(error){
         apiService.handleGenericApiError(error, res);
@@ -37,12 +34,12 @@ export async function getDistinctMetadataAppForExam(req: Request, res: Response)
 
 export async function getDistinctMetadataWindowForExam(req: Request, res: Response){
     try{
-        const exams: object = await applicationSearchService.getDistinctMetadataWindowForExam(req.headers.authorization, {
+        const [metadataWindows, status] = await applicationSearchService.getDistinctMetadataWindowForExam(req.headers.authorization, {
             "groupIds": req.query.groupIds,
             "screenProctoringMetadataApplication": req.query.screenProctoringMetadataApplication,
         });
 
-        return res.status(200).json(exams);
+        return res.status(status).json(metadataWindows);
 
     }catch(error){
         apiService.handleGenericApiError(error, res);
@@ -51,13 +48,13 @@ export async function getDistinctMetadataWindowForExam(req: Request, res: Respon
 
 export async function getUserListForApplicationSearch(req: Request, res: Response){
     try{
-        const exams: object = await applicationSearchService.getUserListForApplicationSearch(req.headers.authorization, {
+        const [userList, status] = await applicationSearchService.getUserListForApplicationSearch(req.headers.authorization, {
             "groupIds": req.query.groupIds,
             "screenProctoringMetadataApplication": req.query.screenProctoringMetadataApplication,
             "screenProctoringMetadataWindowTitle": req.query.screenProctoringMetadataWindowTitle
         });
 
-        return res.status(200).json(exams);
+        return res.status(status).json(userList);
 
     }catch(error){
         apiService.handleGenericApiError(error, res);
@@ -66,13 +63,13 @@ export async function getUserListForApplicationSearch(req: Request, res: Respons
 
 export async function getTimestampListForApplicationSearch(req: Request, res: Response){
     try{
-        const exams: object = await applicationSearchService.getTimestampListForApplicationSearch(req.headers.authorization, {
+        const [timestampList, status] = await applicationSearchService.getTimestampListForApplicationSearch(req.headers.authorization, {
             "sessionUUID": req.query.sessionUUID,
             "screenProctoringMetadataApplication": req.query.screenProctoringMetadataApplication,
             "screenProctoringMetadataWindowTitle": req.query.screenProctoringMetadataWindowTitle
         });
 
-        return res.status(200).json(exams);
+        return res.status(status).json(timestampList);
 
     }catch(error){
         apiService.handleGenericApiError(error, res);
