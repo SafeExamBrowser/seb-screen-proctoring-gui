@@ -1,6 +1,9 @@
 <template>
     <v-data-table-server
         show-expand
+        :show-select="isUserAdmin"
+        v-model="selectedSessionUuids"
+        select-strategy="page"
         item-value="sessionUUID" 
         class="elevation-1"
         @update:options="loadItems"
@@ -8,11 +11,27 @@
         loading-text="Loading... Please wait"
         :items="sessions?.content"
         :items-length="totalItems"
+        :items-per-page="tableUtils.calcDefaultItemsPerPage(totalItems)"
         :items-per-page-options="tableUtils.calcItemsPerPage(totalItems)"
         :headers="sessionTableHeaders">
 
-        <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
+        <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort, selectAll, allSelected, someSelected }">
             <CustomTableHeader
+                v-if="isUserAdmin"
+                :columns="columns"
+                :is-sorted="isSorted"
+                :get-sort-icon="getSortIcon"
+                :toggle-sort="toggleSort"
+                :header-refs-prop="sessionTableHeadersRef"
+                :day="props.day"
+                :selectAll="selectAll"
+                :allSelected="allSelected"
+                :someSelected="someSelected"
+                tableKey="session"
+                @openDeleteSessionsDialog="openDeleteSessionsDialog">
+            </CustomTableHeader>
+            <CustomTableHeader
+                v-else
                 :columns="columns"
                 :is-sorted="isSorted"
                 :get-sort-icon="getSortIcon"
@@ -48,26 +67,88 @@
         </template>
 
         <template v-slot:item.data-table-expand="{internalItem, isExpanded, toggleExpand}">
-            <v-icon 
+            <v-btn 
                 tabindex="0" 
                 variant="text" 
                 @keydown.native.enter="searchTimeline(internalItem, isExpanded, toggleExpand)"
                 @keydown.native.space="searchTimeline(internalItem, isExpanded, toggleExpand)"
                 @click="searchTimeline(internalItem, isExpanded, toggleExpand)"
                 :icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'" >
-            </v-icon>
+            </v-btn>
         </template>
 
         <template v-slot:expanded-row="{ columns, item }">
             <tr>
                 <td :colspan="columns.length">
-                    <!--@vue-ignore-->
                     <SearchScreenshotsTable :timelineSearchResult="timelineSearchResults.find(i => i.sessionUUID == item.sessionUUID)"></SearchScreenshotsTable>
                 </td>
             </tr>
         </template>
 
     </v-data-table-server>
+
+    <!-----------delete sessions confirmation---------->      
+    <v-dialog 
+        v-if="isUserAdmin"
+        v-model="dialog" 
+        max-width="400"
+    >
+        <v-sheet elevation="2" class="pa-4 rounded-lg">
+
+            <v-row justify="end">
+                <v-col>
+                    <div class="text-h6">
+                        Delete selected sessions
+                    </div>
+                </v-col>
+            </v-row>
+
+            <v-row>
+                <v-col>
+                    <v-list>
+                        <v-list-item v-for="sessionUuid in selectedSessionUuids"
+                            :title="sessions?.content.find(i => i.sessionUUID == sessionUuid)?.clientName"
+                            :subtitle="timeUtils.formatTimestampToTime(sessions?.content.find(i => i.sessionUUID == sessionUuid)?.startTime!)"
+                            >
+                        </v-list-item>
+                    </v-list>
+                </v-col>
+            </v-row>
+            
+            
+            <v-row>
+                <v-col align="right">
+                    <v-btn 
+                        rounded="sm" 
+                        color="black" 
+                        variant="outlined"
+                        @click="closeDialog()">
+                        Cancel
+                    </v-btn>
+
+                    <v-btn 
+                        rounded="sm" 
+                        color="error" 
+                        variant="flat" 
+                        class="ml-2"
+                        @click="deleteSessions()">
+                        Delete
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </v-sheet>
+    </v-dialog>
+    <!------------------------------------------------->
+
+    <AlertMsg 
+        v-if="errorAvailable"
+        :alertProps="{
+            color: 'error',
+            type: 'snackbar',
+            textKey: 'api-error'
+        }">
+    </AlertMsg>
+
 </template>
 
 
@@ -78,10 +159,12 @@
     import SearchScreenshotsTable from "./SearchScreenshotsTable.vue";
     import * as searchViewService from "@/services/component-services/searchViewService";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
-    import { useTableStore } from "@/store/store";
+    import { useTableStore, useUserAccountStore } from "@/store/store";
 
     //store
     const tableStore = useTableStore();
+    const userAccountStore = useUserAccountStore();
+    const isUserAdmin = ref<boolean>();
 
     //props
     const props = defineProps<{
@@ -97,8 +180,8 @@
     const isLoading = ref<boolean>(true);
     const totalItems = ref<number>(10);
 
-
     //table
+    const selectedSessionUuids = ref<string[]>();
     const isOnLoad = ref<boolean>(true);
     const defaultSort: {key: string, order: string}[] = [{key: 'startTime', order: 'desc'}];
     const sessionTableHeadersRef = ref<any[]>();
@@ -110,9 +193,18 @@
         {title: "Exam Name", key: "exam.name", width: "20%"},
         {title: "Slides", key: "nrOfScreenshots"},
         {title: "Video", key: "proctoringViewLink", sortable: false}
-    ]);                 
+    ]);           
+    
+    //dialog - delete sessions
+    const dialog = ref(false);
 
+    //error handling
+    const errorAvailable = ref<boolean>();
+
+
+    //===========================data fetching=======================
     async function loadItems(serverTablePaging: ServerTablePaging){
+        isUserAdmin.value = userAccountStore.userAccount?.roles.includes('ADMIN');
         isLoading.value = true;
         //current solution to default sort the table
         //sort-by in data-table-server tag breaks the sorting as the headers are in a seperate component
@@ -156,8 +248,48 @@
 
         addTableItemToRefs(timelineSearchResponse, toggleExpand, item);
     }
+    //===============================================================
 
 
+    //===========================session deletion=======================
+    function openDeleteSessionsDialog(){
+        openDialog();
+    }
+
+    async function deleteSessions(){
+        errorAvailable.value = false;
+        if(selectedSessionUuids.value == null){
+            return;
+        }
+
+        const response = await searchViewService.deleteSessions(selectedSessionUuids.value);
+        if(response.data == null || response.status == 207){
+            errorAvailable.value = true;
+            return;
+        }
+
+        for(let i = 0; i < selectedSessionUuids.value.length; i++){
+            const index: number | any = sessions.value?.content.findIndex(y => y.sessionUUID == selectedSessionUuids.value![i]);
+            sessions.value?.content.splice(index, 1);
+        }
+
+        selectedSessionUuids.value = [];
+        closeDialog();
+    }
+
+
+
+    function openDialog(){
+        dialog.value = true;
+    }
+
+    function closeDialog(){
+        dialog.value = false;
+    }
+    //===============================================================
+
+
+    //===========================table=======================
     function addTableItemToRefs(timelineSearchResponse: SearchTimeline, toggleExpand: Function, item: any){
         timelineSearchResults.value.push(timelineSearchResponse);
         toggleExpand(item);
@@ -165,7 +297,6 @@
 
 
     function removeTableItemFromRefs(item: any, isExpanded: Function, toggleExpand: Function): boolean{
-        
         if(isExpanded(item)){
             toggleExpand(item);
             const index: number = timelineSearchResults.value.findIndex(i => i.sessionUUID == item.sessionUUID);
@@ -178,6 +309,11 @@
 
         return false;
     }
+    //===============================================================
 
 
 </script>
+
+<style scoped>
+
+</style>

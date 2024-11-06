@@ -47,14 +47,15 @@ export function handleGenericApiError(error: any, res: Response){
 
     //if there is an error-response from sp-server
     if(error.response){
-        console.error(error.response.status);
-        console.error(error.response.data)
+        LOG.error("status: " + error.response.status);
+        LOG.error(error.response.data)
+
         return res.status(error.response.status).json(error.response.data);
     }
 
     //if there is no response from the sp-server
     if(error.request){
-        console.error(500)
+        LOG.error("server: " + ENV.PROCTOR_SERVER_URL + ENV.PROCTOR_SERVER_PORT + " not reachable")
         return res.status(500).json("server-error");
     }
     

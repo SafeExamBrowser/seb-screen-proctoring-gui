@@ -39,6 +39,15 @@ export async function searchTimeline(sessionId: string, optionalParamters?: Opti
         console.error(error);
         return null;
     }
+} 
+
+export async function deleteSessions(sessionUuids: string[]): Promise<object | any>{
+    try{
+        return await searchService.deleteSessions(sessionUuids);        
+    }catch(error){
+        console.error(error);
+        return null;
+    }
 }
 //==============================
 

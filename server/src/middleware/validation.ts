@@ -1,6 +1,6 @@
-import {Request, Response, NextFunction} from 'express';
-import {Result, ValidationError, body, validationResult} from 'express-validator';
-import {LOG} from '../logging/logger';
+import {Request, Response, NextFunction} from "express";
+import {Result, ValidationError, body, validationResult} from "express-validator";
+import {LOG} from "../logging/logger";
 
 export const validateAuthorize = [
 

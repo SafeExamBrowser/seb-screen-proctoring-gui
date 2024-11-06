@@ -84,11 +84,21 @@
             </v-data-table>
         </v-col>
     </v-row>
+
+    <AlertMsg 
+        v-if="errorAvailable"
+        :alertProps="{
+            color: 'error',
+            type: 'snackbar',
+            textKey: 'api-error'
+        }">
+    </AlertMsg>
+
 </template>
 
 <script setup lang="ts">
     import { ref, onBeforeMount, onUnmounted, watch } from "vue";
-    import * as groupService from "@/services/api-services/groupService";
+    import * as examsOverviewViewService from "@/services/component-services/examsOverviewViewService";
     import { useAppBarStore, useTableStore } from "@/store/store";
     import * as timeUtils from "@/utils/timeUtils";
     import * as tableUtils from "@/utils/table/tableUtils";
@@ -113,6 +123,10 @@
     ]);
     const noRunningExams = ref<boolean>(false);
 
+    //error handling
+    const errorAvailable = ref<boolean>();
+
+
     onBeforeMount(async () => {
         appBarStore.title = "Running Exams";
         await getGroups();
@@ -131,11 +145,20 @@
     });
 
     async function getGroups(){
-        groups.value = await groupService.getGroups({
+        errorAvailable.value = false;
+
+        const groupsResponse: GroupObject | null = await examsOverviewViewService.getGroups({
             pageSize: 500, 
             includePastExams: appBarStore.examOverviewShowPastExams,
             includeUpcomingExams: appBarStore.examOverviewShowUpcomingExams
         });
+
+        if(groupsResponse == null){
+            errorAvailable.value = true;
+            return;
+        }
+
+        groups.value = groupsResponse.content;
     }
 
     function getGalleryViewLink(index: number) {

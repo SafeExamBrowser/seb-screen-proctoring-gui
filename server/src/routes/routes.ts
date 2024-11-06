@@ -22,6 +22,7 @@ router.get("/search/sessions/day", searchController.searchSessionsDay);
 router.get("/search/sessions", searchController.searchSessions);
 router.get("/search/screenshots", searchController.searchScreenshots);
 router.get("/search/timeline/:sessionId", searchController.searchTimeline);
+router.delete("/search/sessions/delete", searchController.deleteSessions)
 
 router.get("/search/applications/exams", applicationSearchController.getExamsStarted);
 router.get("/search/applications/groupIds/:examId", applicationSearchController.getGroupIdsForExam);
@@ -29,7 +30,6 @@ router.get("/search/applications/metadata/app", applicationSearchController.getD
 router.get("/search/applications/metadata/window", applicationSearchController.getDistinctMetadataWindowForExam);
 router.get("/search/applications/users", applicationSearchController.getUserListForApplicationSearch);
 router.get("/search/applications/timestamps", applicationSearchController.getTimestampListForApplicationSearch);
-
 
 router.get("/useraccount/me", userAccountController.getPersonalUserAccount);
 router.get("/useraccount/:accountId", userAccountController.getUserAccountById);

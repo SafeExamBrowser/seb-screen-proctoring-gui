@@ -19,6 +19,7 @@ export async function getGroup(groupUuid: string, currentWindow: number, pageSiz
         return groupUuidResponse;
 
     } catch (error: any) {
+        console.error(error)
         if(error.response){
             return error.response.data;
         }

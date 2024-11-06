@@ -3,12 +3,13 @@ import {Buffer} from 'buffer';
 import * as ENV from "../config/envConfig";
 import * as apiService from "../services/api.service";
 import * as utils from "../utils/utils";
+import FormData from "form-data";
 
 
 const tokenUrl: string = ENV.PROCTOR_SERVER_URL + ENV.PROCTOR_SERVER_PORT + "/oauth/token?grant_type=";
 const jwtUrl: string = ENV.PROCTOR_SERVER_URL + ENV.PROCTOR_SERVER_PORT + "/oauth/jwttoken/verify";
 
-export async function authorizeViaScreenProctoringServer(username: string, password: string): Promise<object>{
+export async function authorizeViaScreenProctoringServer(username: string, password: string){
     const url: string = tokenUrl + "password&username=" + username + "&password=" + password;
     const encodedCredentials: string = utils.createEncodedCredentials(ENV.PROCTOR_SERVER_USERNAME, ENV.PROCTOR_SERVER_PASSWORD);
 
@@ -16,10 +17,10 @@ export async function authorizeViaScreenProctoringServer(username: string, passw
         headers: apiService.getAuthorizationHeaders(encodedCredentials)
     });
 
-    return data;
+    return [data, status];
 }
 
-export async function verifyJwt(logintoken: string): Promise<object>{
+export async function verifyJwt(logintoken: string): Promise<[object, number]>{
     const url: string = jwtUrl;
     const encodedCredentials: string = utils.createEncodedCredentials(ENV.PROCTOR_SERVER_USERNAME, ENV.PROCTOR_SERVER_PASSWORD);
 
@@ -27,31 +28,34 @@ export async function verifyJwt(logintoken: string): Promise<object>{
         headers: apiService.getAuthorizationHeadersBasic(encodedCredentials)
     });
 
-    return data;
+    return [data, status];
 }
 
-export async function refreshViaScreenProctoringServer(refreshToken: string): Promise<object>{
-    const url: string = tokenUrl + "refresh_token&client_id=" + ENV.PROCTOR_SERVER_USERNAME + "&refresh_token=" + refreshToken;
+export async function refreshToken(refreshToken: string): Promise<[object, number]>{
+    const url: string = ENV.PROCTOR_SERVER_URL + ENV.PROCTOR_SERVER_PORT + "/oauth/token";
     const encodedCredentials: string = utils.createEncodedCredentials(ENV.PROCTOR_SERVER_USERNAME, ENV.PROCTOR_SERVER_PASSWORD);
 
-    const {data, status} = await axios.post(url, {}, {
+    const formData = new FormData();
+    formData.append("refresh_token", refreshToken);
+    formData.append("grant_type", "refresh_token");
+
+    const {data, status} = await axios.post(url, formData, {
         headers: apiService.getAuthorizationHeaders(encodedCredentials)
     });
 
-    return data;
+    return [data, status];
 }
 
-export async function logLogin(token: string){
+export async function logLogin(token: string): Promise<[object, number]>{
     const url: string = "/useraccount/loglogin";
-
     const {data, status} = await apiService.api.post(url, {}, {headers: apiService.getHeaders(token)});
 
-    return data;
+    return [data, status];
 }
 
-export async function logLogout(token: string){
+export async function logLogout(token: string): Promise<[object, number]>{
     const url: string = "/useraccount/loglogout";
     const {data, status} = await apiService.api.post(url, {}, {headers: apiService.getHeaders(token)});
 
-    return data;
+    return [data, status];
 }

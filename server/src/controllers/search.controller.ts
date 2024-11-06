@@ -4,9 +4,8 @@ import * as searchService from '../services/search.service';
 
 export async function searchSessionsDay(req: Request, res: Response){
     try{
-        const sessions: object = await searchService.searchSessionsDay(req.headers.authorization, req.query.optionalParamters);
-
-        return res.status(200).json(sessions);
+        const [sessions, status] = await searchService.searchSessionsDay(req.headers.authorization, req.query.optionalParamters);
+        return res.status(status).json(sessions);
 
     }catch(error){
         apiService.handleGenericApiError(error, res);
@@ -15,9 +14,8 @@ export async function searchSessionsDay(req: Request, res: Response){
 
 export async function searchSessions(req: Request, res: Response){
     try{
-        const sessions: object = await searchService.searchSessions(req.headers.authorization, req.query.optionalParamters);
-
-        return res.status(200).json(sessions);
+        const [sessions, status] = await searchService.searchSessions(req.headers.authorization, req.query.optionalParamters);
+        return res.status(status).json(sessions);
 
     }catch(error){
         apiService.handleGenericApiError(error, res);
@@ -26,9 +24,8 @@ export async function searchSessions(req: Request, res: Response){
 
 export async function searchScreenshots(req: Request, res: Response){
     try{
-        const screenshots: object = await searchService.searchScreenshots(req.headers.authorization, req.query.optionalParamters);
-
-        return res.status(200).json(screenshots);
+        const [screenshots, status] = await searchService.searchScreenshots(req.headers.authorization, req.query.optionalParamters);
+        return res.status(status).json(screenshots);
 
     }catch(error){
         apiService.handleGenericApiError(error, res);
@@ -37,9 +34,18 @@ export async function searchScreenshots(req: Request, res: Response){
 
 export async function searchTimeline(req: Request, res: Response){
     try{
-        const timeline: object = await searchService.searchTimeline(req.headers.authorization, req.params.sessionId, req.query.optionalParamters);
+        const [timeline, status] = await searchService.searchTimeline(req.headers.authorization, req.params.sessionId, req.query.optionalParamters);
+        return res.status(status).json(timeline);
 
-        return res.status(200).json(timeline);
+    }catch(error){
+        apiService.handleGenericApiError(error, res);
+    }
+}
+
+export async function deleteSessions(req: Request, res: Response){
+    try{
+        const [response, status] = await searchService.deleteSessions(req.headers.authorization, req.query.modelIds);
+        return res.status(status).json(response);
 
     }catch(error){
         apiService.handleGenericApiError(error, res);

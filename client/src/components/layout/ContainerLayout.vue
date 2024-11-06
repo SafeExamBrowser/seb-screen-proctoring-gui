@@ -245,10 +245,6 @@
         // {title: "6x6", value: 6},
     ];
 
-    //git tag
-    //@ts-ignore
-    // const gitTag = __GIT_TAG__;
-
     //watchers
     watch(languageToggle, () => {
         locale.value = languageToggle.value === 0 ? "en" : "de";
