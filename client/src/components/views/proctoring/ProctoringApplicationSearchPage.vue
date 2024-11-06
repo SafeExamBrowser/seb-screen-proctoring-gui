@@ -286,8 +286,6 @@
         const screenshotTimestampsShortend: number[] = screenshotTimestamps.value.map(timestamp => Math.floor(timestamp / 1000));
         const sliderTimeForIndexShortend: number = Math.floor(sliderTime.value / 1000);
 
-        console.log(screenshotTimestampsShortend + " --> " + sliderTimeForIndexShortend)
-
         if(screenshotTimestampsShortend.includes(sliderTimeForIndexShortend)){
             timestampsIndex.value = screenshotTimestampsShortend.indexOf(sliderTimeForIndexShortend);
 
@@ -312,13 +310,8 @@
             return; 
         }
 
-        console.log(timestamps)
-
         screenshotTimestamps.value = timestamps;
         screenshotTimestampsFloored.value = timestamps.map(timestamp => Math.floor(timestamp / 1000));
-
-        console.log(screenshotTimestamps.value)
-        console.log(screenshotTimestampsFloored.value)
 
         timestampsIndex.value = 0;
     }
@@ -372,9 +365,6 @@
     //=========interval=============
     function startIntervalScreenshots(){
         intervalScreenshots = setInterval(async () => {
-            console.log("timestampsIndex.value: " + timestampsIndex.value)
-            // console.log("screenshotTimestamps.value.length: " + screenshotTimestamps.value.length)
-
             if(timestampsIndex.value == screenshotTimestamps.value.length-1){
                 stopIntervalScreenshots();
                 isPlaying.value = false;

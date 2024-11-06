@@ -41,7 +41,7 @@ export async function searchTimeline(sessionId: string, optionalParamters?: Opti
     }
 } 
 
-export async function deleteSessions(sessionUuids: string[]){
+export async function deleteSessions(sessionUuids: string[]): Promise<object | any>{
     try{
         return await searchService.deleteSessions(sessionUuids);        
     }catch(error){

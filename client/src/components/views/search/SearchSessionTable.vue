@@ -1,7 +1,7 @@
 <template>
     <v-data-table-server
         show-expand
-        show-select
+        :show-select="isUserAdmin"
         v-model="selectedSessionUuids"
         select-strategy="page"
         item-value="sessionUUID" 
@@ -17,6 +17,7 @@
 
         <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort, selectAll, allSelected, someSelected }">
             <CustomTableHeader
+                v-if="isUserAdmin"
                 :columns="columns"
                 :is-sorted="isSorted"
                 :get-sort-icon="getSortIcon"
@@ -28,6 +29,15 @@
                 :someSelected="someSelected"
                 tableKey="session"
                 @openDeleteSessionsDialog="openDeleteSessionsDialog">
+            </CustomTableHeader>
+            <CustomTableHeader
+                v-else
+                :columns="columns"
+                :is-sorted="isSorted"
+                :get-sort-icon="getSortIcon"
+                :toggle-sort="toggleSort"
+                :header-refs-prop="sessionTableHeadersRef"
+                :day="props.day">
             </CustomTableHeader>
         </template>
 
@@ -77,9 +87,12 @@
 
     </v-data-table-server>
 
-
     <!-----------delete sessions confirmation---------->      
-    <v-dialog v-model="dialog" max-width="400">
+    <v-dialog 
+        v-if="isUserAdmin"
+        v-model="dialog" 
+        max-width="400"
+    >
         <v-sheet elevation="2" class="pa-4 rounded-lg">
 
             <v-row justify="end">
@@ -146,10 +159,12 @@
     import SearchScreenshotsTable from "./SearchScreenshotsTable.vue";
     import * as searchViewService from "@/services/component-services/searchViewService";
     import CustomTableHeader from "@/utils/table/CustomTableHeader.vue";
-    import { useTableStore } from "@/store/store";
+    import { useTableStore, useUserAccountStore } from "@/store/store";
 
     //store
     const tableStore = useTableStore();
+    const userAccountStore = useUserAccountStore();
+    const isUserAdmin = ref<boolean>();
 
     //props
     const props = defineProps<{
@@ -189,6 +204,7 @@
 
     //===========================data fetching=======================
     async function loadItems(serverTablePaging: ServerTablePaging){
+        isUserAdmin.value = userAccountStore.userAccount?.roles.includes('ADMIN');
         isLoading.value = true;
         //current solution to default sort the table
         //sort-by in data-table-server tag breaks the sorting as the headers are in a seperate component
@@ -246,9 +262,8 @@
             return;
         }
 
-        const response: object = await searchViewService.deleteSessions(selectedSessionUuids.value);
-
-        if(response == null){
+        const response = await searchViewService.deleteSessions(selectedSessionUuids.value);
+        if(response.data == null || response.status == 207){
             errorAvailable.value = true;
             return;
         }

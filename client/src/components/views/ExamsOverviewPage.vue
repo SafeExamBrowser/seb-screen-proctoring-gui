@@ -153,10 +153,7 @@
             includeUpcomingExams: appBarStore.examOverviewShowUpcomingExams
         });
 
-        console.log(groupsResponse)
-
         if(groupsResponse == null){
-            console.log("it got here comp")
             errorAvailable.value = true;
             return;
         }

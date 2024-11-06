@@ -213,12 +213,6 @@
     onBeforeMount(async () => {
         appBarStore.title = "Applications";
         await getExamsStarted();
-
-        // console.log(await applicationsSearchViewService.getGroupIdsForExam(13))
-        // console.log(await applicationsSearchViewService.getDistinctMetadataAppForExam("13"))
-        // console.log(await applicationsSearchViewService.getDistinctMetadataWindowForExam("13", "SEB (Bundle ID: org.safeexambrowser.ios.seb)"))
-        // console.log(await applicationsSearchViewService.getUserListForApplicationSearch("13", "SEB (Bundle ID: org.safeexambrowser.ios.seb)", "quiz Dany | Testserver Exam-Moodle (Test)"))
-
     });
 
 

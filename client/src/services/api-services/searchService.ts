@@ -21,7 +21,7 @@ export async function searchTimeline(sessionId: string, optionalParamters?: Opti
     return (await apiService.api.get(url, {headers: apiService.getHeaders(), params: {optionalParamters}})).data;
 }
 
-export async function deleteSessions(sessionUuids: string[]): Promise<SearchTimeline | any> {
+export async function deleteSessions(sessionUuids: string[]): Promise<object | any> {
     const url: string = "/search/sessions/delete" + apiService.createSessionDeleteUrlSuffix(sessionUuids);
-    return (await apiService.api.delete(url, {headers: apiService.getHeaders()})).data;
+    return await apiService.api.delete(url, {headers: apiService.getHeaders()});
 }
