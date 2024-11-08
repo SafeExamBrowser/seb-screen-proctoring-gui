@@ -83,6 +83,8 @@ Refer to the [seb-server-setup project](https://github.com/SafeExamBrowser/seb-s
     PROCTOR_SERVER_PASSWORD="{pw for oauth}"
 
     SEB_SERVER_INTEGRATED_MODE="true"
+
+    LOG_LEVEL="{log level}" //"info" for general logs, "debug" for more details
     ```
   7. run `npm install`
   8. run `npm run dev`
