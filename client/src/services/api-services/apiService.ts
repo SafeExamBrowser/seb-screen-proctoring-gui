@@ -135,6 +135,32 @@ export function createSessionDeleteUrlSuffix(sessionUuids: string[]): string{
     return urlSuffix;
 }
 
+
+export function throttle<T extends (...args: any[]) => void>(func: T, limit: number): (...args: Parameters<T>) => void {
+    let lastFunc: ReturnType<typeof setTimeout>;
+    let lastRan: number | undefined;
+
+    return function (...args: Parameters<T>) {
+        const now = Date.now();
+
+        if (!lastRan) {
+            func(...args);
+            lastRan = now;
+
+        } else {
+            clearTimeout(lastFunc);
+
+            lastFunc = setTimeout(() => {
+                if (now - lastRan! >= limit) {
+                    func(...args);
+                    lastRan = Date.now();
+                }
+            }, limit - (now - lastRan));
+        }
+    };
+}
+
+
 function getIgnoredUrls(): string[]{
     return [
         "/screenshot/", 
