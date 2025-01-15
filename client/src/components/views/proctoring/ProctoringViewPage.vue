@@ -212,6 +212,7 @@
     import { useFullscreen } from "@vueuse/core";
     import * as linkService from "@/services/component-services/linkService";
     import { SortOrder } from "@/models/sortOrderEnum";
+    import * as apiService from "@/services/api-services/apiService";
 
     //slider
     const sliderTime = ref<number>();
@@ -339,7 +340,7 @@
 
     watch(liveTimestamp, async () => {
         if(isLive.value && isLiveSelected.value){
-            setImageLink(Date.now().toString());
+            throttledSetImageLink(Date.now().toString());
             assignScreenshotData();
             return;
         }
@@ -382,7 +383,7 @@
 
         setSliderMin(currentScreenshot.value.timestamp);
         firstScreenshotTime.value = currentScreenshot.value.timestamp;
-        setImageLink(Date.now().toString());
+        throttledSetImageLink(Date.now().toString());
     }
     //==============================
 
@@ -399,6 +400,10 @@
 
         timestampsIndex.value = 0;
     }
+
+    const throttledSetImageLink = apiService.throttle((timestamp: string) => {
+        setImageLink(timestamp);
+    }, 100); 
 
     function setImageLink(timestamp: string){
         imageLink.value = linkService.getSpecificImageLink(currentScreenshot.value, timestamp);
@@ -418,7 +423,7 @@
 
         if(screenshotDataResponse) {
             currentScreenshot.value = screenshotDataResponse;
-            setImageLink(timestamp);
+            throttledSetImageLink(timestamp);
         }
     }
 
@@ -584,7 +589,7 @@
             await setTimestampsList(SortOrder.desc);
             timestampsIndex.value = 1;
             
-            setImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
+            throttledSetImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
             sliderTime.value -= DEFAULT_PLAYBACK_SPEED;
 
             backwardsFirstTime.value = false;
@@ -592,7 +597,7 @@
         }
 
         timestampsIndex.value += 1;
-        setImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
+        throttledSetImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
         sliderTime.value -= DEFAULT_PLAYBACK_SPEED;
     }
 
@@ -608,7 +613,7 @@
             await setTimestampsList(SortOrder.asc);
             timestampsIndex.value = 1;
             
-            setImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
+            throttledSetImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
             sliderTime.value += DEFAULT_PLAYBACK_SPEED;
 
             forwardsFirstTime.value = false;
@@ -617,7 +622,7 @@
 
 
         timestampsIndex.value += 1;
-        setImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
+        throttledSetImageLink(screenshotTimestamps.value[timestampsIndex.value].toString());
         sliderTime.value += DEFAULT_PLAYBACK_SPEED;
     }
 
