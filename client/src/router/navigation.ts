@@ -10,3 +10,7 @@ export function openUrlInNewTab(url: string){
     //@ts-ignore
     window.open("", "_blank").location.href = router.resolve(url).href;
 }
+
+export function openUrlInNewTabApplicationView(url: string){
+    window.open(url, "_blank");
+}

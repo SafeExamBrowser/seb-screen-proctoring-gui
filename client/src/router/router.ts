@@ -113,7 +113,7 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: constants.PROCTORING_APPLICATION_SEARCH_ROUTE + "/:sessionId/:metadataApp/:metadataWindow",
+        path: constants.PROCTORING_APPLICATION_SEARCH_ROUTE + "/:sessionId",
         name: "ProctoringApplicationSearchPage",
         component: ProctoringApplicationSearchPage,
         meta: {
