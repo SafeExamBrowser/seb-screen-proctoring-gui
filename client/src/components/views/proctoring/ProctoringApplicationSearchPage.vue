@@ -226,10 +226,12 @@
     //store
     const appBarStore = useAppBarStore();
 
-    //router params
-    const sessionId: string = useRoute().params.sessionId.toString();
-    const metadataApp: string = useRoute().params.metadataApp.toString();
-    const metadataWindow: string = useRoute().params.metadataWindow.toString();
+    //router params & query
+    const route = useRoute();
+    const sessionId: string = route.params.sessionId.toString();
+    const metadataApp = route.query.metadataApp ?? "";
+    const metadataWindow = route.query.metadataWindow ?? "";
+
 
     //fullscreen
     const videoPlayer = ref(null);
@@ -301,8 +303,8 @@
         const timestamps: number[] | null = 
             await applicationsSearchViewService.getTimestampListForApplicationSearch(
                 sessionId,
-                metadataApp,
-                metadataWindow
+                metadataApp.toString(),
+                metadataWindow.toString()
             );
 
         if(timestamps == null){
