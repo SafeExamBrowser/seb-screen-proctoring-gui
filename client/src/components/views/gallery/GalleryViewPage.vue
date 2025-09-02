@@ -54,7 +54,7 @@
 
     //time constants
     const GROUP_INTERVAL: number = 2 * 1000;
-    const SCREENSHOT_INTERVAL: number = 1 * 1000;
+    const SCREENSHOT_INTERVAL: number = 2 * 1000;
 
     //store
     const appBarStore = useAppBarStore();
