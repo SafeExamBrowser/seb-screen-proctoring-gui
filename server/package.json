@@ -1,16 +1,16 @@
 {
-    "name": "server",
-    "version": "1.0.0",
-    "description": "",
-    "main": "app.js",
-    "scripts": {
-      "build": "npx tsc",
-      "start": "node dist/app.js",
-      "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app.js\""
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/app.js",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app.js\""
+  },
+  "author": "",
+  "license": "ISC",
+   "dependencies": {
       "axios": "^1.6.8",
       "body-parser": "^1.20.2",
       "cors": "^2.8.5",
@@ -30,5 +30,4 @@
       "nodemon": "^3.1.0",
       "typescript": "^5.4.5"
     }
-  }
-  
+}
