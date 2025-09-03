@@ -304,6 +304,9 @@
     });
 
     watch(sliderTime, async () => {
+
+        console.info("******** silderTime: " + sliderTime.value + " min: " + sliderMin.value + " max: " + sliderMax.value);
+
         if(sliderTime.value == null){
             return;
         } 
@@ -374,7 +377,7 @@
             return;
         }
 
-        setSliderMax(currentScreenshot.value.timestamp);
+        setSliderMax(currentScreenshot.value.endTime);
         searchTimeline.value = await searchViewService.searchTimeline(sessionId);
 
         await assignScreenshotDataByTimestamp(currentScreenshot.value?.startTime.toString());
