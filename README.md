@@ -16,7 +16,7 @@ The client uses the following technologies:
 #### [VueJs Version 3.4.*](https://vuejs.org/)
  - Composition API and Script Setup Syntax
  - Typescript
- - [Vuetify](https://vuetifyjs.com/en/) as the componenet framework
+ - [Vuetify](https://vuetifyjs.com/en/) as the component framework
 
 ### Server
 
@@ -43,7 +43,6 @@ Instructions on how to get a local development environment up and running.
 
 
 Refer to the [seb-server-setup project](https://github.com/SafeExamBrowser/seb-server-setup/tree/development) to get a description on the environment variables. 
-(Hier bitte noch den richtigen Link zum docker-compose File hinzufügen)
 
 
 #### Steps to follow
