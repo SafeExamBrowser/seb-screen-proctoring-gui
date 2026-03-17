@@ -74,7 +74,7 @@ export function openProctoringView(sessionId: string, timestamp?: string){
 }
 
 export function openProctoringApplicationSearch(sessionId: string, metadataApp: string, metadataWindow: string){
-    const url: URL = new URL(window.location.origin + constants.PROCTORING_APPLICATION_SEARCH_ROUTE + "/" + sessionId);
+    const url: URL = new URL(constants.PROCTORING_APPLICATION_SEARCH_ROUTE + "/" + sessionId);
     url.searchParams.set("metadataApp", metadataApp);
     url.searchParams.set("metadataWindow", metadataWindow);
 
