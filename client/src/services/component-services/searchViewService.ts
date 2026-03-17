@@ -78,6 +78,6 @@ export function openProctoringApplicationSearch(sessionId: string, metadataApp: 
     url.searchParams.set("metadataApp", metadataApp);
     url.searchParams.set("metadataWindow", metadataWindow);
 
-    openUrlInNewTabApplicationView(url.toString());
+    openUrlInNewTab(url.toString());
 }
 //==============================

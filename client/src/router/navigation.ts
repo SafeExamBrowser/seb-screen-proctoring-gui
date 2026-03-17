@@ -12,5 +12,5 @@ export function openUrlInNewTab(url: string){
 }
 
 export function openUrlInNewTabApplicationView(url: string){
-    window.open(url, "_blank");
+    window.open(router.resolve(url).href, "_blank");
 }
