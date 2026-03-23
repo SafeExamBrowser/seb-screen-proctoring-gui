@@ -74,25 +74,10 @@ export function openProctoringView(sessionId: string, timestamp?: string){
 }
 
 export function openProctoringApplicationSearch(sessionId: string, metadataApp: string, metadataWindow: string){
-    let url: string =  constants.PROCTORING_APPLICATION_SEARCH_ROUTE + "/" + sessionId;
-    let query: string | undefined = undefined;
+    const url: URL = new URL(window.location.origin + constants.PROCTORING_APPLICATION_SEARCH_ROUTE + "/" + sessionId);
+    url.searchParams.set("metadataApp", metadataApp);
+    url.searchParams.set("metadataWindow", metadataWindow);
 
-    if(metadataApp){
-        query = "metadataApp=" + metadataApp;
-    }
-    if (metadataWindow) {
-        if (query) {
-            query = query + "&";
-        }
-        query = query + "metadataWindow=" + metadataWindow;
-    }
-    if (query) {
-        url = url + "?" + query;
-    }
-
-    // url.searchParams.set("metadataApp", metadataApp);
-    // url.searchParams.set("metadataWindow", metadataWindow);
-    console.info("********** url = " + url.toString());
-    openUrlInNewTab(url.toString());
+    openUrlInNewTabApplicationView(url.toString());
 }
 //==============================
